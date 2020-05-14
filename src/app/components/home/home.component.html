@@ -1,0 +1,27 @@
+<div class="card shadow mt-5 mb-5">
+  <div class="card-header">
+    Reservaciones existentes
+  </div>
+  <div class="card-body">
+    <table class="table table-responsive table-bordered table-hover">
+      <thead>
+      <th>N°</th>
+      <th>N° Reservación</th>
+      <th>Nombre de cliente</th>
+      <th>Dirección de recogida</th>
+      <th>Estado</th>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let delivery of deliveries; let i = index" (click)="verSolicitud(delivery.idDelivery)" style="cursor: pointer">
+        <td>{{i + 1}}</td>
+        <td>{{delivery.idDelivery}}</td>
+        <td>{{delivery.nomCliente}}</td>
+        <td>{{delivery.dirRecogida}}</td>
+        <td>{{delivery.estado.descEstado}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>

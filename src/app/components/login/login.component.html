@@ -1,0 +1,81 @@
+<!-- INICIO DE CONTENEDOR -->
+<div class="col-md-6 offset-md-3 mt-5">
+
+
+  <!-- INICIO DE CARD -->
+  <div class="card shadow">
+    <div class="card-header">
+      Autenticación
+    </div>
+
+
+    <!-- INICIO DE CONTENIDO DEL CARD -->
+    <div class="card-body">
+      <!-- INICIO FORMULARIO LOGIN -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <label class="col-form-label">Usuario:</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fa fa-user"></i></span>
+           </div>
+            <input formControlName="nickName" [class.is-invalid]="f.nickName.invalid && f.nickName.touched"
+                   placeholder="Ingrese su usuario" class="form-control" required>
+            </div>
+          <small class="text-danger" *ngIf="f.nickName.errors?.required && f.nickName.touched"> El usuario es obligatorio.</small>
+
+        </div>
+
+        <div class="form-row">
+          <label class="col-form-label" >Contraseña:</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fa fa-user"></i></span>
+            </div>
+            <input class="form-control"  type="password" formControlName="password" required
+                   [class.is-invalid]="f.password.invalid && f.password.touched"
+            placeholder="Ingrese su contraseña">
+          </div>
+          <small class="text-danger" *ngIf="f.password.errors?.required && f.password.touched">La contraseña es obligatoria.</small>
+        </div>
+        <div class="form-group">
+          <input id="remember_me" formControlName="remember_me" type="checkbox"> Recordar Usuario
+        </div>
+        <button [disabled]="loading || loginForm.invalid" class="btn xplore-bg btn-outline btn-block text-white">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1 "></span>
+          Ingresar
+        </button>
+
+      </form>
+      <!-- FIN FORMULARIO LOGIN -->
+
+    </div>
+    <!-- FIN DE CONTENIDO DEL CARD -->
+
+  </div>
+  <!-- FIN DE CARD -->
+
+</div>
+<!-- FIN DE CONTENEDOR -->
+
+
+<!-- INICIO DE MODAL -->
+<div id="errModal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content ">
+      <div class="modal-header bg-warning">
+        <h4 class="modal-title">Error al iniciar su sesión</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{{error}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN DE MODAL -->

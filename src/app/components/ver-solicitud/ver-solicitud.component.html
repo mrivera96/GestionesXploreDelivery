@@ -1,0 +1,100 @@
+<div class="card shadow mt-5 mb-5">
+  <div class="card-header">
+    <a [routerLink]="['/']" class="mr-2"> <i class="fa fa-arrow-left"></i></a>
+      Solicitud N° {{deliveryId}}
+  </div>
+  <div class="card-body">
+
+    <div>
+      <h4 class="card-title">Datos Generales</h4>
+    </div>
+
+      <div class="table-responsive">
+        <table class="table">
+          <tr >
+            <td class="w-50"><strong>Nombre del cliente:</strong> {{currentDelivery?.nomCliente}}</td>
+            <td class="w-50"><strong>Número de identifiación:</strong> {{currentDelivery?.numIdentificacion}}</td>
+          </tr>
+          <tr>
+            <td  class="w-50">
+              <strong>Número de celular:</strong> {{currentDelivery?.numCelular}}
+            </td>
+            <td class="w-50">
+              <strong>Dirección de recogida:</strong> {{currentDelivery?.dirRecogida}}
+            </td>
+          </tr>
+          <tr>
+            <td class="w-50">
+              <strong>Categoría reservada:</strong> {{currentDelivery?.category?.descTipoVehiculo}}
+            </td>
+            <td class="w-50">
+              <strong>Fecha y hora de recogida:</strong> {{currentDelivery?.fechaReserva | date: 'dd/MM/yyyy, h:mm a'}}
+            </td>
+          </tr>
+
+          <tr>
+            <td class="w-50">
+              <strong>e-mail:</strong> {{currentDelivery?.email}}
+            </td>
+            <td class="w-50">
+              <strong>Tarifa Base:</strong> L.{{currentDelivery?.tarifaBase}}
+            </td>
+          </tr>
+          <tr>
+            <td class="w-50">
+              <strong>Recargos:</strong> L.{{currentDelivery?.recargos}}
+            </td>
+            <td class="w-50">
+              <strong>Total:</strong> L.{{currentDelivery?.total}}
+            </td>
+          </tr>
+          <tr>
+            <td class="w-50">
+              <strong>Pagada:</strong>
+              <span *ngIf="currentDelivery?.isPagada == true" class="text-success"> SI</span>
+              <span *ngIf="currentDelivery?.isPagada == false" class="text-danger"> NO</span>
+            </td>
+            <td class="w-50">
+
+            </td>
+          </tr>
+        </table>
+      </div>
+
+    <br>
+    <div>
+      <h4 class="card-title">Entregas programadas</h4>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead>
+        <th>N°</th>
+        <th>Detalle de entrega</th>
+        <th>Nombre de destinatario</th>
+        <th>Dirección de entrega</th>
+        <th>Distancia</th>
+        <th>Entregado</th>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let detail of currentDelivery?.detalle; let i = index" style="cursor: pointer">
+          <td>{{i + 1}}</td>
+          <td>{{detail.nFactura}}</td>
+          <td>{{detail.nomDestinatario}}</td>
+          <td>{{detail.direccion}}</td>
+          <td>{{detail.distancia}}</td>
+          <td *ngIf="detail.entregado != 0" class="text-success">SI</td>
+          <td *ngIf="detail.entregado == 0" class="text-danger">NO</td>
+
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+  </div>
+
+</div>
+
