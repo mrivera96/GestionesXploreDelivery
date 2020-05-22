@@ -1,11 +1,11 @@
-<!--CARD START -->
-<div class="card shadow-sm">
+<!-- CARD START -->
+<div class="card shadow-sm ">
   <div class="card-header">
-    <h3>Reservaciones para hoy</h3>
+    <a [routerLink]="['/']"> <i class="fa fa-arrow-circle-left m-r-xs"></i></a>
+    <h3 class="d-inline">Reservaciones para mañana</h3>
   </div>
-  <!-- CARD BODY START -->
+  <!--  CARD BODY START-->
   <div class="card-body p-0">
-
     <div class="row" *ngIf="loaders.loadingData">
       <div class="col text-center">
         <img src="assets/img/loading.svg" width="5%" alt="loading">
@@ -14,9 +14,8 @@
     </div>
     <!-- DATATABLE START -->
     <app-data-table [deliveries]="deliveries" [dtTrigger]="dtTrigger"></app-data-table>
-    <!-- DATATABLE END -->
+    <!-- DATATATBLE END -->
   </div>
-  <!--CARD BODY END -->
-
+  <!-- CARD BODY END -->
 </div>
 <!-- CARD END -->

@@ -24,4 +24,32 @@ export class AppComponent {
       this.router.navigate(['/login'])
     })
   }
+
+  toggleSidebar(){
+    $('#sidebar').toggleClass('active');
+  }
+  showLogout(){
+    $('#logout').toggleClass('d-none');
+  }
+
+  goHome(){
+    if($('#sidebar').hasClass('active')){
+      $('#sidebar').toggleClass('active');
+    }
+    this.router.navigate(['/'])
+  }
+
+  showAllRequest(){
+    if($('#sidebar').hasClass('active')){
+      $('#sidebar').toggleClass('active');
+    }
+    this.router.navigate(['ver-todas'])
+  }
+
+  showTomorrow(){
+    if($('#sidebar').hasClass('active')){
+      $('#sidebar').toggleClass('active');
+    }
+    this.router.navigate(['reservas-maniana'])
+  }
 }

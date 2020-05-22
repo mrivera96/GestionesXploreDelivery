@@ -1,11 +1,10 @@
 <!-- INICIO DE CONTENEDOR -->
-<div class="col-md-6 offset-md-3 mt-5">
-
+<div class="col-md-6 offset-lg-3 offset-md-3 mt-5">
 
   <!-- INICIO DE CARD -->
-  <div class="card shadow">
+  <div class="card shadow-sm">
     <div class="card-header">
-      Autenticación
+      <h3>Autenticación</h3>
     </div>
 
 
@@ -13,33 +12,38 @@
     <div class="card-body">
       <!-- INICIO FORMULARIO LOGIN -->
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-row">
-          <label class="col-form-label">Usuario:</label>
+        <div class="form-group">
+          <label for="nickName" class="control-label">Usuario:</label>
           <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fa fa-user"></i></span>
+            <div class="input-group-addon">
+              <i class="fa fa-user"></i>
            </div>
-            <input formControlName="nickName" [class.is-invalid]="f.nickName.invalid && f.nickName.touched"
+            <input id="nickName" formControlName="nickName" [class.is-invalid]="f.nickName.invalid && f.nickName.touched"
                    placeholder="Ingrese su usuario" class="form-control" required>
             </div>
           <small class="text-danger" *ngIf="f.nickName.errors?.required && f.nickName.touched"> El usuario es obligatorio.</small>
 
         </div>
 
-        <div class="form-row">
-          <label class="col-form-label" >Contraseña:</label>
+        <div class="form-group">
+          <label for="password" class="col-form-label" >Contraseña:</label>
           <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fa fa-user"></i></span>
+            <div class="input-group-addon">
+             <i class="fa fa-key"></i>
             </div>
-            <input class="form-control"  type="password" formControlName="password" required
+            <input id="password" class="form-control"  type="password" formControlName="password" required
                    [class.is-invalid]="f.password.invalid && f.password.touched"
             placeholder="Ingrese su contraseña">
           </div>
           <small class="text-danger" *ngIf="f.password.errors?.required && f.password.touched">La contraseña es obligatoria.</small>
         </div>
         <div class="form-group">
-          <input id="remember_me" formControlName="remember_me" type="checkbox"> Recordar Usuario
+          <div class="form-check form-check-inline">
+
+            <input class="form-check-input" id="remember_me" formControlName="remember_me" type="checkbox">
+            <label class="form-check-label" for="remember_me">Recordar Usuario</label>
+          </div>
+
         </div>
         <button [disabled]="loading || loginForm.invalid" class="btn xplore-bg btn-outline btn-block text-white">
           <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1 "></span>

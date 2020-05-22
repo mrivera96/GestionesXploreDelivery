@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DeliveriesService} from "../../services/deliveries.service";
 import {Delivery} from "../../models/delivery";
-import {Router} from "@angular/router";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-home',
@@ -9,26 +9,30 @@ import {Router} from "@angular/router";
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
+  loaders = {
+    'loadingData': false
+  }
+  dtTrigger: Subject<any> = new Subject()
   constructor(
     private deliveriesService: DeliveriesService,
-    private router: Router
-  ) { }
+  ) {
 
+  }
   deliveries: Delivery[]
 
   ngOnInit(): void {
+    this.loadData()
+  }
+
+  loadData(){
+    this.loaders.loadingData = true
     this.deliveriesService.getDeliveries().subscribe(response => {
-      if(response.error == 0){
-        this.deliveries = response.data
+      if (response.error == 0) {
+        this.deliveries = response.data.deliveriesDia
+        this.dtTrigger.next()
+        this.loaders.loadingData = false
       }
     })
   }
-
-  verSolicitud(id){
-    this.router.navigate(['ver-solicitud',id])
-  }
-
-
 
 }

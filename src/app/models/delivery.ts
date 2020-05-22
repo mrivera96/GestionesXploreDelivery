@@ -10,6 +10,7 @@ export interface Delivery {
   dirRecogida?: string
   email?: string
   idCategoria?: string
+  idEstado?: number
   estado?: any
   detalle?: DeliveryDetail[]
   category?: Category
@@ -17,4 +18,6 @@ export interface Delivery {
   recargos?: number
   total?: number
   isPagada?: boolean
+  idCliente?: number
+  entregas?: number
 }

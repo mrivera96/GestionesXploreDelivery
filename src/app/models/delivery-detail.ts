@@ -1,3 +1,5 @@
+import {User} from "./user";
+
 export interface DeliveryDetail {
   idDelivery?: number
   nFactura?: string
@@ -6,6 +8,8 @@ export interface DeliveryDetail {
   direccion?: string
   distancia?: string
   entregado?: boolean
-  horaEntrega?: string
+  fechaEntrega?: string
   nomRecibio?: string
+  idConductor?: number
+  conductor?: User
 }

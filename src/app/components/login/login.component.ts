@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../services/auth.service";
-import {first} from "rxjs/operators";
+
 declare var $: any;
 
 @Component({
@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit {
     }
     this.loginForm = new FormGroup({
       nickName: new FormControl(nName, [Validators.required]),
-      password: new FormControl ('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
       remember_me: new FormControl('')
     })
 
@@ -46,7 +46,9 @@ export class LoginComponent implements OnInit {
   }
 
   // getter para fácil acceso a los campos del formulario
-  get f() { return this.loginForm.controls; }
+  get f() {
+    return this.loginForm.controls;
+  }
 
   onSubmit() {
     this.submitted = true;
@@ -64,12 +66,12 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.f.nickName.value, this.f.password.value)
       .subscribe(
         data => {
-          if(data.error === 0){
+          if (data.error === 0) {
             const user = data.user;
             localStorage.setItem('currentUser', JSON.stringify(user));
             this.authService.setCurrUser(user)
             this.router.navigate([this.returnUrl])
-          }else if(data.error === 1){
+          } else if (data.error === 1) {
             this.error = data.message;
             $("#errModal").modal('show');
             this.loading = false;

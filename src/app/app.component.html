@@ -1,47 +1,70 @@
-<!-- nav -->
-<nav class="navbar navbar-expand-lg navbar-dark xplore-bg" >
-  <a class="navbar-brand " href="#">
-    <img  src="../assets/img/LOGO-XPLORE_02-ColorSecundario.png" width="150"  alt="Xplore Logo">
+<div class="wrapper ">
 
-  </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <!--sidebar start -->
+    <nav class="bg-light" id="sidebar">
 
-  <div class="collapse navbar-collapse " id="navbarNavAltMarkup">
-    <ul class="navbar-nav mr-auto">
-      <li>
-        <span class="navbar-text text-white">
-          {{title}}
-        </span>
-      </li>
-
-    </ul>
-    <ul class="navbar-nav ml-auto">
-
-      <li class="nav-item">
-        <a class="nav-item nav-link" [routerLink]="['/']" *ngIf="currentUser" ><i class="fa fa-home"></i> <span> Inicio</span> </a>
-      </li >
-      <li class="nav-item">
-        <a *ngIf="currentUser" id="navbarDropdown" class="nav-link" href="#" role="button"
-           aria-haspopup="true" aria-expanded="false" >
-          <i class="fa fa-user"></i>
-          <span> {{currentUser.nomUsuario}}</span>
+      <div class="sidebar-header xplore-bg">
+        <a class="navbar-brand text-white" href="https://xplorerentacar.com">
+          Xplore Delivery
         </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-item nav-link" (click)="logout()" *ngIf="currentUser">
-          <i class="fa fa-power-off"></i>
-          <span class="dropdown-item-title ml-1">Cerrar Sesión</span>
-        </a>
-      </li>
 
-    </ul>
+      </div>
+      <ul class="list-unstyled components" *ngIf="currentUser">
+        <li>
+          <a class="list-group-item dropdown-toggle" (click)="showLogout()">
+            <i class="fa fa-user"></i>
+            {{currentUser.nomUsuario}}
+          </a>
+
+        </li>
+        <li>
+          <a href="#" id="logout" class="list-group-item d-none " (click)="logout()">
+            <i class="fa fa-power-off ml-3"></i> Cerrar Sesión
+          </a>
+        </li>
+        <li>
+          <a (click)="goHome()" class="list-group-item">
+            <i class="fa fa-home"></i>
+            <span> Inicio</span> </a>
+        </li>
+        <li>
+          <a (click)="showAllRequest()" class="list-group-item">
+            <i class="fa fa-list-alt"></i> Todas las Reservaciones
+          </a>
+        </li>
+        <!--<li>
+          <a [routerLink]="['/']" class="list-group-item">
+            <i class="fa fa-calendar-day"></i> Reservaciones del día
+          </a>
+        </li>-->
+        <li>
+          <a (click)="showTomorrow()" class="list-group-item">
+            <i class="fa fa-calendar-alt"></i> Reservaciones para mañana
+          </a>
+        </li>
+
+      </ul>
+
+    </nav>
+    <!--sidebar end -->
+
+  <div id="content">
+
+      <nav  class="navbar navbar-dark navbar-expand-lg xplore-bg">
+        <div  class="container-fluid">
+          <div  class="navbar-header">
+            <button (click)="toggleSidebar()" type="button" class="btn btn-sm xplore-bg border">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <a  href="https://xplorerentacar.com" class="navbar-brand">
+              <img alt="image" height="66px" src="assets/img/logo-xplore.png"></a>
+          </div>
+        </div>
+      </nav>
+
+    <div class="container-fluid mt-5 mb-5">
+      <router-outlet></router-outlet>
+    </div>
+    <p class="text-center">© Copyright 2020 <strong>ALCARSA - Xplore Rent a Car</strong> | Todos los derechos reservados</p>
   </div>
-
-</nav>
-
-<!-- main app container -->
-<div class="container">
-  <router-outlet></router-outlet>
 </div>
