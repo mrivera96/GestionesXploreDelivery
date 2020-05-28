@@ -1,4 +1,5 @@
 export interface Category {
-  idTipoVehiculo?: number;
-  descTipoVehiculo?: string;
+  idTipoVehiculo?: number
+  descTipoVehiculo?: string
+  delivery?: boolean
 }

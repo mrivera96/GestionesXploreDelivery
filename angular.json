@@ -35,8 +35,7 @@
               "./node_modules/popper.js/dist/umd/popper.min.js",
               "./node_modules/bootstrap/dist/js/bootstrap.min.js",
               "./node_modules/datatables.net/js/jquery.dataTables.js",
-              "./node_modules/datatables.net-responsive/js/dataTables.responsive.js",
-              "./node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.js"
+              "./node_modules/datatables.net-responsive/js/dataTables.responsive.js"
             ]
           },
           "configurations": {

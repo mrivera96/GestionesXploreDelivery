@@ -12,7 +12,7 @@ export class UsersService {
     private http: HttpClient
   ) { }
 
-  getUsers(){
-    return this.http.get<Response>(`${environment.apiUrl}`, {params: {function: 'listUsers'}})
+  getDrivers(){
+    return this.http.get<any>(`${environment.apiUrl}`, {params: {function: 'listDrivers'}})
   }
 }

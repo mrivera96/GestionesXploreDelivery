@@ -13,6 +13,6 @@ export class VehiclesService {
   ) { }
 
   getVehicles(){
-    return this.http.get<Response>(`${environment.apiUrl}`, {params: {function: 'listVehicles'}})
+    return this.http.get<any>(`${environment.apiUrl}`, {params: {function: 'listVehicles'}})
   }
 }

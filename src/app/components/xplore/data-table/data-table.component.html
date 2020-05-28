@@ -1,0 +1,47 @@
+<!-- CONTAINER START -->
+<div class="ibox">
+  <div class="ibox-title ">
+    <h5>Listado de Reservaciones</h5>
+  </div>
+  <!-- CONTAINER BODY START -->
+  <div class="ibox-content">
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+             class="display" style="width:100%">
+        <thead>
+        <tr>
+          <th data-priority="1">N°</th>
+          <th>Nombre de cliente</th>
+          <th data-priority="1">Fecha y hora de recogida</th>
+          <th>Dirección de recogida</th>
+          <th>Entregas</th>
+          <th data-priority="1">Estado</th>
+          <th >Acción</th>
+
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let delivery of deliveries"  >
+          <td class="id">{{delivery.idDelivery}}</td>
+
+          <td>{{delivery.nomCliente}}</td>
+          <td>{{delivery.fechaReserva}}</td>
+          <td class="fId">{{delivery.dirRecogida}}</td>
+          <td>{{delivery.entregas}}</td>
+          <td >{{delivery.estado.descEstado}}</td>
+          <td>
+            <a [routerLink]="['/xplore-ver', delivery.idDelivery]" style="color: #0071A2">
+              <i class="fa fa-eye"></i> Ver Detalle
+            </a>
+          </td>
+
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+  <!-- CONTAINER BODY END -->
+</div>
+<!-- CONTAINER END -->

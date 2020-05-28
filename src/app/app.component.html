@@ -1,70 +1,137 @@
-<div class="wrapper ">
-
-    <!--sidebar start -->
-    <nav class="bg-light" id="sidebar">
-
-      <div class="sidebar-header xplore-bg">
-        <a class="navbar-brand text-white" href="https://xplorerentacar.com">
-          Xplore Delivery
+<div class="wrapper">
+  <!-- Sidebar  -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <h3>Xplore Delivery</h3>
+    </div>
+    <!-- ONLY XPLORE USER -->
+    <ul class="list-unstyled components" *ngIf="currentUser && currentUser.idPerfil === '1'">
+      <li>
+        <a class="list-group-item dropdown-toggle" (click)="showLogout()">
+          <i class="fa fa-user"></i>
+          {{currentUser.nomUsuario}}
         </a>
 
-      </div>
-      <ul class="list-unstyled components" *ngIf="currentUser">
-        <li>
-          <a class="list-group-item dropdown-toggle" (click)="showLogout()">
-            <i class="fa fa-user"></i>
-            {{currentUser.nomUsuario}}
-          </a>
+      </li>
+      <li>
+        <a href="javascript:void(0)" id="logout" class="list-group-item d-none" (click)="logout()">
+          <i class="fa fa-power-off ml-3"></i> Cerrar Sesión
+        </a>
+      </li>
+      <li>
+        <a (click)="goHome()" class="list-group-item">
+          <i class="fa fa-home"></i>
+          <span> Deliveries del día</span> </a>
+      </li>
+      <li>
+        <a (click)="showAllRequest()" class="list-group-item">
+          <i class="fa fa-list-alt"></i> Todos los Deliveries
+        </a>
+      </li>
 
-        </li>
-        <li>
-          <a href="#" id="logout" class="list-group-item d-none " (click)="logout()">
-            <i class="fa fa-power-off ml-3"></i> Cerrar Sesión
-          </a>
-        </li>
-        <li>
-          <a (click)="goHome()" class="list-group-item">
-            <i class="fa fa-home"></i>
-            <span> Inicio</span> </a>
-        </li>
-        <li>
-          <a (click)="showAllRequest()" class="list-group-item">
-            <i class="fa fa-list-alt"></i> Todas las Reservaciones
-          </a>
-        </li>
-        <!--<li>
-          <a [routerLink]="['/']" class="list-group-item">
-            <i class="fa fa-calendar-day"></i> Reservaciones del día
-          </a>
-        </li>-->
-        <li>
-          <a (click)="showTomorrow()" class="list-group-item">
-            <i class="fa fa-calendar-alt"></i> Reservaciones para mañana
-          </a>
-        </li>
+      <li>
+        <a  (click)="showTomorrowRequest()" class="list-group-item">
+          <i class="fa fa-calendar-alt"></i> Deliveries para mañana
+        </a>
+      </li>
 
-      </ul>
+      <li>
+        <a (click)="showConfSubMenu()"  class="list-group-item dropdown-toggle" >
+          <i class="fa fa-cog"></i> Configuraciones
+        </a>
+      </li>
 
-    </nav>
-    <!--sidebar end -->
+      <li>
+        <a  (click)="showCategoriesParametrization()" class="list-group-item d-none confSubMenu">
+          <i class="fa fa-list ml-3"></i> Categorías
+        </a>
+      </li>
 
+      <li>
+        <a  (click)="showRatesPArametrization()" class="list-group-item d-none confSubMenu">
+          <i class="fa fa-dollar-sign ml-3"></i> Tarifas
+        </a>
+      </li>
+
+
+    </ul>
+    <!-- /ONLY XPLORE USER -->
+
+    <!-- ONLY CUSTOMER USER -->
+    <ul class="list-unstyled components" *ngIf="currentUser && currentUser.idPerfil === '8'">
+      <li>
+        <a class="list-group-item dropdown-toggle" (click)="showLogoutCustomer()">
+          <i class="fa fa-user"></i>
+          {{currentUser.nomUsuario}}
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" id="logoutCustomer" class="list-group-item d-none" (click)="logout()">
+          <i class="fa fa-power-off ml-3"></i> Cerrar Sesión
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="addDeliveryCustomer()" class="list-group-item">
+          <i class="fa fa-plus"></i> Agregar Delivery
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showCustomerTodayOrders()" class="list-group-item">
+          <i class="fa fa-calendar-check"></i>
+          <span> Mis Pedidos del día</span> </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showCustomerAllOrders()" class="list-group-item">
+          <i class="fa fa-list-alt"></i> Todos Mis Pedidos
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showCustomerTodayDeliveries()" class="list-group-item">
+          <i class="fa fa-calendar-check"></i> Mis Reservas del día
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showAllCustomersRequest()" class="list-group-item">
+          <i class="fa fa-list-alt"></i> Todas Mis Reservas
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showCustomerBranchOffices()" class="list-group-item">
+          <i class="fa fa-store-alt"></i> Mis Direcciones
+        </a>
+      </li>
+
+    </ul>
+    <!-- /ONLY CUSTOMER USER -->
+  </nav>
+
+  <!-- Page Content  -->
   <div id="content">
-
-      <nav  class="navbar navbar-dark navbar-expand-lg xplore-bg">
-        <div  class="container-fluid">
-          <div  class="navbar-header">
-            <button (click)="toggleSidebar()" type="button" class="btn btn-sm xplore-bg border">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <a  href="https://xplorerentacar.com" class="navbar-brand">
-              <img alt="image" height="66px" src="assets/img/logo-xplore.png"></a>
-          </div>
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark xplore-bg">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button (click)="toggleSidebar()" type="button" class="btn d-lg-none btn-sm xplore-bg border ">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <a [routerLink]="['/']">
+            <img alt="image" height="50px" class="d-inline-block" src="assets/img/logo-xplore.png"></a>
         </div>
-      </nav>
-
-    <div class="container-fluid mt-5 mb-5">
+      </div>
+    </nav>
+    <div class="container-fluid" id="main">
       <router-outlet></router-outlet>
     </div>
-    <p class="text-center">© Copyright 2020 <strong>ALCARSA - Xplore Rent a Car</strong> | Todos los derechos reservados</p>
+
+    <footer class="mt-5 ">
+      <p class="text-center">© Copyright 2020 <strong>ALCARSA - Xplore Rent a Car</strong> | Todos los derechos
+        reservados</p>
+    </footer>
   </div>
 </div>

@@ -14,7 +14,7 @@ export class AuthService {
   public currentUser: Observable<User>;
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUserManagement')));
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -27,12 +27,13 @@ export class AuthService {
   }
 
   logout() {
-    return this.http.get(`${environment.apiUrl}/auth/logout`)
+    return this.http.post(`${environment.apiUrl}`,{function: 'logout', tkn: this.currentUserValue.access_token})
       .pipe(map(data => {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentUserManagement');
         this.currentUserSubject.next(null);
       }));
   }
+
 
   setCurrUser(user){
     this.currentUserSubject.next(user);

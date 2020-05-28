@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {map} from "rxjs/operators";
 import {Response} from "../models/response";
@@ -13,42 +13,77 @@ export class DeliveriesService {
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) { }
-
-  getDeliveries(){
-    return this.http.get<Response>(`${environment.apiUrl}`, {params:{
-      function: 'getDeliveries'
-    }})
+  ) {
   }
 
-  getById(id){
-    return this.http.get<Response>(`${environment.apiUrl}`, {params:{
-        function: 'getDeliveryById', id
-      }})
+  getDeliveries() {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getDeliveries',
+      tkn: this.authService.currentUserValue.access_token
+    })
   }
 
-  assignDelivery(id, form){
-    return this.http.post<Response>(`${environment.apiUrl}`,
+  getById(id) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getDeliveryById',
+      id: id,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  assignDelivery(id, form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
       {
-        function: 'assignDelivery', idDelivery: id, assignForm: form, tkn: this.authService.currentUserValue.access_token
+        function: 'assignDelivery',
+        idDelivery: id,
+        assignForm: form,
+        tkn: this.authService.currentUserValue.access_token
       })
   }
 
-  finishDelivery(id){
-    return this.http.post<Response>(`${environment.apiUrl}`,
+  finishDelivery(id) {
+    return this.http.post<any>(`${environment.apiUrl}`,
       {
-        function: 'finishDelivery', idDelivery: id, tkn: this.authService.currentUserValue.access_token
+        function: 'finishDelivery',
+        idDelivery: id,
+        tkn: this.authService.currentUserValue.access_token
       })
   }
 
-  changeState(id, ste){
-    return this.http.post<Response>(`${environment.apiUrl}`,
+  changeState(id, ste) {
+    return this.http.post<any>(`${environment.apiUrl}`,
       {
-        function: 'changeState', idDelivery: id, idEstado: ste,tkn: this.authService.currentUserValue.access_token
+        function: 'changeState',
+        idDelivery: id,
+        idEstado: ste,
+        tkn: this.authService.currentUserValue.access_token
       })
   }
 
-  getStates(){
-    return this.http.get<Response>(`${environment.apiUrl}`, {params: {function: 'listStates'}})
+  getStates() {
+    return this.http.get<any>(`${environment.apiUrl}`, {params: {function: 'listStates'}})
+  }
+
+  //CUSTOMER'S SERVICES
+  getCustomerDeliveries() {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getCustomerDeliveries', tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getCustomerOrders() {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getCustomerOrders', tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  newCustomerDelivery(deliveryForm, orders, pago) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      'function': 'insertCustomerDelivery',
+      deliveryForm,
+      orders,
+      'pago': pago,
+      tkn: this.authService.currentUserValue.access_token
+    });
   }
 }

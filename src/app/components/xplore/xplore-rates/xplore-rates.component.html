@@ -1,0 +1,204 @@
+<!-- CARD START -->
+<div @fade class="card shadow">
+  <div class="card-header">
+    <a [routerLink]="['/']"> <i class="fa fa-arrow-circle-left m-r-xs"></i></a>
+    <h3 class="d-inline">Parametrización de Tarifas</h3>
+  </div>
+  <!-- CARD BODY START -->
+  <div class="card-body p-0">
+    <div class="row" *ngIf="loaders.loadingData">
+      <div class="col text-center">
+        <img src="/GestionesDelivery/assets/img/loading.svg" width="5%" alt="loading">
+        <p>Cargando información...</p>
+      </div>
+    </div>
+    <!-- DATATABLE START -->
+    <!-- CONTAINER START -->
+    <div class="ibox">
+      <div class="ibox-title ">
+        <h5>Listado de Categorías</h5>
+      </div>
+      <!-- CONTAINER BODY START -->
+      <div class="ibox-content">
+        <div class="table-responsive">
+          <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                 class="display" style="width:100%">
+            <thead>
+            <tr>
+              <th>N°</th>
+              <th>Categoría</th>
+              <th>Entregas Mínimas</th>
+              <th>Entregas Máximas</th>
+              <th>Monto</th>
+              <th data-priority="1">Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr *ngFor="let rate of rates">
+              <td>{{rate.idTarifaDelivery}}</td>
+              <td>{{rate.category.descTipoVehiculo}}</td>
+              <td>{{rate.entregasMinimas}}</td>
+              <td>{{rate.entregasMaximas}}</td>
+              <td>{{rate.precio}}</td>
+              <td>
+                <a (click)="showEditForm(rate.idTarifaDelivery)" style="color: #0071A2">
+                  <i class="fa fa-edit"></i> Editar
+                </a>
+              </td>
+
+            </tr>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+      <!-- CONTAINER BODY END -->
+    </div>
+    <!-- CONTAINER END -->
+
+    <!-- DATATABLE END -->
+  </div>
+  <!-- CARD BODY END -->
+</div>
+<!-- CARD END -->
+
+<!-- INICIO DE MODAL -->
+<div id="succsModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title text-success">Operación completada</h3>
+      </div>
+      <div class="modal-body">
+        <p>{{this.exitMsg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="reloadData()" class="btn btn-sm btn-rounded btn-outline-primary"
+                data-dismiss="modal">Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN DE MODAL -->
+
+<!-- INICIO DE MODAL -->
+<div id="edTarModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Editar Tarifa</h3>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="edRateForm">
+
+          <div class="form-group">
+            <label class="col-form-label" for="idCategoria">Categoría:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-check-circle"></i>
+                </span>
+              </div>
+              <select class="form-control" id="idCategoria" formControlName="idCategoria"
+                      [class.is-invalid]="edRateForm.get('idCategoria').invalid && edRateForm.get('idCategoria').touched"
+                      required>
+                <option [value]="null">- Seleccione una categoría -</option>
+                <option *ngFor="let category of categories"
+                        [value]="category.idTipoVehiculo">{{category.descTipoVehiculo}}</option>
+              </select>
+            </div>
+            <small
+              *ngIf="edRateForm.get('idCategoria').errors?.required && edRateForm.get('idCategoria').touched"
+              class="text-danger">*Este campo es obligatorio</small>
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label" for="entregasMaximas">Entregas máximas:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-sort-up"></i>
+                </span>
+              </div>
+              <input class="form-control" id="entregasMaximas" type="number" formControlName="entregasMaximas"
+                     [class.is-invalid]="edRateForm.get('entregasMaximas').invalid && edRateForm.get('entregasMaximas').touched"
+                     required>
+            </div>
+            <small
+              *ngIf="edRateForm.get('entregasMaximas').errors?.required && edRateForm.get('entregasMaximas').touched"
+              class="text-danger">*Este campo es obligatorio</small>
+
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label" for="entregasMinimas">Entregas Mínimas:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-sort-down"></i>
+                </span>
+              </div>
+              <input class="form-control" id="entregasMinimas" type="number" formControlName="entregasMinimas"
+                     [class.is-invalid]="edRateForm.get('entregasMinimas').invalid && edRateForm.get('entregasMinimas').touched"
+                     required>
+            </div>
+            <small
+              *ngIf="edRateForm.get('entregasMinimas').errors?.required && edRateForm.get('entregasMinimas').touched"
+              class="text-danger">*Este campo es obligatorio</small>
+
+          </div>
+
+          <div class="form-group">
+            <label class="col-form-label" for="precio">Monto:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-dollar-sign"></i>
+                </span>
+              </div>
+              <input class="form-control" id="precio" type="text" formControlName="precio"
+                     [class.is-invalid]="edRateForm.get('precio').invalid && edRateForm.get('precio').touched"
+                     required>
+            </div>
+            <small
+              *ngIf="edRateForm.get('precio').errors?.required && edRateForm.get('precio').touched"
+              class="text-danger">*Este campo es obligatorio</small>
+
+          </div>
+
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="submitEditRat()" class="btn btn-sm btn-rounded btn-outline-primary"
+                data-dismiss="modal">Confimar
+        </button>
+        <button type="button" class="btn btn-sm btn-rounded btn-outline-secondary" data-dismiss="modal">Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN DE MODAL -->
+
+
+<!-- INICIO DE MODAL -->
+<div id="errModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title text-danger">Ha ocurrido un error</h3>
+      </div>
+      <div class="modal-body">
+        <p>{{errMsg}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-sm btn-rounded btn-outline-danger" data-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN DE MODAL -->
+

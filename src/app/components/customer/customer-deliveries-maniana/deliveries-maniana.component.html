@@ -1,0 +1,25 @@
+<!--CARD START -->
+<div @fade class="card shadow-sm">
+  <div class="card-header">
+    <h3>Deliveries para mañana</h3>
+  </div>
+  <!-- CARD BODY START -->
+  <div class="card-body p-0">
+
+    <div class="row" *ngIf="loaders.loadingData">
+      <div class="col text-center">
+        <img src="/GestionesDelivery/assets/img/loading.svg" width="5%" alt="loading">
+        <p>Cargando información...</p>
+      </div>
+    </div>
+    <!-- DATATABLE START -->
+    <app-customer-datatable [deliveries]="deliveries" [dtTrigger]="dtTrigger"></app-customer-datatable>
+    <!-- DATATABLE END -->
+  </div>
+  <!--CARD BODY END -->
+
+</div>
+<!-- CARD END -->
+
+
+
