@@ -456,5 +456,205 @@ if (isset($_GET['function'])) {
         
         $output = curl_exec($handle);
         curl_close($handle);
+    }else if ($_POST['function'] == 'getCustomers') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/customers/list";
+        //$url = "http://localhost/XploreDeliveryAPI/api/customers/list";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'newCustomer') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/customers/new";
+        //$url = "http://localhost/XploreDeliveryAPI/api/customers/new";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'newBranch') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/customers/newBranch";
+        //$url = "http://localhost/XploreDeliveryAPI/api/customers/newBranch";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'changeCustomerPassword') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/customers/changePassword";
+        //$url = "http://localhost/XploreDeliveryAPI/api/customers/changePassword";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'updateBranch') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/customers/updateBranch";
+        //$url = "http://localhost/XploreDeliveryAPI/api/customers/updateBranch";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'deleteBranch') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/customers/deleteBranch";
+        //$url = "http://localhost/XploreDeliveryAPI/api/customers/deleteBranch";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'getTodayOrders') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/deliveries/todayOrders";
+        //$url = "http://localhost/XploreDeliveryAPI/api/deliveries/todayOrders";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'getOrders') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/deliveries/getOrders";
+        //$url = "http://localhost/XploreDeliveryAPI/api/deliveries/allOrders";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'createCategory') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/categories/create";
+        //$url = "http://localhost/XploreDeliveryAPI/api/categories/create";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'createRate') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreDeliveryAPI/api/rates/create";
+        //$url = "http://localhost/XploreDeliveryAPI/api/rates/create";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+        
+        $output = curl_exec($handle);
+        curl_close($handle);
     }
 }

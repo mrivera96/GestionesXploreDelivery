@@ -1,5 +1,5 @@
 export interface Category {
-  idTipoVehiculo?: number
-  descTipoVehiculo?: string
-  delivery?: boolean
+  idCategoria?: number
+  descCategoria?: string
+  isActivo?: boolean
 }

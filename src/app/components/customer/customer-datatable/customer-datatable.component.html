@@ -11,9 +11,10 @@
         <thead>
         <tr>
           <th data-priority="1">N°</th>
-          <th data-priority="1">Fecha y hora de recogida</th>
+          <th data-order="2020-06-01 16:30" data-priority="1">Fecha y hora de recogida</th>
           <th>Dirección de recogida</th>
           <th>Entregas</th>
+          <th>Categoría</th>
           <th data-priority="1">Total</th>
           <th>Estado</th>
           <th>Acción</th>
@@ -23,10 +24,11 @@
 
         <tr *ngFor="let delivery of deliveries" >
           <td class="id">{{delivery.idDelivery}}</td>
-          <td>{{delivery.fechaReserva}}</td>
+          <td>{{delivery.fechaReserva }}</td>
           <td class="fId">{{delivery.dirRecogida}}</td>
           <td>{{delivery.entregas}}</td>
-          <td>{{delivery.total}}</td>
+          <td>{{delivery.category.descCategoria}}</td>
+          <td>L. {{delivery.total}}</td>
           <td>{{delivery.estado.descEstado}}</td>
           <td>
             <a [routerLink]="['/cliente-detalle-delivery', delivery.idDelivery]" style="color: #0071A2">
@@ -36,6 +38,26 @@
 
         </tr>
         </tbody>
+        <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>
+            <select class="form-control-sm" name="search-last-name">
+              <option value="">- Filtrar por Estado -</option>
+              <option value="Reserva Asignada">Reserva Asignada</option>
+              <option value="Solicitud de Reserva">Solicitud de Reserva</option>
+              <option value="Reserva Asignada Parcial">Reserva Asignada Parcial</option>
+              <option value="Reserva Finalizada">Reserva Finalizada</option>
+            </select>
+          </th>
+          <th></th>
+        </tr>
+        </tfoot>
 
       </table>
     </div>

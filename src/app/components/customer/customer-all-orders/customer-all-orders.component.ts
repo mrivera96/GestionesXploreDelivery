@@ -3,7 +3,7 @@ import {Subject} from "rxjs";
 import {Order} from "../../../models/order";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {animate, style, transition, trigger} from "@angular/animations";
-
+declare var $: any
 @Component({
   selector: 'app-customer-all-orders',
   templateUrl: './customer-all-orders.component.html',
@@ -26,7 +26,7 @@ export class CustomerAllOrdersComponent implements OnInit {
   dtOptions
 
   orders: Order[]
-
+  msgError = ''
 
   constructor(
     private deliveriesService: DeliveriesService,
@@ -66,8 +66,11 @@ export class CustomerAllOrdersComponent implements OnInit {
       this.orders = response.data.todos
       this.dtTrigger.next()
       this.loaders.loadingData = false
+    }, error => {
+      this.loaders.loadingData = false
+      this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
     })
-
   }
 
 

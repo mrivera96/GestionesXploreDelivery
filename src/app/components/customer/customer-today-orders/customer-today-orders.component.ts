@@ -3,7 +3,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {Subject} from "rxjs";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import { Order } from "../../../models/order";
-
+declare var $: any
 @Component({
   selector: 'app-customer-today-orders',
   templateUrl: './customer-today-orders.component.html',
@@ -25,6 +25,7 @@ export class CustomerTodayOrdersComponent implements OnInit {
   dtOptions
 
   orders: Order[]
+  msgError = ''
 
 
   constructor(
@@ -38,7 +39,7 @@ export class CustomerTodayOrdersComponent implements OnInit {
       serverSide: false,
       processing: true,
       info: true,
-      order: [1, 'asc'],
+      order: [0, 'asc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -65,6 +66,10 @@ export class CustomerTodayOrdersComponent implements OnInit {
       this.orders = response.data.pedidosDia
       this.dtTrigger.next()
       this.loaders.loadingData = false
+    }, error => {
+      this.loaders.loadingData = false
+      this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
     })
 
   }

@@ -4,8 +4,7 @@ import {Subject} from "rxjs";
 import {AuthService} from "../../../services/auth.service";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {Delivery} from "../../../models/delivery";
-import {AppComponent} from "../../../app.component";
-import {ActivatedRoute} from "@angular/router";
+declare var $: any
 
 @Component({
   selector: 'app-home-customer',
@@ -26,6 +25,8 @@ export class HomeCustomerComponent implements OnInit {
     'loadingData': false
   }
   dtTrigger: Subject<any> = new Subject()
+  msgError = ''
+
 
   constructor(private authService: AuthService,
               private deliveriesService: DeliveriesService,
@@ -45,6 +46,10 @@ export class HomeCustomerComponent implements OnInit {
       this.deliveries = response.data.deliveriesDia
       this.dtTrigger.next()
       this.loaders.loadingData = false
+    }, error => {
+      this.loaders.loadingData = false
+      this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
     })
 
 

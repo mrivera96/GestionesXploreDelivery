@@ -24,4 +24,12 @@ export class RatesService {
       tkn: this.authService.currentUserValue.access_token
     })
   }
+
+  createRate(form){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'createRate',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
 }

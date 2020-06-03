@@ -1,19 +1,20 @@
 <!--CARD START -->
 <div @fade class="card shadow-sm">
-  <div class="card-header">
-    <a [routerLink]="['/']"> <i class="fa fa-arrow-circle-left m-r-xs"></i></a>
-    <h3 class="d-inline">Nuevo Delivery</h3>
-  </div>
+
   <!-- CARD BODY START -->
   <div class="card-body">
 
     <!--HEADER BLOCK START-->
-    <div class="card-block">
-      <p class="card-title"><strong *ngIf="!loaders.loadingSubmit">Ingrese los datos del Delivery en el siguiente
-        formulario</strong>
-        <strong *ngIf="loaders.loadingSubmit">Espere mientras procesamos su solicitud, no cierre esta ventana.</strong>
-      </p>
-      <hr>
+    <div class="row">
+      <div class="col">
+        <p class="card-title"><strong *ngIf="!loaders.loadingSubmit">Ingrese los datos del Delivery en el siguiente
+          formulario</strong>
+          <strong *ngIf="loaders.loadingSubmit">Espere mientras procesamos su solicitud, no cierre esta
+            ventana.</strong>
+        </p>
+        <hr>
+      </div>
+
       <div class="row" *ngIf="loaders.loadingSubmit">
         <div class="col text-center">
           <img src="/GestionesDelivery/assets/img/loading.svg" width="35%" alt="loading">
@@ -24,341 +25,343 @@
     <!--HEADER BLOCK END-->
 
     <!--DELIVERY FORM BLOCK START-->
-    <div class="card-block" *ngIf="!loaders.loadingSubmit">
+    <div class="row" *ngIf="!loaders.loadingSubmit">
       <!--FORM START-->
-      <form [formGroup]="deliveryForm" role="form" (ngSubmit)="onFormSubmit()">
-        <!--DELIVERY HEADER GROUP START-->
-        <div class="form-group" formGroupName="deliveryHeader">
-          <div class="form-row">
-            <div class="col-md-4">
-              <label for="fecha">Fecha de recogida:</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
+      <div class="col">
+        <form [formGroup]="deliveryForm" role="form" (ngSubmit)="onFormSubmit()">
+          <!--DELIVERY HEADER GROUP START-->
+          <div class="form-group" formGroupName="deliveryHeader">
+            <div class="form-row">
+              <div class="col-sm">
+                <label class="col-form-label" for="fecha">Fecha de recogida:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-calendar-alt"></i>
                 </span>
+                  </div>
+                  <input formControlName="fecha" type="date" class="form-control" id="fecha" required>
                 </div>
-                <input formControlName="fecha" type="date" class="form-control" id="fecha" required>
               </div>
-            </div>
 
-            <div class="col-md-4">
-              <label for="hora">Hora de recogida:</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
+              <div class="col-sm">
+                <label class="col-form-label" for="hora">Hora de recogida:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-calendar-alt"></i>
                 </span>
+                  </div>
+                  <input formControlName="hora" type="time" class="form-control" id="hora" required>
                 </div>
-                <input formControlName="hora" type="time" class="form-control" id="hora" required>
               </div>
-            </div>
 
-            <div class="col-md-4">
-              <label for="prevDirRecogida">Punto de recogida:</label>
+              <div class="col-sm">
+                <label class="col-form-label" for="prevDirRecogida">Punto de recogida:</label>
 
-              <div class="input-group">
-                <div class="input-group-prepend">
+                <div class="input-group">
+                  <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-map-marker-alt"></i>
                 </span>
+                  </div>
+
+                  <select class="form-control" id="prevDirRecogida" [(ngModel)]="locationOption" required
+                          (change)="calculatedistanceBefore()" [ngModelOptions]="{standalone: true}">
+                    <option [value]="1">Ubicación Actual</option>
+                    <option [value]="2">Ingresar Ubicación</option>
+                    <option [value]="3">Dirección Existente</option>
+                  </select>
                 </div>
 
-                <select class="form-control" id="prevDirRecogida" [(ngModel)]="locationOption" required
-                        (change)="calculatedistanceBefore()" [ngModelOptions]="{standalone: true}">
-                  <option [value]="1">Ubicación Actual</option>
-                  <option [value]="2">Seleccionar Ubicación</option>
-                  <option [value]="3">Dirección Existente</option>
-                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-md-6" *ngIf="locationOption == 2">
+                <label class="col-form-label" for="inputdirRecogida">Direccion de recogida:</label>
+
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-map-marker-alt"></i>
+                </span>
+                  </div>
+
+                  <input class="form-control" (input)="searchOrigin($event)" autocomplete="off"
+                         id="inputdirRecogida" required formControlName="dirRecogida"
+                         [class.is-invalid]="deliveryForm.get('deliveryHeader').get('dirRecogida').invalid && deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
+                         placeholder="¿Dónde recogeremos tu pedido?">
+                </div>
+                <div class="suggestions" *ngIf="placesOrigin?.length">
+                  <p *ngFor="let s of placesOrigin" (click)="setOrigin(s.text)">{{s.text}}</p>
+                </div>
+
+                <small
+                  *ngIf="deliveryForm.get('deliveryHeader').get('dirRecogida').errors?.required&& deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
+                  class="text-danger">*Este campo es obligatorio</small>
               </div>
 
+              <div class="col-md-6" *ngIf="locationOption == 3">
+                <label class="col-form-label" for="dirRecogida">Punto de recogida:</label>
+
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-map-marker-alt"></i>
+                </span>
+                  </div>
+
+                  <select class="form-control" id="dirRecogida" required formControlName="dirRecogida"
+                          (change)="calculatedistanceBefore()"
+                          [class.is-invalid]="deliveryForm.get('deliveryHeader').get('dirRecogida').invalid && deliveryForm.get('deliveryHeader').get('dirRecogida').touched">
+                    <option [value]="null">- Seleccione un punto de recogida -</option>
+                    <option *ngFor="let branch of myBranchOffices"
+                            value="{{branch.direccion}}">{{branch.nomSucursal}}</option>
+                  </select>
+                </div>
+                <small
+                  *ngIf="deliveryForm.get('deliveryHeader').get('dirRecogida').errors?.required&& deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
+                  class="text-danger">*Este campo es obligatorio</small>
+              </div>
+
+              <div class="col-md-6">
+                <label class="col-form-label">Categoría a reservar:</label>
+                <br>
+                <div class="form-check form-check-inline" *ngFor="let category of categories; let  i = index">
+
+                  <label class="form-check-label"
+                         [ngStyle]="{'color': category.idCategoria===deliveryForm.get('deliveryHeader').get('idCategoria').value ? '#FF8C00': '#000'}">
+                    <input (change)="calculatedistanceBefore()" class="form-check-input" [id]="category.idCategoria"
+                           formControlName="idCategoria" type="radio" [value]="category.idCategoria" hidden>
+                    <i class="fa"
+                       [ngClass]="{'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3, 'fas fa-truck-pickup': category.idCategoria == 2}"></i>
+                    {{category.descCategoria}}
+                  </label>
+
+                </div>
+
+              </div>
             </div>
           </div>
 
+          <!--DELIVERY HEADER GROUP END-->
+
+          <!--ORDER ADD FORM START-->
           <div class="form-row">
-            <div class="col-md-6" *ngIf="locationOption == 2">
-              <label for="dirRecogida">Direccion de recogida:</label>
-
-              <div class="input-group">
-                <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-map-marker-alt"></i>
-                </span>
-                </div>
-
-                <input class="form-control" (input)="searchOrigin($event)" autocomplete="off"
-                       id="dirRecogida" required formControlName="dirRecogida"
-                       [class.is-invalid]="deliveryForm.get('deliveryHeader').get('dirRecogida').invalid && deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
-                       placeholder="Donde recogeremos tu pedido">
-              </div>
-              <div class="suggestions" *ngIf="placesOrigin?.length">
-                <p *ngFor="let s of placesOrigin" (click)="setOrigin(s.text)">{{s.text}}</p>
-              </div>
-
-              <small
-                *ngIf="deliveryForm.get('deliveryHeader').get('dirRecogida').errors?.required&& deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
-                class="text-danger">*Este campo es obligatorio</small>
-            </div>
-
-            <div class="col-md-6" *ngIf="locationOption == 3">
-              <label for="dirRecogida">Punto de recogida:</label>
-
-              <div class="input-group">
-                <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-map-marker-alt"></i>
-                </span>
-                </div>
-
-                <select class="form-control" id="dirRecogida" required formControlName="dirRecogida"
-                        (change)="calculatedistanceBefore()"
-                        [class.is-invalid]="deliveryForm.get('deliveryHeader').get('dirRecogida').invalid && deliveryForm.get('deliveryHeader').get('dirRecogida').touched">
-                  <option [value]="null">- Seleccione un punto de recogida -</option>
-                  <option *ngFor="let branch of myBranchOffices"
-                          value="{{branch.direccion}}">{{branch.nomSucursal}}</option>
-                </select>
-              </div>
-              <small
-                *ngIf="deliveryForm.get('deliveryHeader').get('dirRecogida').errors?.required&& deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
-                class="text-danger">*Este campo es obligatorio</small>
-            </div>
-
-            <div class="col-md-6">
-              <label class="col-form-label">Categoría a reservar:</label>
-              <br>
-              <div class="form-check form-check-inline" *ngFor="let category of categories; let  i = index">
-
-                <label class="form-check-label"
-                       [ngStyle]="{'color': category.idTipoVehiculo===deliveryForm.get('deliveryHeader').get('idCategoria').value ? '#FF8C00': '#000'}">
-                  <input (change)="calculatedistanceBefore()" class="form-check-input" [id]="category.idTipoVehiculo"
-                         formControlName="idCategoria" type="radio" [value]="category.idTipoVehiculo" hidden>
-                  <i class="fa"
-                     [ngClass]="{'fa-car': category.idTipoVehiculo == 1, 'fa-bus': category.idTipoVehiculo == 6, 'fas fa-truck-pickup': category.idTipoVehiculo == 3}"></i>
-                  {{category.descTipoVehiculo}}
-                </label>
-
-              </div>
-
+            <div class="col">
+              <p class="card-title"><strong>Detalles de envíos:</strong></p>
+              <hr>
             </div>
           </div>
-        </div>
 
-        <!--DELIVERY HEADER GROUP END-->
-
-        <br>
-        <!--ORDER ADD FORM START-->
-        <div class="form-row">
-          <div class="col">
-            <p class="card-title"><strong>Detalles de entregas / envíos:</strong></p>
-            <hr>
-          </div>
-        </div>
-
-        <div class="form-group" formGroupName="orders">
-          <div class="form-row">
-            <div class="col-md-6">
-              <label class="col-form-label" for="nFactura">N° Factura o detalle de envío:</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
+          <div class="form-group" formGroupName="orders">
+            <div class="form-row">
+              <div class="col-md-6">
+                <label class="col-form-label" for="nFactura">Detalle de envío:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-money-bill"></i>
                 </span>
+                  </div>
+                  <input type="text" formControlName="nFactura" class="form-control" id="nFactura" required
+                         [class.is-invalid]="deliveryForm.get('orders').get('nFactura').invalid && deliveryForm.get('orders').get('nFactura').touched"
+                         placeholder="¿Qué deseas enviar?">
                 </div>
-                <input type="text" formControlName="nFactura" class="form-control" id="nFactura" required
-                       [class.is-invalid]="deliveryForm.get('orders').get('nFactura').invalid && deliveryForm.get('orders').get('nFactura').touched"
-                       placeholder="Detalle de envío">
+                <small
+                  *ngIf="deliveryForm.get('orders').get('nFactura').errors?.required && deliveryForm.get('orders').get('nFactura').touched"
+                  class="text-danger">*Este campo es obligatorio</small>
               </div>
-              <small
-                *ngIf="deliveryForm.get('orders').get('nFactura').errors?.required && deliveryForm.get('orders').get('nFactura').touched"
-                class="text-danger">*Este campo es obligatorio</small>
-            </div>
 
-            <div class="col-md-6">
-              <label class="col-form-label" for="nomDestinatario">Nombre del destinatario:</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
+              <div class="col-md-6">
+                <label class="col-form-label" for="nomDestinatario">Nombre del destinatario:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-user"></i>
                 </span>
+                  </div>
+                  <input type="text" class="form-control" formControlName="nomDestinatario" id="nomDestinatario"
+                         required
+                         placeholder="¿Quién recibirá el pedido?"
+                         [class.is-invalid]="deliveryForm.get('orders').get('nomDestinatario').invalid && deliveryForm.get('orders').get('nomDestinatario').touched">
                 </div>
-                <input type="text" class="form-control" formControlName="nomDestinatario" id="nomDestinatario" required
-                       placeholder="Quien recibirá el pedido"
-                       [class.is-invalid]="deliveryForm.get('orders').get('nomDestinatario').invalid && deliveryForm.get('orders').get('nomDestinatario').touched">
+                <small
+                  *ngIf="deliveryForm.get('orders').get('nomDestinatario').errors?.required && deliveryForm.get('orders').get('nomDestinatario').touched"
+                  class="text-danger">*Este campo es obligatorio</small>
               </div>
-              <small
-                *ngIf="deliveryForm.get('orders').get('nomDestinatario').errors?.required && deliveryForm.get('orders').get('nomDestinatario').touched"
-                class="text-danger">*Este campo es obligatorio</small>
+
             </div>
 
-          </div>
+            <div class="form-row">
 
-          <div class="form-row">
-
-            <div class="col-md-6">
-              <label class="col-form-label" for="numCel">Número celular del destinatario:</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
+              <div class="col-md-6">
+                <label class="col-form-label" for="numCel">Número celular del destinatario:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-phone"></i>
                 </span>
+                  </div>
+                  <input type="tel" class="form-control" id="numCel" formControlName="numCel" required minlength="9"
+                         maxlength="9" appPhoneMask
+                         [class.is-invalid]="deliveryForm.get('orders').get('numCel').invalid && deliveryForm.get('orders').get('numCel').touched"
+                         placeholder="Número celular sin espacios">
+
                 </div>
-                <input type="tel" class="form-control" id="numCel" formControlName="numCel" required minlength="9"
-                       maxlength="9" appPhoneMask
-                       [class.is-invalid]="deliveryForm.get('orders').get('numCel').invalid && deliveryForm.get('orders').get('numCel').touched"
-                       placeholder="Número celular sin espacios">
+                <small
+                  *ngIf="deliveryForm.get('orders').get('numCel').errors?.maxlength && deliveryForm.get('orders').get('numCel').touched"
+                  class="text-danger">*Por favor ingresa un número válido</small>
+                <small
+                  *ngIf="deliveryForm.get('orders').get('numCel').errors?.minlength && deliveryForm.get('orders').get('numCel').touched"
+                  class="text-danger">*Por favor ingresa un número válido</small>
+                <small
+                  *ngIf="deliveryForm.get('orders').get('numCel').errors?.required && deliveryForm.get('orders').get('numCel').touched"
+                  class="text-danger">*Este campo es obligatorio</small>
 
               </div>
-              <small
-                *ngIf="deliveryForm.get('orders').get('numCel').errors?.maxlength && deliveryForm.get('orders').get('numCel').touched"
-                class="text-danger">*Por favor ingresa un número válido</small>
-              <small
-                *ngIf="deliveryForm.get('orders').get('numCel').errors?.minlength && deliveryForm.get('orders').get('numCel').touched"
-                class="text-danger">*Por favor ingresa un número válido</small>
-              <small
-                *ngIf="deliveryForm.get('orders').get('numCel').errors?.required && deliveryForm.get('orders').get('numCel').touched"
-                class="text-danger">*Este campo es obligatorio</small>
 
-            </div>
-
-            <div class="col-md-6">
-              <label class="col-form-label" for="direccion">Dirección del destinatario:</label>
-              <div class="input-group">
-                <div class="input-group-prepend">
+              <div class="col-md-6">
+                <label class="col-form-label" for="direccion">Punto de entrega:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-map-marker-alt"></i>
                 </span>
+                  </div>
+                  <input type="text" (input)="searchDestination($event)" autocomplete="off"
+                         class="form-control" formControlName="direccion" id="direccion" required
+                         [class.is-invalid]="deliveryForm.get('orders').get('direccion').invalid && deliveryForm.get('orders').get('direccion').touched"
+                         placeholder="¿Dónde entregaremos tu pedido?">
                 </div>
-                <input type="text" (input)="searchDestination($event)" autocomplete="off"
-                       class="form-control" formControlName="direccion" id="direccion" required
-                       [class.is-invalid]="deliveryForm.get('orders').get('direccion').invalid && deliveryForm.get('orders').get('direccion').touched"
-                       placeholder="Donde entregaremos tu pedido">
-              </div>
 
-
-              <div class="suggestions" *ngIf="placesDestination?.length">
-                <p *ngFor="let s of placesDestination" (click)="setDestination(s.text)">{{s.text}}</p>
-              </div>
-              <small
-                *ngIf="deliveryForm.get('orders').get('direccion').errors?.required && deliveryForm.get('orders').get('direccion').touched"
-                class="text-danger">*Este campo es obligatorio</small>
-              <br>
-              <div class="form-check form-check-inline">
-                <label class="form-check-label">
-                  <input class="form-check-input" type="checkbox" (change)="setCurrentLocationDest($event)"><small>Ubicación
-                  actual</small>
-                </label>
+                <div class="suggestions" *ngIf="placesDestination?.length">
+                  <p *ngFor="let s of placesDestination" (click)="setDestination(s.text)">{{s.text}}</p>
+                </div>
+                <small
+                  *ngIf="deliveryForm.get('orders').get('direccion').errors?.required && deliveryForm.get('orders').get('direccion').touched"
+                  class="text-danger">*Este campo es obligatorio</small>
+                <br>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" (change)="setCurrentLocationDest($event)"><small>Ubicación
+                    actual</small>
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
-          <br>
-          <div class="form-row text-center">
-            <div class="col">
+            <br>
+            <div class="form-row text-center">
+              <div class="col">
               <span><i class="fa fa-clock"></i> Tiempo: <span *ngIf="loaders.loadingDistBef"
                                                               class="spinner-border spinner-border-sm mr-1 "></span> {{befTime}}</span>
-            </div>
-            <div class="col">
+              </div>
+              <div class="col">
               <span><i class="fa fa-ruler"></i> Distancia: <span *ngIf="loaders.loadingDistBef"
                                                                  class="spinner-border spinner-border-sm mr-1 "></span> {{befDistance}}</span>
-            </div>
-            <div class="col">
+              </div>
+              <div class="col">
               <span><i class="fa fa-dollar-sign"></i> Costo: <span *ngIf="loaders.loadingDistBef"
                                                                    class="spinner-border spinner-border-sm mr-1 "></span> L. {{befCost}}</span>
+              </div>
+
+            </div>
+            <br>
+            <div class="form-row">
+              <div class="col-md-6">
+                <button type="button" (click)="onOrderAdd()"
+                        [disabled]="!deliveryForm.get('orders').valid || !deliveryForm.get('deliveryHeader').valid || loaders.loadingAdd"
+                        class="btn btn-sm btn-outline-success float-left">
+                  <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
+                  entrega
+                </button>
+              </div>
             </div>
 
           </div>
-          <br>
-          <div class="form-row">
-            <div class="col-md-6">
-              <button type="button" (click)="onOrderAdd()"
-                      [disabled]="!deliveryForm.get('orders').valid || !deliveryForm.get('deliveryHeader').valid || loaders.loadingAdd"
-                      class="btn btn-sm btn-outline-success float-left">
-                <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar entrega
-              </button>
-            </div>
+
+
+          <div *ngIf="agregado" class="alert alert-success" role="alert">
+            Se agregó correctamente
           </div>
 
-        </div>
+          <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
+            {{prohibitedDistanceMsg}}
+          </div>
+          <!--ORDER ADD FORM END-->
 
-
-        <div *ngIf="agregado" class="alert alert-success" role="alert">
-          Se agregó correctamente
-        </div>
-
-        <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
-          {{prohibitedDistanceMsg}}
-        </div>
-        <!--ORDER ADD FORM END-->
-
-      </form>
+        </form>
+      </div>
       <!-- FORM END -->
     </div>
     <!--DELIVERY FORM BLOCK END-->
 
     <!--CARD BLOCK ORDER TABLE START-->
-    <div class="card-block" *ngIf="!loaders.loadingSubmit">
+    <div class="row" *ngIf="!loaders.loadingSubmit">
       <!--ORDERS TABLE START-->
-      <div class="table-responsive">
-        <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-               class="display" style="width:100%">
-          <thead>
-          <tr>
-            <th scope="col">N°</th>
-            <th scope="col">Detalle de Envío</th>
-            <th scope="col">Nombre del Destinatario</th>
-            <th scope="col">Número Celular del Destinatario</th>
-            <th scope="col">Dirección del Destinatario</th>
-            <th scope="col">Distancia</th>
-            <th scope="col" data-priority="1">Acción</th>
-          </tr>
+      <div class="col">
+        <div class="table-responsive">
+          <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                 class="display table table-hover table-striped" style="width:100%">
+            <thead>
+            <tr>
+              <th scope="col">N°</th>
+              <th scope="col">Detalle de Envío</th>
+              <th scope="col">Nombre del Destinatario</th>
+              <th scope="col">Número Celular del Destinatario</th>
+              <th scope="col">Dirección del Destinatario</th>
+              <th scope="col">Distancia</th>
+              <th scope="col" data-priority="1">Acción</th>
+            </tr>
 
-          </thead>
+            </thead>
 
-          <tbody>
-          <tr *ngFor="let order of orders; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{order.nFactura}}</td>
-            <td>{{order.nomDestinatario}}</td>
-            <td>{{order.numCel}}</td>
-            <td>{{order.direccion}}</td>
-            <td>{{order.distancia}}</td>
-            <td>
-              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(order)"><i
-                class="fa fa-trash-alt"></i>
-                Quitar
-              </button>
-            </td>
-          </tr>
-          </tbody>
+            <tbody>
+            <tr *ngFor="let order of orders; let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{order.nFactura}}</td>
+              <td>{{order.nomDestinatario}}</td>
+              <td>{{order.numCel}}</td>
+              <td>{{order.direccion}}</td>
+              <td>{{order.distancia}}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(order)"><i
+                  class="fa fa-trash-alt"></i>
+                  Quitar
+                </button>
+              </td>
+            </tr>
+            </tbody>
 
-        </table>
+          </table>
+        </div>
       </div>
+
       <!--ORDERS TABLE END-->
     </div>
     <!--CARD BLOCK ORDER TABLE END-->
 
     <!--CARD BLOCK PAYMENT OPTION START-->
-    <div class="card-block" *ngIf="orders.length>0 && !loaders.loadingSubmit ">
-      <div class="row">
-        <div class="col">
-          <p class="card-title"><strong>Forma de pago:</strong></p>
-          <hr>
-        </div>
+    <div class="row" *ngIf="orders.length>0 && !loaders.loadingSubmit ">
+
+      <div class="col-12">
+        <p class="card-title"><strong>Forma de pago:</strong></p>
+        <hr>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="form-check form-check-inline">
-            <label class="form-check-label">
-              <input class="form-check-input" id="payNow" name="paymentMethod" [(ngModel)]="paymentMethod"
-                     type="radio" [value]="1">
-              <span><i class="fa fa-book"></i> Reservar <span
-                class="badge badge-primary">L. {{pago.total | number: '2.2'}}</span> </span>
-            </label>
-          </div>
 
-
+      <div class="col-12">
+        <div class="form-check form-check-inline">
+          <label class="form-check-label">
+            <input class="form-check-input" id="payNow" name="paymentMethod" [(ngModel)]="paymentMethod"
+                   type="radio" [value]="1">
+            <span><i class="fa fa-book"></i> Reservar <span
+              class="badge badge-primary">L. {{pago.total | number: '2.2'}}</span> </span>
+          </label>
         </div>
 
       </div>
+
     </div>
     <!--CARD BLOCK PAYMENT OPTION end-->
 
@@ -426,20 +429,6 @@
 
 
   <!-- INICIO DE MODAL -->
-  <div id="errModal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Ha ocurrido un error</h5>
-        </div>
-        <div class="modal-body">
-          <p>Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-rounded btn-outline-danger" data-dismiss="modal">Aceptar</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <app-error-modal [msgError]="errorMsg"></app-error-modal>
   <!-- FIN DE MODAL -->
 </div>

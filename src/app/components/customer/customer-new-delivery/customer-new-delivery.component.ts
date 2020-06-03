@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Category} from "../../../models/category";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -13,7 +13,7 @@ import {Branch} from "../../../models/branch";
 import {CategoriesService} from "../../../services/categories.service";
 import {RatesService} from "../../../services/rates.service";
 import {BranchService} from "../../../services/branch.service";
-
+import {DataTableDirective} from "angular-datatables";
 declare var $: any;
 
 @Component({
@@ -32,9 +32,9 @@ declare var $: any;
 export class CustomerNewDeliveryComponent implements OnInit {
   locationOption
   myCurrentLocation
-  markers
   dtOptions: any
   loaders = {
+    'loadingData': false,
     'loadingAdd': false,
     'loadingPay': false,
     'loadingSubmit': false,
@@ -64,15 +64,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
     'total': 0.00,
   }
   dtTrigger: Subject<any> = new Subject()
+  errorMsg = ''
 
   pagos = []
   prohibitedDistance = false
   prohibitedDistanceMsg = ''
   paymentMethod: number = 1
-
-  gcordsOrigin = false
-  gcordsDestination = false
-  orgnCL = ''
+  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
 
 
   constructor(
@@ -83,6 +81,29 @@ export class CustomerNewDeliveryComponent implements OnInit {
     private http: HttpClient,
     private branchService: BranchService,
   ) {
+    if (navigator) {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.myCurrentLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
+        this.deliveryForm.get('deliveryHeader').get('dirRecogida').setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+      }, function (error) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            // El usuario denegó el permiso para la Geolocalización.
+            break;
+          case error.POSITION_UNAVAILABLE:
+            // La ubicación no está disponible.
+            break;
+          case error.TIMEOUT:
+            // Se ha excedido el tiempo para obtener la ubicación.
+            break;
+        }
+
+      })
+    }
+
 
   }
 
@@ -101,31 +122,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
         nomDestinatario: ['', Validators.required],
         numCel: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
         direccion: [null, Validators.required],
-        distancia: ['']
       })
     })
-
-    navigator.geolocation.getCurrentPosition(position => {
-      this.myCurrentLocation = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      }
-      this.deliveryForm.get('deliveryHeader').get('dirRecogida').setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-    }, function (error) {
-      switch (error.code) {
-        case error.PERMISSION_DENIED:
-          // El usuario denegó el permiso para la Geolocalización.
-          break;
-        case error.POSITION_UNAVAILABLE:
-          // La ubicación no está disponible.
-          break;
-        case error.TIMEOUT:
-          // Se ha excedido el tiempo para obtener la ubicación.
-          break;
-      }
-
-    })
-
 
     this.paymentMethod = 1
     this.dtOptions = {
@@ -161,14 +159,26 @@ export class CustomerNewDeliveryComponent implements OnInit {
   loadData() {
     this.categoriesSService.getAllCategories().subscribe(response => {
       this.categories = response.data
+    }, error => {
+      this.loaders.loadingData = false
+      this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
     })
 
     this.ratesService.getRates().subscribe(response => {
       this.rates = response.data
+    }, error => {
+      this.loaders.loadingData = false
+      this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
     })
 
     this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
+    }, error => {
+      this.loaders.loadingData = false
+      this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
     })
   }
 
@@ -191,6 +201,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       this.calculateDistance()
 
+
       this.befDistance = 0
       this.befTime = 0
       this.befCost = 0.00
@@ -208,8 +219,18 @@ export class CustomerNewDeliveryComponent implements OnInit {
           this.nDeliveryResponse = response.nDelivery
           $("#succsModal").modal('show')
         }, error => {
-          this.loaders.loadingSubmit = false
-          $("#errModal").modal('show')
+          if (error.subscribe()) {
+            error.subscribe(error => {
+              this.loaders.loadingSubmit = false
+              this.errorMsg = 'Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.'
+              $("#errModal").modal('show')
+            })
+          } else {
+            this.loaders.loadingSubmit = false
+            this.errorMsg = 'Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.'
+            $("#errModal").modal('show')
+          }
+
         })
     }
 
@@ -232,14 +253,17 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.befTime = response.tiempo
       this.befCost = response.total
     }, error => {
-      error.subscribe(error => {
-        this.prohibitedDistanceMsg = error.statusText
-        this.prohibitedDistance = true
-        this.loaders.loadingDistBef = false
-        setTimeout(() => {
-          this.prohibitedDistance = false;
-        }, 2000)
-      })
+      if(error.subscribe()){
+        error.subscribe(error => {
+          this.prohibitedDistanceMsg = error.statusText
+          this.prohibitedDistance = true
+          this.loaders.loadingDistBef = false
+          setTimeout(() => {
+            this.prohibitedDistance = false;
+          }, 2000)
+        })
+      }
+
     })
   }
 
@@ -264,7 +288,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
         && ordersCount <= value.entregasMaximas
         && this.deliveryForm.get('deliveryHeader').get('idCategoria').value == value.idCategoria) {
         this.pago.baseRate = value.precio
-
       } else if (ordersCount == 0) {
         this.pago.baseRate = 0.00
       }
@@ -284,6 +307,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
       tarifa: tarifa
     }).subscribe((response) => {
       this.currOrder.distancia = response.distancia
+      this.currOrder.tarifaBase = +response.tarifa
+      this.currOrder.recargo = +response.recargo
+      this.currOrder.cTotal = +response.total
       let pago = {
         'tarifaBase': +response.tarifa,
         'recargos': +response.recargo,
@@ -291,9 +317,17 @@ export class CustomerNewDeliveryComponent implements OnInit {
       }
       this.deliveryForm.get('orders').reset()
       this.orders.push(this.currOrder)
-      this.dtTrigger.next()
       this.pagos.push(pago)
       this.loaders.loadingAdd = false
+
+      if (this.orders.length > 1) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.dtTrigger.next();
+        })
+      } else {
+        this.dtTrigger.next();
+      }
 
       this.agregado = true
       setTimeout(() => {
@@ -312,6 +346,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       })
 
     })
+
 
   }
 
@@ -332,10 +367,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   calculatePayment() {
     this.pago.recargos = this.pagos.reduce(function (a, b) {
-      return +a + +b['recargos'];
+      return +a + +b['recargos']
     }, 0)
 
-    this.pago.total = Number(this.pago.baseRate) + Number(this.pago.recargos)
+    this.pago.total = this.pagos.reduce(function (a, b) {
+      return +a + +b['total']
+
+    }, 0)
   }
 
   setDestination(destination) {
@@ -383,6 +421,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
   setCurrentLocationDest(event) {
     if (event.target.checked == true) {
       if (navigator) {
+        navigator.geolocation.getCurrentPosition(function () {
+        }, function () {
+        }, {})
         navigator.geolocation.getCurrentPosition(pos => {
           const destCords = Number(pos.coords.latitude) + ',' + Number(pos.coords.longitude)
           this.deliveryForm.get('orders').get('direccion').setValue(destCords)

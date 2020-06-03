@@ -23,6 +23,13 @@ export class DeliveriesService {
     })
   }
 
+  getOrders() {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getOrders',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
   getById(id) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getDeliveryById',

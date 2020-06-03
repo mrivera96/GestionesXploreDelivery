@@ -1,9 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Delivery} from "../../../models/delivery";
 import {Subject} from "rxjs";
 import {Router} from "@angular/router";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
+import { DataTableDirective} from "angular-datatables";
+declare var $: any
+
 
 @Component({
   selector: 'app-customer-datatable',
@@ -16,7 +19,6 @@ export class CustomerDatatableComponent implements OnInit {
   @Input('dtTrigger') dtTrigger: Subject<any>
   dtOptions: any
 
-
   constructor(
     private router: Router,
 
@@ -25,6 +27,7 @@ export class CustomerDatatableComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -32,6 +35,7 @@ export class CustomerDatatableComponent implements OnInit {
       processing: true,
       info: true,
       rowReorder: false,
+
       order:[1,'desc'],
       responsive: true,
       language: {

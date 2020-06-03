@@ -78,6 +78,15 @@
 
     </div>
 
+    <div class="row">
+      <div class="col-sm" *ngIf="currentDelivery.idEstado == 37">
+        <strong>Asignada a:</strong>
+        {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
+      </div>
+
+
+    </div>
+
     <br>
     <div>
       <h4 class="card-title">Entregas programadas</h4>
@@ -92,6 +101,8 @@
           <th>Número de teléfono</th>
           <th>Dirección de entrega</th>
           <th>Distancia</th>
+          <th>Recargo</th>
+          <th>Costo</th>
         </tr>
 
         </thead>
@@ -105,6 +116,8 @@
             <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
           </td>
           <td>{{detail.distancia}}</td>
+          <td>L. {{detail.recargo}}</td>
+          <td>L. {{detail.cTotal}}</td>
         </tr>
         </tbody>
       </table>
@@ -116,20 +129,6 @@
 </div>
 <!-- CARD END -->
 <!-- MODAL START -->
-<div id="errModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-danger">Ha ocurrido un error</h3>
-      </div>
-      <div class="modal-body">
-        <p>{{errorMSg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-danger btn-sm btn-rounded" data-dismiss="modal">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-error-modal [msgError]="errorMSg"></app-error-modal>
 <!-- MODAL END -->
 

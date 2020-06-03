@@ -17,4 +17,25 @@ export class BranchService {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getCustomerBranchOffices', tkn: this.authService.currentUserValue.access_token})
   }
+
+  newBranch(form){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'newBranch',
+      form,
+      tkn: this.authService.currentUserValue.access_token})
+  }
+
+  editBranch(form){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'updateBranch',
+      form,
+      tkn: this.authService.currentUserValue.access_token})
+  }
+
+  deleteBranch(id){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'deleteBranch',
+      id:id,
+      tkn: this.authService.currentUserValue.access_token})
+  }
 }

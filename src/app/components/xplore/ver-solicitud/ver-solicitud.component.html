@@ -14,6 +14,7 @@
       </div>
     </div>
   </div>
+
   <!-- CARD BODY START -->
   <div class="card-body" *ngIf="!loaders.loadingData">
     <div class="card-title">
@@ -106,8 +107,7 @@
         </button>
       </div>
     </div>
-
-    <br>
+    <hr>
     <div>
       <h4 class="card-title">Entregas programadas</h4>
     </div>
@@ -122,6 +122,8 @@
           <th data-priority="1">Número de teléfono</th>
           <th>Dirección de entrega</th>
           <th>Distancia</th>
+          <th>Recargo</th>
+          <th>Costo</th>
         </tr>
 
         </thead>
@@ -134,7 +136,9 @@
           <td>
             <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
           </td>
-          <td>{{detail.distancia}}</td>
+          <td>L. {{detail.distancia}}</td>
+          <td>L. {{detail.recargo}}</td>
+          <td>L. {{detail.cTotal}}</td>
         </tr>
         </tbody>
       </table>

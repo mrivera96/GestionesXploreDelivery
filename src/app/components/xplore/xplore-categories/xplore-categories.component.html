@@ -1,7 +1,7 @@
 <!-- CARD START -->
 <div @fade class="card shadow">
   <div class="card-header">
-    <a [routerLink]="['/']" > <i class="fa fa-arrow-circle-left m-r-xs"></i></a>
+    <a [routerLink]="['/']"> <i class="fa fa-arrow-circle-left m-r-xs"></i></a>
     <h3 class="d-inline">Parametrización de Categorías</h3>
   </div>
   <!-- CARD BODY START -->
@@ -15,30 +15,35 @@
     <!-- DATATABLE START -->
     <!-- CONTAINER START -->
     <div class="ibox">
-      <div class="ibox-title ">
-        <h5>Listado de Categorías</h5>
+      <div class="ibox-title">
+          <h5>Listado de Categorías</h5>
+          <button (click)="showNewCatForm()" type="button" class="btn btn-sm btn-outline-success float-right mb-2">
+            <i class="fa fa-plus"></i>
+            Agregar Categoría
+          </button>
       </div>
       <!-- CONTAINER BODY START -->
       <div class="ibox-content">
         <div class="table-responsive">
           <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                 class="display" style="width:100%">
+                 class="table table-striped table-hover display" style="width:100%">
             <thead>
             <tr>
               <th>N°</th>
               <th>Descripción de categoría</th>
-              <th>Permitida para Delivery</th>
+              <th>Activa</th>
               <th data-priority="1">Acción</th>
             </tr>
             </thead>
             <tbody>
 
-            <tr *ngFor="let category of categories"  >
-              <td>{{category.idTipoVehiculo}}</td>
-              <td>{{category.descTipoVehiculo}}</td>
-              <td><p *ngIf="category.delivery == 1">Sí</p> <p *ngIf="category.delivery != 1">No</p></td>
+            <tr *ngFor="let category of categories">
+              <td>{{category.idCategoria}}</td>
+              <td>{{category.descCategoria}}</td>
+              <td><p *ngIf="category.isActivo == 1">Sí</p>
+                <p *ngIf="category.isActivo != 1">No</p></td>
               <td>
-                <a (click)="showEditForm(category.idTipoVehiculo)"  style="color: #0071A2">
+                <a (click)="showEditForm(category.idCategoria)" style="color: #0071A2">
                   <i class="fa fa-edit"></i> Editar
                 </a>
               </td>
@@ -88,28 +93,34 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="edCatForm">
-          <!--
           <div class="form-group">
-            <label class="col-form-label" for="descTipoVehiculo">Descripción de categoría:</label>
+            <label class="col-form-label" for="descCategoria">Descripción de categoría:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-pen-alt"></i>
                 </span>
               </div>
-              <input class="form-control" id="descTipoVehiculo" type="text" formControlName="descTipoVehiculo" required>
+              <input class="form-control" id="descCategoria" type="text"
+                     [class.is-invalid]="f.descCategoria.invalid && f.descCategoria.touched"
+                     formControlName="descCategoria" required>
             </div>
+            <small
+              *ngIf="f.descCategoria.errors?.required && f.descCategoria.touched"
+              class="text-danger">*Este campo es obligatorio</small>
 
-          </div>-->
+          </div>
           <div class="form-group">
-            <label class="col-form-label" for="delivery">Permitir para Delivery:</label>
+            <label class="col-form-label" for="isActivo">
+              Activa:
+            </label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-check-circle"></i>
                 </span>
               </div>
-              <select class="form-control" id="delivery" type="text" formControlName="delivery" required>
+              <select class="form-control" id="isActivo" type="text" formControlName="isActivo" required>
                 <option value="0">No</option>
                 <option value="1">Sí</option>
               </select>
@@ -119,9 +130,51 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="submitEditCat()" class="btn btn-sm btn-rounded btn-outline-primary" data-dismiss="modal">Confimar
+        <button type="button" (click)="onFormEditSubmit()" class="btn btn-sm btn-rounded btn-outline-primary"
+                data-dismiss="modal">Confimar
         </button>
-        <button type="button" class="btn btn-sm btn-rounded btn-outline-secondary" data-dismiss="modal">Cancelar
+        <button type="button" class="btn btn-sm btn-rounded btn-outline-secondary" data-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FIN DE MODAL -->
+
+<!-- INICIO DE MODAL -->
+<div id="newCatModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Nueva Categoría</h3>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="newCatForm">
+          <div class="form-group">
+            <label class="col-form-label" for="ndescCategoria">Descripción de categoría:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-pen-alt"></i>
+                </span>
+              </div>
+              <input class="form-control" id="ndescCategoria" type="text" formControlName="descCategoria"
+                     [class.is-invalid]="fNew.descCategoria.invalid && fNew.descCategoria.touched"
+                     placeholder="¿Cuál será la descripción de la nueva categoría?" required>
+            </div>
+            <small
+              *ngIf="fNew.descCategoria.errors?.required && fNew.descCategoria.touched"
+              class="text-danger">*Este campo es obligatorio</small>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="onFormNewSubmit()" class="btn btn-sm btn-rounded btn-outline-primary"
+                data-dismiss="modal">Confimar
+        </button>
+        <button type="button" class="btn btn-sm btn-rounded btn-outline-secondary" data-dismiss="modal">
+          Cancelar
         </button>
       </div>
     </div>
@@ -131,20 +184,6 @@
 
 
 <!-- INICIO DE MODAL -->
-<div id="errModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-danger">Ha ocurrido un error</h3>
-      </div>
-      <div class="modal-body">
-        <p>{{errMsg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-rounded btn-outline-danger" data-dismiss="modal">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-error-modal [msgError]="errMsg"></app-error-modal>
 <!-- FIN DE MODAL -->
 

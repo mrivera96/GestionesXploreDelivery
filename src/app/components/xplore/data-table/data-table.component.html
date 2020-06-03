@@ -12,33 +12,54 @@
         <tr>
           <th data-priority="1">N°</th>
           <th>Nombre de cliente</th>
-          <th data-priority="1">Fecha y hora de recogida</th>
+          <th data-order="2020-06-01 16:30" data-priority="1">Fecha y hora de recogida</th>
+          <th data-priority="1">Estado</th>
           <th>Dirección de recogida</th>
           <th>Entregas</th>
-          <th data-priority="1">Estado</th>
-          <th >Acción</th>
+          <th>Categoría</th>
 
+          <th>Acción</th>
         </tr>
         </thead>
+
+
         <tbody>
 
-        <tr *ngFor="let delivery of deliveries"  >
+        <tr *ngFor="let delivery of deliveries">
           <td class="id">{{delivery.idDelivery}}</td>
 
           <td>{{delivery.nomCliente}}</td>
           <td>{{delivery.fechaReserva}}</td>
           <td class="fId">{{delivery.dirRecogida}}</td>
           <td>{{delivery.entregas}}</td>
-          <td >{{delivery.estado.descEstado}}</td>
+          <td>{{delivery.category.descCategoria}}</td>
+          <td>{{delivery.estado.descEstado}}</td>
           <td>
             <a [routerLink]="['/xplore-ver', delivery.idDelivery]" style="color: #0071A2">
               <i class="fa fa-eye"></i> Ver Detalle
             </a>
           </td>
-
         </tr>
-        </tbody>
 
+
+        </tbody>
+        <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th data-priority="1">
+            <select class="form-control-sm" name="search-last-name">
+              <option value="">- Filtrar por Estado -</option>
+              <option *ngFor="let state of states" [value]="state.descEstado">{{state.descEstado}}</option>
+            </select>
+          </th>
+          <th></th>
+        </tr>
+        </tfoot>
       </table>
     </div>
   </div>

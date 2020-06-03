@@ -4,6 +4,7 @@ import {CategoriesService} from "../../../services/categories.service";
 import {Category} from "../../../models/category";
 import {Subject} from "rxjs";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Branch} from "../../../models/branch";
 
 declare var $: any;
 
@@ -31,6 +32,7 @@ export class XploreCategoriesComponent implements OnInit {
   exitMsg = ''
   errMsg = ''
   edCatForm: FormGroup
+  newCatForm: FormGroup
 
   constructor(
     private categoriesService: CategoriesService
@@ -42,13 +44,27 @@ export class XploreCategoriesComponent implements OnInit {
     this.loadData()
   }
 
+  get f() {
+    return this.edCatForm.controls
+  }
+
+  get fNew(){
+    return this.newCatForm.controls
+  }
+
   initialize() {
     this.dtTrigger = new Subject<any>()
     this.edCatForm = new FormGroup(
       {
-        idTipoVehiculo: new FormControl(),
-        //descTipoVehiculo: new FormControl('', Validators.required),
-        delivery: new FormControl(0, Validators.required)
+        idCategoria: new FormControl(),
+        descCategoria: new FormControl(0, Validators.required),
+        isActivo: new FormControl(0, Validators.required)
+      }
+    )
+
+    this.newCatForm = new FormGroup(
+      {
+        descCategoria: new FormControl(null, Validators.required)
       }
     )
 
@@ -91,15 +107,23 @@ export class XploreCategoriesComponent implements OnInit {
   }
 
   showEditForm(id) {
-    id = id - 1
-    const currCat = this.categories[id]
-    //this.edCatForm.get('descTipoVehiculo').setValue(currCat.descTipoVehiculo)
-    this.edCatForm.get('delivery').setValue(currCat.delivery)
-    this.edCatForm.get('idTipoVehiculo').setValue(currCat.idTipoVehiculo)
+    let currCat: Category = {}
+    this.categories.forEach(value => {
+      if (value.idCategoria == id) {
+        currCat = value
+      }
+    })
+    this.f.idCategoria.setValue(currCat.idCategoria)
+    this.f.descCategoria.setValue(currCat.descCategoria)
+    this.f.isActivo.setValue(currCat.isActivo)
     $("#edCatModal").modal('show')
   }
 
-  submitEditCat() {
+  showNewCatForm(){
+    $("#newCatModal").modal('show')
+  }
+
+  onFormEditSubmit() {
     if (this.edCatForm.valid) {
       this.loaders.loadingSubmit = true
       this.categoriesService.editCategory(this.edCatForm.value)
@@ -115,7 +139,25 @@ export class XploreCategoriesComponent implements OnInit {
               $("#errModal").modal('show')
             })
           })
+    }
+  }
 
+  onFormNewSubmit() {
+    if (this.newCatForm.valid) {
+      this.loaders.loadingSubmit = true
+      this.categoriesService.createCategory(this.newCatForm.value)
+        .subscribe(response => {
+            this.loaders.loadingSubmit = false
+            this.exitMsg = response.message
+            $("#succsModal").modal('show')
+          },
+          error => {
+            error.subscribe(error => {
+              this.loaders.loadingSubmit = false
+              this.errMsg = error.statusText
+              $("#errModal").modal('show')
+            })
+          })
     }
   }
 

@@ -24,7 +24,6 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup
   loading = false
   submitted = false
-  returnUrl: string
   error = ''
 
   constructor(
@@ -34,7 +33,6 @@ export class LoginComponent implements OnInit {
   ) {
     // redirigir si el usuario está logueado
     if (this.authService.currentUserValue) {
-
       if(this.authService.currentUserValue.idPerfil === "1"){
         this.router.navigate(['inicio'])
       }else if(this.authService.currentUserValue.idPerfil === "8"){

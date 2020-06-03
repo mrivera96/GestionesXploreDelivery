@@ -1,7 +1,7 @@
 <!--CARD START -->
 <div @fade class="card shadow-sm">
   <div class="card-header">
-    <h3>Pedidos del día</h3>
+    <h3>Todos mis envíos</h3>
   </div>
   <!-- CARD BODY START -->
   <div class="card-body p-0">
@@ -12,38 +12,7 @@
       </div>
     </div>
     <!-- DATATABLE START -->
-    <!-- CONTAINER START -->
-    <div class="ibox">
-      <div class="ibox-title">
-        <h5>Listado de Pedidos</h5>
-      </div>
-      <!-- CONTAINER BODY START -->
-      <div class="ibox-content">
-        <div class="table-responsive">
-          <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                 class="display table table-hover table-striped" style="width:100%">
-            <thead>
-            <tr>
-              <th>N°</th>
-              <th>Dirección de entrega</th>
-              <th>Distancia</th>
-              <th>Estado</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            <tr *ngFor=" let i = index;let order of orders;">
-              <td class="id">{{order.idDetalle}}</td>
-              <td>{{order.direccion}}</td>
-              <td class="fId">{{order.distancia}}</td>
-              <td>{{order.estado.descEstado}}</td>
-            </tr>
-            </tbody>
-
-          </table>
-        </div>
-      </div>
-    </div>
+    <app-orders-data-table [orders]="orders" [dtTrigger]="dtTrigger"></app-orders-data-table>
     <!-- DATATABLE END -->
   </div>
   <!--CARD BODY END -->
@@ -51,3 +20,6 @@
 </div>
 <!-- CARD END -->
 
+<!-- MODAL START -->
+<app-error-modal [msgError]="msgError"></app-error-modal>
+<!-- MODAL END -->

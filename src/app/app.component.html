@@ -14,24 +14,55 @@
 
       </li>
       <li>
-        <a href="javascript:void(0)" id="logout" class="list-group-item d-none" (click)="logout()">
+        <a href="javascript:void(0)" id="logout" class="list-group-item d-none userSubMenu" (click)="logout()">
           <i class="fa fa-power-off ml-3"></i> Cerrar Sesión
         </a>
       </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showTodayOrders()" class="list-group-item">
+          <i class="fa fa-calendar-check"></i>
+          <span> Envíos del Día</span> </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showAllOrders()" class="list-group-item">
+          <i class="fa fa-list-alt"></i> Todos los Envíos
+        </a>
+      </li>
+
       <li>
         <a (click)="goHome()" class="list-group-item">
-          <i class="fa fa-home"></i>
-          <span> Deliveries del día</span> </a>
+          <i class="fa fa-calendar-check"></i>
+          <span> Reservas del día</span> </a>
       </li>
       <li>
         <a (click)="showAllRequest()" class="list-group-item">
-          <i class="fa fa-list-alt"></i> Todos los Deliveries
+          <i class="fa fa-list-alt"></i> Todos las Reservas
         </a>
       </li>
 
       <li>
         <a  (click)="showTomorrowRequest()" class="list-group-item">
-          <i class="fa fa-calendar-alt"></i> Deliveries para mañana
+          <i class="fa fa-calendar-alt"></i> Reservas para Mañana
+        </a>
+      </li>
+
+      <li>
+        <a (click)="showCustomersSubMenu()"  class="list-group-item dropdown-toggle" >
+          <i class="fa fa-user-friends"></i> Clientes
+        </a>
+      </li>
+
+      <li>
+        <a  (click)="showCustomersView()" class="list-group-item d-none customerSubMenu">
+          <i class="fa fa-user-friends ml-3"></i> Ver clientes
+        </a>
+      </li>
+
+      <li>
+        <a  (click)="addCustomer()" class="list-group-item d-none customerSubMenu">
+          <i class="fa fa-user-plus ml-3"></i> Agregar Clientes
         </a>
       </li>
 
@@ -67,7 +98,13 @@
       </li>
 
       <li>
-        <a href="javascript:void(0)" id="logoutCustomer" class="list-group-item d-none" (click)="logout()">
+        <a href="javascript:void(0)" id="profile" class="list-group-item d-none userSubMenu" (click)="showCustomerProfile()">
+          <i class="fa fa-user-cog ml-3"></i> Perfil
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" id="logoutCustomer" class="list-group-item d-none userSubMenu" (click)="logout()">
           <i class="fa fa-power-off ml-3"></i> Cerrar Sesión
         </a>
       </li>
@@ -81,18 +118,18 @@
       <li>
         <a href="javascript:void(0)" (click)="showCustomerTodayOrders()" class="list-group-item">
           <i class="fa fa-calendar-check"></i>
-          <span> Mis Pedidos del día</span> </a>
+          <span> Mis Envíos del Día</span> </a>
       </li>
 
       <li>
         <a href="javascript:void(0)" (click)="showCustomerAllOrders()" class="list-group-item">
-          <i class="fa fa-list-alt"></i> Todos Mis Pedidos
+          <i class="fa fa-list-alt"></i> Todos Mis Envíos
         </a>
       </li>
 
       <li>
         <a href="javascript:void(0)" (click)="showCustomerTodayDeliveries()" class="list-group-item">
-          <i class="fa fa-calendar-check"></i> Mis Reservas del día
+          <i class="fa fa-calendar-check"></i> Mis Reservas del Día
         </a>
       </li>
 
@@ -103,8 +140,20 @@
       </li>
 
       <li>
-        <a href="javascript:void(0)" (click)="showCustomerBranchOffices()" class="list-group-item">
-          <i class="fa fa-store-alt"></i> Mis Direcciones
+        <a href="javascript:void(0)" (click)="showCustomerBranchSubMenu()" class="list-group-item dropdown-toggle">
+          <i class="fa fa-map-marker"></i> Mis Direcciones
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showCustomerBranchOffices()" class="list-group-item d-none branchSubMenu">
+          <i class="fa fa-list-alt ml-3"></i> Lista
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:void(0)" (click)="showCustomerNewBranchOffices()" class="list-group-item d-none branchSubMenu">
+          <i class="fa fa-plus ml-3"></i> Agregar Dirección
         </a>
       </li>
 
@@ -129,7 +178,7 @@
       <router-outlet></router-outlet>
     </div>
 
-    <footer class="mt-5 ">
+    <footer class="mt-5">
       <p class="text-center">© Copyright 2020 <strong>ALCARSA - Xplore Rent a Car</strong> | Todos los derechos
         reservados</p>
     </footer>

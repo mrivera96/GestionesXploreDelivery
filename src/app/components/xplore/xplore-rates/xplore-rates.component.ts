@@ -6,6 +6,7 @@ import {CategoriesService} from "../../../services/categories.service";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {RatesService} from "../../../services/rates.service";
 import {Rate} from "../../../models/rate";
+import {Branch} from "../../../models/branch";
 
 declare var $: any
 
@@ -34,6 +35,7 @@ export class XploreRatesComponent implements OnInit {
   exitMsg = ''
   errMsg = ''
   edRateForm: FormGroup
+  newRateForm: FormGroup
   categories: Category[]
 
   constructor(
@@ -48,11 +50,27 @@ export class XploreRatesComponent implements OnInit {
     this.loadData()
   }
 
+  get f(){
+    return this.edRateForm.controls
+  }
+  get fNew(){
+    return this.newRateForm.controls
+  }
+
   initialize() {
     this.dtTrigger = new Subject<any>()
     this.edRateForm = this.formBuilder.group(
       {
         idTarifaDelivery: [],
+        idCategoria: [null, Validators.required],
+        entregasMinimas: ['', Validators.required],
+        entregasMaximas: ['', Validators.required],
+        precio: ['', Validators.required],
+      }
+    )
+
+    this.newRateForm = this.formBuilder.group(
+      {
         idCategoria: [null, Validators.required],
         entregasMinimas: ['', Validators.required],
         entregasMaximas: ['', Validators.required],
@@ -103,8 +121,12 @@ export class XploreRatesComponent implements OnInit {
   }
 
   showEditForm(id) {
-    id = id - 1
-    const currRate = this.rates[id]
+    let currRate: Rate = {}
+    this.rates.forEach(value => {
+      if(value.idTarifaDelivery === id){
+        currRate = value
+      }
+    })
     this.edRateForm.get('idTarifaDelivery').setValue(currRate.idTarifaDelivery)
     this.edRateForm.get('idCategoria').setValue(currRate.idCategoria)
     this.edRateForm.get('entregasMinimas').setValue(currRate.entregasMinimas)
@@ -113,10 +135,33 @@ export class XploreRatesComponent implements OnInit {
     $("#edTarModal").modal('show')
   }
 
-  submitEditRat() {
+  showNewForm() {
+    $("#newTarModal").modal('show')
+  }
+
+  onFormEditSubmit() {
     if (this.edRateForm.valid) {
       this.loaders.loadingSubmit = true
       this.ratesService.editRate(this.edRateForm.value)
+        .subscribe(response => {
+            this.loaders.loadingSubmit = false
+            this.exitMsg = response.message
+            $("#succsModal").modal('show')
+          },
+          error => {
+            error.subscribe(error => {
+              this.loaders.loadingSubmit = false
+              this.errMsg = error.statusText
+              $("#errModal").modal('show')
+            })
+          })
+    }
+  }
+
+  onFormNewSubmit() {
+    if (this.newRateForm.valid) {
+      this.loaders.loadingSubmit = true
+      this.ratesService.createRate(this.newRateForm.value)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.exitMsg = response.message

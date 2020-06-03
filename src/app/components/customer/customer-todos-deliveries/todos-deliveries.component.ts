@@ -3,6 +3,7 @@ import {Subject} from "rxjs";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {Delivery} from "../../../models/delivery";
 import {animate, style, transition, trigger} from "@angular/animations";
+declare var $: any
 
 @Component({
   selector: 'app-todos-deliveries',
@@ -24,6 +25,8 @@ export class TodosDeliveriesComponent implements OnInit {
   }
   dtTrigger: Subject<any> = new Subject()
 
+  msgError = ''
+
   constructor(
     private deliveriesService: DeliveriesService,
   ) {
@@ -43,6 +46,10 @@ export class TodosDeliveriesComponent implements OnInit {
       this.dtTrigger.next()
       this.loaders.loadingData = false
 
+    }, error => {
+      this.loaders.loadingData = false
+      this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
     })
   }
 

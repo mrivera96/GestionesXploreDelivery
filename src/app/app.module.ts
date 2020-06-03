@@ -27,7 +27,14 @@ import { XploreCategoriesComponent } from './components/xplore/xplore-categories
 import { XploreRatesComponent } from './components/xplore/xplore-rates/xplore-rates.component';
 import { CustomerAllOrdersComponent } from './components/customer/customer-all-orders/customer-all-orders.component';
 import { CustomerTodayOrdersComponent } from './components/customer/customer-today-orders/customer-today-orders.component';
-
+import { XploreCustomersComponent } from './components/xplore/xplore-customers/xplore-customers.component';
+import { XploreAddCustomerComponent } from './components/xplore/xplore-add-customer/xplore-add-customer.component';
+import { PhoneMaskDirective } from './phone-mask.directive';
+import { CustomerProfileComponent } from './components/customer/customer-profile/customer-profile.component';
+import { ErrorModalComponent } from './components/shared/error-modal/error-modal.component';
+import { XploreAllOrdersComponent } from './components/xplore/xplore-all-orders/xplore-all-orders.component';
+import { XploreTodayOrdersComponent } from './components/xplore/xplore-today-orders/xplore-today-orders.component';
+import { OrdersDataTableComponent } from './components/shared/orders-data-table/orders-data-table.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +58,14 @@ import { CustomerTodayOrdersComponent } from './components/customer/customer-tod
     XploreRatesComponent,
     CustomerAllOrdersComponent,
     CustomerTodayOrdersComponent,
+    XploreCustomersComponent,
+    XploreAddCustomerComponent,
+    PhoneMaskDirective,
+    CustomerProfileComponent,
+    ErrorModalComponent,
+    XploreAllOrdersComponent,
+    XploreTodayOrdersComponent,
+    OrdersDataTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,7 +74,7 @@ import { CustomerTodayOrdersComponent } from './components/customer/customer-tod
     ReactiveFormsModule,
     BrowserAnimationsModule,
     DataTablesModule,
-    FormsModule,
+    FormsModule
 
 
   ],

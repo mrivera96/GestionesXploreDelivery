@@ -1,0 +1,46 @@
+<!-- CONTAINER START -->
+<div class="ibox">
+  <div class="ibox-title">
+    <h5>Listado de Envíos</h5>
+  </div>
+  <!-- CONTAINER BODY START -->
+  <div class="ibox-content">
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+             class="display table table-hover table-striped" style="width:100%">
+        <thead>
+        <tr>
+          <th>N°</th>
+          <th data-priority="1">Nombre del Destinatario</th>
+          <th data-priority="1">Celular del Destinatario</th>
+          <th>Dirección de Envío</th>
+          <th>Detalle de Envío</th>
+          <th>Distancia de Envío</th>
+          <th>Recargo</th>
+          <th>Costo</th>
+          <th>Estado</th>
+          <th>Conductor</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor=" let i = index;let order of orders;">
+          <td class="id">{{order.idDetalle}}</td>
+          <td>{{order.nomDestinatario}}</td>
+          <td>{{order.numCel}}</td>
+          <td>{{order.direccion}}</td>
+          <td>{{order.nFactura}}</td>
+          <td>{{order.distancia}}</td>
+          <td>L. {{order.recargo}}</td>
+          <td>L. {{order.cTotal}}</td>
+          <td>{{order.estado.descEstado}}</td>
+          <td *ngIf="order.conductor">{{order.conductor.nomUsuario}}</td>
+          <td *ngIf="!order.conductor">Aún no asignada</td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+  </div>
+</div>
+<!-- DATATABLE END -->

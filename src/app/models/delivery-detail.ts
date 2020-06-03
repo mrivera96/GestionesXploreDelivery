@@ -12,4 +12,7 @@ export interface DeliveryDetail {
   nomRecibio?: string
   idConductor?: number
   conductor?: User
+  tarifaBase?: number
+  recargo?: number
+  cTotal?: number
 }

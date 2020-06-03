@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "./services/auth.service";
 import {User} from "./models/user";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Subject} from "rxjs";
+
 
 @Component({
   selector: 'app-root',
@@ -26,23 +27,23 @@ export class AppComponent {
   logout() {
     this.authenticationService.logout().subscribe(data => {
       location.reload(true)
-      if($('#sidebar').hasClass('active')){
+      if ($('#sidebar').hasClass('active')) {
         $('#sidebar').toggleClass('active')
       }
     })
 
   }
 
-  toggleSidebar(){
+  toggleSidebar() {
     $('#sidebar').toggleClass('active')
   }
 
-  showLogout(){
+  showLogout() {
     $('#logout').toggleClass('d-none')
   }
 
-  goHome(){
-    if($('#sidebar').hasClass('active')){
+  goHome() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
     this.router.navigate([''])
@@ -50,83 +51,133 @@ export class AppComponent {
 
   //XPLORE'S FUNCTIONS
 
-  showAllRequest(){
-    if($('#sidebar').hasClass('active')){
+  showAllRequest() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
     this.router.navigate(['xplore-todas'])
   }
 
-  showTomorrowRequest(){
-    if($('#sidebar').hasClass('active')){
+  showTomorrowRequest() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
     this.router.navigate(['xplore-maniana'])
   }
 
-  showConfSubMenu(){
+  showConfSubMenu() {
     $('.confSubMenu').toggleClass('d-none')
   }
 
-  showCategoriesParametrization(){
-    if($('#sidebar').hasClass('active')){
+  showCategoriesParametrization() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
     this.router.navigate(['xplore-parametrizar-categorias'])
   }
 
-  showRatesPArametrization(){
-    if($('#sidebar').hasClass('active')){
+  showRatesPArametrization() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
     this.router.navigate(['xplore-parametrizar-tarifas'])
   }
 
-  //CUSTOMER'S FUNCTIONS
-  showLogoutCustomer(){
-    $('#logoutCustomer').toggleClass('d-none')
+  showCustomersSubMenu() {
+    $('.customerSubMenu').toggleClass('d-none')
   }
 
-  showAllCustomersRequest(){
-    if($('#sidebar').hasClass('active')){
+  showCustomersView() {
+    if ($('#sidebar').hasClass('active')) {
+      $('#sidebar').toggleClass('active')
+    }
+    this.router.navigate(['xplore-clientes'])
+  }
+
+  addCustomer() {
+    if ($('#sidebar').hasClass('active')) {
+      $('#sidebar').toggleClass('active')
+    }
+    this.router.navigate(['xplore-agregar-cliente'])
+  }
+
+  showTodayOrders() {
+    if ($('#sidebar').hasClass('active')) {
+      $('#sidebar').toggleClass('active')
+    }
+    this.router.navigate(['xplore-envios-hoy'])
+  }
+
+  showAllOrders() {
+    if ($('#sidebar').hasClass('active')) {
+      $('#sidebar').toggleClass('active')
+    }
+    this.router.navigate(['xplore-envios-todos'])
+  }
+
+  //CUSTOMER'S FUNCTIONS
+  showLogoutCustomer() {
+    $('.userSubMenu').toggleClass('d-none')
+  }
+  showCustomerProfile(){
+    if ($('#sidebar').hasClass('active')) {
+      $('#sidebar').toggleClass('active')
+    }
+    this.router.navigate(['cliente-perfil'])
+  }
+
+  showAllCustomersRequest() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
     this.router.navigate(['cliente-todos'])
   }
 
-  addDeliveryCustomer(){
-    if($('#sidebar').hasClass('active')){
+  addDeliveryCustomer() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
     this.router.navigate(['cliente-inicio'])
   }
 
-  showCustomerBranchOffices(){
-    if($('#sidebar').hasClass('active')){
-      $('#sidebar').toggleClass('active')
-    }
-    this.router.navigate(['cliente-sucursales'])
-  }
-
-  showCustomerTodayDeliveries(){
-    if($('#sidebar').hasClass('active')){
+  showCustomerTodayDeliveries() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
     this.router.navigate(['cliente-hoy'])
   }
 
-  showCustomerTodayOrders(){
-    if($('#sidebar').hasClass('active')){
+  showCustomerTodayOrders() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
-    this.router.navigate(['cliente-pedidos-hoy'])
+    this.router.navigate(['cliente-envios-hoy'])
   }
 
-  showCustomerAllOrders(){
-    if($('#sidebar').hasClass('active')){
+  showCustomerAllOrders() {
+    if ($('#sidebar').hasClass('active')) {
       $('#sidebar').toggleClass('active')
     }
-    this.router.navigate(['cliente-pedidos-todos'])
+    this.router.navigate(['cliente-envios-todos'])
   }
+
+  showCustomerBranchSubMenu() {
+    $('.branchSubMenu').toggleClass('d-none')
+  }
+
+  showCustomerBranchOffices() {
+    if ($('#sidebar').hasClass('active')) {
+      $('#sidebar').toggleClass('active')
+    }
+    this.router.navigate(['cliente-direcciones'])
+  }
+
+  showCustomerNewBranchOffices() {
+    if ($('#sidebar').hasClass('active')) {
+      $('#sidebar').toggleClass('active')
+    }
+    this.router.navigate(['cliente-agregar-direccion'])
+  }
+
 
 }
