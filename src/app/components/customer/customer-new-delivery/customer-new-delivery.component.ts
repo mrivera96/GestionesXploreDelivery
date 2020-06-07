@@ -17,6 +17,7 @@ import {DataTableDirective} from "angular-datatables";
 import {Router} from "@angular/router";
 import {Surcharge} from "../../../models/surcharge";
 import {SurchargesService} from "../../../services/surcharges.service";
+import {DateValidate} from "../../../helpers/date.validator";
 
 declare var $: any;
 
@@ -109,7 +110,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         dirRecogida: [null, Validators.required],
         idCategoria: [1, Validators.required],
         instrucciones: ['', Validators.maxLength(150)]
-      }),
+      }, {validators: DateValidate('fecha')}),
 
       order: this.formBuilder.group({
         nFactura: ['', [Validators.required, Validators.maxLength(250)]],
@@ -120,7 +121,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       })
     })
 
-    if (navigator) {
+    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.myCurrentLocation = {
           lat: position.coords.latitude,
@@ -130,7 +131,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       }, function (error) {
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            // El usuario denegó el permiso para la Geolocalización.
+            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
             break;
           case error.POSITION_UNAVAILABLE:
             // La ubicación no está disponible.
@@ -141,6 +142,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
         }
 
       })
+    }else{
+      alert('El GPS está desactivado')
     }
 
     this.dtOptions = {
@@ -172,7 +175,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   loadData() {
-    this.categoriesService.getAllCategories().subscribe(response => {
+    this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.data
     }, error => {
       this.loaders.loadingData = false
@@ -224,6 +227,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.newForm.get('deliveryHeader.idCategoria').disable({onlySelf: true})
       this.newForm.get('deliveryHeader.dirRecogida').disable({onlySelf: true})
       $("#prevDirRecogida").prop('disabled', 'disabled');
+      $("#insertCords").hide();
       let ordersCount = this.orders.length + 1
       //
       this.calculateRate(ordersCount)
@@ -238,7 +242,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   onFormSubmit() {
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
-      this.loaders.loadingSubmit = true;
+
+      this.loaders.loadingSubmit = true
       this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
         .subscribe(response => {
@@ -278,9 +283,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
     }).subscribe((response) => {
       this.loaders.loadingDistBef = false
       this.befDistance = response.distancia
-      const calculatedPayment = this.calculateOrderPayment( Number(response.distancia.split(" ")[0]))
+      const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
       this.befTime = response.tiempo
-      this.befCost = +calculatedPayment.total
+      this.befCost = calculatedPayment.total
     }, error => {
       if (error.subscribe()) {
         error.subscribe(error => {
@@ -324,19 +329,18 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculateOrderPayment(distance) {
-    console.log(distance)
+
     let orderPayment = {
       'baseRate': this.pago.baseRate,
       'surcharges': 0.00,
       'total': 0.00
     }
     this.surcharges.forEach(value => {
-      if (distance >= value.kilomMinimo
-        && distance <= value.kilomMaximo
+
+      if (distance >= Number(value.kilomMinimo)
+        && distance <= Number(value.kilomMaximo)
       ) {
-        orderPayment.surcharges = value.monto
-      } else{
-        orderPayment.surcharges = 0.00
+        orderPayment.surcharges = Number(value.monto)
       }
     })
     orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
@@ -402,13 +406,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   calculatePayment() {
     this.pago.recargos = this.pagos.reduce(function (a, b) {
-      return +a + +b['recargos']
+      return +a + +b['surcharges']
     }, 0)
-
-    this.pago.baseRate = this.pagos.reduce(function (a, b) {
-      return +a + +b['tarifaBase']
-
-    })
 
     this.pago.total = this.pagos.reduce(function (a, b) {
       return +a + +b['total']

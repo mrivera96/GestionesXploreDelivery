@@ -42,7 +42,18 @@
                   <i class="fa fa-calendar-alt"></i>
                 </span>
                   </div>
-                  <input formControlName="fecha" type="date" class="form-control" id="fecha" required>
+                  <input formControlName="fecha" type="date" class="form-control" id="fecha"
+                         [class.is-invalid]="newForm.get('deliveryHeader.fecha').invalid && newForm.get('deliveryHeader.fecha').touched"
+                         required>
+                  <small class="invalid-feedback">
+                    <p *ngIf="newForm.get('deliveryHeader.fecha').errors?.required">
+                      *Este campo es obligatorio
+                    </p>
+                    <p *ngIf="newForm.get('deliveryHeader.fecha').errors?.mustAfterDate">
+                      *Ups! Parece que esa fecha no es válida
+                    </p>
+
+                  </small>
                 </div>
               </div>
 
@@ -54,7 +65,9 @@
                   <i class="fa fa-calendar-alt"></i>
                 </span>
                   </div>
-                  <input formControlName="hora" type="time" class="form-control" id="hora" required>
+                  <input formControlName="hora" type="time" class="form-control" id="hora" required
+                         [class.is-invalid]="newForm.get('deliveryHeader.hora').invalid && newForm.get('deliveryHeader.hora').touched">
+                  <small class="invalid-feedback">*Este campo es obligatorio</small>
                 </div>
               </div>
 
@@ -69,7 +82,7 @@
                   </div>
 
                   <select class="form-control" id="prevDirRecogida" [(ngModel)]="locationOption" required
-                          (change)="calculatedistanceBefore()" [ngModelOptions]="{standalone: true}">
+                          [ngModelOptions]="{standalone: true}">
                     <option [value]="1">Ubicación Actual</option>
                     <option [value]="2">Ingresar Ubicación</option>
                     <option [value]="3">Dirección Existente</option>
@@ -98,7 +111,7 @@
                 <div class="suggestions" *ngIf="placesOrigin?.length">
                   <p *ngFor="let s of placesOrigin" (click)="setOrigin(s.text)">{{s.text}}</p>
                 </div>
-                <small> <a href="javascript:void(0)" (click)="gcordsOrigin=true">Ingresar Geocordenadas</a> </small>
+                <small > <a id="insertCords" href="javascript:void(0)" (click)="gcordsOrigin=true">Ingresar Geocordenadas</a> </small>
 
                 <div class="input-group" *ngIf="gcordsOrigin">
 
@@ -315,16 +328,24 @@
             <br>
             <div class="form-row text-center">
               <div class="col">
-              <span><i class="fa fa-clock"></i> Tiempo: <span *ngIf="loaders.loadingDistBef"
-                                                              class="spinner-border spinner-border-sm mr-1 "></span> {{befTime}}</span>
+              <span><i class="fa fa-clock"></i>
+                Tiempo: <span *ngIf="loaders.loadingDistBef"
+                              class="spinner-border spinner-border-sm mr-1 ">
+                </span> {{befTime}}</span>
               </div>
               <div class="col">
-              <span><i class="fa fa-ruler"></i> Distancia: <span *ngIf="loaders.loadingDistBef"
+              <span><i class="fa fa-ruler"></i>
+                Distancia: <span *ngIf="loaders.loadingDistBef"
                                                                  class="spinner-border spinner-border-sm mr-1 "></span> {{befDistance}}</span>
               </div>
               <div class="col">
-              <span><i class="fa fa-dollar-sign"></i> Costo: <span *ngIf="loaders.loadingDistBef"
-                                                                   class="spinner-border spinner-border-sm mr-1 "></span> L. {{befCost}}</span>
+              <span>
+                <i class="fa fa-dollar-sign"></i>
+                Costo:
+                <span *ngIf="loaders.loadingDistBef"
+                      class="spinner-border spinner-border-sm mr-1 ">
+                </span> L. {{befCost}}
+              </span>
               </div>
 
             </div>

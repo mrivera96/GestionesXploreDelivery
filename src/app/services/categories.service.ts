@@ -24,6 +24,13 @@ export class CategoriesService {
     })
   }
 
+  getCustomerCategories(){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'getMyCategories',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
   editCategory(form){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'editCategory',
