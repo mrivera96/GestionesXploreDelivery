@@ -117,12 +117,12 @@ export class VerSolicitudComponent implements OnInit {
     })
 
     this.usersService.getDrivers().subscribe(response => {
-      this.conductores = response.data
+      this.conductores = response.data.xploreDelivery
     })
 
     this.deliveriesService.getStates().subscribe(response => {
 
-      this.states = response.data
+      this.states = response.data.xploreDelivery
     })
 
   }

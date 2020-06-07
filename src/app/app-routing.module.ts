@@ -24,6 +24,7 @@ import {XploreAddCustomerComponent} from "./components/xplore/xplore-add-custome
 import {CustomerProfileComponent} from "./components/customer/customer-profile/customer-profile.component";
 import {XploreAllOrdersComponent} from "./components/xplore/xplore-all-orders/xplore-all-orders.component";
 import {XploreTodayOrdersComponent} from "./components/xplore/xplore-today-orders/xplore-today-orders.component";
+import {XploreSurchargesComponent} from "./components/xplore/xplore-surcharges/xplore-surcharges.component";
 
 
 const routes: Routes = [
@@ -39,6 +40,7 @@ const routes: Routes = [
   {path: 'xplore-maniana', component: ReservasManianaComponent, canActivate: [XploreGuard]},
   {path: 'xplore-parametrizar-categorias', component: XploreCategoriesComponent, canActivate: [XploreGuard]},
   {path: 'xplore-parametrizar-tarifas', component: XploreRatesComponent, canActivate: [XploreGuard]},
+  {path: 'xplore-parametrizar-recargos', component: XploreSurchargesComponent, canActivate: [XploreGuard]},
   {path: 'xplore-clientes', component: XploreCustomersComponent, canActivate: [XploreGuard]},
   {path: 'xplore-agregar-cliente', component: XploreAddCustomerComponent, canActivate: [XploreGuard]},
   {path: 'xplore-envios-hoy', component: XploreTodayOrdersComponent, canActivate: [XploreGuard]},
@@ -65,8 +67,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,
-    { onSameUrlNavigation: 'reload' })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule {

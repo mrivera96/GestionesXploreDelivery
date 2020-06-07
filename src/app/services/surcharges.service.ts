@@ -1,41 +1,41 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
+import {HttpClient} from "@angular/common/http";
 import {AuthService} from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class RatesService {
+export class SurchargesService {
 
   constructor(
     private http: HttpClient,
     private authService: AuthService
   ) { }
 
-  getRates(){
-    return this.http.get<any>(`${environment.apiUrl}`, {params:{function: 'getTarifas'}})
+  getSurcharges(){
+    return this.http.get<any>(`${environment.apiUrl}`, {params:{function: 'getRecargos'}})
   }
 
-  editRate(form){
+  editSurcharge(form){
     return this.http.post<any>(`${environment.apiUrl}`,{
-      function:'editRate',
+      function:'editSurcharge',
       form,
       tkn: this.authService.currentUserValue.access_token
     })
   }
 
-  createRate(form){
+  createSurcharge(form){
     return this.http.post<any>(`${environment.apiUrl}`,{
-      function:'createRate',
+      function:'createSurcharge',
       form,
       tkn: this.authService.currentUserValue.access_token
     })
   }
 
-  getCustomerRates(){
+  getCustomerSurcharges(){
     return this.http.post<any>(`${environment.apiUrl}`,{
-      function:'getMyRates',
+      function:'getMySurcharges',
       tkn: this.authService.currentUserValue.access_token
     })
   }

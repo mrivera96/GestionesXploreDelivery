@@ -9,7 +9,7 @@
   <div class="card-body" *ngIf="loaders.loadingData">
     <div class="row">
       <div class="col text-center">
-        <img src="/GestionesDelivery/assets/img/loading.svg" width="35%" alt="loading">
+        <img src="assets/img/loading.svg" width="35%" alt="loading">
         <p>Cargando información...</p>
       </div>
     </div>
@@ -41,20 +41,26 @@
       <div class="col-sm">
         <strong>Dirección de recogida:</strong>
         <a href="https://www.google.com/maps?q={{currentDelivery?.dirRecogida}}"> {{currentDelivery?.dirRecogida}} </a>
+      </div>
 
+      <div class="col-sm">
+        <strong>Instrucciones de recogida:</strong>
+        {{currentDelivery?.instrucciones}}
       </div>
 
       <div class="col-sm">
         <strong>Categoría reservada:</strong>
-        {{currentDelivery?.category?.descTipoVehiculo}}
+        {{currentDelivery?.category?.descCategoria}}
       </div>
+
+    </div>
+
+    <div class="row">
       <div class="col-sm">
         <strong>Fecha y hora de recogida:</strong>
         {{currentDelivery?.fechaReserva}}
       </div>
-    </div>
 
-    <div class="row">
       <div class="col-sm">
         <strong>e-mail:</strong>
         {{currentDelivery?.email}}
@@ -64,14 +70,14 @@
         L. {{currentDelivery?.tarifaBase}}
       </div>
 
+    </div>
 
+    <div class="row">
       <div class="col-sm">
         <strong>Recargos:</strong>
         L. {{currentDelivery?.recargos}}
       </div>
-    </div>
 
-    <div class="row">
       <div class="col-sm">
         <strong>Total:</strong>
         L. {{currentDelivery?.total}}
@@ -83,21 +89,18 @@
         <span *ngIf="currentDelivery?.isPagada == false" class="text-danger"> NO</span>
       </div>
 
+    </div>
+
+    <div class="row">
       <div class="col-sm">
         <strong>Estado Actual:</strong>
         {{currentDelivery?.estado.descEstado}}
       </div>
 
-
-    </div>
-
-    <div class="row">
       <div class="col-sm" *ngIf="currentDelivery.idEstado == 37">
         <strong>Asignada a:</strong>
         {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
       </div>
-
-
     </div>
     <br>
     <div class="row">
@@ -121,6 +124,7 @@
           <th data-priority="1">Nombre de destinatario</th>
           <th data-priority="1">Número de teléfono</th>
           <th>Dirección de entrega</th>
+          <th>Instrucciones de entrega</th>
           <th>Distancia</th>
           <th>Recargo</th>
           <th>Costo</th>
@@ -136,6 +140,7 @@
           <td>
             <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
           </td>
+          <td>{{detail?.instrucciones}}</td>
           <td>L. {{detail.distancia}}</td>
           <td>L. {{detail.recargo}}</td>
           <td>L. {{detail.cTotal}}</td>

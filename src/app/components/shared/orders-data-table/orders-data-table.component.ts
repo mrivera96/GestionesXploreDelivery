@@ -1,25 +1,44 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Order} from "../../../models/order";
 import {Subject} from "rxjs";
+import {State} from "../../../models/state";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {DataTableDirective} from "angular-datatables";
 
+declare var $: any
 @Component({
   selector: 'app-orders-data-table',
   templateUrl: './orders-data-table.component.html',
   styleUrls: ['./orders-data-table.component.css']
 })
 export class OrdersDataTableComponent implements OnInit {
-  @Input('orders') orders: Order[]
-  @Input('dtTrigger') dtTrigger: Subject<any>
-  dtOptions: any
-  constructor() { }
+  @Input('orders') tOrders: string
+  @Output('loadingData') stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
+  orders: Order[]
+  dtTrigger: Subject<any> = new Subject<any>()
+  dtOptions: DataTables.Settings
+  msgError = ''
+
+  @ViewChild(DataTableDirective, {static: false})
+  datatableElement: DataTableDirective
+
+  states: State[]
+  constructor(
+    private deliveriesService: DeliveriesService
+  ) { }
 
   ngOnInit(): void {
+    this.initialize()
+    this.loadData()
+  }
+  initialize(){
     this.dtOptions =  {
       pagingType: 'full_numbers',
       pageLength: 10,
       serverSide: false,
       processing: true,
       info: true,
+      autoWidth: true,
       order: [0, 'asc'],
       responsive: true,
       language: {
@@ -39,5 +58,79 @@ export class OrdersDataTableComponent implements OnInit {
       },
     }
   }
+
+  loadData(){
+    this.deliveriesService.getStates().subscribe(response => {
+      this.states = response.data.xploreDeliveryEntregas
+    })
+
+    let service;
+    switch (this.tOrders) {
+      case 'customer-todos': {
+        service = this.deliveriesService.getCustomerOrders()
+        break;
+      }
+
+      case 'customer-hoy': {
+        service = this.deliveriesService.getCustomerOrders()
+        break;
+      }
+
+
+      case 'xplore-todos': {
+        service = this.deliveriesService.getOrders()
+        break;
+      }
+
+      case 'xplore-hoy': {
+        service = this.deliveriesService.getOrders()
+        break;
+      }
+
+    }
+
+    service.subscribe(response => {
+      this.stopLoading.emit(false)
+      switch (this.tOrders) {
+        case 'customer-todos': {
+          this.orders = response.data.todos
+          break
+        }
+        case 'customer-hoy': {
+          this.orders = response.data.pedidosDia
+          break
+        }
+        case 'xplore-todos': {
+          this.orders = response.data.todos
+          break
+        }
+        case 'xplore-hoy': {
+          this.orders = response.data.pedidosDia
+          break
+        }
+      }
+
+      this.dtTrigger.next()
+      this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.columns().every(function () {
+          const that = this;
+          $('select', this.footer()).on('change', function () {
+            if (that.search() !== this['value']) {
+              that
+                .search(this['value'])
+                .draw();
+            }
+          });
+        });
+      });
+
+    }, error => {
+      this.stopLoading.emit(false)
+      this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
+    })
+  }
+
+
 
 }

@@ -35,6 +35,8 @@ import { ErrorModalComponent } from './components/shared/error-modal/error-modal
 import { XploreAllOrdersComponent } from './components/xplore/xplore-all-orders/xplore-all-orders.component';
 import { XploreTodayOrdersComponent } from './components/xplore/xplore-today-orders/xplore-today-orders.component';
 import { OrdersDataTableComponent } from './components/shared/orders-data-table/orders-data-table.component';
+import { XploreUsersComponent } from './components/xplore/xplore-users/xplore-users.component';
+import { XploreSurchargesComponent } from './components/xplore/xplore-surcharges/xplore-surcharges.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +68,8 @@ import { OrdersDataTableComponent } from './components/shared/orders-data-table/
     XploreAllOrdersComponent,
     XploreTodayOrdersComponent,
     OrdersDataTableComponent,
+    XploreUsersComponent,
+    XploreSurchargesComponent,
   ],
   imports: [
     BrowserModule,

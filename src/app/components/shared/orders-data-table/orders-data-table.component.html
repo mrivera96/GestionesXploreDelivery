@@ -8,6 +8,26 @@
     <div class="table-responsive">
       <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
              class="display table table-hover table-striped" style="width:100%">
+
+        <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>
+            <select class="form-control-sm" name="search-last-name">
+              <option value="">- Filtrar por Estado -</option>
+              <option *ngFor="let state of states" [value]="state.descEstado">{{state.descEstado}}</option>
+            </select>
+          </th>
+          <th></th>
+        </tr>
+        </tfoot>
         <thead>
         <tr>
           <th>N°</th>
@@ -19,7 +39,7 @@
           <th>Recargo</th>
           <th>Costo</th>
           <th>Estado</th>
-          <th>Conductor</th>
+          <th>Conductor - Celular</th>
         </tr>
         </thead>
         <tbody>
@@ -34,13 +54,18 @@
           <td>L. {{order.recargo}}</td>
           <td>L. {{order.cTotal}}</td>
           <td>{{order.estado.descEstado}}</td>
-          <td *ngIf="order.conductor">{{order.conductor.nomUsuario}}</td>
+          <td *ngIf="order.conductor">{{order.conductor.nomUsuario + ' / ' + order.conductor.numCelular }}</td>
           <td *ngIf="!order.conductor">Aún no asignada</td>
         </tr>
         </tbody>
 
+
       </table>
+
     </div>
   </div>
 </div>
 <!-- DATATABLE END -->
+<!-- MODAL START -->
+<app-error-modal [msgError]="msgError"></app-error-modal>
+<!-- MODAL END -->

@@ -83,6 +83,13 @@ export class AppComponent {
     this.router.navigate(['xplore-parametrizar-tarifas'])
   }
 
+  showSurchargesParametrization() {
+    if ($('#sidebar').hasClass('active')) {
+      $('#sidebar').toggleClass('active')
+    }
+    this.router.navigate(['xplore-parametrizar-recargos'])
+  }
+
   showCustomersSubMenu() {
     $('.customerSubMenu').toggleClass('d-none')
   }

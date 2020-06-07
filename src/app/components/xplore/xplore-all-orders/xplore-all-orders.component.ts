@@ -21,32 +21,17 @@ export class XploreAllOrdersComponent implements OnInit {
   loaders = {
     'loadingData': false
   }
-  dtTrigger: Subject<any> = new Subject()
 
-
-  orders: Order[]
-  msgError = ''
   constructor(
-    private deliveriesService: DeliveriesService,
+
   ) { }
 
   ngOnInit(): void {
-
-    this.loadData()
+    this.loaders.loadingData = true
   }
 
-  loadData() {
-    this.loaders.loadingData = true
-    this.deliveriesService.getOrders().subscribe(response => {
-      this.orders = response.data.todos
-      this.dtTrigger.next()
-      this.loaders.loadingData = false
-    }, error => {
-      this.loaders.loadingData = false
-      this.msgError = 'Ha ocurrido un error al cargar los datos. Intente de nuevo recargando la página.'
-      $("#errModal").modal('show')
-    })
-
+  setLoading(event){
+    this.loaders.loadingData = event
   }
 
 }

@@ -8,7 +8,7 @@
 
     <div class="row" *ngIf="loaders.loadingData">
       <div class="col text-center">
-        <img src="/GestionesDelivery/assets/img/loading.svg" width="5%" alt="loading">
+        <img src="assets/img/loading.svg" width="5%" alt="loading">
         <p>Cargando información...</p>
       </div>
     </div>
@@ -27,8 +27,8 @@
             <tr>
               <th>N°</th>
               <th data-priority="1">Nombre de Dirección</th>
-              <th>Número de teléfono</th>
               <th>Dirección</th>
+              <th>email</th>
               <th data-priority="1">Editar</th>
               <th data-priority="1">Eliminar</th>
             </tr>
@@ -38,8 +38,8 @@
             <tr *ngFor="let branch of myBranchOffices" style="cursor: pointer">
               <td class="id">{{branch.idSucursal}}</td>
               <td>{{branch.nomSucursal}}</td>
-              <td>{{branch.numTelefono}}</td>
               <td>{{branch.direccion}}</td>
+              <td>{{branch.cliente.email}}</td>
               <td>
                 <a (click)="showEditForm(branch.idSucursal)" style="color: #0071A2">
                   <i class="fa fa-edit"></i> Editar

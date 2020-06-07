@@ -14,4 +14,5 @@ export interface Order {
   tarifaBase?: number
   recargo?: number
   cTotal?: number
+  instrucciones?: string
 }

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Category} from "../../../models/category";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -14,6 +14,10 @@ import {CategoriesService} from "../../../services/categories.service";
 import {RatesService} from "../../../services/rates.service";
 import {BranchService} from "../../../services/branch.service";
 import {DataTableDirective} from "angular-datatables";
+import {Router} from "@angular/router";
+import {Surcharge} from "../../../models/surcharge";
+import {SurchargesService} from "../../../services/surcharges.service";
+
 declare var $: any;
 
 @Component({
@@ -52,10 +56,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
   exitMsg = ''
   nDeliveryResponse
   rates: Rate[] = []
+  surcharges: Surcharge[]
   myBranchOffices: Branch[] = []
-
+  @ViewChild('originCords') originCords: ElementRef
+  @ViewChild('destinationCords') destinationCords: ElementRef
   @Input() cardType
-  cardSrc = ''
   placesOrigin = []
   placesDestination = []
   pago = {
@@ -70,24 +75,58 @@ export class CustomerNewDeliveryComponent implements OnInit {
   prohibitedDistance = false
   prohibitedDistanceMsg = ''
   paymentMethod: number = 1
+
+  gcordsOrigin = false
+  gcordsDestination = false
   @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
 
 
   constructor(
-    private categoriesSService: CategoriesService,
+    private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
     private deliveriesService: DeliveriesService,
     private ratesService: RatesService,
+    private surchargesService: SurchargesService,
     private http: HttpClient,
     private branchService: BranchService,
+    private router: Router
   ) {
+  }
+
+  ngOnInit(): void {
+    this.initialize()
+    this.loadData()
+  }
+
+  initialize() {
+    this.locationOption = 1
+    this.paymentMethod = 1
+
+    this.deliveryForm = this.formBuilder.group({
+      deliveryHeader: this.formBuilder.group({
+        fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
+        hora: [formatDate(new Date(), 'HH:mm', 'en'), Validators.required],
+        dirRecogida: [null, Validators.required],
+        idCategoria: [1, Validators.required],
+        instrucciones: ['', Validators.maxLength(150)]
+      }),
+
+      order: this.formBuilder.group({
+        nFactura: ['', [Validators.required, Validators.maxLength(250)]],
+        nomDestinatario: ['', [Validators.required, Validators.maxLength(150)]],
+        numCel: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+        direccion: [null, Validators.required],
+        instrucciones: ['', Validators.maxLength(150)]
+      })
+    })
+
     if (navigator) {
       navigator.geolocation.getCurrentPosition(position => {
         this.myCurrentLocation = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         }
-        this.deliveryForm.get('deliveryHeader').get('dirRecogida').setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+        this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
       }, function (error) {
         switch (error.code) {
           case error.PERMISSION_DENIED:
@@ -104,28 +143,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
       })
     }
 
-
-  }
-
-  ngOnInit(): void {
-    this.locationOption = 1
-    this.deliveryForm = this.formBuilder.group({
-      deliveryHeader: this.formBuilder.group({
-        fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
-        hora: [formatDate(new Date(), 'HH:mm', 'en'), Validators.required],
-        dirRecogida: [null, Validators.required],
-        idCategoria: [1, Validators.required],
-      }),
-
-      orders: this.formBuilder.group({
-        nFactura: ['', Validators.required],
-        nomDestinatario: ['', Validators.required],
-        numCel: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
-        direccion: [null, Validators.required],
-      })
-    })
-
-    this.paymentMethod = 1
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -152,12 +169,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
       },
     }
 
-    this.loadData()
   }
 
-
   loadData() {
-    this.categoriesSService.getAllCategories().subscribe(response => {
+    this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
     }, error => {
       this.loaders.loadingData = false
@@ -165,8 +180,16 @@ export class CustomerNewDeliveryComponent implements OnInit {
       $("#errModal").modal('show')
     })
 
-    this.ratesService.getRates().subscribe(response => {
+    this.ratesService.getCustomerRates().subscribe(response => {
       this.rates = response.data
+    }, error => {
+      this.loaders.loadingData = false
+      this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+      $("#errModal").modal('show')
+    })
+
+    this.surchargesService.getCustomerSurcharges().subscribe(response => {
+      this.surcharges = response.data
     }, error => {
       this.loaders.loadingData = false
       this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
@@ -182,25 +205,30 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
+  get newForm() {
+    return this.deliveryForm
+  }
+
   onOrderAdd() {
 
-    if (this.deliveryForm.get('orders').valid) {
+    if (this.deliveryForm.get('order').valid) {
       this.loaders.loadingAdd = true
       this.currOrder = {
-        nFactura: this.deliveryForm.get('orders').get('nFactura').value,
-        nomDestinatario: this.deliveryForm.get('orders').get('nomDestinatario').value,
-        numCel: this.deliveryForm.get('orders').get('numCel').value,
-        direccion: this.deliveryForm.get('orders').get('direccion').value,
+        nFactura: this.newForm.get('order.nFactura').value,
+        nomDestinatario: this.newForm.get('order.nomDestinatario').value,
+        numCel: this.newForm.get('order.numCel').value,
+        direccion: this.newForm.get('order.direccion').value,
+        instrucciones: this.newForm.get('order.instrucciones').value,
       }
 
-      this.deliveryForm.get('deliveryHeader').get('idCategoria').disable({onlySelf: true})
-      this.deliveryForm.get('deliveryHeader').get('dirRecogida').disable({onlySelf: true})
+      this.newForm.get('deliveryHeader.idCategoria').disable({onlySelf: true})
+      this.newForm.get('deliveryHeader.dirRecogida').disable({onlySelf: true})
+      $("#prevDirRecogida").prop('disabled', 'disabled');
       let ordersCount = this.orders.length + 1
       //
       this.calculateRate(ordersCount)
 
       this.calculateDistance()
-
 
       this.befDistance = 0
       this.befTime = 0
@@ -244,16 +272,17 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
     this.http.post<any>(`${environment.apiUrl}`, {
       function: 'calculateDistance',
-      salida: this.deliveryForm.get('deliveryHeader').get('dirRecogida').value,
-      entrega: this.deliveryForm.get('orders').get('direccion').value,
+      salida: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
+      entrega: this.newForm.get('order.direccion').value,
       tarifa: this.pago.baseRate
     }).subscribe((response) => {
       this.loaders.loadingDistBef = false
       this.befDistance = response.distancia
+      const calculatedPayment = this.calculateOrderPayment( Number(response.distancia.split(" ")[0]))
       this.befTime = response.tiempo
-      this.befCost = response.total
+      this.befCost = +calculatedPayment.total
     }, error => {
-      if(error.subscribe()){
+      if (error.subscribe()) {
         error.subscribe(error => {
           this.prohibitedDistanceMsg = error.statusText
           this.prohibitedDistance = true
@@ -286,7 +315,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.rates.forEach(value => {
       if (ordersCount >= value.entregasMinimas
         && ordersCount <= value.entregasMaximas
-        && this.deliveryForm.get('deliveryHeader').get('idCategoria').value == value.idCategoria) {
+        && this.deliveryForm.get('deliveryHeader.idCategoria').value == value.idCategoria) {
         this.pago.baseRate = value.precio
       } else if (ordersCount == 0) {
         this.pago.baseRate = 0.00
@@ -294,9 +323,30 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
+  calculateOrderPayment(distance) {
+    console.log(distance)
+    let orderPayment = {
+      'baseRate': this.pago.baseRate,
+      'surcharges': 0.00,
+      'total': 0.00
+    }
+    this.surcharges.forEach(value => {
+      if (distance >= value.kilomMinimo
+        && distance <= value.kilomMaximo
+      ) {
+        orderPayment.surcharges = value.monto
+      } else{
+        orderPayment.surcharges = 0.00
+      }
+    })
+    orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
+
+    return orderPayment
+  }
+
   calculateDistance() {
-    const salida = this.deliveryForm.get('deliveryHeader').get('dirRecogida').value
-    const entrega = this.deliveryForm.get('orders').get('direccion').value
+    const salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value
+    const entrega = this.deliveryForm.get('order.direccion').value
     const tarifa = this.pago.baseRate
 
 
@@ -307,17 +357,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
       tarifa: tarifa
     }).subscribe((response) => {
       this.currOrder.distancia = response.distancia
-      this.currOrder.tarifaBase = +response.tarifa
-      this.currOrder.recargo = +response.recargo
-      this.currOrder.cTotal = +response.total
-      let pago = {
-        'tarifaBase': +response.tarifa,
-        'recargos': +response.recargo,
-        'total': +response.total
-      }
-      this.deliveryForm.get('orders').reset()
+      const calculatedPayment = this.calculateOrderPayment( Number(response.distancia.split(" ")[0]))
+      this.currOrder.tarifaBase = calculatedPayment.baseRate
+      this.currOrder.recargo = calculatedPayment.surcharges
+      this.currOrder.cTotal = calculatedPayment.total
+      this.deliveryForm.get('order').reset()
       this.orders.push(this.currOrder)
-      this.pagos.push(pago)
+      this.pagos.push(calculatedPayment)
       this.loaders.loadingAdd = false
 
       if (this.orders.length > 1) {
@@ -347,21 +393,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
     })
 
-
-  }
-
-  validateCard(event) {
-    if (event == 'Visa') {
-      this.cardSrc = 'Visa'
-    } else if (event == 'Master Card') {
-      this.cardSrc = 'MC'
-    } else if (event == null) {
-      this.cardSrc = ''
-    }
   }
 
   setOrigin(origin) {
-    this.deliveryForm.get('deliveryHeader').get('dirRecogida').setValue(origin)
+    this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(origin)
     this.placesOrigin = []
   }
 
@@ -370,6 +405,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
       return +a + +b['recargos']
     }, 0)
 
+    this.pago.baseRate = this.pagos.reduce(function (a, b) {
+      return +a + +b['tarifaBase']
+
+    })
+
     this.pago.total = this.pagos.reduce(function (a, b) {
       return +a + +b['total']
 
@@ -377,7 +417,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   setDestination(destination) {
-    this.deliveryForm.get('orders').get('direccion').setValue(destination)
+    this.deliveryForm.get('order.direccion').setValue(destination)
     this.placesDestination = []
     this.calculatedistanceBefore()
   }
@@ -394,30 +434,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
     location.reload()
   }
 
-  setCurrentLocationOrg(event) {
-    if (event.target.checked == true) {
-      if (navigator) {
-        navigator.geolocation.getCurrentPosition(pos => {
-          const originCords = Number(pos.coords.latitude) + ',' + Number(pos.coords.longitude)
-          const ctrl = document.getElementById('dirRecogida')
-          let option = document.createElement("option")
-          option.text = originCords
-          option.value = originCords
-          ctrl.appendChild(option)
-          this.deliveryForm.get('deliveryHeader').get('dirRecogida').setValue(originCords)
-          if (this.deliveryForm.get('orders').get('direccion').value != '') {
-            this.calculatedistanceBefore()
-          }
-        });
-      } else {
-        alert('Por favor activa la ubicación para esta función')
-      }
-    } else {
-      this.deliveryForm.get('deliveryHeader').get('dirRecogida').setValue('')
-    }
-
-  }
-
   setCurrentLocationDest(event) {
     if (event.target.checked == true) {
       if (navigator) {
@@ -426,17 +442,37 @@ export class CustomerNewDeliveryComponent implements OnInit {
         }, {})
         navigator.geolocation.getCurrentPosition(pos => {
           const destCords = Number(pos.coords.latitude) + ',' + Number(pos.coords.longitude)
-          this.deliveryForm.get('orders').get('direccion').setValue(destCords)
+          this.deliveryForm.get('order.direccion').setValue(destCords)
           this.calculatedistanceBefore()
         })
       } else {
         alert('Por favor activa la ubicación para esta función')
       }
     } else {
-      this.deliveryForm.get('orders').get('direccion').setValue('')
+      this.deliveryForm.get('order.direccion').setValue('')
     }
 
   }
 
+  setCordsOrigin() {
+    this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.originCords.nativeElement.value)
+    this.gcordsOrigin = false
+
+    if (this.deliveryForm.get('order.direccion').value != '') {
+      this.calculatedistanceBefore()
+    }
+
+  }
+
+  setCordsDestination() {
+    this.deliveryForm.get('order.direccion').setValue(this.destinationCords.nativeElement.value)
+    this.gcordsDestination = false
+    this.calculatedistanceBefore()
+  }
+
+
+  showNewDeliveryDetail(id) {
+    this.router.navigate(['cliente-detalle-delivery', id])
+  }
 
 }

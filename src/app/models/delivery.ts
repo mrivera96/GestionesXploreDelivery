@@ -20,4 +20,5 @@ export interface Delivery {
   isPagada?: boolean
   idCliente?: number
   entregas?: number
+  instrucciones?: string
 }

@@ -24,12 +24,9 @@ export class HomeCustomerComponent implements OnInit {
   loaders = {
     'loadingData': false
   }
-  dtTrigger: Subject<any> = new Subject()
   msgError = ''
 
-
-  constructor(private authService: AuthService,
-              private deliveriesService: DeliveriesService,
+  constructor(
   ) {
 
   }
@@ -37,22 +34,11 @@ export class HomeCustomerComponent implements OnInit {
   deliveries: Delivery[]
 
   ngOnInit(): void {
-    this.loadData()
+    this.loaders.loadingData = true
   }
 
-  loadData() {
-    this.loaders.loadingData = true
-    this.deliveriesService.getCustomerDeliveries().subscribe(response => {
-      this.deliveries = response.data.deliveriesDia
-      this.dtTrigger.next()
-      this.loaders.loadingData = false
-    }, error => {
-      this.loaders.loadingData = false
-      this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-      $("#errModal").modal('show')
-    })
-
-
+  setLoading(event) {
+    this.loaders.loadingData = event
   }
 
 }

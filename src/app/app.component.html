@@ -11,11 +11,29 @@
           <i class="fa fa-user"></i>
           {{currentUser.nomUsuario}}
         </a>
-
       </li>
+
       <li>
         <a href="javascript:void(0)" id="logout" class="list-group-item d-none userSubMenu" (click)="logout()">
           <i class="fa fa-power-off ml-3"></i> Cerrar Sesión
+        </a>
+      </li>
+
+      <li>
+        <a (click)="goHome()" class="list-group-item">
+          <i class="fa fa-calendar-check"></i>
+          <span> Reservas del día</span> </a>
+      </li>
+
+      <li>
+        <a  (click)="showTomorrowRequest()" class="list-group-item">
+          <i class="fa fa-calendar-alt"></i> Reservas para Mañana
+        </a>
+      </li>
+
+      <li>
+        <a (click)="showAllRequest()" class="list-group-item">
+          <i class="fa fa-list-alt"></i> Todas las Reservas
         </a>
       </li>
 
@@ -31,22 +49,6 @@
         </a>
       </li>
 
-      <li>
-        <a (click)="goHome()" class="list-group-item">
-          <i class="fa fa-calendar-check"></i>
-          <span> Reservas del día</span> </a>
-      </li>
-      <li>
-        <a (click)="showAllRequest()" class="list-group-item">
-          <i class="fa fa-list-alt"></i> Todos las Reservas
-        </a>
-      </li>
-
-      <li>
-        <a  (click)="showTomorrowRequest()" class="list-group-item">
-          <i class="fa fa-calendar-alt"></i> Reservas para Mañana
-        </a>
-      </li>
 
       <li>
         <a (click)="showCustomersSubMenu()"  class="list-group-item dropdown-toggle" >
@@ -81,6 +83,12 @@
       <li>
         <a  (click)="showRatesPArametrization()" class="list-group-item d-none confSubMenu">
           <i class="fa fa-dollar-sign ml-3"></i> Tarifas
+        </a>
+      </li>
+
+      <li>
+        <a  (click)="showSurchargesParametrization()" class="list-group-item d-none confSubMenu">
+          <i class="fa fa-dollar-sign ml-3"></i> Recargos
         </a>
       </li>
 

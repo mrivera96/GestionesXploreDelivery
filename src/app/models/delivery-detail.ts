@@ -15,4 +15,5 @@ export interface DeliveryDetail {
   tarifaBase?: number
   recargo?: number
   cTotal?: number
+  instrucciones?: string
 }

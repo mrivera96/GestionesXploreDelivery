@@ -1,20 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {Category} from "../../../models/category";
-import {Subject} from "rxjs";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {CategoriesService} from "../../../services/categories.service";
+import { Component, OnInit } from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
-import {RatesService} from "../../../services/rates.service";
-import {Rate} from "../../../models/rate";
+import {Subject} from "rxjs";
+import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Customer} from "../../../models/customer";
+import {SurchargesService} from "../../../services/surcharges.service";
 import {UsersService} from "../../../services/users.service";
-
+import {Surcharge} from "../../../models/surcharge";
 declare var $: any
 
 @Component({
-  selector: 'app-xplore-rates',
-  templateUrl: './xplore-rates.component.html',
-  styleUrls: ['./xplore-rates.component.css'],
+  selector: 'app-xplore-surcharges',
+  templateUrl: './xplore-surcharges.component.html',
+  styleUrls: ['./xplore-surcharges.component.css'],
   animations: [
     trigger('fade', [
       transition('void => *', [
@@ -24,10 +21,8 @@ declare var $: any
     ])
   ]
 })
-export class XploreRatesComponent implements OnInit {
-
+export class XploreSurchargesComponent implements OnInit {
   dtOptions
-  rates: Rate[]
   dtTrigger: Subject<any>
   loaders = {
     loadingData: false,
@@ -35,18 +30,16 @@ export class XploreRatesComponent implements OnInit {
   }
   exitMsg = ''
   errMsg = ''
-  edRateForm: FormGroup
-  newRateForm: FormGroup
-  categories: Category[]
-  customers: Customer[]
+  edSurChForm: FormGroup
+  newSurchForm: FormGroup
 
+  customers: Customer[]
+  surcharges: Surcharge[]
   constructor(
-    private ratesService: RatesService,
-    private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
+    private surchargesService: SurchargesService,
     private usersService: UsersService
-  ) {
-  }
+  ) { }
 
   ngOnInit(): void {
     this.initialize()
@@ -54,34 +47,32 @@ export class XploreRatesComponent implements OnInit {
   }
 
   get f() {
-    return this.edRateForm.controls
+    return this.edSurChForm.controls
   }
 
   get fNew() {
-    return this.newRateForm.controls
+    return this.newSurchForm.controls
   }
 
   initialize() {
     this.dtTrigger = new Subject<any>()
-    this.edRateForm = this.formBuilder.group(
+    this.edSurChForm = this.formBuilder.group(
       {
-        idTarifaDelivery: [],
-        descTarifa: ['', Validators.required],
-        idCategoria: [null, Validators.required],
-        entregasMinimas: ['', Validators.required],
-        entregasMaximas: ['', Validators.required],
-        precio: ['', Validators.required],
+        idRecargo: [],
+        descRecargo:['', Validators.required],
+        kilomMinimo: ['', Validators.required],
+        kilomMaximo: ['', Validators.required],
+        monto: ['', Validators.required],
         idCliente: [null, Validators.required]
       }
     )
 
-    this.newRateForm = this.formBuilder.group(
+    this.newSurchForm = this.formBuilder.group(
       {
-        descTarifa: ['', Validators.required],
-        idCategoria: [null, Validators.required],
-        entregasMinimas: ['', Validators.required],
-        entregasMaximas: ['', Validators.required],
-        precio: ['', Validators.required],
+        descRecargo:['', Validators.required],
+        kilomMinimo: ['', Validators.required],
+        kilomMaximo: ['', Validators.required],
+        monto: ['', Validators.required],
         idCliente: [null, Validators.required]
       }
     )
@@ -93,7 +84,7 @@ export class XploreRatesComponent implements OnInit {
       processing: true,
       info: true,
       rowReorder: false,
-      order: [2, 'desc'],
+      order: [0, 'asc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -114,13 +105,9 @@ export class XploreRatesComponent implements OnInit {
   }
 
   loadData() {
-    this.ratesService.getRates().subscribe(response => {
-      this.rates = response.data
+    this.surchargesService.getSurcharges().subscribe(response => {
+      this.surcharges = response.data
       this.dtTrigger.next()
-    })
-
-    this.categoriesService.getAllCategories().subscribe(response => {
-      this.categories = response.data
     })
 
     this.usersService.getCustomers().subscribe(response => {
@@ -133,30 +120,29 @@ export class XploreRatesComponent implements OnInit {
   }
 
   showEditForm(id) {
-    let currRate: Rate = {}
-    this.rates.forEach(value => {
-      if (value.idTarifaDelivery === id) {
-        currRate = value
+    let currSurcharge: Surcharge = {}
+    this.surcharges.forEach(value => {
+      if (value.idRecargo === id) {
+        currSurcharge = value
       }
     })
-    this.f.idTarifaDelivery.setValue(currRate.idTarifaDelivery)
-    this.f.descTarifa.setValue(currRate.descTarifa)
-    this.f.idCategoria.setValue(currRate.idCategoria)
-    this.f.entregasMinimas.setValue(currRate.entregasMinimas)
-    this.f.entregasMaximas.setValue(currRate.entregasMaximas)
-    this.f.precio.setValue(currRate.precio)
-    this.f.idCliente.setValue(currRate.idCliente)
-    $("#edTarModal").modal('show')
+    this.f.idRecargo.setValue(currSurcharge.idRecargo)
+    this.f.descRecargo.setValue(currSurcharge.descRecargo)
+    this.f.kilomMinimo.setValue(currSurcharge.kilomMinimo)
+    this.f.kilomMaximo.setValue(currSurcharge.kilomMaximo)
+    this.f.monto.setValue(currSurcharge.monto)
+    this.f.idCliente.setValue(currSurcharge.idCliente)
+    $("#edRecModal").modal('show')
   }
 
   showNewForm() {
-    $("#newTarModal").modal('show')
+    $("#newRecModal").modal('show')
   }
 
   onFormEditSubmit() {
-    if (this.edRateForm.valid) {
+    if (this.edSurChForm.valid) {
       this.loaders.loadingSubmit = true
-      this.ratesService.editRate(this.edRateForm.value)
+      this.surchargesService.editSurcharge(this.edSurChForm.value)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.exitMsg = response.message
@@ -173,9 +159,9 @@ export class XploreRatesComponent implements OnInit {
   }
 
   onFormNewSubmit() {
-    if (this.newRateForm.valid) {
+    if (this.newSurchForm.valid) {
       this.loaders.loadingSubmit = true
-      this.ratesService.createRate(this.newRateForm.value)
+      this.surchargesService.createSurcharge(this.newSurchForm.value)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.exitMsg = response.message

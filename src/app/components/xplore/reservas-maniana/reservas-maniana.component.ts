@@ -30,14 +30,10 @@ export class ReservasManianaComponent implements OnInit {
 
   ngOnInit(): void {
     this.loaders.loadingData = true
+  }
 
-    this.deliveriesService.getDeliveries().subscribe( response => {
-      if(response.error == 0){
-        this.loaders.loadingData = false
-        this.deliveries = response.data.deliveriesManiana
-        this.dtTrigger.next()
-      }
-    })
+  setLoading(event) {
+    this.loaders.loadingData = event
   }
 
 }

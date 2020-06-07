@@ -7,19 +7,21 @@
     <!--HEADER BLOCK START-->
     <div class="row">
       <div class="col">
-        <p class="card-title"><strong *ngIf="!loaders.loadingSubmit">Ingrese los datos del Delivery en el siguiente
-          formulario</strong>
-          <strong *ngIf="loaders.loadingSubmit">Espere mientras procesamos su solicitud, no cierre esta
-            ventana.</strong>
+        <p class="card-title">
+          <strong *ngIf="!loaders.loadingSubmit">
+            Ingrese los datos del Delivery en el siguiente formulario
+          </strong>
+          <strong *ngIf="loaders.loadingSubmit">
+            Espere mientras procesamos su solicitud, no cierre esta ventana.
+          </strong>
         </p>
         <hr>
       </div>
-
-      <div class="row" *ngIf="loaders.loadingSubmit">
-        <div class="col text-center">
-          <img src="/GestionesDelivery/assets/img/loading.svg" width="35%" alt="loading">
-          <p>Procesando información...</p>
-        </div>
+    </div>
+    <div class="row" *ngIf="loaders.loadingSubmit">
+      <div class="col text-center">
+        <img src="assets/img/loading.svg" width="35%" alt="loading">
+        <p>Procesando información...</p>
       </div>
     </div>
     <!--HEADER BLOCK END-->
@@ -80,26 +82,32 @@
             <div class="form-row">
               <div class="col-md-6" *ngIf="locationOption == 2">
                 <label class="col-form-label" for="inputdirRecogida">Direccion de recogida:</label>
-
                 <div class="input-group">
                   <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-map-marker-alt"></i>
-                </span>
+                    <span class="input-group-text">
+                      <i class="fa fa-map-marker-alt"></i>
+                    </span>
                   </div>
 
                   <input class="form-control" (input)="searchOrigin($event)" autocomplete="off"
                          id="inputdirRecogida" required formControlName="dirRecogida"
-                         [class.is-invalid]="deliveryForm.get('deliveryHeader').get('dirRecogida').invalid && deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
+                         [class.is-invalid]="newForm.get('deliveryHeader.dirRecogida').invalid && newForm.get('deliveryHeader.dirRecogida').touched"
                          placeholder="¿Dónde recogeremos tu pedido?">
+                  <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
                 </div>
                 <div class="suggestions" *ngIf="placesOrigin?.length">
                   <p *ngFor="let s of placesOrigin" (click)="setOrigin(s.text)">{{s.text}}</p>
                 </div>
+                <small> <a href="javascript:void(0)" (click)="gcordsOrigin=true">Ingresar Geocordenadas</a> </small>
 
-                <small
-                  *ngIf="deliveryForm.get('deliveryHeader').get('dirRecogida').errors?.required&& deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
-                  class="text-danger">*Este campo es obligatorio</small>
+                <div class="input-group" *ngIf="gcordsOrigin">
+
+                  <input #originCords class="form-control" type="text" placeholder=" Ej. 10.1508684, -87.61982">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" (click)="setCordsOrigin()"> Ok</button>
+                  </div>
+                </div>
+
               </div>
 
               <div class="col-md-6" *ngIf="locationOption == 3">
@@ -114,15 +122,14 @@
 
                   <select class="form-control" id="dirRecogida" required formControlName="dirRecogida"
                           (change)="calculatedistanceBefore()"
-                          [class.is-invalid]="deliveryForm.get('deliveryHeader').get('dirRecogida').invalid && deliveryForm.get('deliveryHeader').get('dirRecogida').touched">
+                          [class.is-invalid]="newForm.get('deliveryHeader.dirRecogida').invalid && newForm.get('deliveryHeader.dirRecogida').touched">
                     <option [value]="null">- Seleccione un punto de recogida -</option>
                     <option *ngFor="let branch of myBranchOffices"
                             value="{{branch.direccion}}">{{branch.nomSucursal}}</option>
                   </select>
+                  <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
                 </div>
-                <small
-                  *ngIf="deliveryForm.get('deliveryHeader').get('dirRecogida').errors?.required&& deliveryForm.get('deliveryHeader').get('dirRecogida').touched"
-                  class="text-danger">*Este campo es obligatorio</small>
+
               </div>
 
               <div class="col-md-6">
@@ -131,7 +138,7 @@
                 <div class="form-check form-check-inline" *ngFor="let category of categories; let  i = index">
 
                   <label class="form-check-label"
-                         [ngStyle]="{'color': category.idCategoria===deliveryForm.get('deliveryHeader').get('idCategoria').value ? '#FF8C00': '#000'}">
+                         [ngStyle]="{'color': category.idCategoria === newForm.get('deliveryHeader.idCategoria').value ? '#FF8C00': '#000'}">
                     <input (change)="calculatedistanceBefore()" class="form-check-input" [id]="category.idCategoria"
                            formControlName="idCategoria" type="radio" [value]="category.idCategoria" hidden>
                     <i class="fa"
@@ -141,6 +148,24 @@
 
                 </div>
 
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-md-6">
+                <label class="col-form-label" for="instGenerales">Instrucciones de Recogida:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fa fa-clipboard-check"></i>
+                    </span>
+                  </div>
+
+                  <textarea class="form-control" id="instGenerales" formControlName="instrucciones" maxlength="150"
+                            [class.is-invalid]="newForm.get('deliveryHeader.instrucciones').invalid && newForm.get('deliveryHeader.instrucciones').touched"
+                            placeholder="¿Necesitamos instrucciones para la recogida de tus envíos?"></textarea>
+                  <small class="text-danger invalid-feedback">*Excede la longitud máxima permitida</small>
+                </div>
               </div>
             </div>
           </div>
@@ -155,7 +180,7 @@
             </div>
           </div>
 
-          <div class="form-group" formGroupName="orders">
+          <div class="form-group" formGroupName="order">
             <div class="form-row">
               <div class="col-md-6">
                 <label class="col-form-label" for="nFactura">Detalle de envío:</label>
@@ -166,12 +191,15 @@
                 </span>
                   </div>
                   <input type="text" formControlName="nFactura" class="form-control" id="nFactura" required
-                         [class.is-invalid]="deliveryForm.get('orders').get('nFactura').invalid && deliveryForm.get('orders').get('nFactura').touched"
+                         maxlength="250"
+                         [class.is-invalid]="newForm.get('order.nFactura').invalid && newForm.get('order.nFactura').touched"
                          placeholder="¿Qué deseas enviar?">
+                  <small class="text-danger invalid-feedback">
+                    <p *ngIf="newForm.get('order.nFactura').errors?.required">*Este campo es obligatorio</p>
+                    <p *ngIf="newForm.get('order.nFactura').errors?.maxlength">*Excede la longitud máxima permitida</p>
+
+                  </small>
                 </div>
-                <small
-                  *ngIf="deliveryForm.get('orders').get('nFactura').errors?.required && deliveryForm.get('orders').get('nFactura').touched"
-                  class="text-danger">*Este campo es obligatorio</small>
               </div>
 
               <div class="col-md-6">
@@ -183,13 +211,17 @@
                 </span>
                   </div>
                   <input type="text" class="form-control" formControlName="nomDestinatario" id="nomDestinatario"
-                         required
+                         required maxlength="150"
                          placeholder="¿Quién recibirá el pedido?"
-                         [class.is-invalid]="deliveryForm.get('orders').get('nomDestinatario').invalid && deliveryForm.get('orders').get('nomDestinatario').touched">
+                         [class.is-invalid]="newForm.get('order.nomDestinatario').invalid && newForm.get('order.nomDestinatario').touched">
+                  <small class="text-danger invalid-feedback">
+                    <p *ngIf="newForm.get('order.nomDestinatario').errors?.required">*Este campo es obligatorio</p>
+                    <p *ngIf="newForm.get('order.nomDestinatario').errors?.maxlength">*Excede la longitud máxima
+                      permitida</p>
+
+                  </small>
                 </div>
-                <small
-                  *ngIf="deliveryForm.get('orders').get('nomDestinatario').errors?.required && deliveryForm.get('orders').get('nomDestinatario').touched"
-                  class="text-danger">*Este campo es obligatorio</small>
+
               </div>
 
             </div>
@@ -206,19 +238,18 @@
                   </div>
                   <input type="tel" class="form-control" id="numCel" formControlName="numCel" required minlength="9"
                          maxlength="9" appPhoneMask
-                         [class.is-invalid]="deliveryForm.get('orders').get('numCel').invalid && deliveryForm.get('orders').get('numCel').touched"
+                         [class.is-invalid]="newForm.get('order.numCel').invalid && newForm.get('order.numCel').touched"
                          placeholder="Número celular sin espacios">
-
+                  <small class="text-danger invalid-feedback">
+                    <p
+                      *ngIf="newForm.get('order.numCel').errors?.minlength || newForm.get('order.numCel').errors?.maxlength">
+                      *Por favor ingresa un número válido
+                    </p>
+                    <p *ngIf="newForm.get('order.numCel').errors?.required">
+                      *Este campo es obligatorio
+                    </p>
+                  </small>
                 </div>
-                <small
-                  *ngIf="deliveryForm.get('orders').get('numCel').errors?.maxlength && deliveryForm.get('orders').get('numCel').touched"
-                  class="text-danger">*Por favor ingresa un número válido</small>
-                <small
-                  *ngIf="deliveryForm.get('orders').get('numCel').errors?.minlength && deliveryForm.get('orders').get('numCel').touched"
-                  class="text-danger">*Por favor ingresa un número válido</small>
-                <small
-                  *ngIf="deliveryForm.get('orders').get('numCel').errors?.required && deliveryForm.get('orders').get('numCel').touched"
-                  class="text-danger">*Este campo es obligatorio</small>
 
               </div>
 
@@ -232,16 +263,29 @@
                   </div>
                   <input type="text" (input)="searchDestination($event)" autocomplete="off"
                          class="form-control" formControlName="direccion" id="direccion" required
-                         [class.is-invalid]="deliveryForm.get('orders').get('direccion').invalid && deliveryForm.get('orders').get('direccion').touched"
+                         [class.is-invalid]="newForm.get('order.direccion').invalid && newForm.get('order.direccion').touched"
                          placeholder="¿Dónde entregaremos tu pedido?">
+                  <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
+
                 </div>
 
                 <div class="suggestions" *ngIf="placesDestination?.length">
                   <p *ngFor="let s of placesDestination" (click)="setDestination(s.text)">{{s.text}}</p>
                 </div>
-                <small
-                  *ngIf="deliveryForm.get('orders').get('direccion').errors?.required && deliveryForm.get('orders').get('direccion').touched"
-                  class="text-danger">*Este campo es obligatorio</small>
+
+                <small>
+                  <a href="javascript:void(0)" (click)="gcordsDestination=true">Ingresar Geocordenadas</a>
+                </small>
+
+
+                <div class="input-group" *ngIf="gcordsDestination">
+
+                  <input #destinationCords class="form-control" type="text" placeholder=" Ej. 10.1508684, -87.61982">
+
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" (click)="setCordsDestination()"> Ok</button>
+                  </div>
+                </div>
                 <br>
                 <div class="form-check form-check-inline">
                   <label class="form-check-label">
@@ -250,6 +294,23 @@
                   </label>
                 </div>
               </div>
+
+              <div class="col-md-6">
+                <label class="col-form-label" for="instEspecificas">Instrucciones de Entrega:</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">
+                      <i class="fa fa-clipboard-check"></i>
+                    </span>
+                  </div>
+
+                  <textarea class="form-control" id="instEspecificas" formControlName="instrucciones" maxlength="150"
+                            [class.is-invalid]="newForm.get('order.instrucciones').invalid && newForm.get('order.instrucciones').touched"
+                            placeholder="¿Necesitamos instrucciones para la entrega de éste envío?"></textarea>
+                  <small class="text-danger invalid-feedback">*Excede la longitud máxima permitida</small>
+                </div>
+              </div>
+
             </div>
             <br>
             <div class="form-row text-center">
@@ -271,7 +332,7 @@
             <div class="form-row">
               <div class="col-md-6">
                 <button type="button" (click)="onOrderAdd()"
-                        [disabled]="!deliveryForm.get('orders').valid || !deliveryForm.get('deliveryHeader').valid || loaders.loadingAdd"
+                        [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid || loaders.loadingAdd"
                         class="btn btn-sm btn-outline-success float-left">
                   <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                   entrega
@@ -396,7 +457,8 @@
           <p><strong>Tu número de solicitud es: N° {{nDeliveryResponse}}</strong></p>
         </div>
         <div class="modal-footer">
-          <button type="button" (click)="reloadData()" class="btn btn-sm btn-rounded btn-outline-primary"
+          <button type="button" (click)="showNewDeliveryDetail(nDeliveryResponse)"
+                  class="btn btn-sm btn-rounded btn-outline-primary"
                   data-dismiss="modal">Aceptar
           </button>
         </div>

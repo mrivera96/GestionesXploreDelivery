@@ -1,10 +1,12 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Delivery} from "../../../models/delivery";
 import {Subject} from "rxjs";
 import {Router} from "@angular/router";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
 import { DataTableDirective} from "angular-datatables";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {State} from "../../../models/state";
 declare var $: any
 
 
@@ -15,27 +17,75 @@ declare var $: any
 })
 export class CustomerDatatableComponent implements OnInit {
 
-  @Input('deliveries') deliveries: Delivery[]
-  @Input('dtTrigger') dtTrigger: Subject<any>
-  dtOptions: any
+  @Input('deliveries') tDeliveries: number
+  deliveries: Delivery[]
+  dtTrigger: Subject<any> = new Subject<any>()
+  dtOptions: DataTables.Settings
+  @Output('loadingData') stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
+
+  @ViewChild(DataTableDirective, {static: false})
+  datatableElement: DataTableDirective
+
+  states: State[]
 
   constructor(
     private router: Router,
-
+    private deliveriesService: DeliveriesService
   ) {
 
   }
 
   ngOnInit(): void {
 
+    this.initialize()
+
+    this.loadData()
+  }
+
+  loadData(){
+    this.deliveriesService.getStates().subscribe(response => {
+      this.states = response.data.xploreDelivery
+    })
+
+    this.deliveriesService.getCustomerDeliveries().subscribe( response => {
+      this.stopLoading.emit(false)
+
+      switch (this.tDeliveries) {
+        case 1: {
+          this.deliveries = response.data.deliveriesDia
+          break
+        }
+        default: {
+          this.deliveries = response.data.todas
+        }
+
+      }
+
+      this.dtTrigger.next()
+      this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.columns().every(function () {
+          const that = this;
+          $('select', this.footer()).on('change', function () {
+            if (that.search() !== this['value']) {
+              that
+                .search(this['value'])
+                .draw();
+            }
+          });
+        });
+      });
+
+    })
+  }
+
+  initialize(){
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
       serverSide: false,
       processing: true,
       info: true,
-      rowReorder: false,
-
+      autoWidth: true,
       order:[1,'desc'],
       responsive: true,
       language: {
@@ -55,5 +105,7 @@ export class CustomerDatatableComponent implements OnInit {
       },
     }
   }
+
+
 
 }

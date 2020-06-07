@@ -84,8 +84,10 @@ export class CustomerBranchOfficesComponent implements OnInit {
   }
 
   loadData() {
+    this.loaders.loadingData = true
     this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
+      this.loaders.loadingData = false
       this.bdtTrigger.next()
     })
   }

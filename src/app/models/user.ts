@@ -12,4 +12,5 @@ export interface User {
   passcodeUsuario?: number
   access_token?: string
   cliente?: any
+  numCelular?: string
 }

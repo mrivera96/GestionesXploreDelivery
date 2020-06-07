@@ -1,10 +1,21 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild, ViewChildren} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  ViewChildren
+} from '@angular/core';
 import {Subject} from "rxjs";
 import {Delivery} from "../../../models/delivery";
 import {Router} from "@angular/router";
 import {DataTableDirective} from "angular-datatables";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {State} from "../../../models/state";
+import {element} from "protractor";
 
 @Component({
   selector: 'app-data-table',
@@ -13,8 +24,10 @@ import {State} from "../../../models/state";
 })
 export class DataTableComponent implements OnInit, AfterViewInit{
 
-  @Input('deliveries') deliveries: Delivery[]
-  @Input('dtTrigger') dtTrigger: Subject<any>
+  @Input('deliveries') tDeliveries: number
+  deliveries: Delivery[]
+  dtTrigger: Subject<any> = new Subject<any>()
+  @Output('loadingData') stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
@@ -31,10 +44,34 @@ export class DataTableComponent implements OnInit, AfterViewInit{
 
   ngOnInit(): void {
     this.initialize()
+    this.loadData()
+
   }
-  ngAfterViewInit(): void {
+
+  loadData(){
     this.deliveriesService.getStates().subscribe(response => {
-      this.states = response.data
+      this.states = response.data.xploreDelivery
+    })
+
+    this.deliveriesService.getDeliveries().subscribe( response => {
+      this.stopLoading.emit(false)
+
+      switch (this.tDeliveries) {
+        case 1: {
+          this.deliveries = response.data.deliveriesDia
+          break
+        }
+        case 2: {
+          this.deliveries = response.data.deliveriesManiana
+          break
+        }
+        default: {
+          this.deliveries = response.data.todas
+        }
+
+      }
+
+      this.dtTrigger.next()
       this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
         dtInstance.columns().every(function () {
           const that = this;
@@ -47,7 +84,11 @@ export class DataTableComponent implements OnInit, AfterViewInit{
           });
         });
       });
+
     })
+  }
+  ngAfterViewInit(): void {
+
 
   }
 
@@ -78,8 +119,6 @@ export class DataTableComponent implements OnInit, AfterViewInit{
       },
     }
   }
-
-
 
 
 }

@@ -11,7 +11,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }),
+        style({opacity: 0}),
         animate(1000, style({opacity: 1}))
       ])
     ])
@@ -21,27 +21,22 @@ export class HomeComponent implements OnInit {
   loaders = {
     'loadingData': false
   }
-  dtTrigger: Subject<any> = new Subject()
-  constructor(
-    private deliveriesService: DeliveriesService,
-  ) {
+
+  constructor() {
 
   }
-  deliveries: Delivery[]
 
   ngOnInit(): void {
     this.loadData()
   }
 
-  loadData(){
+  loadData() {
     this.loaders.loadingData = true
-    this.deliveriesService.getDeliveries().subscribe(response => {
-      if (response.error == 0) {
-        this.deliveries = response.data.deliveriesDia
-        this.dtTrigger.next()
-        this.loaders.loadingData = false
-      }
-    })
+
+  }
+
+  setLoading(event) {
+    this.loaders.loadingData = event
   }
 
 }

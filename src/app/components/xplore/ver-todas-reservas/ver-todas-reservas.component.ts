@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {Delivery} from "../../../models/delivery";
 import {Subject} from "rxjs";
@@ -12,7 +12,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }),
+        style({opacity: 0}),
         animate(1000, style({opacity: 1}))
       ])
     ])
@@ -20,30 +20,21 @@ import {animate, style, transition, trigger} from "@angular/animations";
 })
 export class VerTodasReservasComponent implements OnInit {
 
-  deliveries: Delivery[]
-  dtTrigger: Subject<any> = new Subject()
   loaders = {
     loadingData: false
   }
-  dtOptions: DataTables.Settings
-  constructor(
-    private deliveriesService: DeliveriesService,
-    private router: Router
-  ) { }
+
+  constructor() {
+  }
 
 
   ngOnInit(): void {
     this.loaders.loadingData = true
 
-    this.deliveriesService.getDeliveries().subscribe( response => {
+  }
 
-        this.loaders.loadingData = false
-        this.deliveries = response.data.todas
-
-        this.dtTrigger.next()
-
-    })
-
+  setLoading(event) {
+    this.loaders.loadingData = event
   }
 
 

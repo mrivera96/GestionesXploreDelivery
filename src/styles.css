@@ -9,6 +9,13 @@ table {
   width: 100%;
 }
 
+tfoot {
+  display: table-header-group;
+}
+
+thead{
+  display: table-row-group;
+}
 
 .xplore-content-bg{
    background-color: #eee !important;

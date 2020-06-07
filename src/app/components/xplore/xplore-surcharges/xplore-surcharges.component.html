@@ -4,7 +4,7 @@
     <a [routerLink]="['/']">
       <i class="fa fa-arrow-circle-left m-r-xs"></i>
     </a>
-    <h3 class="d-inline">Parametrización de Tarifas</h3>
+    <h3 class="d-inline">Parametrización de Recargos</h3>
   </div>
   <!-- CARD BODY START -->
   <div class="card-body p-0">
@@ -18,10 +18,10 @@
     <!-- CONTAINER START -->
     <div class="ibox">
       <div class="ibox-title ">
-        <h5>Listado de Tarifas</h5>
+        <h5>Listado de Recargos por Distancia</h5>
         <button (click)="showNewForm()" type="button" class="btn btn-sm btn-outline-success float-right mb-2">
           <i class="fa fa-plus"></i>
-          Agregar Tarifa
+          Agregar Recargo
         </button>
       </div>
       <!-- CONTAINER BODY START -->
@@ -32,10 +32,9 @@
             <thead>
             <tr>
               <th>N°</th>
-              <th>Descripción de Tarifa</th>
-              <th>Categoría</th>
-              <th>Entregas Mínimas</th>
-              <th>Entregas Máximas</th>
+              <th>Descripción de Recargo</th>
+              <th>Kilometraje Mínimo</th>
+              <th>Kilometraje Máximo</th>
               <th>Monto</th>
               <th>Cliente Asignado</th>
               <th data-priority="1">Acción</th>
@@ -43,16 +42,15 @@
             </thead>
             <tbody>
 
-            <tr *ngFor="let rate of rates">
-              <td>{{rate.idTarifaDelivery}}</td>
-              <td>{{rate.descTarifa}}</td>
-              <td>{{rate.category.descCategoria}}</td>
-              <td>{{rate.entregasMinimas}}</td>
-              <td>{{rate.entregasMaximas}}</td>
-              <td>L. {{rate.precio}}</td>
-              <td>{{rate.cliente.nomEmpresa}}</td>
+            <tr *ngFor="let surcharge of surcharges">
+              <td>{{surcharge.idRecargo}}</td>
+              <td>{{surcharge.descRecargo}}</td>
+              <td>{{surcharge.kilomMinimo}}</td>
+              <td>{{surcharge.kilomMaximo}}</td>
+              <td>L. {{surcharge.monto}}</td>
+              <td>{{surcharge.cliente.nomEmpresa}}</td>
               <td>
-                <a (click)="showEditForm(rate.idTarifaDelivery)" style="color: #0071A2">
+                <a (click)="showEditForm(surcharge.idRecargo)" style="color: #0071A2">
                   <i class="fa fa-edit"></i> Editar
                 </a>
               </td>
@@ -99,103 +97,77 @@
 <!-- FIN DE MODAL -->
 
 <!-- INICIO DE MODAL -->
-<div id="edTarModal" class="modal fade" tabindex="-1" role="dialog">
+<div id="edRecModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">
-          Editar Tarifa
+          Editar Recargo
         </h3>
       </div>
       <div class="modal-body">
-        <form [formGroup]="edRateForm">
+        <form [formGroup]="edSurChForm">
+
           <div class="form-group">
-            <label class="col-form-label" for="descTarifa">Descripción de Tarifa:</label>
+            <label class="col-form-label" for="descRecargo">Descripción de Recargo:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-pen"></i>
                 </span>
               </div>
-              <input class="form-control" id="descTarifa" type="text" formControlName="descTarifa"
-                     [class.is-invalid]="f.descTarifa.invalid && f.descTarifa.touched"
-                     required maxlength="60" >
+              <input class="form-control" id="descRecargo" type="text" formControlName="descRecargo"
+                     [class.is-invalid]="f.descRecargo.invalid && f.descRecargo.touched"
+                     required maxlength="60">
               <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="idCategoria">Categoría:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-check-circle"></i>
-                </span>
-              </div>
-              <select class="form-control" id="idCategoria" formControlName="idCategoria"
-                      [class.is-invalid]="f.idCategoria.invalid && f.idCategoria.touched"
-                      required>
-                <option [value]="null">- Seleccione una categoría -</option>
-                <option *ngFor="let category of categories"
-                        [value]="category.idCategoria">{{category.descCategoria}}</option>
-              </select>
-            </div>
-            <small
-              *ngIf="f.idCategoria.errors?.required && f.idCategoria.touched"
-              class="text-danger">*Este campo es obligatorio</small>
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="entregasMaximas">Entregas máximas:</label>
+            <label class="col-form-label" for="kilomMaximo">Kilometraje Máximo:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-sort-up"></i>
                 </span>
               </div>
-              <input class="form-control" id="entregasMaximas" type="number" formControlName="entregasMaximas"
-                     [class.is-invalid]="f.entregasMaximas.invalid && f.entregasMaximas.touched"
+              <input class="form-control" id="kilomMaximo" type="number" formControlName="kilomMaximo"
+                     [class.is-invalid]="f.kilomMaximo.invalid && f.kilomMaximo.touched"
                      required>
+              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
-            <small
-              *ngIf="f.entregasMaximas.errors?.required && f.entregasMaximas.touched"
-              class="text-danger">*Este campo es obligatorio</small>
-
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="entregasMinimas">Entregas Mínimas:</label>
+            <label class="col-form-label" for="kilomMinimo">Kilometraje Mínimo:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-sort-down"></i>
                 </span>
               </div>
-              <input class="form-control" id="entregasMinimas" type="number" formControlName="entregasMinimas"
-                     [class.is-invalid]="f.entregasMinimas.invalid && f.entregasMinimas.touched"
+              <input class="form-control" id="kilomMinimo" type="number" formControlName="kilomMinimo"
+                     [class.is-invalid]="f.kilomMinimo.invalid && f.kilomMinimo.touched"
                      required>
+              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
-            <small
-              *ngIf="f.entregasMinimas.errors?.required && f.entregasMinimas.touched"
-              class="text-danger">*Este campo es obligatorio</small>
 
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="precio">Monto:</label>
+            <label class="col-form-label" for="monto">Monto:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-dollar-sign"></i>
                 </span>
               </div>
-              <input class="form-control" id="precio" type="text" formControlName="precio"
-                     [class.is-invalid]="f.precio.invalid && f.precio.touched"
+              <input class="form-control" id="monto" type="text" formControlName="monto"
+                     [class.is-invalid]="f.monto.invalid && f.monto.touched"
                      required>
+              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
-            <small
-              *ngIf="f.precio.errors?.required && f.precio.touched"
-              class="text-danger">*Este campo es obligatorio</small>
+
           </div>
 
           <div class="form-group">
@@ -213,10 +185,9 @@
                 <option *ngFor="let customer of customers"
                         [value]="customer.idCliente">{{customer.nomEmpresa}}</option>
               </select>
+              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
-            <small
-              *ngIf="f.idCliente.errors?.required && f.idCliente.touched"
-              class="text-danger">*Este campo es obligatorio</small>
+
           </div>
 
         </form>
@@ -235,104 +206,78 @@
 <!-- FIN DE MODAL -->
 
 <!-- INICIO DE MODAL -->
-<div id="newTarModal" class="modal fade" tabindex="-1" role="dialog">
+<div id="newRecModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h3 class="modal-title">
-          Nueva Tarifa
+          Nuevo Recargo
         </h3>
       </div>
       <div class="modal-body">
-        <form [formGroup]="newRateForm">
-
+        <form [formGroup]="newSurchForm">
           <div class="form-group">
-            <label class="col-form-label" for="descTarifaN">Descripción de Tarifa:</label>
+            <label class="col-form-label" for="descRecargoN">Descripción de Recargo:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-pen"></i>
                 </span>
               </div>
-              <input class="form-control" id="descTarifaN" type="text" formControlName="descTarifa"
-                     [class.is-invalid]="fNew.descTarifa.invalid && fNew.descTarifa.touched"
-                     required maxlength="60" placeholder="¿Cuál será la descripción de la nueva tarifa?">
+              <input class="form-control" id="descRecargoN" type="text" formControlName="descRecargo"
+                     [class.is-invalid]="fNew.descRecargo.invalid && fNew.descRecargo.touched"
+                     required maxlength="60" placeholder="¿Cuál será la descripción del nuevo recargo?">
               <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="nidCategoria">Categoría:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-check-circle"></i>
-                </span>
-              </div>
-              <select class="form-control" id="nidCategoria" formControlName="idCategoria"
-                      [class.is-invalid]="fNew.idCategoria.invalid && fNew.idCategoria.touched"
-                      required>
-                <option [value]="null">- Seleccione una categoría -</option>
-                <option *ngFor="let category of categories"
-                        [value]="category.idCategoria">{{category.descCategoria}}</option>
-              </select>
-            </div>
-            <small
-              *ngIf="fNew.idCategoria.errors?.required && fNew.idCategoria.touched"
-              class="text-danger">*Este campo es obligatorio</small>
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="nentregasMaximas">Entregas máximas:</label>
+            <label class="col-form-label" for="kilomMaximoN">Kilometraje Máximo:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-sort-up"></i>
                 </span>
               </div>
-              <input class="form-control" id="nentregasMaximas" type="number" formControlName="entregasMaximas"
-                     [class.is-invalid]="fNew.entregasMaximas.invalid && fNew.entregasMaximas.touched"
-                     required placeholder="Número máximo de entregas">
+              <input class="form-control" id="kilomMaximoN" type="number" formControlName="kilomMaximo"
+                     [class.is-invalid]="fNew.kilomMaximo.invalid && fNew.kilomMaximo.touched"
+                     required placeholder="Kilómetros máximos que abarcará el recargo">
+              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
-            <small
-              *ngIf="fNew.entregasMaximas.errors?.required && fNew.entregasMaximas.touched"
-              class="text-danger">*Este campo es obligatorio</small>
+
 
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="nentregasMinimas">Entregas Mínimas:</label>
+            <label class="col-form-label" for="kilomMinimoN">Kilometraje Mínimo:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-sort-down"></i>
                 </span>
               </div>
-              <input class="form-control" id="nentregasMinimas" type="number" formControlName="entregasMinimas"
-                     [class.is-invalid]="fNew.entregasMinimas.invalid && fNew.entregasMinimas.touched"
-                     required placeholder="Número mínimo de entregas">
+              <input class="form-control" id="kilomMinimoN" type="number" formControlName="kilomMinimo"
+                     [class.is-invalid]="fNew.kilomMinimo.invalid && fNew.kilomMinimo.touched"
+                     required placeholder="Kilómetros mínimos que abarcará el recargo">
+              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
-            <small
-              *ngIf="fNew.entregasMinimas.errors?.required && fNew.entregasMinimas.touched"
-              class="text-danger">*Este campo es obligatorio</small>
 
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="nprecio">Monto:</label>
+            <label class="col-form-label" for="montoN">Monto:</label>
             <div class="input-group">
               <div class="input-group-prepend">
                 <span class="input-group-text">
                   <i class="fa fa-dollar-sign"></i>
                 </span>
               </div>
-              <input class="form-control" id="nprecio" type="text" formControlName="precio"
-                     [class.is-invalid]="fNew.precio.invalid && fNew.precio.touched"
-                     required placeholder="Monto de la tarifa">
+              <input class="form-control" id="montoN" type="text" formControlName="monto"
+                     [class.is-invalid]="fNew.monto.invalid && fNew.monto.touched"
+                     required placeholder="¿Cuál será el monto del recargo?">
+              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
-            <small
-              *ngIf="fNew.precio.errors?.required && fNew.precio.touched"
-              class="text-danger">*Este campo es obligatorio</small>
+
           </div>
 
           <div class="form-group">
@@ -350,10 +295,9 @@
                 <option *ngFor="let customer of customers"
                         [value]="customer.idCliente">{{customer.nomEmpresa}}</option>
               </select>
+              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
             </div>
-            <small
-              *ngIf="fNew.idCliente.errors?.required && fNew.idCliente.touched"
-              class="text-danger">*Este campo es obligatorio</small>
+
           </div>
 
         </form>
