@@ -1,138 +1,69 @@
-<!-- CARD START -->
-<div @fade class="card shadow">
-
-  <div class="card-header">
-    <h3>Nueva Dirección</h3>
-
-  </div>
-
-  <div class="card-body" *ngIf="loaders.loadingSubmit">
-    <div class="row">
-      <div class="col text-center">
-        <img src="assets/img/loading.svg" width="35%" alt="loading">
-        <p>Cargando información...</p>
-      </div>
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">note_add</mat-icon>
+  Nueva Dirección
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Procesando Información...</p>
     </div>
   </div>
-  <!-- CARD BODY START -->
-  <div class="card-body" *ngIf="!loaders.loadingSubmit">
-    <p class="card-title"><strong *ngIf="!loaders.loadingSubmit">Ingresa los datos de dirección en el siguiente
-      formulario</strong>
-      <strong *ngIf="loaders.loadingSubmit">Espera mientras procesamos tu información, no cierres esta ventana.</strong>
-    </p>
-    <hr>
-    <form [formGroup]="nBranchForm">
-      <div class="form-group">
-        <div class="form-row">
-          <div class="col-sm">
-            <label class="col-form-label" for="nomSucursal">Nombre de Dirección:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-building"></i>
-                </span>
-              </div>
-              <input class="form-control" id="nomSucursal" type="text" formControlName="nomSucursal" required
-                     placeholder="Nombre de la Dirección"
-                     [class.is-invalid]="nBranchForm.get('nomSucursal').invalid && nBranchForm.get('nomSucursal').touched">
-            </div>
-            <small
-              *ngIf="nBranchForm.get('nomSucursal').errors?.required && nBranchForm.get('nomSucursal').touched"
-              class="text-danger">*Este campo es obligatorio</small>
-          </div>
+  <form [formGroup]="nBranchForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+        <mat-label>Nombre de Dirección:</mat-label>
+        <input matInput type="text" formControlName="nomSucursal" required
+               placeholder="Nombre de la Dirección" maxlength="80">
+        <mat-icon matSuffix>business</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
 
-          <div class="col-sm">
-            <label class="col-form-label" for="numTelefono">Número de Teléfono:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-phone-alt"></i>
-                </span>
-              </div>
-              <input appPhoneMask class="form-control" id="numTelefono" type="tel" formControlName="numTelefono"
-                     placeholder="Número celular sin espacios" minlength="9" maxlength="9"
-                     [class.is-invalid]="nBranchForm.get('numTelefono').invalid && nBranchForm.get('numTelefono').touched">
-            </div>
-            <small
-              *ngIf="nBranchForm.get('numTelefono').errors?.maxlength && nBranchForm.get('numTelefono').touched"
-              class="text-danger">*Por favor ingrese un número válido</small>
-            <small
-              *ngIf="nBranchForm.get('numTelefono').errors?.minlength && nBranchForm.get('numTelefono').touched"
-              class="text-danger">*Por favor ingrese un número válido</small>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="col-sm">
-            <label for="direccion">Direccion:</label>
-
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-map-marker-alt"></i>
-                </span>
-              </div>
-
-              <input class="form-control" (input)="searchAddress($event)" autocomplete="off"
-                     id="direccion" required formControlName="direccion"
-                     [class.is-invalid]="nBranchForm.get('direccion').invalid && nBranchForm.get('direccion').touched"
-                     placeholder="¿Cúal es la dirección?">
-            </div>
-            <div class="suggestions" *ngIf="places?.length">
-              <p *ngFor="let s of places" (click)="setAddress(s.text)">{{s.text}}</p>
-            </div>
-
-            <small
-              *ngIf="nBranchForm.get('direccion').errors?.required && nBranchForm.get('direccion').touched"
-              class="text-danger">*Este campo es obligatorio</small>
-            <br>
-            <div class="form-check form-check-inline">
-              <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" (change)="setCurrentLocation($event)"><small>Ubicación
-                actual</small>
-              </label>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </form>
-
-  </div>
-  <!-- CARD BODY END -->
-  <div class="card-footer">
-    <button [disabled]="nBranchForm.invalid" (click)="onSubmitForm()" class="btn btn-sm btn-outline-primary mr-2">
-      <i class="fa fa-save"></i> Guardar
-    </button>
-    <button (click)="cleanForm()" class="btn btn-sm btn-outline-secondary">
-      <i class="fa fa-times-circle"></i> Cancelar
-    </button>
-  </div>
-</div>
-<!-- CARD END -->
-
-
-<!-- MODAL START -->
-<app-error-modal [msgError]="errorMsg"></app-error-modal>
-<!-- MODAL END -->
-
-<!-- MODAL START -->
-<div id="succsModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-success">Operación realizada correctamente</h3>
-      </div>
-      <div class="modal-body">
-        <p>{{succsMsg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="reloadPage()" class="btn btn-sm btn-rounded btn-outline-primary"
-                data-dismiss="modal">Aceptar
-        </button>
-      </div>
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+        <mat-label>Número de Teléfono (Opcional):</mat-label>
+        <input matInput type="tel" formControlName="numTelefono" autocomplete="nope"
+               appPhoneMask placeholder="Ej. 9999-9999(Guión Automático)" minlength="9" maxlength="9">
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-error *ngIf="nBranchForm.get('numTelefono').errors?.maxlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+        <mat-error *ngIf="nBranchForm.get('numTelefono').errors?.minlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+      </mat-form-field>
     </div>
-  </div>
-</div>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Direccion:</mat-label>
+      <input matInput (input)="searchAddress($event)" id="direccion" required
+             formControlName="direccion" [matAutocomplete]="auto" autocomplete="nope"
+             placeholder="¿Cuál es la dirección?">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let s of places" [value]="s.text">
+          {{ s.text }}
+        </mat-option>
+      </mat-autocomplete>
+      <mat-icon matSuffix>location_on</mat-icon>
+      <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
+    <mat-checkbox #checkbox (change)="setCurrentLocation(!checkbox.checked)">
+      Ubicación actual
+    </mat-checkbox>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" [disabled]="nBranchForm.invalid || loaders.loadingSubmit" (click)="onSubmitForm()"
+          mat-raised-button color="primary">
+    <i class="fa fa-save"></i> Guardar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>
+    <i class="fa fa-times-circle"></i> Cancelar
+  </button>
+</mat-dialog-actions>
 <!-- MODAL END -->
+
+

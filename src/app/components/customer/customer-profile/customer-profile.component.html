@@ -1,166 +1,120 @@
 <!-- CARD START -->
-<div @fade class="card shadow">
-  <div class="card-header" style="border-color: #0071A2;border-style: none none solid;
-  border-width: 0 0 3px; ">
-    <a [routerLink]="['/']"> <i class="fa fa-arrow-circle-left m-r-xs"></i></a>
-    <h3 class="inline">Mi Perfil</h3>
-  </div>
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>Mi Perfil</mat-card-title>
+  </mat-card-header>
 
-  <div class="card-body" *ngIf="loaders.loadingData">
-    <div class="row">
+
+  <!-- CARD BODY START -->
+  <mat-card-content>
+    <div class="row" *ngIf="loaders.loadingData || loaders.loadingSubmit">
       <div class="col text-center">
         <img src="assets/img/loading.svg" width="35%" alt="loading">
-        <p>Cargando información...</p>
-      </div>
-    </div>
-  </div>
-  <!-- CARD BODY START -->
-  <div class="card-body" *ngIf="!loaders.loadingData">
-
-    <div class="row">
-      <div class="col-sm">
-        <strong><i class="fa fa-user"></i> Nombre:</strong>
-        {{currentUser.nomUsuario}}
-      </div>
-      <div class="col-sm">
-        <strong><i class="fa fa-user"></i> Nombre de usuario:</strong>
-        {{currentUser.nickUsuario}}
-      </div>
-    </div>
-    <hr>
-
-    <div class="row">
-      <div class="col-lg">
-        <h3>Cambio de Contraseña</h3>
-      </div>
-
-    </div>
-
-    <div class="row">
-      <div class="col-lg">
-        <p>Nota: La nueva contraseña debe complir con lo siguiente: </p>
-        <ul>
-          <li>1 Mayúscula</li>
-          <li>1 Número</li>
-          <li>1 Caracter Especial</li>
-          <li>Longitud mínima de 8 caracteres</li>
-        </ul>
+        <p>Procesando Información...</p>
       </div>
     </div>
 
-    <form [formGroup]="passChangeForm" role="form">
-      <div class="form-row">
+    <div class="container-fluid" *ngIf="!loaders.loadingData && !loaders.loadingSubmit">
+      <div class="row">
         <div class="col-sm">
-          <label class="col-form-label" for="oldPass">Contraseña Actual:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="fa fa-key"></i>
-              </span>
-            </div>
-            <input id="oldPass" type="password" class="form-control" required formControlName="oldPass"
-                   placeholder="Ingresa tu contraseña actual"
-                   [class.is-invalid]="passChangeForm.get('oldPass').invalid && passChangeForm.get('oldPass').touched">
-          </div>
-          <small
-            *ngIf="passChangeForm.get('oldPass').errors?.required && passChangeForm.get('oldPass').touched"
-            class="text-danger">*Este campo es obligatorio</small>
+          <strong><i class="fa fa-user"></i> Nombre:</strong>
+          {{currentUser.nomUsuario}}
         </div>
-
         <div class="col-sm">
-          <label class="col-form-label" for="newPass">Nueva Contraseña:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="fa fa-key"></i>
-              </span>
-            </div>
-            <input type="password" id="newPass" class="form-control" required formControlName="newPass"
-                   placeholder="Ingresa tu nueva contraseña" minlength="8"
-                   [class.is-invalid]="passChangeForm.get('newPass').invalid && passChangeForm.get('newPass').touched">
-          </div>
-          <small
-            *ngIf="passChangeForm.get('newPass').errors?.required && passChangeForm.get('newPass').touched"
-            class="text-danger">*Este campo es obligatorio</small>
-          <small
-            *ngIf="passChangeForm.get('newPass').errors?.minlength && passChangeForm.get('newPass').touched"
-            class="text-danger">*La contraseña debe tener al menos 8 caracteres</small>
-          <small
-            *ngIf="passChangeForm.get('newPass').errors?.mustCapital && passChangeForm.get('newPass').touched"
-            class="text-danger">*Debe incluir 1 mayúscula</small>
-          <small
-            *ngIf="passChangeForm.get('newPass').errors?.mustNum && passChangeForm.get('newPass').touched"
-            class="text-danger">*Debe incluir 1 número</small>
-          <small
-            *ngIf="passChangeForm.get('newPass').errors?.mustSpecial && passChangeForm.get('newPass').touched"
-            class="text-danger">*Debe incluir 1 caracter especial</small>
-        </div>
-
-        <div class="col-sm">
-          <label class="col-form-label" for="confirmNewPass">Confirmar Nueva Contraseña:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="fa fa-check-circle"></i>
-              </span>
-            </div>
-            <input id="confirmNewPass" type="password" class="form-control" required formControlName="confirmNewPass"
-                   placeholder="Confirma tu nueva contraseña" minlength="8"
-                   [class.is-invalid]="passChangeForm.get('confirmNewPass').invalid && passChangeForm.get('confirmNewPass').touched">
-          </div>
-          <small
-            *ngIf="passChangeForm.get('confirmNewPass').errors?.required && passChangeForm.get('confirmNewPass').touched"
-            class="text-danger">*Este campo es obligatorio</small>
-          <small
-            *ngIf="passChangeForm.get('confirmNewPass').errors?.minlength && passChangeForm.get('confirmNewPass').touched"
-            class="text-danger">*La contraseña debe tener al menos 8 caracteres</small>
-          <small
-            *ngIf="passChangeForm.get('confirmNewPass').errors?.mustMatch && passChangeForm.get('confirmNewPass').touched"
-            class="text-danger">*Debe coincidir con la nueva contraseña</small>
+          <strong><i class="fa fa-user"></i> Nombre de usuario:</strong>
+          {{currentUser.nickUsuario}}
         </div>
       </div>
-      <br>
-      <div class="form-row">
-        <div class="col">
-          <button type="button" (click)="onFormSubmit()" [disabled]="passChangeForm.invalid"
-                  class="btn btn-sm btn-outline-primary mr-2"><i class="fa fa-save"></i> Guardar
-          </button>
-          <button type="button" (click)="cleanForm()" class="btn btn-sm btn-outline-secondary"><i
-            class="fa fa-times-circle"></i> Cancelar
-          </button>
+      <hr>
+
+      <div class="row">
+        <div class="col-lg">
+          <h3>Cambio de Contraseña</h3>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-lg">
+          <p>Nota: La nueva contraseña debe complir con lo siguiente: </p>
+          <ul>
+            <li>1 Mayúscula</li>
+            <li>1 Número</li>
+            <li>1 Caracter Especial</li>
+            <li>Longitud mínima de 8 caracteres</li>
+          </ul>
         </div>
       </div>
 
-    </form>
+      <form [formGroup]="passChangeForm" role="form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+            <mat-label>Contraseña Actual:</mat-label>
+            <input id="oldPass" type="password" required formControlName="oldPass"
+                   placeholder="Ingresa tu contraseña actual" matInput>
+            <mat-icon matPrefix>lock</mat-icon>
+            <mat-error>*Este campo es obligatorio</mat-error>
+          </mat-form-field>
 
+          <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+            <mat-label>Nueva Contraseña:</mat-label>
+            <input type="password" id="newPass" required formControlName="newPass"
+                   placeholder="Ingresa tu nueva contraseña" minlength="8" matInput>
+            <mat-icon matPrefix>lock</mat-icon>
+            <mat-error *ngIf="passChangeForm.get('newPass').errors?.required">
+              *Este campo es obligatorio
+            </mat-error>
+            <mat-error *ngIf="passChangeForm.get('newPass').errors?.minlength">
+              *La contraseña debe tener al menos 8 caracteres
+            </mat-error>
+            <mat-error *ngIf="passChangeForm.get('newPass').errors?.mustCapital">
+              *Debe incluir 1 mayúscula
+            </mat-error>
+            <mat-error *ngIf="passChangeForm.get('newPass').errors?.mustNum">
+              *Debe incluir 1 número
+            </mat-error>
+            <mat-error *ngIf="passChangeForm.get('newPass').errors?.mustSpecial">
+              *Debe incluir 1 caracter especial
+            </mat-error>
+          </mat-form-field>
 
-  </div>
+          <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+            <mat-label>Confirmar Nueva Contraseña:</mat-label>
+            <input id="confirmNewPass" type="password" required formControlName="confirmNewPass"
+                   placeholder="Confirma tu nueva contraseña" minlength="8" matInput>
+            <mat-icon matPrefix>check_circle</mat-icon>
+
+            <mat-error *ngIf="passChangeForm.get('confirmNewPass').errors?.required">
+              *Este campo es obligatorio
+            </mat-error>
+            <mat-error *ngIf="passChangeForm.get('confirmNewPass').errors?.minlength">
+              *La contraseña debe tener al menos 8 caracteres
+            </mat-error>
+            <mat-error *ngIf="passChangeForm.get('confirmNewPass').errors?.mustMatch">
+              *Debe coincidir con la nueva contraseña
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <br>
+        <div class="form-row">
+          <div class="col">
+            <button type="button" (click)="onFormSubmit()" [disabled]="passChangeForm.invalid"
+                    mat-raised-button color="primary" class="mr-2">
+              <i class="fa fa-save"></i> Guardar
+            </button>
+            <button type="button" mat-raised-button (click)="cleanForm()"><i
+              class="fa fa-times-circle"></i> Cancelar
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+  </mat-card-content>
   <!-- CARD BODY END -->
-</div>
+</mat-card>
 <!-- CARD END -->
 
-<!-- MODAL START -->
-<div id="succsModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-success">Operación realizada correctamente</h3>
-      </div>
-      <div class="modal-body">
-        <p>{{succsMsg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button (click)="logout()" type="button" class="btn btn-outline-primary btn-sm btn-rounded"
-                data-dismiss="modal">Aceptar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- MODAL END -->
-
-<!-- MODAL START -->
-<app-error-modal [msgError]="errorMsg"></app-error-modal>
-<!-- MODAL END -->
 
 

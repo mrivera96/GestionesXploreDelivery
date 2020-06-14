@@ -1,0 +1,89 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">note_add</mat-icon> Nueva Tarifa
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="newRateForm">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Descripción de Tarifa:</mat-label>
+        <input matInput id="descTarifaN" type="text" formControlName="descTarifa"
+               required maxlength="60" placeholder="¿Cuál será la descripción de la nueva tarifa?">
+        <mat-icon matSuffix>create</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Categoría:</mat-label>
+        <mat-select id="nidCategoria" formControlName="idCategoria"
+                    placeholder="- Seleccione una categoría -" required>
+          <mat-option *ngFor="let category of categories"
+                      [value]="category.idCategoria">{{category.descCategoria}}</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>directions_car</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Entregas Mínimas:</mat-label>
+        <input matInput id="nentregasMinimas" type="number" formControlName="entregasMinimas"
+               required placeholder="Número mínimo de entregas">
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Entregas máximas:</mat-label>
+        <input matInput id="nentregasMaximas" type="number" formControlName="entregasMaximas"
+               required placeholder="Número máximo de entregas">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Monto:</mat-label>
+        <input matInput id="nprecio" type="text" formControlName="precio" required placeholder="Monto de la tarifa">
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Cliente:</mat-label>
+        <mat-select id="idClienteN" formControlName="idCliente" required placeholder="- Seleccione un cliente -">
+          <mat-option *ngFor="let customer of customers" [value]="customer.idCliente">
+            {{customer.nomEmpresa}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" [disabled]="newRateForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()" mat-raised-button color="primary" mat-dialog-close>
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>
+    Cancelar
+  </button>
+
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+
+

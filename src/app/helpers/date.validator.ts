@@ -1,4 +1,4 @@
-import {AbstractControl, FormGroup, ValidationErrors, ValidatorFn} from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import {formatDate} from "@angular/common";
 
 export function DateValidate(controlName: string) {
@@ -11,7 +11,7 @@ export function DateValidate(controlName: string) {
       return;
     }
 
-    if(control.value < formatDate(new Date(), 'yyyy-MM-dd', 'en')){
+    if(date < formatDate(new Date(), 'yyyy-MM-dd', 'en')){
       control.setErrors({ mustAfterDate: true })
     }
 

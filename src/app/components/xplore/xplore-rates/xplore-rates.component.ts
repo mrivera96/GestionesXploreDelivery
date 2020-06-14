@@ -8,6 +8,10 @@ import {RatesService} from "../../../services/rates.service";
 import {Rate} from "../../../models/rate";
 import {Customer} from "../../../models/customer";
 import {UsersService} from "../../../services/users.service";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {EditRateDialogComponent} from "./edit-rate-dialog/edit-rate-dialog.component";
+import {NewRateDialogComponent} from "./new-rate-dialog/new-rate-dialog.component";
 
 declare var $: any
 
@@ -33,10 +37,7 @@ export class XploreRatesComponent implements OnInit {
     loadingData: false,
     loadingSubmit: false
   }
-  exitMsg = ''
-  errMsg = ''
-  edRateForm: FormGroup
-  newRateForm: FormGroup
+
   categories: Category[]
   customers: Customer[]
 
@@ -44,7 +45,8 @@ export class XploreRatesComponent implements OnInit {
     private ratesService: RatesService,
     private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
-    private usersService: UsersService
+    private usersService: UsersService,
+    public dialog: MatDialog
   ) {
   }
 
@@ -53,39 +55,8 @@ export class XploreRatesComponent implements OnInit {
     this.loadData()
   }
 
-  get f() {
-    return this.edRateForm.controls
-  }
-
-  get fNew() {
-    return this.newRateForm.controls
-  }
-
   initialize() {
     this.dtTrigger = new Subject<any>()
-    this.edRateForm = this.formBuilder.group(
-      {
-        idTarifaDelivery: [],
-        descTarifa: ['', Validators.required],
-        idCategoria: [null, Validators.required],
-        entregasMinimas: ['', Validators.required],
-        entregasMaximas: ['', Validators.required],
-        precio: ['', Validators.required],
-        idCliente: [null, Validators.required]
-      }
-    )
-
-    this.newRateForm = this.formBuilder.group(
-      {
-        descTarifa: ['', Validators.required],
-        idCategoria: [null, Validators.required],
-        entregasMinimas: ['', Validators.required],
-        entregasMaximas: ['', Validators.required],
-        precio: ['', Validators.required],
-        idCliente: [null, Validators.required]
-      }
-    )
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -111,11 +82,13 @@ export class XploreRatesComponent implements OnInit {
         },
       },
     }
+    this.loaders.loadingData = true
   }
 
   loadData() {
     this.ratesService.getRates().subscribe(response => {
       this.rates = response.data
+      this.loaders.loadingData = false
       this.dtTrigger.next()
     })
 
@@ -139,56 +112,39 @@ export class XploreRatesComponent implements OnInit {
         currRate = value
       }
     })
-    this.f.idTarifaDelivery.setValue(currRate.idTarifaDelivery)
-    this.f.descTarifa.setValue(currRate.descTarifa)
-    this.f.idCategoria.setValue(currRate.idCategoria)
-    this.f.entregasMinimas.setValue(currRate.entregasMinimas)
-    this.f.entregasMaximas.setValue(currRate.entregasMaximas)
-    this.f.precio.setValue(currRate.precio)
-    this.f.idCliente.setValue(currRate.idCliente)
-    $("#edTarModal").modal('show')
+    this.openEditDialog(currRate)
   }
 
   showNewForm() {
-    $("#newTarModal").modal('show')
+     this.dialog.open(NewRateDialogComponent)
+
+    /*dialog.afterClosed().subscribe(result => {
+      this.reloadData()
+    })*/
   }
 
-  onFormEditSubmit() {
-    if (this.edRateForm.valid) {
-      this.loaders.loadingSubmit = true
-      this.ratesService.editRate(this.edRateForm.value)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.exitMsg = response.message
-            $("#succsModal").modal('show')
-          },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.errMsg = error.statusText
-              $("#errModal").modal('show')
-            })
-          })
-    }
+  openEditDialog(currRate): void {
+     this.dialog.open(EditRateDialogComponent, {
+      data: {
+        rate: currRate
+      }
+    })
   }
 
-  onFormNewSubmit() {
-    if (this.newRateForm.valid) {
-      this.loaders.loadingSubmit = true
-      this.ratesService.createRate(this.newRateForm.value)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.exitMsg = response.message
-            $("#succsModal").modal('show')
-          },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.errMsg = error.statusText
-              $("#errModal").modal('show')
-            })
-          })
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
+
+    if(reload){
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingData = true
+        this.reloadData()
+      })
     }
+
   }
 
 }

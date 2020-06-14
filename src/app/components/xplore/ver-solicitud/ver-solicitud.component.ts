@@ -2,17 +2,16 @@ import {Component, OnInit} from '@angular/core'
 import {DeliveriesService} from "../../../services/deliveries.service"
 import {Delivery} from "../../../models/delivery"
 import {ActivatedRoute} from "@angular/router"
-import {FormControl, FormGroup, Validators} from "@angular/forms"
 import {Vehicle} from "../../../models/vehicle"
 import {VehiclesService} from "../../../services/vehicles.service"
 import {UsersService} from "../../../services/users.service"
-import {User} from "../../../models/user"
 import {State} from "../../../models/state";
 import {Subject} from "rxjs";
 import {DeliveryDetail} from "../../../models/delivery-detail";
 import {animate, style, transition, trigger} from "@angular/animations";
-
-declare var $: any
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {ChangeStateDialogComponent} from "./change-state-dialog/change-state-dialog.component";
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -34,13 +33,9 @@ export class VerSolicitudComponent implements OnInit {
   loaders = {
     'loadingData': false
   }
-  asignForm: FormGroup
-  changeForm: FormGroup
   vehicles: Vehicle[]
-  conductores: User[]
+
   succsMsg: string
-  succsTitle: string
-  errorMSg: string
   states: State[]
   dtOptions: any
   dtTrigger: Subject<any> = new Subject()
@@ -48,7 +43,8 @@ export class VerSolicitudComponent implements OnInit {
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
               private vehiclesService: VehiclesService,
-              private usersService: UsersService) {
+              private usersService: UsersService,
+              public dialog: MatDialog) {
     this.loaders.loadingData = true
   }
 
@@ -61,14 +57,6 @@ export class VerSolicitudComponent implements OnInit {
   }
 
   initialize() {
-    this.asignForm = new FormGroup({
-      idConductor: new FormControl(null, [Validators.required]),
-    })
-
-    this.changeForm = new FormGroup({
-      idEstado: new FormControl(null, [Validators.required]),
-    })
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -104,24 +92,16 @@ export class VerSolicitudComponent implements OnInit {
       this.loaders.loadingData = false
       if (this.currentDelivery.idEstado == 33 || this.currentDelivery.idEstado == 36) {
         this.vehiclesService.getVehicles().subscribe(response => {
-          if (response.error == 0) {
-            this.vehicles = response.data
-          }
+          this.vehicles = response.data
         })
       }
 
     }, error => {
       this.loaders.loadingData = false
-      this.errorMSg = 'Lo sentimos, ha ocurrido un error al cargar la información. Por favor intente de nuevo.'
-      $("#errModal").modal('show')
-    })
-
-    this.usersService.getDrivers().subscribe(response => {
-      this.conductores = response.data.xploreDelivery
+      this.openErrorDialog("Lo sentimos, ha ocurrido un error al cargar los datos de esta reservación. Al dar clic en Aceptar, volveremos a intentarlo", true)
     })
 
     this.deliveriesService.getStates().subscribe(response => {
-
       this.states = response.data.xploreDelivery
     })
 
@@ -131,68 +111,28 @@ export class VerSolicitudComponent implements OnInit {
     this.ngOnInit()
   }
 
-  assignDelivery() {
-    if (this.asignForm.valid) {
-      this.loaders.loadingData = true
-      this.deliveriesService.assignDelivery(this.deliveryId, this.asignForm.value).subscribe(response => {
-
-        this.loaders.loadingData = false
-        this.succsMsg = response.data
-        this.succsTitle = 'Asignación de reserva'
-        $("#succsModal").modal('show')
-
-      }, error => {
-        this.loaders.loadingData = false
-        this.errorMSg = 'Lo sentimos, ha ocurrido un error al asignar esta reserva. Por favor intente de nuevo.'
-        $("#errModal").modal('show')
-      })
-    }
-  }
-
-  finishDelivery() {
-    this.loaders.loadingData = true
-    this.deliveriesService.finishDelivery(this.deliveryId).subscribe(response => {
-      this.loaders.loadingData = false
-      this.succsMsg = response.data
-      this.succsTitle = 'Finalización de reserva'
-      $("#succsModal").modal('show')
-
-    }, error => {
-      error.subscribe(error => {
-        this.loaders.loadingData = false
-        this.errorMSg = error.statusText
-        $("#errModal").modal('show')
-      })
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
     })
 
+    if(reload){
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingData = true
+        this.reloadPage()
+      })
+    }
   }
 
-  changeState() {
-    if (this.changeForm.valid) {
-      if (this.changeForm.get('idEstado').value == 37) {
-        $("#asignModal").modal('show')
-      } else if (this.changeForm.get('idEstado').value == 39) {
-        $("#confirmModal").modal('show')
-      } else {
-        this.loaders.loadingData = true
-        this.deliveriesService.changeState(this.deliveryId, this.changeForm.value).subscribe(response => {
-
-          this.loaders.loadingData = false
-          this.succsMsg = response.data
-          this.succsTitle = 'Cambio de estado de reserva'
-          $("#succsModal").modal('show')
-
-        }, error => {
-          error.subscribe(error => {
-            this.loaders.loadingData = false
-            this.errorMSg = error.statusText
-            $("#errModal").modal('show')
-          })
-        })
+  openChangeStateDialog(){
+    this.dialog.open(ChangeStateDialogComponent, {
+      data: {
+        idDelivery: this.deliveryId,
+        idEstado: this.currentDelivery.idEstado
       }
-
-    }
-
+    })
   }
 
 }

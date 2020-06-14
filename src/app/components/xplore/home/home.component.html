@@ -1,22 +1,24 @@
 <!--CARD START -->
-<div @fade class="card shadow">
-  <div class="card-header">
-    <h3 class="d-inline">Reservaciones para hoy</h3>
-  </div>
-  <!-- CARD BODY START -->
-  <div class="card-body p-0">
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Reservaciones para hoy
+    </mat-card-title>
 
+  </mat-card-header>
+
+  <mat-card-content>
     <div class="row" *ngIf="loaders.loadingData">
       <div class="col text-center">
         <img src="assets/img/loading.svg" width="5%" alt="loading">
         <p>Cargando información...</p>
       </div>
     </div>
+
     <!-- DATATABLE START -->
     <app-data-table [deliveries]="1"  (loadingData)="setLoading($event)"></app-data-table>
     <!-- DATATABLE END -->
-  </div>
-  <!--CARD BODY END -->
+  </mat-card-content>
+</mat-card>
 
-</div>
 <!-- CARD END -->

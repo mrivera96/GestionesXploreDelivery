@@ -1,183 +1,99 @@
-<!-- CARD START -->
-<div @fade class="card shadow">
+<!-- Dialog START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">note_add</mat-icon>
+  Nuevo Cliente
+</h2>
 
-  <div class="card-header">
-    <h3>Nuevo Cliente</h3>
-
-  </div>
-
-  <div class="card-body" *ngIf="loaders.loadingSubmit">
-    <div class="row">
-      <div class="col text-center">
-        <img src="assets/img/loading.svg" width="35%" alt="loading">
-        <p>Cargando información...</p>
-      </div>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Procesando Información...</p>
     </div>
   </div>
+
   <!-- CARD BODY START -->
-  <div class="card-body" *ngIf="!loaders.loadingSubmit">
-    <p class="card-title"><strong *ngIf="!loaders.loadingSubmit">Ingrese los datos del cliente en el siguiente
-      formulario</strong>
-      <strong *ngIf="loaders.loadingSubmit">Espere mientras procesamos su información, no cierre esta ventana.</strong>
-    </p>
-    <hr>
-    <form [formGroup]="nCustomerForm">
-      <div class="form-row">
-        <div class="col-sm">
-          <label class="col-form-label" for="nomEmpresa">Nombre de Empresa:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-building"></i>
-                </span>
-            </div>
-            <input class="form-control" id="nomEmpresa" type="text" formControlName="nomEmpresa" required
-                   placeholder="Nombre de la empresa"
-                   [class.is-invalid]="f.nomEmpresa.invalid && f.nomEmpresa.touched">
-          </div>
-          <small
-            *ngIf="f.nomEmpresa.errors?.required && f.nomEmpresa.touched"
-            class="text-danger">*Este campo es obligatorio</small>
-        </div>
+  <form [formGroup]="nCustomerForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Nombre de Empresa:</mat-label>
+        <input matInput id="nomEmpresa" type="text" formControlName="nomEmpresa" required
+               placeholder="Nombre de la empresa" maxlength="80">
+        <mat-icon matSuffix>business</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
 
-        <div class="col-sm">
-          <label class="col-form-label" for="nomRepresentante">Nombre del Representante:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-id-card"></i>
-                </span>
-            </div>
-            <input class="form-control" id="nomRepresentante" type="text" formControlName="nomRepresentante" required
-                   placeholder="Nombre del representante"
-                   [class.is-invalid]="f.nomRepresentante.invalid && f.nomRepresentante.touched">
-          </div>
-          <small
-            *ngIf="f.nomRepresentante.errors?.required && f.nomRepresentante.touched"
-            class="text-danger">*Este campo es obligatorio</small>
-        </div>
+      </mat-form-field>
 
-        <div class="col-sm">
-          <label class="col-form-label" for="numIdentificacion">Número de Identificación:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-id-card"></i>
-                </span>
-            </div>
-            <input class="form-control" id="numIdentificacion" type="text" formControlName="numIdentificacion"
-                   minlength="13" maxlength="14"
-                   [class.is-invalid]="f.numIdentificacion.invalid && f.numIdentificacion.touched"
-                   placeholder="Número de identificación">
-          </div>
-          <small
-            *ngIf="f.numIdentificacion.errors?.required && f.numIdentificacion.touched"
-            class="text-danger">*Este campo es obligatorio</small>
-          <small
-            *ngIf="f.numIdentificacion.errors?.maxlength && f.numIdentificacion.touched"
-            class="text-danger">*Por favor ingrese el número de identificación sin espacios ni guiones</small>
-          <small
-            *ngIf="f.numIdentificacion.errors?.minlength && f.numIdentificacion.touched"
-            class="text-danger">*Por favor ingrese el número de identificación sin espacios ni guiones</small>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="col-md">
-          <label class="col-form-label" for="numTelefono">Número de Teléfono:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-phone-alt"></i>
-                </span>
-            </div>
-            <input appPhoneMask class="form-control" id="numTelefono" type="tel" formControlName="numTelefono"
-                   required placeholder="Número celular sin espacios" minlength="9" maxlength="9"
-                   [class.is-invalid]="f.numTelefono.invalid && f.numTelefono.touched">
-          </div>
-          <small
-            *ngIf="f.numTelefono.errors?.required && f.numTelefono.touched"
-            class="text-danger">*Este campo es obligatorio</small>
-          <small
-            *ngIf="f.numTelefono.errors?.maxlength && f.numTelefono.touched"
-            class="text-danger">*Por favor ingrese un número válido</small>
-          <small
-            *ngIf="f.numTelefono.errors?.minlength && f.numTelefono.touched"
-            class="text-danger">*Por favor ingrese un número válido</small>
-        </div>
-        <div class="col-md">
-          <label class="col-form-label" for="email">email:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-at"></i>
-                </span>
-            </div>
-            <input class="form-control" id="email" type="email" formControlName="email" required
-                   pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="ejemplo@email.com"
-                   [class.is-invalid]="f.email.invalid && f.email.touched">
-          </div>
-          <small
-            *ngIf="f.email.errors?.required && f.email.touched"
-            class="text-danger">*Este campo es obligatorio</small>
-          <small
-            *ngIf="f.email.errors?.pattern && f.email.touched"
-            class="text-danger">*Por favor ingrese un email válido</small>
-        </div>
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Nombre del Representante:</mat-label>
+        <input matInput id="nomRepresentante" type="text" formControlName="nomRepresentante" required
+               placeholder="Nombre del representante" maxlength="80">
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
 
-      </div>
-
-    </form>
-
-  </div>
-  <!-- CARD BODY END -->
-  <div class="card-footer">
-    <button [disabled]="nCustomerForm.invalid" (click)="onFormSubmit()" class="btn btn-sm btn-outline-primary mr-2">
-      <i class="fa fa-save"></i> Guardar
-    </button>
-    <button (click)="clearForm()" class="btn btn-sm btn-outline-secondary">
-      <i class="fa fa-times-circle"></i> Cancelar
-    </button>
-  </div>
-</div>
-<!-- CARD END -->
-
-
-<!-- MODAL START -->
-<div id="errModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-danger">Ha ocurrido un error</h3>
-      </div>
-      <div class="modal-body">
-        <p>{{errorMsg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-danger btn-sm btn-rounded" data-dismiss="modal">Aceptar</button>
-      </div>
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Número de Identificación:</mat-label>
+        <input matInput id="numIdentificacion" type="text" formControlName="numIdentificacion"
+               minlength="13" maxlength="14" placeholder="Ej. 1111333355555">
+        <mat-icon matSuffix>subtitles</mat-icon>
+        <mat-error *ngIf="f.numIdentificacion.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.numIdentificacion.errors?.maxlength">
+          *Por favor ingrese el número de identificación sin espacios ni guiones
+        </mat-error>
+        <mat-error *ngIf="f.numIdentificacion.errors?.minlength">
+          *Por favor ingrese el número de identificación sin espacios ni guiones
+        </mat-error>
+      </mat-form-field>
     </div>
-  </div>
-</div>
-<!-- MODAL END -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Número de Teléfono:</mat-label>
+        <input appPhoneMask matInput id="numTelefono" type="tel" formControlName="numTelefono" autocomplete="nope"
+               required placeholder="Ej. 9999-9999 (Guión automáticamente)" minlength="9" maxlength="9">
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-error *ngIf="f.numTelefono.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.numTelefono.errors?.maxlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+        <mat-error *ngIf="f.numTelefono.errors?.minlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>email:</mat-label>
+        <input matInput id="email" type="email" formControlName="email" required maxlength="50"
+               pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="ejemplo@email.com">
+        <mat-icon matSuffix>alternate_email</mat-icon>
+        <mat-error *ngIf="f.email.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.email.errors?.pattern">
+          *Por favor ingrese un email válido
+        </mat-error>
+      </mat-form-field>
 
-<!-- MODAL START -->
-<div id="succsModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-success">Operación realizada correctamente</h3>
-      </div>
-      <div class="modal-body">
-        <p>{{succsMsg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="reloadPage()" class="btn btn-sm btn-rounded btn-outline-primary"
-                data-dismiss="modal">Aceptar
-        </button>
-      </div>
     </div>
-  </div>
-</div>
-<!-- MODAL END -->
+
+  </form>
 
 
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <mat-card-actions>
+    <button type="button" [disabled]="nCustomerForm.invalid || loaders.loadingSubmit" (click)="onFormSubmit()"
+            mat-raised-button color="primary">
+      <mat-icon>save</mat-icon>
+      Guardar
+    </button>
+    <button type="button" (click)="clearForm()" mat-raised-button mat-dialog-close>
+      <mat-icon>cancel</mat-icon>
+      Cancelar
+    </button>
+  </mat-card-actions>
+</mat-dialog-actions>

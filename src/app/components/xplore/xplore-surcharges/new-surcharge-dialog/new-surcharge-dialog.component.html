@@ -1,0 +1,82 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">note_add</mat-icon> Nuevo Recargo
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="newSurchForm">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Descripción de Recargo:</mat-label>
+        <input matInput id="descRecargoN" type="text" formControlName="descRecargo"
+               required maxlength="60" placeholder="¿Cuál será la descripción del nuevo recargo?">
+        <mat-icon matSuffix>create</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Kilometraje Máximo:</mat-label>
+        <input matInput id="kilomMaximoN" type="number" formControlName="kilomMaximo"
+               required placeholder="Kilómetros máximos que abarcará el recargo">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Kilometraje Mínimo:</mat-label>
+        <input matInput id="kilomMinimoN" type="number" formControlName="kilomMinimo"
+               required placeholder="Kilómetros mínimos que abarcará el recargo">
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Monto:</mat-label>
+        <input matInput id="montoN" type="number" formControlName="monto"
+               required placeholder="¿Cuál será el monto del recargo?">
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Cliente:</mat-label>
+        <mat-select  id="idClienteN" formControlName="idCliente"
+                     placeholder="- Seleccione un cliente -"
+                     required>
+          <mat-option *ngFor="let customer of customers" value="{{customer.idCliente}}">
+            {{customer.nomEmpresa}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" [disabled]="newSurchForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()" mat-raised-button color="primary" mat-dialog-close>
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>
+    Cancelar
+  </button>
+
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+
+
+

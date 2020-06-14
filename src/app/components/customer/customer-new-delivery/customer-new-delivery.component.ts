@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Category} from "../../../models/category";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {Subject} from "rxjs";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {HttpClient} from "@angular/common/http";
@@ -18,6 +18,14 @@ import {Router} from "@angular/router";
 import {Surcharge} from "../../../models/surcharge";
 import {SurchargesService} from "../../../services/surcharges.service";
 import {DateValidate} from "../../../helpers/date.validator";
+import {HourValidate} from "../../../helpers/hour.validator";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
+import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
+import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
+import {Customer} from "../../../models/customer";
+import {AuthService} from "../../../services/auth.service";
 
 declare var $: any;
 
@@ -48,6 +56,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   befDistance = 0
   befTime = 0
   befCost = 0.00
+  currCustomer: Customer
 
   categories: Category[]
   deliveryForm: FormGroup
@@ -81,7 +90,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
   gcordsDestination = false
   @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
 
-
   constructor(
     private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
@@ -90,8 +98,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
     private surchargesService: SurchargesService,
     private http: HttpClient,
     private branchService: BranchService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog,
+    private authService: AuthService
   ) {
+    this.currCustomer = this.authService.currentUserValue
   }
 
   ngOnInit(): void {
@@ -107,17 +118,29 @@ export class CustomerNewDeliveryComponent implements OnInit {
       deliveryHeader: this.formBuilder.group({
         fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
         hora: [formatDate(new Date(), 'HH:mm', 'en'), Validators.required],
-        dirRecogida: [null, Validators.required],
+        dirRecogida: ['', Validators.required],
         idCategoria: [1, Validators.required],
         instrucciones: ['', Validators.maxLength(150)]
-      }, {validators: DateValidate('fecha')}),
+      }, {
+        validators: [
+          DateValidate('fecha'),
+          HourValidate('hora', 'fecha'),
+          BlankSpacesValidator('dirRecogida'),
+        ]
+      }),
 
       order: this.formBuilder.group({
-        nFactura: ['', [Validators.required, Validators.maxLength(250)]],
-        nomDestinatario: ['', [Validators.required, Validators.maxLength(150)]],
+        nFactura: ['', [Validators.required, Validators.maxLength(250), Validators.pattern(/^((?!\s{2,}).)*$/)]],
+        nomDestinatario: ['', [Validators.required, Validators.maxLength(150), Validators.pattern(/^((?!\s{2,}).)*$/)]],
         numCel: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
-        direccion: [null, Validators.required],
+        direccion: ['', Validators.required],
         instrucciones: ['', Validators.maxLength(150)]
+      }, {
+        validators: [
+          BlankSpacesValidator('nFactura'),
+          BlankSpacesValidator('nomDestinatario'),
+          BlankSpacesValidator('direccion')
+        ]
       })
     })
 
@@ -142,7 +165,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         }
 
       })
-    }else{
+    } else {
       alert('El GPS está desactivado')
     }
 
@@ -174,37 +197,58 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
+  clearLocationField() {
+    this.newForm.get('deliveryHeader.dirRecogida').setValue('')
+  }
+
+  setCurrentLocationOrigin() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.myCurrentLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
+        this.deliveryForm.get('deliveryHeader.dirRecogida')
+          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+        this.calculatedistanceBefore()
+      }, function (error) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
+            break;
+          case error.POSITION_UNAVAILABLE:
+            // La ubicación no está disponible.
+            break;
+          case error.TIMEOUT:
+            // Se ha excedido el tiempo para obtener la ubicación.
+            break;
+        }
+
+      })
+    } else {
+      alert('El GPS está desactivado')
+    }
+  }
+
   loadData() {
     this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.data
     }, error => {
       this.loaders.loadingData = false
       this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-      $("#errModal").modal('show')
+      this.openErrorDialog(this.errorMsg, true)
     })
 
     this.ratesService.getCustomerRates().subscribe(response => {
       this.rates = response.data
-    }, error => {
-      this.loaders.loadingData = false
-      this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-      $("#errModal").modal('show')
     })
 
-    this.surchargesService.getCustomerSurcharges().subscribe(response => {
+    this.surchargesService.getSurcharges().subscribe(response => {
       this.surcharges = response.data
-    }, error => {
-      this.loaders.loadingData = false
-      this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-      $("#errModal").modal('show')
     })
 
     this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
-    }, error => {
-      this.loaders.loadingData = false
-      this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-      $("#errModal").modal('show')
     })
   }
 
@@ -213,7 +257,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   onOrderAdd() {
-
     if (this.deliveryForm.get('order').valid) {
       this.loaders.loadingAdd = true
       this.currOrder = {
@@ -224,10 +267,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
         instrucciones: this.newForm.get('order.instrucciones').value,
       }
 
-      this.newForm.get('deliveryHeader.idCategoria').disable({onlySelf: true})
-      this.newForm.get('deliveryHeader.dirRecogida').disable({onlySelf: true})
-      $("#prevDirRecogida").prop('disabled', 'disabled');
-      $("#insertCords").hide();
       let ordersCount = this.orders.length + 1
       //
       this.calculateRate(ordersCount)
@@ -242,7 +281,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   onFormSubmit() {
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
-
       this.loaders.loadingSubmit = true
       this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
@@ -250,18 +288,18 @@ export class CustomerNewDeliveryComponent implements OnInit {
           this.loaders.loadingSubmit = false
           this.exitMsg = response.message
           this.nDeliveryResponse = response.nDelivery
-          $("#succsModal").modal('show')
+          this.openSuccessDialog('Operación Realizada Correctamente', this.exitMsg = response.message, this.nDeliveryResponse)
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
               this.loaders.loadingSubmit = false
               this.errorMsg = 'Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.'
-              $("#errModal").modal('show')
+              this.openErrorDialog(this.errorMsg, false)
             })
           } else {
             this.loaders.loadingSubmit = false
             this.errorMsg = 'Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.'
-            $("#errModal").modal('show')
+            this.openErrorDialog(this.errorMsg, false)
           }
 
         })
@@ -270,35 +308,40 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculatedistanceBefore() {
-    this.loaders.loadingDistBef = true
-    let ordersCount = this.orders.length + 1
-    //
-    this.calculateRate(ordersCount)
+    if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
+      this.loaders.loadingDistBef = true
+      let ordersCount = this.orders.length + 1
+      //
+      this.calculateRate(ordersCount)
 
-    this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'calculateDistance',
-      salida: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
-      entrega: this.newForm.get('order.direccion').value,
-      tarifa: this.pago.baseRate
-    }).subscribe((response) => {
-      this.loaders.loadingDistBef = false
-      this.befDistance = response.distancia
-      const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
-      this.befTime = response.tiempo
-      this.befCost = calculatedPayment.total
-    }, error => {
-      if (error.subscribe()) {
-        error.subscribe(error => {
-          this.prohibitedDistanceMsg = error.statusText
-          this.prohibitedDistance = true
-          this.loaders.loadingDistBef = false
-          setTimeout(() => {
-            this.prohibitedDistance = false;
-          }, 2000)
-        })
-      }
+      this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'calculateDistance',
+        salida: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
+        entrega: this.newForm.get('order.direccion').value,
+        tarifa: this.pago.baseRate
+      }).subscribe((response) => {
+        this.loaders.loadingDistBef = false
+        this.befDistance = response.distancia
+        const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
+        this.befTime = response.tiempo
+        this.befCost = calculatedPayment.total
+        this.placesOrigin = []
+        this.placesDestination = []
+      }, error => {
+        if (error.subscribe()) {
+          error.subscribe(error => {
+            this.prohibitedDistanceMsg = error.statusText
+            this.prohibitedDistance = true
+            this.loaders.loadingDistBef = false
+            setTimeout(() => {
+              this.prohibitedDistance = false;
+            }, 2000)
+          })
+        }
 
-    })
+      })
+    }
+
   }
 
   searchOrigin(event) {
@@ -312,7 +355,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
     let lugar = event.target.value
     this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
       this.placesDestination = response
-
     })
   }
 
@@ -329,6 +371,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculateOrderPayment(distance) {
+    console.log(this.currCustomer.idCliente)
 
     let orderPayment = {
       'baseRate': this.pago.baseRate,
@@ -336,10 +379,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
       'total': 0.00
     }
     this.surcharges.forEach(value => {
-
       if (distance >= Number(value.kilomMinimo)
         && distance <= Number(value.kilomMaximo)
-      ) {
+        && value.cliente.idCliente == this.currCustomer.idCliente) {
+        console.log(value.idCliente)
+        orderPayment.surcharges = Number(value.monto)
+      }else if(distance >= Number(value.kilomMinimo)
+        && distance <= Number(value.kilomMaximo)
+        && value.cliente.idCliente != this.currCustomer.idCliente){
         orderPayment.surcharges = Number(value.monto)
       }
     })
@@ -353,7 +400,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
     const entrega = this.deliveryForm.get('order.direccion').value
     const tarifa = this.pago.baseRate
 
-
     this.http.post<any>(`${environment.apiUrl}`, {
       function: 'calculateDistance',
       salida: salida,
@@ -361,7 +407,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       tarifa: tarifa
     }).subscribe((response) => {
       this.currOrder.distancia = response.distancia
-      const calculatedPayment = this.calculateOrderPayment( Number(response.distancia.split(" ")[0]))
+      const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
       this.currOrder.tarifaBase = calculatedPayment.baseRate
       this.currOrder.recargo = calculatedPayment.surcharges
       this.currOrder.cTotal = calculatedPayment.total
@@ -369,6 +415,12 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.orders.push(this.currOrder)
       this.pagos.push(calculatedPayment)
       this.loaders.loadingAdd = false
+
+      if (this.orders.length > 0) {
+        this.newForm.get('deliveryHeader.idCategoria').disable({onlySelf: true})
+        this.newForm.get('deliveryHeader.dirRecogida').disable({onlySelf: true})
+        $("#insertCords").hide();
+      }
 
       if (this.orders.length > 1) {
         this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -399,10 +451,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
-  setOrigin(origin) {
-    this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(origin)
-    this.placesOrigin = []
-  }
 
   calculatePayment() {
     this.pago.recargos = this.pagos.reduce(function (a, b) {
@@ -413,12 +461,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
       return +a + +b['total']
 
     }, 0)
-  }
-
-  setDestination(destination) {
-    this.deliveryForm.get('order.direccion').setValue(destination)
-    this.placesDestination = []
-    this.calculatedistanceBefore()
   }
 
   removeFromArray(item) {
@@ -433,8 +475,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
     location.reload()
   }
 
-  setCurrentLocationDest(event) {
-    if (event.target.checked == true) {
+  setCurrentLocationDest(checked) {
+    if (!checked) {
       if (navigator) {
         navigator.geolocation.getCurrentPosition(function () {
         }, function () {
@@ -472,6 +514,59 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   showNewDeliveryDetail(id) {
     this.router.navigate(['cliente-detalle-delivery', id])
+  }
+
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
+
+
+    if (reload) {
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingData = true
+        this.reloadData()
+      })
+    } else {
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingSubmit = false
+      })
+    }
+
+  }
+
+
+  openSuccessDialog(succsTitle: string, succssMsg: string, id: number) {
+    const dialogRef = this.dialog.open(SuccessModalComponent, {
+      data: {
+        succsTitle: succsTitle,
+        succsMsg: succssMsg
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.showNewDeliveryDetail(id)
+    })
+  }
+
+  openConfirmDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.onFormSubmit()
+      } else {
+
+      }
+    })
+  }
+
+  public noWhitespaceValidator(control: FormControl) {
+    const isWhitespace = (control.value || '').trim().length === 0;
+    const isValid = !isWhitespace;
+    return isValid ? null : {'whitespace': true};
   }
 
 }

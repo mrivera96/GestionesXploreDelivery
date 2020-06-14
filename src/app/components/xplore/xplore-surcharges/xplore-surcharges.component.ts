@@ -6,6 +6,10 @@ import {Customer} from "../../../models/customer";
 import {SurchargesService} from "../../../services/surcharges.service";
 import {UsersService} from "../../../services/users.service";
 import {Surcharge} from "../../../models/surcharge";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {EditSurchargeDialogComponent} from "./edit-surcharge-dialog/edit-surcharge-dialog.component";
+import {NewSurchargeDialogComponent} from "./new-surcharge-dialog/new-surcharge-dialog.component";
 declare var $: any
 
 @Component({
@@ -28,17 +32,11 @@ export class XploreSurchargesComponent implements OnInit {
     loadingData: false,
     loadingSubmit: false
   }
-  exitMsg = ''
-  errMsg = ''
-  edSurChForm: FormGroup
-  newSurchForm: FormGroup
 
-  customers: Customer[]
   surcharges: Surcharge[]
   constructor(
-    private formBuilder: FormBuilder,
     private surchargesService: SurchargesService,
-    private usersService: UsersService
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -46,37 +44,8 @@ export class XploreSurchargesComponent implements OnInit {
     this.loadData()
   }
 
-  get f() {
-    return this.edSurChForm.controls
-  }
-
-  get fNew() {
-    return this.newSurchForm.controls
-  }
-
   initialize() {
     this.dtTrigger = new Subject<any>()
-    this.edSurChForm = this.formBuilder.group(
-      {
-        idRecargo: [],
-        descRecargo:['', Validators.required],
-        kilomMinimo: ['', Validators.required],
-        kilomMaximo: ['', Validators.required],
-        monto: ['', Validators.required],
-        idCliente: [null, Validators.required]
-      }
-    )
-
-    this.newSurchForm = this.formBuilder.group(
-      {
-        descRecargo:['', Validators.required],
-        kilomMinimo: ['', Validators.required],
-        kilomMaximo: ['', Validators.required],
-        monto: ['', Validators.required],
-        idCliente: [null, Validators.required]
-      }
-    )
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -108,11 +77,11 @@ export class XploreSurchargesComponent implements OnInit {
     this.surchargesService.getSurcharges().subscribe(response => {
       this.surcharges = response.data
       this.dtTrigger.next()
+    }, error => {
+      this.loaders.loadingData = false
+      this.openErrorDialog("Lo sentimos, ha ocurrido un error al cargar los datos de recargos. Al dar clic en Aceptar, volveremos a intentarlo", true)
     })
 
-    this.usersService.getCustomers().subscribe(response => {
-      this.customers = response.data
-    })
   }
 
   reloadData() {
@@ -126,55 +95,31 @@ export class XploreSurchargesComponent implements OnInit {
         currSurcharge = value
       }
     })
-    this.f.idRecargo.setValue(currSurcharge.idRecargo)
-    this.f.descRecargo.setValue(currSurcharge.descRecargo)
-    this.f.kilomMinimo.setValue(currSurcharge.kilomMinimo)
-    this.f.kilomMaximo.setValue(currSurcharge.kilomMaximo)
-    this.f.monto.setValue(currSurcharge.monto)
-    this.f.idCliente.setValue(currSurcharge.idCliente)
-    $("#edRecModal").modal('show')
+    this.dialog.open(EditSurchargeDialogComponent, {
+      data: {
+        surcharge: currSurcharge
+      }
+    })
   }
 
   showNewForm() {
-    $("#newRecModal").modal('show')
+    this.dialog.open(NewSurchargeDialogComponent)
   }
 
-  onFormEditSubmit() {
-    if (this.edSurChForm.valid) {
-      this.loaders.loadingSubmit = true
-      this.surchargesService.editSurcharge(this.edSurChForm.value)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.exitMsg = response.message
-            $("#succsModal").modal('show')
-          },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.errMsg = error.statusText
-              $("#errModal").modal('show')
-            })
-          })
-    }
-  }
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
 
-  onFormNewSubmit() {
-    if (this.newSurchForm.valid) {
-      this.loaders.loadingSubmit = true
-      this.surchargesService.createSurcharge(this.newSurchForm.value)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.exitMsg = response.message
-            $("#succsModal").modal('show')
-          },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.errMsg = error.statusText
-              $("#errModal").modal('show')
-            })
-          })
+    if(reload){
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingData = true
+        this.reloadData()
+      })
     }
+
   }
 
 }

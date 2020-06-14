@@ -1,11 +1,10 @@
 <!--CARD START -->
-<div @fade class="card shadow-sm">
-  <div class="card-header">
-    <h3>Todos mis Deliveries</h3>
-  </div>
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>Todas mis Reservas</mat-card-title>
+  </mat-card-header>
   <!-- CARD BODY START -->
-  <div class="card-body p-0">
-
+  <mat-card-content>
     <div class="row" *ngIf="loaders.loadingData">
       <div class="col text-center">
         <img src="assets/img/loading.svg" width="5%" alt="loading">
@@ -15,27 +14,10 @@
     <!-- DATATABLE START -->
     <app-customer-datatable [deliveries]="2" (loadingData)="setLoading($event)" ></app-customer-datatable>
     <!-- DATATABLE END -->
-  </div>
+  </mat-card-content>
   <!--CARD BODY END -->
 
-</div>
+</mat-card>
 <!-- CARD END -->
 
-<!-- MODAL START -->
-<div id="errModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-danger"><i class="fa fa-exclamation-circle"></i> Ha ocurrido un error </h3>
-      </div>
-      <div class="modal-body">
-        <p>{{msgError}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-danger btn-sm btn-rounded" data-dismiss="modal">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- MODAL END -->
 

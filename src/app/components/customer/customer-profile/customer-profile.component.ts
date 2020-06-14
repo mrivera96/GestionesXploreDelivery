@@ -4,9 +4,12 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UsersService} from "../../../services/users.service";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
-import validate = WebAssembly.validate;
 import {MustMatch} from "../../../helpers/mustMatch.validator";
 import {PasswordValidate} from "../../../helpers/passwordValidation.validator";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
+import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
 
 declare var $: any
 
@@ -36,7 +39,8 @@ export class CustomerProfileComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private usersService: UsersService,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialog: MatDialog
   ) {
   }
 
@@ -45,7 +49,14 @@ export class CustomerProfileComponent implements OnInit {
       oldPass: ['', Validators.required],
       newPass: ['', [Validators.required, Validators.minLength(8)]],
       confirmNewPass: ['', [Validators.required]]
-    }, {validator: [MustMatch('newPass', 'confirmNewPass'), PasswordValidate('newPass')]})
+    }, {
+      validator:
+        [
+          MustMatch('newPass', 'confirmNewPass'),
+          PasswordValidate('newPass'),
+          BlankSpacesValidator('newPass'),
+        ]
+    })
     this.currentUser = this.authService.currentUserValue
   }
 
@@ -53,18 +64,18 @@ export class CustomerProfileComponent implements OnInit {
     if (this.passChangeForm.valid) {
       if (this.passChangeForm.get('newPass').value.includes(' ') || this.passChangeForm.get('confirmNewPass').value.includes(' ') || this.passChangeForm.get('oldPass').value.includes(' ')) {
         this.errorMsg = 'No se permiten espacios en blanco en las contraseñas.'
-        $("#errModal").modal('show')
+        this.openErrorDialog(this.errorMsg, false)
       } else {
         this.loaders.loadingSubmit = true
         this.usersService.changeCustomerPassword(this.passChangeForm.value).subscribe(response => {
           this.loaders.loadingSubmit = false
           this.succsMsg = response.message
-          $("#succsModal").modal('show')
+          this.openSuccessDialog('Operación Realizada Correctamente', this.succsMsg)
         }, error => {
           error.subscribe(error => {
             this.loaders.loadingSubmit = false
             this.errorMsg = error.statusText
-            $("#errModal").modal('show')
+            this.openErrorDialog(this.errorMsg, false)
           })
         })
 
@@ -81,6 +92,27 @@ export class CustomerProfileComponent implements OnInit {
 
   cleanForm() {
     this.passChangeForm.reset()
+  }
+
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
+  }
+
+  openSuccessDialog(succsTitle, succssMsg) {
+    const dialogRef = this.dialog.open(SuccessModalComponent, {
+      data: {
+        succsTitle: succsTitle,
+        succsMsg: succssMsg
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.logout()
+    })
   }
 
 }

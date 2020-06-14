@@ -1,9 +1,13 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Order} from "../../../models/order";
 import {Subject} from "rxjs";
 import {State} from "../../../models/state";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {DataTableDirective} from "angular-datatables";
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorModalComponent} from "../error-modal/error-modal.component";
+import {AuthService} from "../../../services/auth.service";
+import {User} from "../../../models/user";
 
 declare var $: any
 @Component({
@@ -11,26 +15,33 @@ declare var $: any
   templateUrl: './orders-data-table.component.html',
   styleUrls: ['./orders-data-table.component.css']
 })
-export class OrdersDataTableComponent implements OnInit {
+export class OrdersDataTableComponent implements OnInit{
   @Input('orders') tOrders: string
   @Output('loadingData') stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
   orders: Order[]
   dtTrigger: Subject<any> = new Subject<any>()
   dtOptions: DataTables.Settings
   msgError = ''
-
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
 
+  currUser: User
   states: State[]
   constructor(
-    private deliveriesService: DeliveriesService
-  ) { }
+    private deliveriesService: DeliveriesService,
+    public dialog: MatDialog,
+    public authService: AuthService
+  ) {
+
+  }
 
   ngOnInit(): void {
+
     this.initialize()
+    this.currUser = this.authService.currentUserValue
     this.loadData()
   }
+
   initialize(){
     this.dtOptions =  {
       pagingType: 'full_numbers',
@@ -38,8 +49,8 @@ export class OrdersDataTableComponent implements OnInit {
       serverSide: false,
       processing: true,
       info: true,
-      autoWidth: true,
       order: [0, 'asc'],
+      autoWidth: true,
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -127,10 +138,28 @@ export class OrdersDataTableComponent implements OnInit {
     }, error => {
       this.stopLoading.emit(false)
       this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-      $("#errModal").modal('show')
+     this.openErrorDialog(this.msgError, true)
     })
   }
 
+  reloadData(){
+    this.ngOnInit()
+  }
 
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
+
+    if(reload){
+      dialog.afterClosed().subscribe(result => {
+        this.stopLoading.emit(true)
+        this.reloadData()
+      })
+    }
+
+  }
 
 }

@@ -6,6 +6,8 @@ import {Subject} from "rxjs";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {ActivatedRoute} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog} from "@angular/material/dialog";
 declare var $: any
 @Component({
   selector: 'app-customer-delivery-detail',
@@ -34,6 +36,7 @@ export class CustomerDeliveryDetailComponent implements OnInit {
   constructor(
     private deliveriesService: DeliveriesService,
     private route: ActivatedRoute,
+    public dialog: MatDialog
   ) {
 
   }
@@ -44,17 +47,7 @@ export class CustomerDeliveryDetailComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.deliveryId = Number(params.get("id"));
     })
-    this.loaders.loadingData = true
-    this.deliveriesService.getById(this.deliveryId).subscribe(response => {
-      this.currentDelivery = response.data
-      this.currentDeliveryDetail = response.data.detalle
-      this.loaders.loadingData = false
 
-    }, error => {
-      this.loaders.loadingData = false
-      this.errorMSg = 'Lo sentimos, ha ocurrido un error al cargar la información. Por favor intente de nuevo.'
-      $("#errModal").modal('show')
-    })
     this.loadData()
   }
   initialize() {
@@ -87,7 +80,37 @@ export class CustomerDeliveryDetailComponent implements OnInit {
   }
 
   loadData() {
+    this.loaders.loadingData = true
+    this.deliveriesService.getById(this.deliveryId).subscribe(response => {
+      this.currentDelivery = response.data
+      this.currentDeliveryDetail = response.data.detalle
+      this.loaders.loadingData = false
 
+    }, error => {
+      this.loaders.loadingData = false
+      this.errorMSg = 'Lo sentimos, ha ocurrido un error al cargar la información. Por favor intente de nuevo.'
+      this.openErrorDialog(this.errorMSg, true)
+    })
+
+  }
+
+  reloadData(){
+    this.ngOnInit()
+  }
+
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
+
+    if(reload){
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingData = true
+        this.reloadData()
+      })
+    }
 
   }
 

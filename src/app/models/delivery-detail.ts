@@ -1,4 +1,5 @@
 import {User} from "./user";
+import {Delivery} from "./delivery";
 
 export interface DeliveryDetail {
   idDelivery?: number
@@ -16,4 +17,5 @@ export interface DeliveryDetail {
   recargo?: number
   cTotal?: number
   instrucciones?: string
+  delivery?: Delivery
 }

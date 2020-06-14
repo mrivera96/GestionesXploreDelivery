@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Subject} from "rxjs";
-import {DeliveriesService} from "../../../services/deliveries.service";
 import {Delivery} from "../../../models/delivery";
 import {animate, style, transition, trigger} from "@angular/animations";
-declare var $: any
 
 @Component({
   selector: 'app-todos-deliveries',
@@ -25,10 +23,7 @@ export class TodosDeliveriesComponent implements OnInit {
   }
   dtTrigger: Subject<any> = new Subject()
 
-  msgError = ''
-
   constructor(
-    private deliveriesService: DeliveriesService,
   ) {
 
   }

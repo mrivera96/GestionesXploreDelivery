@@ -1,322 +1,76 @@
 <!-- CARD START -->
-<div @fade class="card shadow">
-  <div class="card-header">
-    <a [routerLink]="['/']">
-      <i class="fa fa-arrow-circle-left m-r-xs"></i>
-    </a>
-    <h3 class="d-inline">Parametrización de Recargos</h3>
-  </div>
-  <!-- CARD BODY START -->
-  <div class="card-body p-0">
+<!--CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Parametrización de Recargos
+    </mat-card-title>
+
+  </mat-card-header>
+
+  <mat-card-content>
     <div class="row" *ngIf="loaders.loadingData">
       <div class="col text-center">
         <img src="assets/img/loading.svg" width="5%" alt="loading">
         <p>Cargando información...</p>
       </div>
     </div>
-    <!-- DATATABLE START -->
+
     <!-- CONTAINER START -->
-    <div class="ibox">
-      <div class="ibox-title ">
-        <h5>Listado de Recargos por Distancia</h5>
-        <button (click)="showNewForm()" type="button" class="btn btn-sm btn-outline-success float-right mb-2">
+
+    <div class="row justify-content-end">
+      <div class="col">
+        <button mat-raised-button (click)="showNewForm()" type="button" color="primary" class="float-right mb-2">
           <i class="fa fa-plus"></i>
           Agregar Recargo
         </button>
       </div>
-      <!-- CONTAINER BODY START -->
-      <div class="ibox-content">
-        <div class="table-responsive">
-          <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                 class="display" style="width:100%">
-            <thead>
-            <tr>
-              <th>N°</th>
-              <th>Descripción de Recargo</th>
-              <th>Kilometraje Mínimo</th>
-              <th>Kilometraje Máximo</th>
-              <th>Monto</th>
-              <th>Cliente Asignado</th>
-              <th data-priority="1">Acción</th>
-            </tr>
-            </thead>
-            <tbody>
 
-            <tr *ngFor="let surcharge of surcharges">
-              <td>{{surcharge.idRecargo}}</td>
-              <td>{{surcharge.descRecargo}}</td>
-              <td>{{surcharge.kilomMinimo}}</td>
-              <td>{{surcharge.kilomMaximo}}</td>
-              <td>L. {{surcharge.monto}}</td>
-              <td>{{surcharge.cliente.nomEmpresa}}</td>
-              <td>
-                <a (click)="showEditForm(surcharge.idRecargo)" style="color: #0071A2">
-                  <i class="fa fa-edit"></i> Editar
-                </a>
-              </td>
-
-            </tr>
-            </tbody>
-
-          </table>
-        </div>
-      </div>
-      <!-- CONTAINER BODY END -->
     </div>
-    <!-- CONTAINER END -->
+    <!-- CONTAINER BODY START -->
 
-    <!-- DATATABLE END -->
-  </div>
-  <!-- CARD BODY END -->
-</div>
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+             class="display compact" style="width:100%">
+        <thead>
+        <tr>
+          <th>N°</th>
+          <th>Descripción de Recargo</th>
+          <th>Kilometraje Mínimo</th>
+          <th>Kilometraje Máximo</th>
+          <th>Monto</th>
+          <th>Cliente Asignado</th>
+          <th data-priority="1">Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let surcharge of surcharges">
+          <td>{{surcharge.idRecargo}}</td>
+          <td>{{surcharge.descRecargo}}</td>
+          <td>{{surcharge.kilomMinimo}}</td>
+          <td>{{surcharge.kilomMaximo}}</td>
+          <td>L. {{surcharge.monto}}</td>
+          <td>{{surcharge.cliente.nomEmpresa}}</td>
+          <td>
+            <a (click)="showEditForm(surcharge.idRecargo)" style="color: #0071A2">
+              <i class="fa fa-edit"></i> Editar
+            </a>
+          </td>
+
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <!-- CONTAINER END -->
+  </mat-card-content>
+</mat-card>
+
 <!-- CARD END -->
 
-<!-- INICIO DE MODAL -->
-<div id="succsModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-success">
-          Operación completada
-        </h3>
-      </div>
-      <div class="modal-body">
-        <p>{{this.exitMsg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button
-          type="button" (click)="reloadData()"
-          class="btn btn-sm btn-rounded btn-outline-primary"
-          data-dismiss="modal">
-          Aceptar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- FIN DE MODAL -->
-
-<!-- INICIO DE MODAL -->
-<div id="edRecModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">
-          Editar Recargo
-        </h3>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="edSurChForm">
-
-          <div class="form-group">
-            <label class="col-form-label" for="descRecargo">Descripción de Recargo:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-pen"></i>
-                </span>
-              </div>
-              <input class="form-control" id="descRecargo" type="text" formControlName="descRecargo"
-                     [class.is-invalid]="f.descRecargo.invalid && f.descRecargo.touched"
-                     required maxlength="60">
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="kilomMaximo">Kilometraje Máximo:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-sort-up"></i>
-                </span>
-              </div>
-              <input class="form-control" id="kilomMaximo" type="number" formControlName="kilomMaximo"
-                     [class.is-invalid]="f.kilomMaximo.invalid && f.kilomMaximo.touched"
-                     required>
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="kilomMinimo">Kilometraje Mínimo:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-sort-down"></i>
-                </span>
-              </div>
-              <input class="form-control" id="kilomMinimo" type="number" formControlName="kilomMinimo"
-                     [class.is-invalid]="f.kilomMinimo.invalid && f.kilomMinimo.touched"
-                     required>
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="monto">Monto:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-dollar-sign"></i>
-                </span>
-              </div>
-              <input class="form-control" id="monto" type="text" formControlName="monto"
-                     [class.is-invalid]="f.monto.invalid && f.monto.touched"
-                     required>
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="idCliente">Cliente:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-user-circle"></i>
-                </span>
-              </div>
-              <select class="form-control" id="idCliente" formControlName="idCliente"
-                      [class.is-invalid]="f.idCliente.invalid && f.idCliente.touched"
-                      required>
-                <option [value]="null">- Seleccione un cliente -</option>
-                <option *ngFor="let customer of customers"
-                        [value]="customer.idCliente">{{customer.nomEmpresa}}</option>
-              </select>
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-
-          </div>
-
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="onFormEditSubmit()" class="btn btn-sm btn-rounded btn-outline-primary"
-                data-dismiss="modal">Confimar
-        </button>
-        <button type="button" class="btn btn-sm btn-rounded btn-outline-secondary" data-dismiss="modal">
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- FIN DE MODAL -->
-
-<!-- INICIO DE MODAL -->
-<div id="newRecModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">
-          Nuevo Recargo
-        </h3>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="newSurchForm">
-          <div class="form-group">
-            <label class="col-form-label" for="descRecargoN">Descripción de Recargo:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-pen"></i>
-                </span>
-              </div>
-              <input class="form-control" id="descRecargoN" type="text" formControlName="descRecargo"
-                     [class.is-invalid]="fNew.descRecargo.invalid && fNew.descRecargo.touched"
-                     required maxlength="60" placeholder="¿Cuál será la descripción del nuevo recargo?">
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="kilomMaximoN">Kilometraje Máximo:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-sort-up"></i>
-                </span>
-              </div>
-              <input class="form-control" id="kilomMaximoN" type="number" formControlName="kilomMaximo"
-                     [class.is-invalid]="fNew.kilomMaximo.invalid && fNew.kilomMaximo.touched"
-                     required placeholder="Kilómetros máximos que abarcará el recargo">
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
 
 
-          </div>
 
-          <div class="form-group">
-            <label class="col-form-label" for="kilomMinimoN">Kilometraje Mínimo:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-sort-down"></i>
-                </span>
-              </div>
-              <input class="form-control" id="kilomMinimoN" type="number" formControlName="kilomMinimo"
-                     [class.is-invalid]="fNew.kilomMinimo.invalid && fNew.kilomMinimo.touched"
-                     required placeholder="Kilómetros mínimos que abarcará el recargo">
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="montoN">Monto:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-dollar-sign"></i>
-                </span>
-              </div>
-              <input class="form-control" id="montoN" type="text" formControlName="monto"
-                     [class.is-invalid]="fNew.monto.invalid && fNew.monto.touched"
-                     required placeholder="¿Cuál será el monto del recargo?">
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="idClienteN">Cliente:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-user-circle"></i>
-                </span>
-              </div>
-              <select class="form-control" id="idClienteN" formControlName="idCliente"
-                      [class.is-invalid]="fNew.idCliente.invalid && fNew.idCliente.touched"
-                      required>
-                <option [value]="null">- Seleccione un cliente -</option>
-                <option *ngFor="let customer of customers"
-                        [value]="customer.idCliente">{{customer.nomEmpresa}}</option>
-              </select>
-              <small class="text-danger invalid-feedback">*Este campo es obligatorio</small>
-            </div>
-
-          </div>
-
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="onFormNewSubmit()" class="btn btn-sm btn-rounded btn-outline-primary"
-                data-dismiss="modal">Confimar
-        </button>
-        <button type="button" class="btn btn-sm btn-rounded btn-outline-secondary" data-dismiss="modal">
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- FIN DE MODAL -->
-
-
-<!-- INICIO DE MODAL -->
-<app-error-modal [msgError]="errMsg"></app-error-modal>
-<!-- FIN DE MODAL -->
 

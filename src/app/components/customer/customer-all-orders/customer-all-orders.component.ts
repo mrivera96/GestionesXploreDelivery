@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Subject} from "rxjs";
-import {Order} from "../../../models/order";
-import {DeliveriesService} from "../../../services/deliveries.service";
 import {animate, style, transition, trigger} from "@angular/animations";
-declare var $: any
+
 @Component({
   selector: 'app-customer-all-orders',
   templateUrl: './customer-all-orders.component.html',
@@ -22,7 +19,6 @@ export class CustomerAllOrdersComponent implements OnInit {
   loaders = {
     'loadingData': false
   }
-
 
   constructor(
   ) { }

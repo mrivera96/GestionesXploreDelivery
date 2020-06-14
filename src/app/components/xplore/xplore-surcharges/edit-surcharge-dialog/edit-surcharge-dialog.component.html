@@ -1,0 +1,78 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-edit"></i> Editar Recargo
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="edSurChForm">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Descripción de Recargo:</mat-label>
+        <input matInput id="descRecargo" type="text" formControlName="descRecargo"
+               required maxlength="60">
+        <mat-icon matSuffix>create</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Kilometraje Máximo:</mat-label>
+        <input matInput id="kilomMaximo" type="number" formControlName="kilomMaximo" required>
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Kilometraje Mínimo:</mat-label>
+        <input matInput id="kilomMinimo" type="number" formControlName="kilomMinimo"
+               required>
+        <mat-error>*Este campo es obligatorio</mat-error>
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Monto:</mat-label>
+        <input matInput id="monto" type="text" formControlName="monto" required>
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Cliente:</mat-label>
+        <mat-select id="idCliente" formControlName="idCliente" required placeholder="- Seleccione un cliente -">
+          <mat-option *ngFor="let customer of customers" value="{{customer.idCliente}}">
+            {{customer.nomEmpresa}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" [disabled]="edSurChForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()" mat-raised-button color="primary" mat-dialog-close>
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>
+    Cancelar
+  </button>
+
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+
+
+

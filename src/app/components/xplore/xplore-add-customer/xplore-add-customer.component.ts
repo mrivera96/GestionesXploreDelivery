@@ -2,8 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {UsersService} from "../../../services/users.service";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-
-declare var $: any
+import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-xplore-add-customer',
@@ -29,27 +30,38 @@ export class XploreAddCustomerComponent implements OnInit {
 
   constructor(
     private usersService: UsersService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    public dialog: MatDialog,
+    public dialogRef: MatDialogRef<XploreAddCustomerComponent>
   ) {
   }
 
   ngOnInit(): void {
     this.nCustomerForm = this.formBuilder.group({
-      nomEmpresa: ['', Validators.required],
-      nomRepresentante: ['', Validators.required],
-      numIdentificacion: ['', Validators.required],
-      numTelefono: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
-      email: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$")]]
+      nomEmpresa: ['', [
+        Validators.required,
+        Validators.maxLength(80)]],
+      nomRepresentante: ['', [
+        Validators.required,
+        Validators.maxLength(80)]],
+      numIdentificacion: ['', [
+        Validators.required,
+        Validators.maxLength(14),
+        Validators.minLength(13)]],
+      numTelefono: ['', [
+        Validators.required,
+        Validators.minLength(9),
+        Validators.maxLength(9)]],
+      email: ['', [
+        Validators.required,
+        Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"),
+        Validators.maxLength(50)]]
     })
   }
 
   // getter para fácil acceso a los campos del formulario
   get f() {
     return this.nCustomerForm.controls;
-  }
-
-  reloadPage() {
-    this.ngOnInit()
   }
 
   clearForm() {
@@ -62,15 +74,39 @@ export class XploreAddCustomerComponent implements OnInit {
       this.usersService.addCustomer(this.nCustomerForm.value).subscribe(response => {
         this.loaders.loadingSubmit = false
         this.succsMsg = response.message
-        $("#succsModal").modal('show')
+        this.openSuccessDialog('Operación Realizada Correctamente', this.succsMsg)
+
       }, error => {
         error.subscribe(error => {
           this.loaders.loadingSubmit = false
           this.errorMsg = error.statusText
-          $("#errModal").modal('show')
+          this.openErrorDialog(this.errorMsg)
         })
       })
     }
+  }
+
+  openSuccessDialog(succsTitle, succssMsg) {
+    const dialogRef = this.dialog.open(SuccessModalComponent, {
+      data: {
+        succsTitle: succsTitle,
+        succsMsg: succssMsg
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.nCustomerForm.reset()
+      this.dialogRef.close()
+      location.reload()
+    })
+  }
+
+  openErrorDialog(error: string): void {
+    this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
   }
 
 

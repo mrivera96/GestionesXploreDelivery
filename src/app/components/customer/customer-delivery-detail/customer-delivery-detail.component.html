@@ -1,147 +1,145 @@
 <!-- CARD START -->
-<div @fade class="card shadow">
-  <div class="card-header" style="border-color: #0071A2;border-style: none none solid;
-  border-width: 0 0 3px; ">
-    <a [routerLink]="['/']"> <i class="fa fa-arrow-circle-left m-r-xs"></i></a>
-    <h3 class="inline">Solicitud N° {{deliveryId}}</h3>
-  </div>
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      <a [routerLink]="['/']"> <i class="fa fa-home m-r-xs"></i></a>
+      Solicitud N° {{deliveryId}}
+    </mat-card-title>
+  </mat-card-header>
 
-  <div class="card-body" *ngIf="loaders.loadingData">
-    <div class="row">
+  <!-- CARD BODY START -->
+  <mat-card-content >
+    <div class="row" *ngIf="loaders.loadingData">
       <div class="col text-center">
         <img src="assets/img/loading.svg" width="35%" alt="loading">
         <p>Cargando información...</p>
       </div>
     </div>
-  </div>
-  <!-- CARD BODY START -->
-  <div class="card-body" *ngIf="!loaders.loadingData">
-    <div class="card-title">
-      <h4>Datos Generales</h4>
+
+    <div class="container-fluid" *ngIf="!loaders.loadingData">
+      <div class="card-title">
+        <h4>Datos Generales</h4>
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Nombre del cliente:</strong>
+          {{currentDelivery?.nomCliente}}
+        </div>
+        <div class="col-sm">
+          <strong>Número de identificación:</strong>
+          {{currentDelivery?.numIdentificacion}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Número de celular:</strong>
+          {{currentDelivery?.numCelular}}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Dirección de recogida:</strong>
+          <a href="https://www.google.com/maps?q={{currentDelivery?.dirRecogida}}"> {{currentDelivery?.dirRecogida}} </a>
+        </div>
+
+        <div class="col-sm">
+          <strong>Instrucciones de recogida:</strong>
+          {{currentDelivery?.instrucciones}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Categoría reservada:</strong>
+          {{currentDelivery?.category?.descCategoria}}
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Fecha y hora de recogida:</strong>
+          {{currentDelivery?.fechaReserva}}
+        </div>
+
+        <div class="col-sm">
+          <strong>e-mail:</strong>
+          {{currentDelivery?.email}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Tarifa Base:</strong>
+          L. {{currentDelivery?.tarifaBase}}
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Recargos:</strong>
+          L. {{currentDelivery?.recargos}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Total:</strong>
+          L. {{currentDelivery?.total}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Estado Actual:</strong>
+          {{currentDelivery?.estado.descEstado}}
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm" *ngIf="currentDelivery.idEstado == 37">
+          <strong>Asignada a:</strong>
+          {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
+        </div>
+
+      </div>
+
+      <br>
+      <div>
+        <h4 class="card-title">Entregas programadas</h4>
+      </div>
+
+      <div class="table-responsive">
+        <table class="display compact" datatable [dtOptions]="dddtOptions"  style="width: 100%">
+          <thead>
+          <tr>
+            <th>Detalle de entrega</th>
+            <th>Nombre de destinatario</th>
+            <th>Número de teléfono</th>
+            <th>Dirección de entrega</th>
+            <th>Instrucciones de entrega</th>
+            <th>Distancia</th>
+            <th>Recargo</th>
+            <th>Costo</th>
+          </tr>
+
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let detail of currentDeliveryDetail; let i = index">
+            <td>{{detail.nFactura}}</td>
+            <td>{{detail.nomDestinatario}}</td>
+            <td>{{detail.numCel}}</td>
+            <td>
+              <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
+            </td>
+            <td>{{detail?.instrucciones}}</td>
+            <td>{{detail.distancia}}</td>
+            <td>L. {{detail.recargo}}</td>
+            <td>L. {{detail.cTotal}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    <div class="row">
-      <div class="col-sm">
-        <strong>Nombre del cliente:</strong>
-        {{currentDelivery?.nomCliente}}
-      </div>
-      <div class="col-sm">
-        <strong>Número de identificación:</strong>
-        {{currentDelivery?.numIdentificacion}}
-      </div>
-
-      <div class="col-sm">
-        <strong>Número de celular:</strong>
-        {{currentDelivery?.numCelular}}
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm">
-        <strong>Dirección de recogida:</strong>
-        <a href="https://www.google.com/maps?q={{currentDelivery?.dirRecogida}}"> {{currentDelivery?.dirRecogida}} </a>
-      </div>
-
-      <div class="col-sm">
-        <strong>Instrucciones de recogida:</strong>
-         {{currentDelivery?.instrucciones}}
-      </div>
-
-      <div class="col-sm">
-        <strong>Categoría reservada:</strong>
-        {{currentDelivery?.category?.descCategoria}}
-      </div>
-
-    </div>
-
-    <div class="row">
-      <div class="col-sm">
-        <strong>Fecha y hora de recogida:</strong>
-        {{currentDelivery?.fechaReserva}}
-      </div>
-
-      <div class="col-sm">
-        <strong>e-mail:</strong>
-        {{currentDelivery?.email}}
-      </div>
-
-      <div class="col-sm">
-        <strong>Tarifa Base:</strong>
-        L. {{currentDelivery?.tarifaBase}}
-      </div>
-
-    </div>
-
-    <div class="row">
-      <div class="col-sm">
-        <strong>Recargos:</strong>
-        L. {{currentDelivery?.recargos}}
-      </div>
-
-      <div class="col-sm">
-        <strong>Total:</strong>
-        L. {{currentDelivery?.total}}
-      </div>
-
-      <div class="col-sm">
-        <strong>Estado Actual:</strong>
-        {{currentDelivery?.estado.descEstado}}
-      </div>
-
-    </div>
-
-    <div class="row">
-      <div class="col-sm" *ngIf="currentDelivery.idEstado == 37">
-        <strong>Asignada a:</strong>
-        {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
-      </div>
-
-    </div>
-
-    <br>
-    <div>
-      <h4 class="card-title">Entregas programadas</h4>
-    </div>
-
-    <div class="table-responsive">
-      <table class="display table table-striped table-hover" datatable [dtOptions]="dddtOptions"  style="width: 100%">
-        <thead>
-        <tr>
-          <th>Detalle de entrega</th>
-          <th>Nombre de destinatario</th>
-          <th>Número de teléfono</th>
-          <th>Dirección de entrega</th>
-          <th>Instrucciones de entrega</th>
-          <th>Distancia</th>
-          <th>Recargo</th>
-          <th>Costo</th>
-        </tr>
-
-        </thead>
-
-        <tbody>
-        <tr *ngFor="let detail of currentDeliveryDetail; let i = index">
-          <td>{{detail.nFactura}}</td>
-          <td>{{detail.nomDestinatario}}</td>
-          <td>{{detail.numCel}}</td>
-          <td>
-            <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
-          </td>
-          <td>{{detail?.instrucciones}}</td>
-          <td>{{detail.distancia}}</td>
-          <td>L. {{detail.recargo}}</td>
-          <td>L. {{detail.cTotal}}</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-
-  </div>
+  </mat-card-content>
   <!-- CARD BODY END -->
-</div>
+</mat-card>
 <!-- CARD END -->
-<!-- MODAL START -->
-<app-error-modal [msgError]="errorMSg"></app-error-modal>
-<!-- MODAL END -->
+
 

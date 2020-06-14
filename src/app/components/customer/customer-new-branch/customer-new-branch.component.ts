@@ -4,8 +4,11 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {BranchService} from "../../../services/branch.service";
 import {environment} from "../../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
+import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
 
-declare var $: any
 
 @Component({
   selector: 'app-customer-new-branch',
@@ -33,7 +36,9 @@ export class CustomerNewBranchComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private branchService: BranchService,
-    private http: HttpClient
+    private http: HttpClient,
+    public dialog: MatDialog,
+    public dialogRef: MatDialogRef<CustomerNewBranchComponent>
   ) {
   }
 
@@ -43,6 +48,11 @@ export class CustomerNewBranchComponent implements OnInit {
         nomSucursal: ['', Validators.required],
         numTelefono: ['', [Validators.minLength(9), Validators.maxLength(9)]],
         direccion: ['', Validators.required]
+      },{
+        validators: [
+          BlankSpacesValidator('nomSucursal'),
+          BlankSpacesValidator('direccion')
+        ]
       }
     )
   }
@@ -53,23 +63,15 @@ export class CustomerNewBranchComponent implements OnInit {
       this.branchService.newBranch(this.nBranchForm.value).subscribe(response => {
         this.loaders.loadingSubmit = false
         this.succsMsg = response.message
-        $("#succsModal").modal('show')
+        this.openSuccessDialog('Operación Realizada Correctamente', this.succsMsg)
       }, error => {
         error.subscribe(error => {
           this.loaders.loadingSubmit = false
           this.errorMsg = error.statusText
-          $("#errModal").modal('show')
+          this.openErrorDialog(this.errorMsg)
         })
       })
     }
-  }
-
-  reloadPage() {
-    this.ngOnInit()
-  }
-
-  cleanForm() {
-    this.nBranchForm.reset()
   }
 
   searchAddress(event) {
@@ -79,14 +81,9 @@ export class CustomerNewBranchComponent implements OnInit {
     })
   }
 
-  setAddress(origin) {
-    this.nBranchForm.get('direccion').setValue(origin)
-    this.places = []
-  }
-
-  setCurrentLocation(event) {
-    if (event.target.checked == true) {
-      if (navigator) {
+  setCurrentLocation(checked) {
+    if (!checked) {
+      if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function () {}, function () {}, {})
         navigator.geolocation.getCurrentPosition(pos => {
           const destCords = Number(pos.coords.latitude) + ',' + Number(pos.coords.longitude)
@@ -99,6 +96,30 @@ export class CustomerNewBranchComponent implements OnInit {
       this.nBranchForm.get('direccion').setValue('')
     }
 
+  }
+
+  openSuccessDialog(succsTitle, succssMsg) {
+    const dialogRef = this.dialog.open(SuccessModalComponent, {
+      data: {
+        succsTitle: succsTitle,
+        succsMsg: succssMsg
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.nBranchForm.reset()
+      this.dialogRef.close()
+      location.reload()
+
+    })
+  }
+
+  openErrorDialog(error: string): void {
+    this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
   }
 
 }

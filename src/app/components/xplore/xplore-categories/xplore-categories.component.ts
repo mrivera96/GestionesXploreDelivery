@@ -3,10 +3,10 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {CategoriesService} from "../../../services/categories.service";
 import {Category} from "../../../models/category";
 import {Subject} from "rxjs";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Branch} from "../../../models/branch";
-
-declare var $: any;
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {MatDialog} from "@angular/material/dialog";
+import {EditCategoryDialogComponent} from "./edit-category-dialog/edit-category-dialog.component";
+import {NewCategoryDialogComponent} from "./new-category-dialog/new-category-dialog.component";
 
 @Component({
   selector: 'app-xplore-categories',
@@ -29,13 +29,9 @@ export class XploreCategoriesComponent implements OnInit {
     loadingData: false,
     loadingSubmit: false
   }
-  exitMsg = ''
-  errMsg = ''
-  edCatForm: FormGroup
-  newCatForm: FormGroup
-
   constructor(
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    public dialog: MatDialog
   ) {
   }
 
@@ -44,29 +40,8 @@ export class XploreCategoriesComponent implements OnInit {
     this.loadData()
   }
 
-  get f() {
-    return this.edCatForm.controls
-  }
-
-  get fNew(){
-    return this.newCatForm.controls
-  }
-
   initialize() {
     this.dtTrigger = new Subject<any>()
-    this.edCatForm = new FormGroup(
-      {
-        idCategoria: new FormControl(),
-        descCategoria: new FormControl(0, Validators.required),
-        isActivo: new FormControl(0, Validators.required)
-      }
-    )
-
-    this.newCatForm = new FormGroup(
-      {
-        descCategoria: new FormControl(null, Validators.required)
-      }
-    )
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -93,11 +68,13 @@ export class XploreCategoriesComponent implements OnInit {
         },
       },
     }
+    this.loaders.loadingData = true
   }
 
   loadData() {
     this.categoriesService.showAllCategories().subscribe(response => {
       this.categories = response.data
+      this.loaders.loadingData = false
       this.dtTrigger.next()
     })
   }
@@ -113,52 +90,36 @@ export class XploreCategoriesComponent implements OnInit {
         currCat = value
       }
     })
-    this.f.idCategoria.setValue(currCat.idCategoria)
-    this.f.descCategoria.setValue(currCat.descCategoria)
-    this.f.isActivo.setValue(currCat.isActivo)
-    $("#edCatModal").modal('show')
+
+    const dialogRef = this.dialog.open(EditCategoryDialogComponent, {
+      data: {
+        category: currCat
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result =>{
+      dialogRef.close()
+    })
   }
 
   showNewCatForm(){
-    $("#newCatModal").modal('show')
+     this.dialog.open(NewCategoryDialogComponent)
   }
 
-  onFormEditSubmit() {
-    if (this.edCatForm.valid) {
-      this.loaders.loadingSubmit = true
-      this.categoriesService.editCategory(this.edCatForm.value)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.exitMsg = response.message
-            $("#succsModal").modal('show')
-          },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.errMsg = error.statusText
-              $("#errModal").modal('show')
-            })
-          })
-    }
-  }
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
 
-  onFormNewSubmit() {
-    if (this.newCatForm.valid) {
-      this.loaders.loadingSubmit = true
-      this.categoriesService.createCategory(this.newCatForm.value)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.exitMsg = response.message
-            $("#succsModal").modal('show')
-          },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.errMsg = error.statusText
-              $("#errModal").modal('show')
-            })
-          })
+    if(reload){
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingData = true
+        this.reloadData()
+      })
     }
+
   }
 
 }

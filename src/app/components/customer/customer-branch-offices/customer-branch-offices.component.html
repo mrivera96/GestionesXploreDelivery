@@ -1,10 +1,10 @@
 <!--CARD START -->
-<div @fade class="card shadow-sm">
-  <div class="card-header">
-    <h3>Mis Direcciones</h3>
-  </div>
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>Mis Direcciones</mat-card-title>
+  </mat-card-header>
   <!-- CARD BODY START -->
-  <div class="card-body p-0">
+  <mat-card-content>
 
     <div class="row" *ngIf="loaders.loadingData">
       <div class="col text-center">
@@ -12,199 +12,60 @@
         <p>Cargando información...</p>
       </div>
     </div>
-    <!-- DATATABLE START -->
-    <!-- CONTAINER START -->
-    <div class="ibox">
-      <div class="ibox-title">
-        <h5>Listado de Direcciones</h5>
-      </div>
-      <!-- CONTAINER BODY START -->
-      <div class="ibox-content">
-        <div class="table-responsive">
-          <table id="dTable" datatable [dtOptions]="bdtOptions" [dtTrigger]="bdtTrigger"
-                 class="display" style="width:100%">
-            <thead>
-            <tr>
-              <th>N°</th>
-              <th data-priority="1">Nombre de Dirección</th>
-              <th>Dirección</th>
-              <th>email</th>
-              <th data-priority="1">Editar</th>
-              <th data-priority="1">Eliminar</th>
-            </tr>
-            </thead>
-            <tbody>
 
-            <tr *ngFor="let branch of myBranchOffices" style="cursor: pointer">
-              <td class="id">{{branch.idSucursal}}</td>
-              <td>{{branch.nomSucursal}}</td>
-              <td>{{branch.direccion}}</td>
-              <td>{{branch.cliente.email}}</td>
-              <td>
-                <a (click)="showEditForm(branch.idSucursal)" style="color: #0071A2">
-                  <i class="fa fa-edit"></i> Editar
-                </a>
-              </td>
-              <td>
-                <a (click)="showConfirmDelete(branch.idSucursal)" style="color: #0071A2">
-                  <i class="fa fa-trash"></i> Eliminar
-                </a>
-              </td>
-            </tr>
-            </tbody>
-
-          </table>
-        </div>
+    <div class="row justify-content-end">
+      <div class="col">
+        <button mat-raised-button (click)="showNewForm()" type="button" color="primary" class="float-right mb-2">
+          <i class="fa fa-plus"></i>
+          Agregar Dirección
+        </button>
       </div>
-      <!-- CONTAINER BODY END -->
     </div>
-    <!-- CONTAINER END -->
-    <!-- DATATABLE END -->
-  </div>
+    <!-- DATATABLE START -->
+
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="bdtOptions" [dtTrigger]="bdtTrigger"
+             class="display compact" style="width:100%">
+        <thead>
+        <tr>
+          <th data-priority="1">Nombre de Dirección</th>
+          <th>Dirección</th>
+          <th>email</th>
+          <th>Celular</th>
+          <th data-priority="1">Editar</th>
+          <th data-priority="1">Eliminar</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let branch of myBranchOffices" style="cursor: pointer">
+          <td>{{branch.nomSucursal}}</td>
+          <td>{{branch.direccion}}</td>
+          <td>{{branch.cliente.email}}</td>
+          <td>{{branch.cliente.numTelefono}}</td>
+          <td>
+            <a (click)="showEditForm(branch.idSucursal)" style="color: #0071A2">
+              <i class="fa fa-edit"></i> Editar
+            </a>
+          </td>
+          <td>
+            <a (click)="showConfirmDelete(branch.idSucursal)" style="color: #0071A2">
+              <i class="fa fa-trash"></i> Eliminar
+            </a>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+      <!-- DATATABLE END -->
+    </div>
+
+  </mat-card-content>
   <!--CARD BODY END -->
 
-</div>
+</mat-card>
 <!-- CARD END -->
 
-<!-- INICIO DE MODAL -->
-<div id="succsModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-success">Operación completada</h3>
-      </div>
-      <div class="modal-body">
-        <p>{{this.exitMsg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="reloadData()" class="btn btn-sm btn-rounded btn-outline-primary"
-                data-dismiss="modal">Aceptar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- FIN DE MODAL -->
-
-<!-- INICIO DE MODAL -->
-<div id="edBranchModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">Editar Dirección</h3>
-      </div>
-      <div class="modal-body">
-        <form [formGroup]="edBranchForm">
-
-
-          <div class="form-group">
-            <label class="col-form-label" for="nomSucursal">Nombre de Dirección:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-building"></i>
-                </span>
-              </div>
-              <input class="form-control" id="nomSucursal" type="text" formControlName="nomSucursal" required
-                     placeholder="Nombre de la Dirección"
-                     [class.is-invalid]="edBranchForm.get('nomSucursal').invalid && edBranchForm.get('nomSucursal').touched">
-            </div>
-            <small
-              *ngIf="edBranchForm.get('nomSucursal').errors?.required && edBranchForm.get('nomSucursal').touched"
-              class="text-danger">*Este campo es obligatorio</small>
-          </div>
-
-          <div class="form-group">
-            <label class="col-form-label" for="numTelefono">Número de Teléfono:</label>
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-phone-alt"></i>
-                </span>
-              </div>
-              <input appPhoneMask class="form-control" id="numTelefono" type="tel" formControlName="numTelefono"
-                     placeholder="Número celular sin espacios" minlength="9" maxlength="9"
-                     [class.is-invalid]="edBranchForm.get('numTelefono').invalid && edBranchForm.get('numTelefono').touched">
-            </div>
-            <small
-              *ngIf="edBranchForm.get('numTelefono').errors?.maxlength && edBranchForm.get('numTelefono').touched"
-              class="text-danger">*Por favor ingrese un número válido</small>
-            <small
-              *ngIf="edBranchForm.get('numTelefono').errors?.minlength && edBranchForm.get('numTelefono').touched"
-              class="text-danger">*Por favor ingrese un número válido</small>
-          </div>
-
-
-          <div class="form-group">
-
-            <label for="direccion">Direccion:</label>
-
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-map-marker-alt"></i>
-                </span>
-              </div>
-
-              <input class="form-control" (input)="searchAddress($event)" autocomplete="off"
-                     id="direccion" required formControlName="direccion"
-                     [class.is-invalid]="edBranchForm.get('direccion').invalid && edBranchForm.get('direccion').touched"
-                     placeholder="¿Cuál es la dirección?">
-            </div>
-            <div class="suggestions" *ngIf="places?.length">
-              <p *ngFor="let s of places" (click)="setAddress(s.text)">{{s.text}}</p>
-            </div>
-
-            <small
-              *ngIf="edBranchForm.get('direccion').errors?.required && edBranchForm.get('direccion').touched"
-              class="text-danger">*Este campo es obligatorio</small>
-            <br>
-            <div class="form-check form-check-inline">
-              <label class="form-check-label">
-                <input class="form-check-input" type="checkbox" (change)="setCurrentLocation($event)"><small>Ubicación
-                actual</small>
-              </label>
-            </div>
-          </div>
-
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="submitEditBranch()" class="btn btn-sm btn-rounded btn-outline-primary"
-                data-dismiss="modal">Confimar
-        </button>
-        <button type="button" class="btn btn-sm btn-rounded btn-outline-secondary" data-dismiss="modal">Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- FIN DE MODAL -->
-
-
-<!-- INICIO DE MODAL -->
-<app-error-modal [msgError]="errMsg"></app-error-modal>
-<!-- FIN DE MODAL -->
-
-<!-- INICIO DE MODAL -->
-<div id="confirmModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title text-info">Confirmación</h3>
-      </div>
-      <div class="modal-body">
-
-        <p>{{confMsg}}</p>
-      </div>
-      <div class="modal-footer">
-        <button (click)="deleteBranch()" type="button" class="btn btn-sm btn-rounded btn-outline-danger" data-dismiss="modal">Aceptar</button>
-        <button type="button" class="btn btn-sm btn-rounded btn-outline-secondary" data-dismiss="modal">Cancelar</button>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- FIN DE MODAL -->
 
 
 

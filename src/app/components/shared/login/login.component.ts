@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthService} from "../../../services/auth.service";
 import {trigger, style, animate, transition} from '@angular/animations';
-
-declare var $: any;
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorModalComponent} from "../error-modal/error-modal.component";
+import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,7 @@ declare var $: any;
   ]
 })
 export class LoginComponent implements OnInit {
-
+  hide = true;
   loginForm: FormGroup
   loading = false
   submitted = false
@@ -30,12 +31,14 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService,
+    public dialog: MatDialog,
+    private formBuilder: FormBuilder
   ) {
     // redirigir si el usuario está logueado
     if (this.authService.currentUserValue) {
-      if(this.authService.currentUserValue.idPerfil === "1"){
+      if (this.authService.currentUserValue.idPerfil === "1") {
         this.router.navigate(['inicio'])
-      }else if(this.authService.currentUserValue.idPerfil === "8"){
+      } else if (this.authService.currentUserValue.idPerfil === "8") {
         this.router.navigate(['inicio-cliente'])
       }
     }
@@ -46,10 +49,15 @@ export class LoginComponent implements OnInit {
     if (localStorage.getItem('remember_user')) {
       nName = localStorage.getItem('remember_user')
     }
-    this.loginForm = new FormGroup({
-      nickName: new FormControl(nName, [Validators.required]),
-      password: new FormControl('', [Validators.required]),
-      remember_me: new FormControl('')
+    this.loginForm = this.formBuilder.group({
+      nickName: [nName, [Validators.required]],
+      password: ['', [Validators.required]],
+      remember_me: ['']
+    }, {
+      validators: [
+        BlankSpacesValidator('nickName'),
+        BlankSpacesValidator('password')
+      ]
     })
 
   }
@@ -82,11 +90,24 @@ export class LoginComponent implements OnInit {
         }, error => {
           error.subscribe(error => {
             this.error = error.statusText
-            $("#errModal").modal('show')
+            this.openErrorDialog(this.error)
             this.loading = false
           })
 
         })
+  }
+
+  openErrorDialog(error): void {
+    const dialogRef = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    });
+
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.dialog.closeAll()
+    })
   }
 
 }

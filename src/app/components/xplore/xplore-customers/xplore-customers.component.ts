@@ -3,6 +3,8 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {Customer} from "../../../models/customer";
 import {UsersService} from "../../../services/users.service";
 import {Subject} from "rxjs";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {XploreAddCustomerComponent} from "../xplore-add-customer/xplore-add-customer.component";
 
 @Component({
   selector: 'app-xplore-customers',
@@ -26,7 +28,8 @@ export class XploreCustomersComponent implements OnInit {
   dtOptions
 
   constructor(
-    private usersService: UsersService
+    private usersService: UsersService,
+    public dialog: MatDialog
   ) {
   }
 
@@ -64,6 +67,10 @@ export class XploreCustomersComponent implements OnInit {
       this.customers = response.data
       this.dtTrigger.next()
     })
+  }
+
+  showNewCustForm(){
+    this.dialog.open(XploreAddCustomerComponent)
   }
 
 }
