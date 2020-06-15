@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <form [formGroup]="edRateForm">
+  <form [formGroup]="edRateForm" *ngIf="!loaders.loadingSubmit">
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label class="d-inline-flex">Descripción de Tarifa:</mat-label>
@@ -70,7 +70,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="edRateForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()" mat-raised-button color="primary" mat-dialog-close>
+  <button type="button" [disabled]="edRateForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()"
+          mat-raised-button color="primary" >
     Confimar
   </button>
   <button type="button" mat-raised-button mat-dialog-close>

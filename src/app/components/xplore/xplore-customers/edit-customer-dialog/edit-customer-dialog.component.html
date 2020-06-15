@@ -1,0 +1,97 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-edit"></i> Editar Cliente
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="edCustForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Nombre de Empresa:</mat-label>
+        <input matInput id="nomEmpresa" type="text" formControlName="nomEmpresa" required
+               placeholder="Nombre de la empresa" maxlength="80">
+        <mat-icon matSuffix>business</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Nombre del Representante:</mat-label>
+        <input matInput id="nomRepresentante" type="text" formControlName="nomRepresentante" required
+               placeholder="Nombre del representante" maxlength="80">
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Número de Identificación:</mat-label>
+        <input matInput id="numIdentificacion" type="text" formControlName="numIdentificacion"
+               minlength="13" maxlength="14" placeholder="Ej. 1111333355555">
+        <mat-icon matSuffix>subtitles</mat-icon>
+        <mat-error *ngIf="f.numIdentificacion.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.numIdentificacion.errors?.maxlength">
+          *Por favor ingrese el número de identificación sin espacios ni guiones
+        </mat-error>
+        <mat-error *ngIf="f.numIdentificacion.errors?.minlength">
+          *Por favor ingrese el número de identificación sin espacios ni guiones
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Número de Teléfono:</mat-label>
+        <input appPhoneMask matInput id="numTelefono" type="tel" formControlName="numTelefono" autocomplete="nope"
+               required placeholder="Ej. 9999-9999 (Guión automáticamente)" minlength="9" maxlength="9">
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-error *ngIf="f.numTelefono.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.numTelefono.errors?.maxlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+        <mat-error *ngIf="f.numTelefono.errors?.minlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>email:</mat-label>
+        <input matInput id="email" type="email" formControlName="email" required maxlength="50"
+               pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="ejemplo@email.com">
+        <mat-icon matSuffix>alternate_email</mat-icon>
+        <mat-error *ngIf="f.email.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.email.errors?.pattern">
+          *Por favor ingrese un email válido
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" [disabled]="edCustForm.invalid || loaders.loadingSubmit" (click)="onEditFormSubmit()"
+          mat-raised-button color="primary">
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>
+    Cancelar
+  </button>
+
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+
+
+

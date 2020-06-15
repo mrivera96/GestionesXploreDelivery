@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
-import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {UsersService} from "../../../../services/users.service";
 import {Customer} from "../../../../models/customer";
@@ -27,6 +27,7 @@ export class EditSurchargeDialogComponent implements OnInit {
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     private surchargesService: SurchargesService,
+    public dialogRef: MatDialogRef<EditSurchargeDialogComponent>
   ) {
     this.currSurch = data.surcharge
   }
@@ -86,7 +87,7 @@ export class EditSurchargeDialogComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      location.reload(true)
+      this.dialogRef.close(true)
     })
   }
 

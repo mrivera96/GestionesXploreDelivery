@@ -11,46 +11,48 @@
   </div>
 
   <form [formGroup]="edBranchForm" *ngIf="!loaders.loadingSubmit">
-    <mat-form-field appearance="outline">
-      <mat-label>Nombre de Dirección:</mat-label>
-      <input matInput type="text" formControlName="nomSucursal" required
-             placeholder="Nombre de la Dirección" maxlength="80">
-      <mat-icon matSuffix>business</mat-icon>
-      <mat-error>*Este campo es obligatorio</mat-error>
-    </mat-form-field>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Nombre de Dirección:</mat-label>
+        <input matInput type="text" formControlName="nomSucursal" required
+               placeholder="Nombre de la Dirección" maxlength="80">
+        <mat-icon matSuffix>business</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Número de Teléfono:</mat-label>
-      <input matInput appPhoneMask type="tel" formControlName="numTelefono"
-             placeholder="Número celular sin espacios" minlength="9" maxlength="9">
-      <mat-icon matSuffix>phone</mat-icon>
-      <mat-error *ngIf="edBranchForm.get('numTelefono').errors?.maxlength">
-        *Por favor ingrese un número válido
-      </mat-error>
-      <mat-error *ngIf="edBranchForm.get('numTelefono').errors?.minlength">
-        *Por favor ingrese un número válido
-      </mat-error>
-    </mat-form-field>
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Número de Teléfono:</mat-label>
+        <input matInput appPhoneMask type="tel" formControlName="numTelefono"
+               placeholder="Número celular sin espacios" minlength="9" maxlength="9">
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-error *ngIf="edBranchForm.get('numTelefono').errors?.maxlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+        <mat-error *ngIf="edBranchForm.get('numTelefono').errors?.minlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+      </mat-form-field>
+    </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Direccion:</mat-label>
-      <input matInput (input)="searchAddress($event)"  id="direccion" required
-             formControlName="direccion" [matAutocomplete]="auto" autocomplete="nope"
-             placeholder="¿Cuál es la dirección?">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let s of places" [value]="s.text">
-          {{ s.text }}
-        </mat-option>
-      </mat-autocomplete>
-      <mat-icon matSuffix>location_on</mat-icon>
-      <mat-error>*Este campo es obligatorio</mat-error>
-    </mat-form-field>
+    <div class="form-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Direccion:</mat-label>
+        <input matInput (input)="searchAddress($event)"  id="direccion" required
+               formControlName="direccion" [matAutocomplete]="auto" autocomplete="nope"
+               placeholder="¿Cuál es la dirección?">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let s of places" [value]="s.text">
+            {{ s.text }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon matSuffix>location_on</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
 
-    <mat-checkbox #checkbox  (change)="setCurrentLocation(!checkbox.checked)">
-      Ubicación actual
-    </mat-checkbox>
-
-
+      <mat-checkbox #checkbox  (change)="setCurrentLocation(!checkbox.checked)">
+        Ubicación actual
+      </mat-checkbox>
+    </div>
   </form>
 </mat-dialog-content>
 

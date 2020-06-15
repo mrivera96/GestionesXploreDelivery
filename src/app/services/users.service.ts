@@ -32,6 +32,14 @@ export class UsersService {
     })
   }
 
+  editCustomer(form){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'editCustomer',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
   changeCustomerPassword(form){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'changeCustomerPassword',

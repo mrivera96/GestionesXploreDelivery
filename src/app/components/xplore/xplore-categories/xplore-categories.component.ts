@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {CategoriesService} from "../../../services/categories.service";
 import {Category} from "../../../models/category";
@@ -7,6 +7,7 @@ import {ErrorModalComponent} from "../../shared/error-modal/error-modal.componen
 import {MatDialog} from "@angular/material/dialog";
 import {EditCategoryDialogComponent} from "./edit-category-dialog/edit-category-dialog.component";
 import {NewCategoryDialogComponent} from "./new-category-dialog/new-category-dialog.component";
+import {DataTableDirective} from "angular-datatables";
 
 @Component({
   selector: 'app-xplore-categories',
@@ -22,6 +23,7 @@ import {NewCategoryDialogComponent} from "./new-category-dialog/new-category-dia
   ]
 })
 export class XploreCategoriesComponent implements OnInit {
+  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
   dtOptions
   categories: Category[]
   dtTrigger: Subject<any>
@@ -29,6 +31,7 @@ export class XploreCategoriesComponent implements OnInit {
     loadingData: false,
     loadingSubmit: false
   }
+
   constructor(
     private categoriesService: CategoriesService,
     public dialog: MatDialog
@@ -68,10 +71,11 @@ export class XploreCategoriesComponent implements OnInit {
         },
       },
     }
-    this.loaders.loadingData = true
+
   }
 
   loadData() {
+    this.loaders.loadingData = true
     this.categoriesService.showAllCategories().subscribe(response => {
       this.categories = response.data
       this.loaders.loadingData = false
@@ -97,13 +101,29 @@ export class XploreCategoriesComponent implements OnInit {
       }
     })
 
-    dialogRef.afterClosed().subscribe(result =>{
-      dialogRef.close()
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
     })
   }
 
-  showNewCatForm(){
-     this.dialog.open(NewCategoryDialogComponent)
+  showNewCatForm() {
+    const dialogRef = this.dialog.open(NewCategoryDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
   }
 
   openErrorDialog(error: string, reload: boolean): void {
@@ -113,7 +133,7 @@ export class XploreCategoriesComponent implements OnInit {
       }
     })
 
-    if(reload){
+    if (reload) {
       dialog.afterClosed().subscribe(result => {
         this.loaders.loadingData = true
         this.reloadData()

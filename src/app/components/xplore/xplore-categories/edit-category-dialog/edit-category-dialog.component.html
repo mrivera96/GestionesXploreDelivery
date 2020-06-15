@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <form [formGroup]="edCatForm">
+  <form [formGroup]="edCatForm" *ngIf="!loaders.loadingSubmit">
     <div class="form-group">
       <mat-form-field appearance="outline" floatLabel="always">
         <mat-label>Descripción de Categoría:</mat-label>
@@ -28,7 +28,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="edCatForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()" mat-raised-button color="primary" mat-dialog-close>
+  <button type="button" [disabled]="edCatForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()"
+          mat-raised-button color="primary" >
     Confimar
   </button>
   <button type="button" mat-raised-button mat-dialog-close>

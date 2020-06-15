@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <form [formGroup]="newCatForm">
+  <form [formGroup]="newCatForm" *ngIf="!loaders.loadingSubmit">
     <mat-form-field appearance="outline" floatLabel="always">
       <mat-label>Descripción de categoría:</mat-label>
       <input matInput id="ndescCategoria" type="text" formControlName="descCategoria" maxlength="60"
@@ -22,8 +22,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="newCatForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()" mat-raised-button color="primary"
-          mat-dialog-close>Confimar
+  <button type="button" [disabled]="newCatForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()"
+          mat-raised-button color="primary">
+    Confimar
   </button>
   <button type="button" mat-raised-button mat-dialog-close>
     Cancelar

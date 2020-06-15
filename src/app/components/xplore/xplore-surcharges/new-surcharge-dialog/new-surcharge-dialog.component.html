@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <form [formGroup]="newSurchForm">
+  <form [formGroup]="newSurchForm" *ngIf="!loaders.loadingSubmit">
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Descripción de Recargo:</mat-label>
@@ -21,21 +21,21 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Kilometraje Máximo:</mat-label>
-        <input matInput id="kilomMaximoN" type="number" formControlName="kilomMaximo"
-               required placeholder="Kilómetros máximos que abarcará el recargo">
-        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
-      </mat-form-field>
-    </div>
-    <div class="form-row">
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Kilometraje Mínimo:</mat-label>
         <input matInput id="kilomMinimoN" type="number" formControlName="kilomMinimo"
                required placeholder="Kilómetros mínimos que abarcará el recargo">
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
 
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Kilometraje Máximo:</mat-label>
+        <input matInput id="kilomMaximoN" type="number" formControlName="kilomMaximo"
+               required placeholder="Kilómetros máximos que abarcará el recargo">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
@@ -67,7 +67,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="newSurchForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()" mat-raised-button color="primary" mat-dialog-close>
+  <button type="button" [disabled]="newSurchForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()"
+          mat-raised-button color="primary">
     Confimar
   </button>
   <button type="button" mat-raised-button mat-dialog-close>

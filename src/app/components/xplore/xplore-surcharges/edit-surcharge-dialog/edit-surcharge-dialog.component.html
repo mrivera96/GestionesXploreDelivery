@@ -21,20 +21,20 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
-        <mat-label>Kilometraje Máximo:</mat-label>
-        <input matInput id="kilomMaximo" type="number" formControlName="kilomMaximo" required>
-        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
-      </mat-form-field>
-    </div>
-    <div class="form-row">
-      <mat-form-field appearance="outline" class="col-md">
         <mat-label>Kilometraje Mínimo:</mat-label>
         <input matInput id="kilomMinimo" type="number" formControlName="kilomMinimo"
                required>
         <mat-error>*Este campo es obligatorio</mat-error>
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+      </mat-form-field>
 
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Kilometraje Máximo:</mat-label>
+        <input matInput id="kilomMaximo" type="number" formControlName="kilomMaximo" required>
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
@@ -63,7 +63,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="edSurChForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()" mat-raised-button color="primary" mat-dialog-close>
+  <button type="button" [disabled]="edSurChForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()"
+          mat-raised-button color="primary">
     Confimar
   </button>
   <button type="button" mat-raised-button mat-dialog-close>

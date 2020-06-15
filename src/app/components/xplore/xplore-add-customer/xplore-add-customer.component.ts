@@ -95,9 +95,7 @@ export class XploreAddCustomerComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.nCustomerForm.reset()
-      this.dialogRef.close()
-      location.reload()
+      this.dialogRef.close(true)
     })
   }
 

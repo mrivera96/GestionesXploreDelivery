@@ -66,6 +66,7 @@ import { NewRateDialogComponent } from './components/xplore/xplore-rates/new-rat
 import { EditRateDialogComponent } from './components/xplore/xplore-rates/edit-rate-dialog/edit-rate-dialog.component';
 import { EditSurchargeDialogComponent } from './components/xplore/xplore-surcharges/edit-surcharge-dialog/edit-surcharge-dialog.component';
 import { NewSurchargeDialogComponent } from './components/xplore/xplore-surcharges/new-surcharge-dialog/new-surcharge-dialog.component';
+import { EditCustomerDialogComponent } from './components/xplore/xplore-customers/edit-customer-dialog/edit-customer-dialog.component';
 
 
 @NgModule({
@@ -113,7 +114,8 @@ import { NewSurchargeDialogComponent } from './components/xplore/xplore-surcharg
     NewRateDialogComponent,
     EditRateDialogComponent,
     EditSurchargeDialogComponent,
-    NewSurchargeDialogComponent
+    NewSurchargeDialogComponent,
+    EditCustomerDialogComponent
   ],
 
   imports: [

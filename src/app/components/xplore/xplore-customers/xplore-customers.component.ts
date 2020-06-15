@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Customer} from "../../../models/customer";
 import {UsersService} from "../../../services/users.service";
 import {Subject} from "rxjs";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MatDialog} from "@angular/material/dialog";
 import {XploreAddCustomerComponent} from "../xplore-add-customer/xplore-add-customer.component";
+import {EditCustomerDialogComponent} from "./edit-customer-dialog/edit-customer-dialog.component";
+import {DataTableDirective} from "angular-datatables";
 
 @Component({
   selector: 'app-xplore-customers',
@@ -20,6 +22,7 @@ import {XploreAddCustomerComponent} from "../xplore-add-customer/xplore-add-cust
   ]
 })
 export class XploreCustomersComponent implements OnInit {
+  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
   customers: Customer[]
   dtTrigger: Subject<any> = new Subject()
   loaders = {
@@ -63,14 +66,51 @@ export class XploreCustomersComponent implements OnInit {
   }
 
   loadData() {
+    this.loaders.loadingData = true
     this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
+      this.loaders.loadingData = false
       this.dtTrigger.next()
     })
   }
 
   showNewCustForm(){
-    this.dialog.open(XploreAddCustomerComponent)
+    const dialogRef = this.dialog.open(XploreAddCustomerComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
+  }
+
+  showEditForm(id) {
+    let currCustomer: Customer = {}
+    this.customers.forEach(value => {
+      if (value.idCliente === id) {
+        currCustomer = value
+      }
+    })
+    const dialogRef = this.dialog.open(EditCustomerDialogComponent, {
+      data: {
+        customer: currCustomer
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
+
   }
 
 }

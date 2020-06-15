@@ -90,7 +90,7 @@ export class NewRateDialogComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      location.reload(true)
+      this.dialogRef.close(true)
     })
   }
 

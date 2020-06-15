@@ -34,6 +34,7 @@
           <th>Número de Identifiación</th>
           <th>Número de Teléfono</th>
           <th>email</th>
+          <th data-priority="1">Acción</th>
         </tr>
         </thead>
         <tbody>
@@ -46,7 +47,11 @@
           <td class="fId">{{customer.numIdentificacion}}</td>
           <td>{{customer.numTelefono}}</td>
           <td>{{customer.email}}</td>
-
+          <td>
+            <a (click)="showEditForm(customer.idCliente)" style="color: #0071A2">
+              <i class="fa fa-edit"></i> Editar
+            </a>
+          </td>
         </tr>
         </tbody>
 

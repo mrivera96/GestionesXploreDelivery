@@ -1,16 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Subject} from "rxjs";
-import {Form, FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Customer} from "../../../models/customer";
 import {SurchargesService} from "../../../services/surcharges.service";
-import {UsersService} from "../../../services/users.service";
 import {Surcharge} from "../../../models/surcharge";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {EditSurchargeDialogComponent} from "./edit-surcharge-dialog/edit-surcharge-dialog.component";
 import {NewSurchargeDialogComponent} from "./new-surcharge-dialog/new-surcharge-dialog.component";
-declare var $: any
+import {DataTableDirective} from "angular-datatables";
 
 @Component({
   selector: 'app-xplore-surcharges',
@@ -26,6 +23,7 @@ declare var $: any
   ]
 })
 export class XploreSurchargesComponent implements OnInit {
+  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
   dtOptions
   dtTrigger: Subject<any>
   loaders = {
@@ -74,8 +72,10 @@ export class XploreSurchargesComponent implements OnInit {
   }
 
   loadData() {
+    this.loaders.loadingData = true
     this.surchargesService.getSurcharges().subscribe(response => {
       this.surcharges = response.data
+      this.loaders.loadingData = false
       this.dtTrigger.next()
     }, error => {
       this.loaders.loadingData = false
@@ -95,15 +95,35 @@ export class XploreSurchargesComponent implements OnInit {
         currSurcharge = value
       }
     })
-    this.dialog.open(EditSurchargeDialogComponent, {
+    const dialogRef = this.dialog.open(EditSurchargeDialogComponent, {
       data: {
         surcharge: currSurcharge
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
       }
     })
   }
 
   showNewForm() {
-    this.dialog.open(NewSurchargeDialogComponent)
+    const dialogRef = this.dialog.open(NewSurchargeDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
   }
 
   openErrorDialog(error: string, reload: boolean): void {

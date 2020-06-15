@@ -303,6 +303,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
           }
 
         })
+    } else if (this.deliveryForm.invalid) {
+      let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'));
+      invalidFields[1].focus();
     }
 
   }
@@ -371,7 +374,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculateOrderPayment(distance) {
-    console.log(this.currCustomer.idCliente)
 
     let orderPayment = {
       'baseRate': this.pago.baseRate,
@@ -382,11 +384,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
       if (distance >= Number(value.kilomMinimo)
         && distance <= Number(value.kilomMaximo)
         && value.cliente.idCliente == this.currCustomer.idCliente) {
-        console.log(value.idCliente)
+
         orderPayment.surcharges = Number(value.monto)
-      }else if(distance >= Number(value.kilomMinimo)
+      } else if (distance >= Number(value.kilomMinimo)
         && distance <= Number(value.kilomMaximo)
-        && value.cliente.idCliente != this.currCustomer.idCliente){
+        && value.cliente.idCliente == 1) {
         orderPayment.surcharges = Number(value.monto)
       }
     })
@@ -423,12 +425,22 @@ export class CustomerNewDeliveryComponent implements OnInit {
       }
 
       if (this.orders.length > 1) {
-        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.destroy();
-          this.dtTrigger.next();
-        })
-      } else {
-        this.dtTrigger.next();
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.dtTrigger.next()
+          })
+      }else {
+        if(this.dtElement.dtInstance){
+          this.dtElement.dtInstance.then(
+            (dtInstance: DataTables.Api) => {
+              dtInstance.destroy()
+              this.dtTrigger.next()
+            })
+        }else{
+          this.dtTrigger.next()
+        }
+
       }
 
       this.agregado = true
@@ -469,6 +481,18 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.pagos.splice(i, 1)
     this.calculateRate(this.orders.length)
     this.calculatePayment()
+
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      dtInstance.destroy();
+      this.dtTrigger.next();
+    })
+
+    if (this.orders.length === 0) {
+      this.newForm.get('deliveryHeader.idCategoria').enable({onlySelf: true})
+      this.newForm.get('deliveryHeader.dirRecogida').enable({onlySelf: true})
+      $("#insertCords").show();
+    }
+
   }
 
   reloadData() {
@@ -563,10 +587,5 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
-  public noWhitespaceValidator(control: FormControl) {
-    const isWhitespace = (control.value || '').trim().length === 0;
-    const isValid = !isWhitespace;
-    return isValid ? null : {'whitespace': true};
-  }
 
 }

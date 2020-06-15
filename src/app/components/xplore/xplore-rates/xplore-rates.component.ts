@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Category} from "../../../models/category";
 import {Subject} from "rxjs";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {CategoriesService} from "../../../services/categories.service";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {RatesService} from "../../../services/rates.service";
@@ -12,8 +12,8 @@ import {ErrorModalComponent} from "../../shared/error-modal/error-modal.componen
 import {MatDialog} from "@angular/material/dialog";
 import {EditRateDialogComponent} from "./edit-rate-dialog/edit-rate-dialog.component";
 import {NewRateDialogComponent} from "./new-rate-dialog/new-rate-dialog.component";
+import {DataTableDirective} from "angular-datatables";
 
-declare var $: any
 
 @Component({
   selector: 'app-xplore-rates',
@@ -29,7 +29,7 @@ declare var $: any
   ]
 })
 export class XploreRatesComponent implements OnInit {
-
+  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
   dtOptions
   rates: Rate[]
   dtTrigger: Subject<any>
@@ -82,10 +82,11 @@ export class XploreRatesComponent implements OnInit {
         },
       },
     }
-    this.loaders.loadingData = true
+
   }
 
   loadData() {
+    this.loaders.loadingData = true
     this.ratesService.getRates().subscribe(response => {
       this.rates = response.data
       this.loaders.loadingData = false
@@ -116,17 +117,33 @@ export class XploreRatesComponent implements OnInit {
   }
 
   showNewForm() {
-     this.dialog.open(NewRateDialogComponent)
+    const dialogRef = this.dialog.open(NewRateDialogComponent)
 
-    /*dialog.afterClosed().subscribe(result => {
-      this.reloadData()
-    })*/
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
   }
 
   openEditDialog(currRate): void {
-     this.dialog.open(EditRateDialogComponent, {
+    const dialogRef = this.dialog.open(EditRateDialogComponent, {
       data: {
         rate: currRate
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
       }
     })
   }

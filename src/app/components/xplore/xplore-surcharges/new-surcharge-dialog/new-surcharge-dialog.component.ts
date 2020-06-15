@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {UsersService} from "../../../../services/users.service";
 import {SurchargesService} from "../../../../services/surcharges.service";
 import {Customer} from "../../../../models/customer";
@@ -24,6 +24,7 @@ export class NewSurchargeDialogComponent implements OnInit {
     public dialog: MatDialog,
     private usersService: UsersService,
     private surchargesService: SurchargesService,
+    public dialogRef: MatDialogRef<NewSurchargeDialogComponent>
   ) { }
 
   ngOnInit(): void {
@@ -72,7 +73,7 @@ export class NewSurchargeDialogComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      location.reload(true)
+      this.dialogRef.close(true)
     })
   }
 
