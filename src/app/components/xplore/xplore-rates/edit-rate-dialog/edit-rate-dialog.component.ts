@@ -2,7 +2,6 @@ import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {RatesService} from "../../../../services/rates.service";
 import {CategoriesService} from "../../../../services/categories.service";
-import {UsersService} from "../../../../services/users.service";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {Rate} from "../../../../models/rate";
@@ -29,7 +28,6 @@ export class EditRateDialogComponent implements OnInit {
     private ratesService: RatesService,
     private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
-    private usersService: UsersService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<any>
@@ -46,16 +44,11 @@ export class EditRateDialogComponent implements OnInit {
         entregasMinimas: [this.currRate.entregasMinimas, Validators.required],
         entregasMaximas: [this.currRate.entregasMaximas, Validators.required],
         precio: [this.currRate.precio, Validators.required],
-        idCliente: [this.currRate.idCliente, Validators.required]
       }
     )
 
     this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
-    })
-
-    this.usersService.getCustomers().subscribe(response => {
-      this.customers = response.data
     })
   }
 

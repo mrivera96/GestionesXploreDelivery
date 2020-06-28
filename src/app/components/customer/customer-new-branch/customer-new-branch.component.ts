@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {BranchService} from "../../../services/branch.service";
@@ -32,6 +32,8 @@ export class CustomerNewBranchComponent implements OnInit {
   }
   nBranchForm: FormGroup
   places = []
+  gcords = false
+  @ViewChild('branchCords') branchCords: ElementRef
 
   constructor(
     private formBuilder: FormBuilder,
@@ -107,10 +109,7 @@ export class CustomerNewBranchComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.nBranchForm.reset()
-      this.dialogRef.close()
-      location.reload()
-
+      this.dialogRef.close(true)
     })
   }
 
@@ -120,6 +119,11 @@ export class CustomerNewBranchComponent implements OnInit {
         msgError: error
       }
     })
+  }
+
+  setCords() {
+    this.nBranchForm.get('direccion').setValue(this.branchCords.nativeElement.value)
+    this.gcords = false
   }
 
 }

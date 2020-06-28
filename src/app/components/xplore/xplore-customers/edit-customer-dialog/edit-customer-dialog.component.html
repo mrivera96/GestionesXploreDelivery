@@ -32,7 +32,7 @@
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Número de Identificación:</mat-label>
         <input matInput id="numIdentificacion" type="text" formControlName="numIdentificacion"
-               minlength="13" maxlength="14" placeholder="Ej. 1111333355555">
+               minlength="13" maxlength="14" placeholder="Ej. 1111333355555" required>
         <mat-icon matSuffix>subtitles</mat-icon>
         <mat-error *ngIf="f.numIdentificacion.errors?.required">
           *Este campo es obligatorio
@@ -61,6 +61,7 @@
           *Por favor ingrese un número válido
         </mat-error>
       </mat-form-field>
+
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>email:</mat-label>
         <input matInput id="email" type="email" formControlName="email" required maxlength="50"

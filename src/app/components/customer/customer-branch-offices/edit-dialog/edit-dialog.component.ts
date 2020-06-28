@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, ElementRef, Inject, OnInit, ViewChild} from '@angular/core';
 import {environment} from "../../../../../environments/environment";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
@@ -20,6 +20,9 @@ export class EditDialogComponent implements OnInit {
     'loadingSubmit': false
   }
   places: []
+  gcords = false
+  @ViewChild('branchCords')
+  branchCords: ElementRef
 
   constructor(
     public dialogRef: MatDialogRef<EditDialogComponent>,
@@ -39,7 +42,7 @@ export class EditDialogComponent implements OnInit {
         nomSucursal: [this.currBranch.nomSucursal, Validators.required],
         numTelefono: [this.currBranch.numTelefono, [Validators.minLength(9), Validators.maxLength(9)]],
         direccion: [this.currBranch.direccion, Validators.required]
-      },{
+      }, {
         validators: [
           BlankSpacesValidator('nomSucursal'),
           BlankSpacesValidator('direccion')
@@ -50,9 +53,10 @@ export class EditDialogComponent implements OnInit {
 
   searchAddress(event) {
     let lugar = event.target.value
-    this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
-      this.places = response
-    })
+    this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'})
+      .subscribe(response => {
+        this.places = response
+      })
   }
 
 
@@ -101,8 +105,7 @@ export class EditDialogComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.dialogRef.close()
-      location.reload(true)
+      this.dialogRef.close(true)
     })
   }
 
@@ -112,6 +115,11 @@ export class EditDialogComponent implements OnInit {
         msgError: error
       }
     })
+  }
+
+  setCords() {
+    this.edBranchForm.get('direccion').setValue(this.branchCords.nativeElement.value)
+    this.gcords = false
   }
 
 }

@@ -1,0 +1,94 @@
+<!--CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Reportes Envíos por Conductor
+    </mat-card-title>
+
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <!-- CONTAINER START -->
+    <div class="row">
+      <div class="col">
+        <form [formGroup]="consultForm" >
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Conductor:</mat-label>
+              <mat-select formControlName="driverId" required placeholder="- Seleccione un conductor -">
+                <mat-option [value]="-1">Todos</mat-option>
+                <mat-option *ngFor="let driver of drivers" value="{{driver.idUsuario}}">
+                  {{driver.nomUsuario}}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>sports_motorsports</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Inicial:</mat-label>
+              <input matInput type="date" formControlName="initDate" required>
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Final:</mat-label>
+              <input matInput type="date" formControlName="finDate" required>
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+
+            <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary" (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto" >
+              <mat-icon>search</mat-icon>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- CONTAINER BODY START -->
+    <div class="table-responsive">
+      <div class="row" *ngIf="loaders.loadingSubmit">
+        <div class="col text-center">
+          <img src="assets/img/loading.svg" width="5%" alt="loading">
+          <p>Cargando información...</p>
+        </div>
+      </div>
+
+      <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+        <thead>
+        <tr>
+          <th>N°</th>
+          <th>Nombre Conductor</th>
+          <th>Fecha</th>
+          <th>Entregas Realizadas</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let result of consultResults; let i = index">
+          <td>{{i + 1}}</td>
+          <td>{{result.driver}}</td>
+          <td>{{result.fecha}}</td>
+          <td>{{result.orders}}</td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+    <!-- CONTAINER END -->
+  </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->
+
+
+
+

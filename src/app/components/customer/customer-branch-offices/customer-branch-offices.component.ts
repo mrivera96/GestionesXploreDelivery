@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Subject} from "rxjs";
 import {BranchService} from "../../../services/branch.service";
 import {Branch} from "../../../models/branch";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
-import {MatDialog} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
 import {EditDialogComponent} from "./edit-dialog/edit-dialog.component";
 import {CustomerNewBranchComponent} from "../customer-new-branch/customer-new-branch.component";
+import {DataTableDirective} from "angular-datatables";
 
 @Component({
   selector: 'app-customer-branch-offices',
@@ -25,6 +26,7 @@ import {CustomerNewBranchComponent} from "../customer-new-branch/customer-new-br
   ]
 })
 export class CustomerBranchOfficesComponent implements OnInit {
+  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
   loaders = {
     loadingData: false,
     loadingSubmit: false
@@ -94,9 +96,19 @@ export class CustomerBranchOfficesComponent implements OnInit {
   }
 
   openEditDialog(branch) {
-    this.dialog.open(EditDialogComponent, {
+    const dialogRef = this.dialog.open(EditDialogComponent, {
       data: {
         branch: branch
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result =>{
+      if(result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
       }
     })
   }
@@ -118,14 +130,34 @@ export class CustomerBranchOfficesComponent implements OnInit {
     this.openConfirmDialog(id, this.confMsg)
   }
   showNewForm(){
-    this.dialog.open(CustomerNewBranchComponent)
+    const dialogRef = this.dialog.open(CustomerNewBranchComponent)
+
+    dialogRef.afterClosed().subscribe(result =>{
+      if(result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
   }
 
   openConfirmDialog(id, msg) {
-    this.dialog.open(ConfirmDialogComponent, {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         branchToDelete: id,
         confMsg: msg
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result =>{
+      if(result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
       }
     })
   }

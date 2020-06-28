@@ -1,0 +1,59 @@
+<!--CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Reservaciones Pendientes (en tiempo real)
+    </mat-card-title>
+
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="row" *ngIf="loaders.loadingData">
+      <div class="col text-center">
+        <img src="assets/img/loading.svg" width="5%" alt="loading">
+        <p>Cargando información...</p>
+      </div>
+    </div>
+
+    <!-- DATATABLE START -->
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+             class="display compact" style="width:100%">
+
+        <thead>
+        <tr>
+          <th data-priority="1">N°</th>
+          <th>Nombre de cliente</th>
+          <th data-order="2020-06-01 16:30" data-priority="1">Fecha y hora de recogida</th>
+          <th>Dirección de recogida</th>
+          <th>Entregas</th>
+          <th>Categoría</th>
+          <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let delivery of deliveries">
+          <td class="id">{{delivery.idDelivery}}</td>
+          <td>{{delivery.nomCliente}}</td>
+          <td>{{delivery.fechaReserva}}</td>
+          <td class="fId">{{delivery.dirRecogida}}</td>
+          <td>{{delivery.cantidad}}</td>
+          <td>{{delivery.descCategoria}}</td>
+          <td>
+            <a [routerLink]="['/admins/ver-reserva', delivery.idDelivery]" style="color: #0071A2">
+              <i class="fa fa-eye"></i> Ver Detalle
+            </a>
+          </td>
+        </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+    <!-- DATATABLE END -->
+  </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->
+

@@ -1,6 +1,7 @@
 <!-- MODAL START -->
 <h2 mat-dialog-title class="text-info">
-  <mat-icon [inline]="true">note_add</mat-icon> Nueva Tarifa
+  <mat-icon [inline]="true">note_add</mat-icon>
+  Nueva Tarifa
 </h2>
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit">
@@ -58,25 +59,77 @@
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+
+    </div>
+    <h4>Agregar Cliente</h4>
+    <hr>
+    <div class="form-row">
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md-10">
         <mat-label>Cliente:</mat-label>
         <mat-select id="idClienteN" formControlName="idCliente" required placeholder="- Seleccione un cliente -">
-          <mat-option *ngFor="let customer of customers" [value]="customer.idCliente">
+          <mat-form-field>
+            <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)" >
+            <mat-icon [inline]="true" matPrefix>search</mat-icon>
+          </mat-form-field>
+          <mat-option *ngFor="let customer of filteredCustomers" [value]="customer.idCliente">
             {{customer.nomEmpresa}}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>account_circle</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
+
+
+      <button class="col-md-2" mat-raised-button color="primary" (click)="addCustomerToRate(fNew.idCliente.value)"
+              [disabled]="newRateForm.invalid || loaders.loadingSubmit">
+        Agregar
+      </button>
+
     </div>
 
   </form>
+  <br>
+
+  <div class="row">
+    <div class="col">
+      <h4>Clientes Asignados</h4>
+      <hr>
+      <div class="table-responsive">
+        <table id="dTable" class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th scope="col">N°</th>
+            <th scope="col">Cliente</th>
+            <th scope="col" data-priority="1">Acción</th>
+          </tr>
+
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let customer of rateCustomers; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{customer.nomEmpresa}}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(customer)"><i
+                class="fa fa-trash-alt"></i>
+                Quitar
+              </button>
+            </td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
 
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="newRateForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()"
-          mat-raised-button color="primary" >
+  <button type="button" [disabled]="newRateForm.invalid || loaders.loadingSubmit || rateCustomers.length == 0"
+          (click)="onFormNewSubmit()"
+          mat-raised-button color="primary">
     Confimar
   </button>
   <button type="button" mat-raised-button mat-dialog-close>

@@ -93,4 +93,29 @@ export class DeliveriesService {
       tkn: this.authService.currentUserValue.access_token
     });
   }
+
+  getPending(){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getPendingDeliveries',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  changeDeliveryHour(form){
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'changeHour',
+        form,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
+  getOrdersByDriver(form){
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'reportOrdersByDriver',
+        form,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
 }

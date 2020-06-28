@@ -1,0 +1,110 @@
+<!-- INICIO DE CARD -->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Mi Balance
+    </mat-card-title>
+  </mat-card-header>
+
+  <!-- INICIO DE CONTENIDO DEL CARD -->
+  <mat-card-content>
+    <mat-tab-group>
+      <mat-tab label="Envíos Realizados">
+        <div class="container-fluid pt-0 pb-0 mt-0 mb-0">
+
+          <div class="row" *ngIf="loaders.loadingData">
+            <div class="col text-center">
+              <img src="assets/img/loading.svg" width="5%" alt="loading">
+              <p>Cargando información...</p>
+            </div>
+          </div>
+
+          <mat-card class="shadow mb-3 text-center text-white" style="background-color: #0277bd"
+                    *ngIf="!loaders.loadingData">
+            <mat-card-content>
+              <h2>{{currCustomer.cliente.nomEmpresa}} </h2>
+              <h2>Sub-Total: L. {{subtotal | number: '.2'}} </h2>
+
+            </mat-card-content>
+          </mat-card>
+          <!-- DATATABLE START -->
+          <div class="row">
+            <div class="col">
+              <h3>Historial de Envíos</h3>
+            </div>
+
+          </div>
+          <hr>
+          <app-customer-datatable [deliveries]="3" (loadingData)="setLoading($event)"
+                                  (subtotal)="calcSubtotal($event)"></app-customer-datatable>
+          <!-- DATATABLE END -->
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Envíos Pagados">
+        <div class="container-fluid pt-0 pb-0 mt-0 mb-0">
+
+          <div class="row" *ngIf="loaders.loadingData">
+            <div class="col text-center">
+              <img src="assets/img/loading.svg" width="5%" alt="loading">
+              <p>Cargando información...</p>
+            </div>
+          </div>
+
+          <mat-card class="shadow mb-3  text-white text-center" style="background-color: #0277bd"
+                    *ngIf="!loaders.loadingData">
+            <mat-card-content>
+              <h2>Sub-Total: L. {{subtotal | number: '.2'}} </h2>
+              <h2>Pago Realizado: L. {{paid | number: '.2'}} </h2>
+              <h2>Balance: L. {{ subtotal - paid| number: '.2'}} </h2>
+            </mat-card-content>
+          </mat-card>
+          <!-- DATATABLE START -->
+          <div class="row">
+            <div class="col">
+              <h3>Historial de Pagos</h3>
+            </div>
+          </div>
+          <hr>
+          <div class="table-responsive">
+            <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+                   class="display compact" style="width:100%">
+              <thead>
+              <tr>
+                <th>Fecha de Pago</th>
+                <th>Monto</th>
+                <th>Tipo de Pago</th>
+                <th>Referencia</th>
+                <th>Banco</th>
+                <!-- <th data-priority="1">Acción</th> -->
+              </tr>
+              </thead>
+              <tbody>
+
+              <tr *ngFor="let payment of myPayments">
+                <td>{{payment.fechaPago}}</td>
+                <td>L. {{payment.monto}}</td>
+                <td>{{payment.payment_type.nomTipoPago}}</td>
+                <td>{{payment.referencia || 'N/A'}}</td>
+                <td>{{payment.banco || 'N/A'}}</td>
+              </tr>
+              </tbody>
+
+            </table>
+          </div>
+          <!-- DATATABLE END -->
+        </div>
+
+
+      </mat-tab>
+    </mat-tab-group>
+
+  </mat-card-content>
+  <!-- FIN DE CONTENIDO DEL CARD -->
+
+</mat-card>
+<!-- FIN DE CARD -->
+
+
+
+

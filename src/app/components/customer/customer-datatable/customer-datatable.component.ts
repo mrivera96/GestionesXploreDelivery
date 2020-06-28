@@ -1,14 +1,12 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Delivery} from "../../../models/delivery";
 import {Subject} from "rxjs";
 import {Router} from "@angular/router";
-import {AuthService} from "../../../services/auth.service";
-import {User} from "../../../models/user";
+
 import { DataTableDirective} from "angular-datatables";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {State} from "../../../models/state";
 declare var $: any
-
 
 @Component({
   selector: 'app-customer-datatable',
@@ -22,6 +20,7 @@ export class CustomerDatatableComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject<any>()
   dtOptions: DataTables.Settings
   @Output('loadingData') stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output('subtotal') subtotal: EventEmitter<number> = new EventEmitter<number>()
 
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
@@ -55,8 +54,17 @@ export class CustomerDatatableComponent implements OnInit {
           this.deliveries = response.data.deliveriesDia
           break
         }
-        default: {
+        case 2: {
           this.deliveries = response.data.todas
+          break
+        }
+        default: {
+          this.deliveries = response.data.deliveriesFinalizadas
+          let calcSubtotal = 0.00
+          this.deliveries.forEach(value => {
+            calcSubtotal = calcSubtotal + +value.total
+          })
+          this.subtotal.emit(calcSubtotal)
         }
 
       }
@@ -105,7 +113,5 @@ export class CustomerDatatableComponent implements OnInit {
       },
     }
   }
-
-
 
 }

@@ -60,7 +60,7 @@
       <div class="row">
         <div class="col-sm">
           <strong>Fecha y hora de recogida:</strong>
-          {{currentDelivery?.fechaReserva}}
+          {{currentDelivery?.fechaReserva | date: 'dd/MM/y, h:mm a'}}
         </div>
 
         <div class="col-sm">
@@ -104,10 +104,9 @@
         </div>
       </div>
       <br>
-      <div class="row">
+      <div class="row" *ngIf="currentDelivery?.idEstado == 34">
         <div class="col-sm">
-          <button mat-raised-button color="primary" (click)="openChangeStateDialog()" data-toggle="modal"
-                  data-target="#changeModal">
+          <button mat-raised-button color="primary" (click)="openChangeStateDialog()" >
             Cambiar Estado
           </button>
         </div>
@@ -130,6 +129,7 @@
             <th>Distancia</th>
             <th>Recargo</th>
             <th>Costo</th>
+            <th>Estado</th>
           </tr>
 
           </thead>
@@ -146,6 +146,7 @@
             <td>L. {{detail?.distancia}}</td>
             <td>L. {{detail?.recargo}}</td>
             <td>L. {{detail?.cTotal}}</td>
+            <td>{{detail?.estado.descEstado}}</td>
           </tr>
           </tbody>
         </table>

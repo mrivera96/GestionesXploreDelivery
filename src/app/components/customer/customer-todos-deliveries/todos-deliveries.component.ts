@@ -38,5 +38,4 @@ export class TodosDeliveriesComponent implements OnInit {
     this.loaders.loadingData = event
   }
 
-
 }

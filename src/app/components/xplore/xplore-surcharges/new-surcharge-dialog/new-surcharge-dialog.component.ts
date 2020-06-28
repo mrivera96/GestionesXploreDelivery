@@ -19,6 +19,7 @@ export class NewSurchargeDialogComponent implements OnInit {
     loadingSubmit: false
   }
   customers: Customer[]
+  filteredCustomers: Customer[]
   constructor(
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
@@ -41,6 +42,7 @@ export class NewSurchargeDialogComponent implements OnInit {
 
     this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
+      this.filteredCustomers = response.data
     })
   }
   get fNew() {
@@ -83,6 +85,17 @@ export class NewSurchargeDialogComponent implements OnInit {
         msgError: error
       }
     })
+  }
+  onKey(value) {
+    this.filteredCustomers = this.search(value) ;
+  }
+
+  search(value: string) {
+    let filter = value.toLowerCase();
+    if(filter != ""){
+      return  this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
+    }
+    return this.customers
   }
 
 }

@@ -36,8 +36,13 @@
               "./node_modules/popper.js/dist/umd/popper.min.js",
               "./node_modules/bootstrap/dist/js/bootstrap.min.js",
               "./node_modules/datatables.net/js/jquery.dataTables.js",
-              "./node_modules/datatables.net-responsive/js/dataTables.responsive.js"
-
+              "./node_modules/datatables.net-responsive/js/dataTables.responsive.js",
+              "node_modules/jszip/dist/jszip.js",
+              "node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+              "node_modules/datatables.net-buttons/js/buttons.colVis.js",
+              "node_modules/datatables.net-buttons/js/buttons.flash.js",
+              "node_modules/datatables.net-buttons/js/buttons.html5.js",
+              "node_modules/datatables.net-buttons/js/buttons.print.js"
             ]
           },
           "configurations": {
@@ -59,7 +64,7 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
+                  "maximumWarning": "4mb",
                   "maximumError": "5mb"
                 },
                 {
@@ -114,7 +119,13 @@
               "./node_modules/bootstrap/dist/js/bootstrap.min.js",
               "./node_modules/datatables.net/js/jquery.dataTables.js",
               "./node_modules/datatables.net-responsive/js/dataTables.responsive.js",
-              "./node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.js"
+              "./node_modules/datatables.net-rowreorder/js/dataTables.rowReorder.js",
+              "node_modules/jszip/dist/jszip.js",
+              "node_modules/datatables.net-buttons/js/dataTables.buttons.js",
+              "node_modules/datatables.net-buttons/js/buttons.colVis.js",
+              "node_modules/datatables.net-buttons/js/buttons.flash.js",
+              "node_modules/datatables.net-buttons/js/buttons.html5.js",
+              "node_modules/datatables.net-buttons/js/buttons.print.js"
             ]
           }
         },

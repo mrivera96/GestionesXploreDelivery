@@ -38,7 +38,7 @@
           <th>Entregas Mínimas</th>
           <th>Entregas Máximas</th>
           <th>Monto</th>
-          <th>Cliente Asignado</th>
+          <th>Clientes</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
@@ -51,7 +51,11 @@
           <td>{{rate.entregasMinimas}}</td>
           <td>{{rate.entregasMaximas}}</td>
           <td>L. {{rate.precio}}</td>
-          <td>{{rate.cliente.nomEmpresa}}</td>
+          <td>
+            <a (click)="showRateCustomers(rate.idTarifaDelivery)" style="color: #0071A2">
+              <i class="fa fa-eye"></i> Ver Clientes
+            </a>
+          </td>
           <td>
             <a (click)="showEditForm(rate.idTarifaDelivery)" style="color: #0071A2">
               <i class="fa fa-edit"></i> Editar

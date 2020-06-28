@@ -14,7 +14,10 @@ export class UsersService {
   ) { }
 
   getDrivers(){
-    return this.http.get<any>(`${environment.apiUrl}`, {params: {function: 'listDrivers'}})
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'getDrivers',
+      tkn: this.authService.currentUserValue.access_token
+    })
   }
 
   getCustomers(){
@@ -40,6 +43,22 @@ export class UsersService {
     })
   }
 
+  addDriver(form){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'createDriver',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  editDriver(form){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'editDriver',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
   changeCustomerPassword(form){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'changeCustomerPassword',
@@ -47,4 +66,5 @@ export class UsersService {
       tkn: this.authService.currentUserValue.access_token
     })
   }
+
 }

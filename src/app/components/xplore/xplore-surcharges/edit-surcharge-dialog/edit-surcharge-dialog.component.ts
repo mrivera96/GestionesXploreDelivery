@@ -20,6 +20,7 @@ export class EditSurchargeDialogComponent implements OnInit {
   }
   edSurChForm: FormGroup
   customers: Customer[]
+  filteredCustomers: Customer[]
   currSurch: Surcharge
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -46,6 +47,7 @@ export class EditSurchargeDialogComponent implements OnInit {
 
     this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
+      this.filteredCustomers = response.data
     })
   }
 
@@ -89,6 +91,18 @@ export class EditSurchargeDialogComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.dialogRef.close(true)
     })
+  }
+
+  onKey(value) {
+    this.filteredCustomers = this.search(value) ;
+  }
+
+  search(value: string) {
+    let filter = value.toLowerCase();
+    if(filter != ""){
+      return  this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
+    }
+    return this.customers
   }
 
 }

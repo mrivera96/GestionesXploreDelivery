@@ -2,12 +2,8 @@
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title>
-      <p *ngIf="!loaders.loadingSubmit">
-        Ingresa los datos del Delivery en el siguiente formulario
-      </p>
-      <p *ngIf="loaders.loadingSubmit">
-        Espera mientras procesamos tu solicitud, no cierres esta ventana.
-      </p>
+      <p *ngIf="!loaders.loadingSubmit">Ingresa los datos del Delivery en el siguiente formulario</p>
+      <p *ngIf="loaders.loadingSubmit">Espera mientras procesamos tu solicitud, no cierres esta ventana.</p>
     </mat-card-title>
   </mat-card-header>
 
@@ -28,209 +24,246 @@
         <!--FORM START-->
         <form [formGroup]="deliveryForm" role="form" (ngSubmit)="onFormSubmit()">
           <!--DELIVERY HEADER GROUP START-->
-          <div class="form-row" formGroupName="deliveryHeader">
-            <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
-              <mat-label>Fecha de recogida:</mat-label>
-              <input formControlName="fecha" type="date" id="fecha" required matInput>
-              <mat-icon matPrefix>today</mat-icon>
-              <mat-error *ngIf="newForm.get('deliveryHeader.fecha')?.errors?.required">
-                *Este campo es obligatorio
-              </mat-error>
-              <mat-error *ngIf="newForm.get('deliveryHeader.fecha')?.errors?.mustAfterDate">
-                *Ups! Parece que esa fecha no es válida
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
-              <mat-label>Hora de recogida:</mat-label>
-              <input formControlName="hora" type="time" id="hora" required
-                     matInput>
-              <mat-icon matPrefix>schedule</mat-icon>
-              <mat-error *ngIf="newForm.get('deliveryHeader.hora')?.errors?.required">
-                *Este campo es obligatorio
-              </mat-error>
-              <mat-error *ngIf="newForm.get('deliveryHeader.hora')?.errors?.mustAfterHour">
-                *Ups! Parece que esa hora no es válida
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
-              <mat-label>Punto de recogida:</mat-label>
-              <mat-select id="prevDirRecogida" [(ngModel)]="locationOption" required [disabled]="orders.length>0"
-                          [ngModelOptions]="{standalone: true}">
-                <mat-option [value]="1" (click)="setCurrentLocationOrigin()">Ubicación Actual</mat-option>
-                <mat-option [value]="2" (click)="clearLocationField()">Ingresar Ubicación</mat-option>
-                <mat-option [value]="3" (click)="clearLocationField()">Dirección Existente</mat-option>
-              </mat-select>
-              <mat-icon matPrefix>location_on</mat-icon>
-            </mat-form-field>
-          </div>
-
-          <div class="form-row" formGroupName="deliveryHeader">
-            <div class="col-md-6" *ngIf="locationOption == 2">
-              <mat-form-field appearance="outline" floatLabel="always">
-                <mat-label>Direccion de recogida:</mat-label>
-                <input matInput (input)="searchOrigin($event)" autocomplete="nope" [matAutocomplete]="autoOrg"
-                       id="inputdirRecogida" required formControlName="dirRecogida"
-                       placeholder="¿Dónde recogeremos tu pedido?">
-                <mat-autocomplete #autoOrg="matAutocomplete">
-                  <mat-option *ngFor="let s of placesOrigin" [value]="s.text" (click)="calculatedistanceBefore()">
-                    {{ s.text }}
-                  </mat-option>
-                </mat-autocomplete>
-                <mat-icon matPrefix>location_on</mat-icon>
-                <mat-error>*Este campo es obligatorio</mat-error>
-                <mat-hint>
-                  <a href="javascript:void(0);" (click)="gcordsOrigin=true" [hidden]="orders.length>0">
-                    Ingresar Geocordenadas
-                  </a>
-                </mat-hint>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcordsOrigin">
-                <input #originCords matInput type="text" placeholder="Ej. 10.1508684, -87.61982">
-                <button mat-button mat-icon-button (click)="setCordsOrigin()" matSuffix>
-                  <mat-icon>done</mat-icon>
-                </button>
-              </mat-form-field>
-            </div>
-
-            <mat-form-field appearance="outline" floatLabel="always" class="col-md-6" *ngIf="locationOption == 3">
-              <mat-label>Punto de recogida:</mat-label>
-              <mat-select id="dirRecogida" required formControlName="dirRecogida" (change)="calculatedistanceBefore()"
-                          placeholder="- Seleccione un punto de recogida -">
-                <mat-option *ngFor="let branch of myBranchOffices" value="{{branch?.direccion}}">
-                  {{branch.nomSucursal}}
-                </mat-option>
-              </mat-select>
-              <mat-icon matPrefix>location_on</mat-icon>
-              <mat-error>*Este campo es obligatorio</mat-error>
-            </mat-form-field>
-
-            <div class="col-md-6">
-              <mat-label>Categoría a reservar:</mat-label>
-              <br>
-              <mat-radio-group (change)="calculatedistanceBefore()" formControlName="idCategoria">
-                <mat-radio-button [id]="category?.idCategoria" [value]="category.idCategoria" disableRipple="true"
-                                  *ngFor="let category of categories; let  i = index"
-                                  [ngStyle]="{'color': category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value ? '#FF8C00': '#000'}">
-                  <i class="fa"
-                     [ngClass]="{'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3, 'fas fa-truck-pickup': category.idCategoria == 2}"></i>
-                  {{category.descCategoria}}
-                </mat-radio-button>
-              </mat-radio-group>
-            </div>
-
-            <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
-              <mat-label>Instrucciones de Recogida:</mat-label>
-              <textarea matInput id="instGenerales" formControlName="instrucciones" class="form-control"
-                        maxlength="150" placeholder="¿Necesitamos instrucciones para la recogida de tus envíos?">
-                </textarea>
-              <mat-icon matPrefix>assignment</mat-icon>
-              <mat-error>*Excede la longitud máxima permitida</mat-error>
-            </mat-form-field>
-          </div>
-
-          <!--DELIVERY HEADER GROUP END-->
-
-          <!--ORDER ADD FORM START-->
           <div class="row">
-            <div class="col">
-              <p class="card-title"><strong>Detalles de envíos:</strong></p>
-              <hr>
+            <div class="col-md">
+              <div class="form-row" formGroupName="deliveryHeader">
+                <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+                  <mat-label>Fecha de recogida:</mat-label>
+                  <input formControlName="fecha" type="date" id="fecha" required matInput>
+                  <mat-icon matPrefix>today</mat-icon>
+                  <mat-error *ngIf="newForm.get('deliveryHeader.fecha')?.errors?.required">
+                    *Este campo es obligatorio
+                  </mat-error>
+                  <mat-error *ngIf="newForm.get('deliveryHeader.fecha')?.errors?.mustAfterDate">
+                    *Ups! Parece que esa fecha no es válida
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+                  <mat-label>Hora de recogida:</mat-label>
+                  <input formControlName="hora" type="time" id="hora" required
+                         matInput>
+                  <mat-hint>Horario: 7:00 a.m - 5:00 p.m</mat-hint>
+                  <mat-icon matPrefix>schedule</mat-icon>
+                  <mat-error *ngIf="newForm.get('deliveryHeader.hora')?.errors?.required">
+                    *Este campo es obligatorio
+                  </mat-error>
+                  <mat-error *ngIf="newForm.get('deliveryHeader.hora')?.errors?.mustAfterHour">
+                    *Ups! Parece que esa hora no es válida
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+                  <mat-label>Punto de recogida:</mat-label>
+                  <mat-select id="prevDirRecogida" [(ngModel)]="locationOption" required [disabled]="orders.length > 0"
+                              [ngModelOptions]="{standalone: true}">
+                    <mat-option [value]="1" (click)="setCurrentLocationOrigin()">Ubicación Actual</mat-option>
+                    <mat-option [value]="2" (click)="clearLocationField()">Ingresar Ubicación</mat-option>
+                    <mat-option [value]="3" (click)="clearLocationField()">Dirección Existente</mat-option>
+                  </mat-select>
+                  <mat-icon matPrefix>location_on</mat-icon>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row" formGroupName="deliveryHeader">
+                <div class="col-md-6" *ngIf="locationOption == 2">
+                  <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>Direccion de recogida:</mat-label>
+                    <input matInput (input)="searchOrigin($event)" autocomplete="nope" [matAutocomplete]="autoOrg"
+                           id="inputdirRecogida" required formControlName="dirRecogida" [readonly]="orders.length > 0"
+                           placeholder="¿Dónde recogeremos tu pedido?" (paste)="$event.preventDefault()">
+                    <mat-autocomplete #autoOrg="matAutocomplete">
+                      <mat-option *ngFor="let s of placesOrigin" [value]="s.text" (click)="calculatedistanceBefore()">
+                        {{ s.text }}
+                      </mat-option>
+                    </mat-autocomplete>
+                    <mat-icon matPrefix>location_on</mat-icon>
+                    <mat-error *ngIf="newForm.get('deliveryHeader.dirRecogida')?.errors?.required">*Este campo es
+                      obligatorio
+                    </mat-error>
+                    <mat-error *ngIf="newForm.get('deliveryHeader.dirRecogida')?.errors?.isUrl">*Valor no válido
+                    </mat-error>
+                    <mat-hint>
+                      <a href="javascript:void(0);" (click)="gcordsOrigin=true" [hidden]="orders.length > 0">
+                        Ingresar Geocordenadas
+                      </a>
+                    </mat-hint>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcordsOrigin">
+                    <input #originCords matInput type="text" placeholder="Ej. 10.1508684, -87.61982"
+                           (paste)="$event.preventDefault()">
+                    <button mat-button mat-icon-button (click)="setCordsOrigin()" matSuffix>
+                      <mat-icon>done</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md-6" *ngIf="locationOption == 3">
+                  <mat-label>Punto de recogida:</mat-label>
+                  <mat-select id="dirRecogida" required formControlName="dirRecogida" [disabled]="orders.length > 0"
+                              placeholder="- Seleccione un punto de recogida -">
+                    <mat-option *ngFor="let branch of myBranchOffices" value="{{branch?.direccion}}"
+                                (click)="calculatedistanceBefore()">
+                      {{branch.nomSucursal}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matPrefix>location_on</mat-icon>
+                  <mat-error>*Este campo es obligatorio</mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+                  <mat-label>Instrucciones de Recogida:</mat-label>
+                  <textarea matInput id="instGenerales" formControlName="instrucciones" class="form-control"
+                            maxlength="150" placeholder="¿Necesitamos instrucciones para la recogida de tus envíos?">
+                </textarea>
+                  <mat-icon matPrefix>assignment</mat-icon>
+                  <mat-error>*Excede la longitud máxima permitida</mat-error>
+                </mat-form-field>
+
+                <div class="col-md-6">
+                  <mat-label>Categoría a reservar:</mat-label>
+                  <br>
+                  <mat-radio-group (change)="calculatedistanceBefore()" formControlName="idCategoria"
+                                   [disabled]="orders.length > 0">
+                    <mat-radio-button [id]="category?.idCategoria" [value]="category.idCategoria" disableRipple="true"
+                                      *ngFor="let category of categories; let  i = index"
+                                      [ngStyle]="{'color':
+                                      category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
+                                      ? '#FF8C00': '#000'}">
+                      <span class="fa d-block text-center" style="font-size: 24px"
+                         [ngClass]="{'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
+                         'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4}"></span>
+                      {{category.descCategoria}}
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+
+              </div>
+
+              <!--DELIVERY HEADER GROUP END-->
+
+              <!--ORDER ADD FORM START-->
+              <div class="row">
+                <div class="col">
+                  <p class="card-title"><strong>Detalles de envíos:</strong></p>
+                  <hr>
+                </div>
+              </div>
+
+
+              <div class="form-row" formGroupName="order">
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+                  <mat-label>Detalle de envío:</mat-label>
+                  <input matInput type="text" formControlName="nFactura" id="nFactura" required
+                         maxlength="250" placeholder="¿Qué deseas enviar?">
+                  <mat-icon matPrefix>receipt</mat-icon>
+                  <mat-error *ngIf="newForm.get('order.nFactura').errors?.required">
+                    *Este campo es obligatorio
+                  </mat-error>
+                  <mat-error *ngIf="newForm.get('order.nFactura').errors?.maxlength">
+                    *Excede la longitud máxima permitida
+                  </mat-error>
+
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+                  <mat-label>Nombre del destinatario:</mat-label>
+                  <input matInput type="text" formControlName="nomDestinatario" id="nomDestinatario"
+                         required maxlength="150" placeholder="¿Quién recibirá el pedido?">
+                  <mat-icon matPrefix>person</mat-icon>
+                  <mat-error *ngIf="newForm.get('order.nomDestinatario').errors?.required">
+                    *Este campo es obligatorio
+                  </mat-error>
+                  <mat-error *ngIf="newForm.get('order.nomDestinatario').errors?.maxlength">
+                    *Excede la longitud máxima permitida
+                  </mat-error>
+                </mat-form-field>
+              </div>
+
+              <div class="form-row" formGroupName="order">
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+                  <mat-label>Número celular del destinatario:</mat-label>
+                  <input matInput type="tel" id="numCel" formControlName="numCel" required minlength="9"
+                         autocomplete="off"
+                         maxlength="9" appPhoneMask placeholder="Ej. 9999-9999(Guión Automático)">
+                  <mat-icon matPrefix>phone</mat-icon>
+                  <mat-error
+                    *ngIf="newForm.get('order.numCel').errors?.minlength ||
+                    newForm.get('order.numCel').errors?.maxlength">
+                    *Por favor ingresa un número válido
+                  </mat-error>
+                  <mat-error *ngIf="newForm.get('order.numCel').errors?.required">
+                    *Este campo es obligatorio
+                  </mat-error>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+                  <mat-label>Instrucciones de Entrega:</mat-label>
+                  <textarea matInput id="instEspecificas" formControlName="instrucciones" maxlength="150"
+                            class="form-control"
+                            placeholder="¿Necesitamos instrucciones para la entrega de éste envío?"></textarea>
+                  <mat-icon matPrefix>assignment</mat-icon>
+                  <mat-error>*Excede la longitud máxima permitida</mat-error>
+                </mat-form-field>
+
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" floatLabel="always">
+                    <mat-label>Punto de entrega:</mat-label>
+                    <input type="text" (input)="searchDestination($event)" autocomplete="off"
+                           [matAutocomplete]="autoDest"
+                           matInput formControlName="direccion" id="direccion" required
+                           placeholder="¿Dónde entregaremos tu pedido?" (paste)="$event.preventDefault()">
+                    <mat-autocomplete #autoDest="matAutocomplete">
+                      <mat-option *ngFor="let s of placesDestination" [value]="s.text"
+                                  (click)="calculatedistanceBefore()">
+                        {{ s.text }}
+                      </mat-option>
+                    </mat-autocomplete>
+                    <mat-icon matPrefix>location_on</mat-icon>
+                    <mat-error *ngIf="newForm.get('order.direccion')?.errors?.required">*Este campo es obligatorio
+                    </mat-error>
+                    <mat-error *ngIf="newForm.get('order.direccion')?.errors?.isUrl">*Valor no válido</mat-error>
+                    <mat-hint>
+                      <a href="javascript:void(0)" (click)="gcordsDestination=true">
+                        Ingresar Geocordenadas
+                      </a>
+                    </mat-hint>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcordsDestination">
+                    <input #destinationCords matInput type="text" placeholder=" Ej. 10.1508684, -87.61982"
+                           (paste)="$event.preventDefault()">
+                    <button mat-button mat-icon-button (click)="setCordsDestination()" matSuffix>
+                      <mat-icon>done</mat-icon>
+                    </button>
+
+                  </mat-form-field>
+                  <br>
+                  <mat-checkbox #checkboxDest (change)="setCurrentLocationDest(!checkboxDest.checked)">
+                    Ubicación actual
+                  </mat-checkbox>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="col-md">
+              <mat-card class="shadow">
+                <mat-card-header>
+                  <mat-card-title>
+                    Ruta de Entrega
+                  </mat-card-title>
+                </mat-card-header>
+
+                <mat-card-content>
+                  <google-map #googleMap height="380px" width="100%" id="map" [center]="center"></google-map>
+                </mat-card-content>
+              </mat-card>
             </div>
           </div>
 
-
-          <div class="form-row" formGroupName="order">
-            <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
-              <mat-label>Detalle de envío:</mat-label>
-              <input matInput type="text" formControlName="nFactura" id="nFactura" required
-                     maxlength="250" placeholder="¿Qué deseas enviar?">
-              <mat-icon matPrefix>receipt</mat-icon>
-              <mat-error *ngIf="newForm.get('order.nFactura').errors?.required">
-                *Este campo es obligatorio
-              </mat-error>
-              <mat-error *ngIf="newForm.get('order.nFactura').errors?.maxlength">
-                *Excede la longitud máxima permitida
-              </mat-error>
-
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
-              <mat-label>Nombre del destinatario:</mat-label>
-              <input matInput type="text" formControlName="nomDestinatario" id="nomDestinatario"
-                     required maxlength="150" placeholder="¿Quién recibirá el pedido?">
-              <mat-icon matPrefix>person</mat-icon>
-              <mat-error *ngIf="newForm.get('order.nomDestinatario').errors?.required">
-                *Este campo es obligatorio
-              </mat-error>
-              <mat-error *ngIf="newForm.get('order.nomDestinatario').errors?.maxlength">
-                *Excede la longitud máxima permitida
-              </mat-error>
-            </mat-form-field>
-          </div>
-
-          <div class="form-row" formGroupName="order">
-            <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
-              <mat-label>Número celular del destinatario:</mat-label>
-              <input matInput type="tel" id="numCel" formControlName="numCel" required minlength="9" autocomplete="off"
-                     maxlength="9" appPhoneMask placeholder="Ej. 9999-9999(Guión Automático)">
-              <mat-icon matPrefix>phone</mat-icon>
-              <mat-error
-                *ngIf="newForm.get('order.numCel').errors?.minlength || newForm.get('order.numCel').errors?.maxlength">
-                *Por favor ingresa un número válido
-              </mat-error>
-              <mat-error *ngIf="newForm.get('order.numCel').errors?.required">
-                *Este campo es obligatorio
-              </mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
-              <mat-label>Instrucciones de Entrega:</mat-label>
-              <textarea matInput id="instEspecificas" formControlName="instrucciones" maxlength="150"
-                        class="form-control"
-                        placeholder="¿Necesitamos instrucciones para la entrega de éste envío?"></textarea>
-              <mat-icon matPrefix>assignment</mat-icon>
-              <mat-error>*Excede la longitud máxima permitida</mat-error>
-            </mat-form-field>
-
-            <div class="col-md-6">
-              <mat-form-field appearance="outline" floatLabel="always">
-                <mat-label>Punto de entrega:</mat-label>
-                <input type="text" (input)="searchDestination($event)" autocomplete="off" [matAutocomplete]="autoDest"
-                       matInput formControlName="direccion" id="direccion" required
-                       placeholder="¿Dónde entregaremos tu pedido?">
-                <mat-autocomplete #autoDest="matAutocomplete">
-                  <mat-option *ngFor="let s of placesDestination" [value]="s.text" (click)="calculatedistanceBefore()">
-                    {{ s.text }}
-                  </mat-option>
-                </mat-autocomplete>
-                <mat-icon matPrefix>location_on</mat-icon>
-                <mat-error>*Este campo es obligatorio</mat-error>
-                <mat-hint>
-                  <a href="javascript:void(0)" (click)="gcordsDestination=true">
-                    Ingresar Geocordenadas
-                  </a>
-
-                </mat-hint>
-
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcordsDestination">
-                <input #destinationCords matInput type="text" placeholder=" Ej. 10.1508684, -87.61982">
-                <button mat-button mat-icon-button (click)="setCordsDestination()" matSuffix>
-                  <mat-icon>done</mat-icon>
-                </button>
-
-              </mat-form-field>
-              <br>
-              <mat-checkbox #checkboxDest (change)="setCurrentLocationDest(!checkboxDest.checked)">
-                Ubicación actual
-              </mat-checkbox>
-            </div>
-
-          </div>
           <br>
           <div class="form-row text-center">
             <div class="col">
@@ -253,13 +286,13 @@
                 </span> L. {{befCost}}
               </span>
             </div>
-
           </div>
           <br>
           <div class="form-row">
             <div class="col-md-6">
               <button mat-raised-button type="button" (click)="onOrderAdd()" color="primary"
-                      [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid || loaders.loadingAdd"
+                      [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid ||
+                      loaders.loadingAdd"
                       class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                 entrega

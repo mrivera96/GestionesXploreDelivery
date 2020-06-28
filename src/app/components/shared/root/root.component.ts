@@ -20,9 +20,9 @@ export class RootComponent implements OnInit {
       this.router.navigate(['login'])
     }
     if(this.currentUser.idPerfil === '1'){
-      this.router.navigate(['xplore-inicio'])
+      this.router.navigate(['/admins/reservas-pendientes'])
     }else if(this.currentUser.idPerfil === '8'){
-      this.router.navigate(['cliente-inicio'])
+      this.router.navigate(['/customers/inicio'])
     }
 
   }

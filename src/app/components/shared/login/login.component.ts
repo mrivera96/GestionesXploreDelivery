@@ -37,9 +37,9 @@ export class LoginComponent implements OnInit {
     // redirigir si el usuario está logueado
     if (this.authService.currentUserValue) {
       if (this.authService.currentUserValue.idPerfil === "1") {
-        this.router.navigate(['inicio'])
+        this.router.navigate(['/admins/reservas-hoy'])
       } else if (this.authService.currentUserValue.idPerfil === "8") {
-        this.router.navigate(['inicio-cliente'])
+        this.router.navigate(['/customers/inicio'])
       }
     }
   }

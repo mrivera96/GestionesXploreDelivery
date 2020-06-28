@@ -1,7 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {Delivery} from "../../../models/delivery";
-import {Subject} from "rxjs";
 import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({

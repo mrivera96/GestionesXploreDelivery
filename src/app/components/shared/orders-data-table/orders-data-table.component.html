@@ -17,6 +17,7 @@
         <select class="form-control-sm" name="search-last-name">
           <option value="">- Filtrar por Estado -</option>
           <option *ngFor="let state of states" [value]="state.descEstado">{{state.descEstado}}</option>
+          <option value="Solicitud de Reservación">Solicitud de Reservación</option>
         </select>
       </th>
       <th></th>
@@ -50,7 +51,7 @@
       <td>L. {{order.recargo}}</td>
       <td>L. {{order.cTotal}}</td>
       <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">{{ 'Fecha: '+ order.fechaEntrega}}</p> </td>
-      <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario}}</p> <p *ngIf="!order.conductor">Aún no asignada</p> </td>
+      <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p> <p *ngIf="!order.conductor">Aún no asignada</p> </td>
     </tr>
     </tbody>
   </table>

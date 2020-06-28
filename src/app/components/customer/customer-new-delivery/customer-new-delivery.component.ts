@@ -1,7 +1,7 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Category} from "../../../models/category";
-import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Subject} from "rxjs";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {HttpClient} from "@angular/common/http";
@@ -18,7 +18,6 @@ import {Router} from "@angular/router";
 import {Surcharge} from "../../../models/surcharge";
 import {SurchargesService} from "../../../services/surcharges.service";
 import {DateValidate} from "../../../helpers/date.validator";
-import {HourValidate} from "../../../helpers/hour.validator";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
@@ -26,8 +25,8 @@ import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component"
 import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
 import {Customer} from "../../../models/customer";
 import {AuthService} from "../../../services/auth.service";
-
-declare var $: any;
+import {NoUrlValidator} from "../../../helpers/noUrl.validator";
+import {GoogleMap} from "@angular/google-maps";
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -46,6 +45,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
   locationOption
   myCurrentLocation
   dtOptions: any
+  @ViewChild('googleMap') googleMap: GoogleMap
+  center: google.maps.LatLngLiteral
   loaders = {
     'loadingData': false,
     'loadingAdd': false,
@@ -57,7 +58,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
   befTime = 0
   befCost = 0.00
   currCustomer: Customer
-
+  directionsRenderer
+  directionsService
   categories: Category[]
   deliveryForm: FormGroup
   orders: Order[] = []
@@ -88,7 +90,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   gcordsOrigin = false
   gcordsDestination = false
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective
 
   constructor(
     private categoriesService: CategoriesService,
@@ -111,21 +114,22 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   initialize() {
+    this.directionsRenderer = new google.maps.DirectionsRenderer
+    this.directionsService = new google.maps.DirectionsService
     this.locationOption = 1
     this.paymentMethod = 1
-
     this.deliveryForm = this.formBuilder.group({
       deliveryHeader: this.formBuilder.group({
         fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
         hora: [formatDate(new Date(), 'HH:mm', 'en'), Validators.required],
-        dirRecogida: ['', Validators.required],
-        idCategoria: [1, Validators.required],
+        dirRecogida: ['', [Validators.required]],
+        idCategoria: [1, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)]
       }, {
         validators: [
-          DateValidate('fecha'),
-          HourValidate('hora', 'fecha'),
+          DateValidate('fecha', 'hora'),
           BlankSpacesValidator('dirRecogida'),
+          NoUrlValidator('dirRecogida'),
         ]
       }),
 
@@ -139,7 +143,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
         validators: [
           BlankSpacesValidator('nFactura'),
           BlankSpacesValidator('nomDestinatario'),
-          BlankSpacesValidator('direccion')
+          BlankSpacesValidator('direccion'),
+          NoUrlValidator('direccion'),
         ]
       })
     })
@@ -150,6 +155,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         }
+        this.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
+
         this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
       }, function (error) {
         switch (error.code) {
@@ -281,6 +291,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   onFormSubmit() {
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
+
       this.loaders.loadingSubmit = true
       this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
@@ -311,6 +322,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculatedistanceBefore() {
+    this.directionsRenderer.setMap(null)
     if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
       this.loaders.loadingDistBef = true
       let ordersCount = this.orders.length + 1
@@ -330,6 +342,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
         this.befCost = calculatedPayment.total
         this.placesOrigin = []
         this.placesDestination = []
+
+        this.directionsRenderer.setMap(this.googleMap._googleMap)
+        this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer);
+
       }, error => {
         if (error.subscribe()) {
           error.subscribe(error => {
@@ -344,6 +360,37 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       })
     }
+
+  }
+
+  calculateAndDisplayRoute(directionsService, directionsRenderer) {
+
+    const dirRecogida = this.newForm.get('deliveryHeader.dirRecogida').value
+    const dirEntrega = this.newForm.get('order.direccion').value
+    const geocoder1 = new google.maps.Geocoder()
+
+
+    const geocoder2 = new google.maps.Geocoder()
+    geocoder1.geocode({'address': dirRecogida}, results => {
+      const originLL = results[0].geometry.location
+      geocoder2.geocode({'address': dirEntrega}, results => {
+        const destLL = results[0].geometry.location
+        directionsService.route({
+          origin: originLL,  // Haight.
+          destination: destLL,  // Ocean Beach.
+
+          travelMode: google.maps.TravelMode['DRIVING']
+        }, function (response, status) {
+          if (status == 'OK') {
+            directionsRenderer.setDirections(response);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        })
+      })
+
+
+    })
 
   }
 
@@ -418,26 +465,20 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.pagos.push(calculatedPayment)
       this.loaders.loadingAdd = false
 
-      if (this.orders.length > 0) {
-        this.newForm.get('deliveryHeader.idCategoria').disable({onlySelf: true})
-        this.newForm.get('deliveryHeader.dirRecogida').disable({onlySelf: true})
-        $("#insertCords").hide();
-      }
-
       if (this.orders.length > 1) {
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
             this.dtTrigger.next()
           })
-      }else {
-        if(this.dtElement.dtInstance){
+      } else {
+        if (this.dtElement.dtInstance) {
           this.dtElement.dtInstance.then(
             (dtInstance: DataTables.Api) => {
               dtInstance.destroy()
               this.dtTrigger.next()
             })
-        }else{
+        } else {
           this.dtTrigger.next()
         }
 
@@ -447,6 +488,19 @@ export class CustomerNewDeliveryComponent implements OnInit {
       setTimeout(() => {
         this.agregado = false;
       }, 2000)
+
+      this.orders.forEach(value => {
+        if (value.tarifaBase != this.pago.baseRate) {
+          const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
+          let i = this.orders.indexOf(value)
+          value.tarifaBase = this.pago.baseRate
+          value.recargo = nPay.surcharges
+          value.cTotal = nPay.total
+          this.pagos[i].baseRate = nPay.baseRate
+          this.pagos[i].surcharges = nPay.surcharges
+          this.pagos[i].total = nPay.total
+        }
+      })
 
       this.calculatePayment()
     }, error => {
@@ -462,7 +516,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
 
   }
-
 
   calculatePayment() {
     this.pago.recargos = this.pagos.reduce(function (a, b) {
@@ -486,12 +539,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
       dtInstance.destroy();
       this.dtTrigger.next();
     })
-
-    if (this.orders.length === 0) {
-      this.newForm.get('deliveryHeader.idCategoria').enable({onlySelf: true})
-      this.newForm.get('deliveryHeader.dirRecogida').enable({onlySelf: true})
-      $("#insertCords").show();
-    }
 
   }
 
@@ -537,7 +584,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
 
   showNewDeliveryDetail(id) {
-    this.router.navigate(['cliente-detalle-delivery', id])
+    this.router.navigate(['customers/ver-reserva', id])
   }
 
   openErrorDialog(error: string, reload: boolean): void {
@@ -556,6 +603,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
     } else {
       dialog.afterClosed().subscribe(result => {
         this.loaders.loadingSubmit = false
+        if (this.dtElement.dtInstance) {
+          this.dtElement.dtInstance.then(
+            (dtInstance: DataTables.Api) => {
+              dtInstance.destroy()
+              this.dtTrigger.next()
+            })
+        }
+
       })
     }
 

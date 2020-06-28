@@ -1,13 +1,11 @@
 import {
   AfterViewInit,
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
   ViewChild,
-  ViewChildren
 } from '@angular/core';
 import {Subject} from "rxjs";
 import {Delivery} from "../../../models/delivery";
@@ -15,7 +13,6 @@ import {Router} from "@angular/router";
 import {DataTableDirective} from "angular-datatables";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {State} from "../../../models/state";
-import {element} from "protractor";
 
 @Component({
   selector: 'app-data-table',
@@ -81,9 +78,9 @@ export class DataTableComponent implements OnInit, AfterViewInit{
                 .search(this['value'])
                 .draw();
             }
-          });
-        });
-      });
+          })
+        })
+      })
 
     })
   }

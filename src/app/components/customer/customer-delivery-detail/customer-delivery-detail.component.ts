@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Delivery} from "../../../models/delivery";
 import {DeliveryDetail} from "../../../models/delivery-detail";
 import {Subject} from "rxjs";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {ActivatedRoute} from "@angular/router";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
-declare var $: any
+import {ChangeHourDialogComponent} from "./change-hour-dialog/change-hour-dialog.component";
+import {DataTableDirective} from "angular-datatables";
 @Component({
   selector: 'app-customer-delivery-detail',
   templateUrl: './customer-delivery-detail.component.html',
@@ -22,7 +22,7 @@ declare var $: any
     ])
   ]
 })
-export class CustomerDeliveryDetailComponent implements OnInit {
+export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
   currentDelivery: Delivery
   currentDeliveryDetail: DeliveryDetail[]
   deliveryId: number
@@ -32,6 +32,8 @@ export class CustomerDeliveryDetailComponent implements OnInit {
   dddtOptions: any
   dddtTrigger: Subject<any>
   errorMSg: string
+  allowHourChange: boolean
+  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
 
   constructor(
     private deliveriesService: DeliveriesService,
@@ -49,8 +51,15 @@ export class CustomerDeliveryDetailComponent implements OnInit {
     })
 
     this.loadData()
+
   }
+
+  ngAfterViewInit() {
+
+  }
+
   initialize() {
+    this.allowHourChange = false
     this.dddtOptions =  {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -76,7 +85,6 @@ export class CustomerDeliveryDetailComponent implements OnInit {
       },
     }
     this.dddtTrigger = new Subject()
-
   }
 
   loadData() {
@@ -85,6 +93,12 @@ export class CustomerDeliveryDetailComponent implements OnInit {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
       this.loaders.loadingData = false
+      const registered_date = ((new Date(response.data.fechaReserva).getTime()) / 1000) /60
+      const new_date = ((new Date().getTime() / 1000) / 60)
+      const diff = registered_date - new_date
+      if(diff >= 30){
+        this.allowHourChange = true
+      }
 
     }, error => {
       this.loaders.loadingData = false
@@ -111,6 +125,21 @@ export class CustomerDeliveryDetailComponent implements OnInit {
         this.reloadData()
       })
     }
+
+  }
+
+  openChangeHourDialog(){
+    const dialogRef = this.dialog.open(ChangeHourDialogComponent,{
+      data:{
+        delivery: this.currentDelivery
+      }
+    })
+
+    dialogRef.afterClosed().subscribe( result => {
+      if(result){
+        this.reloadData()
+      }
+    })
 
   }
 

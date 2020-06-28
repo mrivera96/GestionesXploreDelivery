@@ -13,6 +13,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {EditRateDialogComponent} from "./edit-rate-dialog/edit-rate-dialog.component";
 import {NewRateDialogComponent} from "./new-rate-dialog/new-rate-dialog.component";
 import {DataTableDirective} from "angular-datatables";
+import {RateCustomersDialogComponent} from "./rate-customers-dialog/rate-customers-dialog.component";
 
 
 @Component({
@@ -120,12 +121,20 @@ export class XploreRatesComponent implements OnInit {
     const dialogRef = this.dialog.open(NewRateDialogComponent)
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result){
+      if (result) {
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
             this.loadData()
           })
+      }
+    })
+  }
+
+  showRateCustomers(id) {
+    this.dialog.open(RateCustomersDialogComponent, {
+      data: {
+        rateId: id
       }
     })
   }
@@ -138,7 +147,7 @@ export class XploreRatesComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result){
+      if (result) {
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
@@ -155,7 +164,7 @@ export class XploreRatesComponent implements OnInit {
       }
     })
 
-    if(reload){
+    if (reload) {
       dialog.afterClosed().subscribe(result => {
         this.loaders.loadingData = true
         this.reloadData()

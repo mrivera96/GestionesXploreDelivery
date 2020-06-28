@@ -1,5 +1,6 @@
 import {User} from "./user";
 import {Delivery} from "./delivery";
+import {State} from "./state";
 
 export interface DeliveryDetail {
   idDelivery?: number
@@ -18,4 +19,6 @@ export interface DeliveryDetail {
   cTotal?: number
   instrucciones?: string
   delivery?: Delivery
+  estado?: State
+  idEstado?: number
 }

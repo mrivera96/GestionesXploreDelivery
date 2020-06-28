@@ -43,7 +43,7 @@ export class XploreCustomersComponent implements OnInit {
       serverSide: false,
       processing: true,
       info: true,
-      order: [2, 'desc'],
+      order: [0, 'asc'],
       autoWidth: true,
       responsive: true,
       language: {

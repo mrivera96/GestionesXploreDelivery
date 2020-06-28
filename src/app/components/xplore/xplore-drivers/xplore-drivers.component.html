@@ -1,1 +1,78 @@
-<p>xplore-drivers works!</p>
+<!-- CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Conductores
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="row" *ngIf="loaders.loadingData">
+      <div class="col text-center">
+        <img src="assets/img/loading.svg" width="5%" alt="loading">
+        <p>Cargando información...</p>
+      </div>
+    </div>
+
+    <div class="row justify-content-end ">
+      <div class="col">
+        <button mat-raised-button (click)="showNewCustForm()" type="button" color="primary" class="float-right mb-2">
+          <i class="fa fa-plus"></i>
+          Agregar Conductor
+        </button>
+      </div>
+
+    </div>
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+             class="display compact" style="width:100%">
+
+        <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th data-priority="1">
+            <select class="form-control-sm" name="search-last-name">
+              <option value="">- Filtrar por ciudad -</option>
+              <option *ngFor="let city of cities" [value]="city.nomCiudad">{{city.nomCiudad}}</option>
+            </select>
+          </th>
+          <th></th>
+          <th></th>
+          <th></th>
+        </tr>
+        </tfoot>
+        <thead>
+        <tr>
+          <th data-priority="1">N°</th>
+          <th>Nombre de Conductor</th>
+          <th>Ciudad</th>
+          <th>Número de Celular</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let driver of drivers; let i = index">
+          <td>{{i + 1}}</td>
+          <td>{{driver.nomUsuario}}</td>
+          <td>{{driver.agency.city.nomCiudad}}</td>
+          <td>{{driver.numCelular || 'Sin registro' }}</td>
+          <td>{{driver.state}}</td>
+          <td>
+            <a (click)="showEditForm(driver.idUsuario)" style="color: #0071A2">
+              <i class="fa fa-edit"></i> Editar
+            </a>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+  </mat-card-content>
+
+</mat-card>
+
+<!-- CARD END -->

@@ -21,4 +21,6 @@ export interface Delivery {
   idCliente?: number
   entregas?: number
   instrucciones?: string
+  cantidad?: string
+  descCategoria?: string
 }

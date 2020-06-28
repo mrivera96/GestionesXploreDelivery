@@ -1,3 +1,5 @@
+import {Agency} from "./agency";
+
 export interface User {
   idUsuario?: number
   idCliente?: any
@@ -13,4 +15,6 @@ export interface User {
   access_token?: string
   cliente?: any
   numCelular?: string
+  agency?: Agency
+  state?: string
 }

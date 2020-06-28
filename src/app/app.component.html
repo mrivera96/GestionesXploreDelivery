@@ -12,7 +12,7 @@
 <!-- NAVBAR END -->
 <!-- -->
 <mat-sidenav-container  style="min-height: 100vh;">
-  <mat-sidenav #sidenav>
+  <mat-sidenav #sidenav mode="over">
     <!-- ONLY XPLORE USER -->
     <mat-nav-list *ngIf="currentUser && currentUser.idPerfil === '1'">
       <a href="javascript:void(0);" mat-list-item (click)="showLogout()">
@@ -28,34 +28,55 @@
         </a>
       </mat-nav-list>
 
-      <a (click)="sidenav.close()" [routerLink]="['']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-pendientes']" mat-list-item>
+        <mat-icon>update</mat-icon>
+        Reservas Pendientes (Tiempo Real)
+      </a>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-hoy']" mat-list-item>
         <mat-icon>today</mat-icon>
         Reservas del día
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['xplore-maniana']" mat-list-item>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-maniana']" mat-list-item>
         <mat-icon>event</mat-icon>
         Reservas para Mañana
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['xplore-todas']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-todas']" mat-list-item>
         <mat-icon>list</mat-icon>
         Todas las Reservas
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['xplore-envios-hoy']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['admins/envios-hoy']" mat-list-item>
         <mat-icon>today</mat-icon>
          Envíos del Día
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['xplore-envios-todos']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['admins/envios-todos']" mat-list-item>
         <mat-icon>list</mat-icon>
         Todos los Envíos
       </a>
 
-      <a [routerLink]="['xplore-clientes']" (click)="sidenav.close()" mat-list-item>
+      <a [routerLink]="['admins/clientes']" (click)="sidenav.close()" mat-list-item>
         <mat-icon>people</mat-icon>
         Clientes
+      </a>
+
+      <a [routerLink]="['admins/pagos']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>payment</mat-icon>
+        Pagos
+      </a>
+
+      <a [routerLink]="['admins/conductores']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>sports_motorsports</mat-icon>
+        Conductores
+      </a>
+
+      <a [routerLink]="['admins/reportes/envios-conductores']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>analytics</mat-icon>
+        Reportes
       </a>
 
       <a (click)="showConfSubMenu()"  mat-list-item>
@@ -66,17 +87,17 @@
 
       <mat-nav-list class="d-none confSubMenu" >
         <a class="ml-3" (click)="sidenav.close()"
-           [routerLink]="['xplore-parametrizar-categorias']" mat-list-item>
+           [routerLink]="['admins/parametrizar-categorias']" mat-list-item>
           <mat-icon>list</mat-icon>
           Categorías
         </a>
 
-        <a [routerLink]="['xplore-parametrizar-tarifas']"
+        <a [routerLink]="['admins/parametrizar-tarifas']"
            (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>attach_money</mat-icon> Tarifas
         </a>
 
-        <a  [routerLink]="['xplore-parametrizar-recargos']"
+        <a  [routerLink]="['admins/parametrizar-recargos']"
             (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>attach_money</mat-icon> Recargos
         </a>
@@ -86,6 +107,7 @@
 
     <!-- ONLY CUSTOMERS -->
     <mat-nav-list *ngIf="currentUser && currentUser.idPerfil === '8'">
+
       <a href="javascript:void(0);" mat-list-item (click)="showLogoutCustomer()">
         <mat-icon>account_circle</mat-icon>
         {{currentUser.nomUsuario}}
@@ -93,7 +115,7 @@
       </a>
 
       <mat-nav-list class="d-none userSubMenu">
-        <a [routerLink]="['cliente-perfil']" id="profile" class="ml-3" (click)="sidenav.close()" mat-list-item>
+        <a [routerLink]="['customers/perfil']" id="profile" class="ml-3" (click)="sidenav.close()" mat-list-item>
           <mat-icon>person</mat-icon> Perfil
         </a>
         <a href="javascript:void(0)" class="ml-3" mat-list-item (click)="logout()">
@@ -102,32 +124,37 @@
         </a>
       </mat-nav-list>
 
-      <a (click)="sidenav.close()" [routerLink]="['cliente-inicio']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['customers/inicio']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['cliente-envios-hoy']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['customers/envios-hoy']" mat-list-item>
         <mat-icon>today</mat-icon>
         Mis envíos del día
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['cliente-envios-todos']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['customers/envios-todos']" mat-list-item>
         <mat-icon>list</mat-icon>
         Todos mis envíos
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['cliente-hoy']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['customers/reservas-hoy']" mat-list-item>
         <mat-icon>event</mat-icon>
         Mis reservas del día
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['cliente-todos']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['customers/reservas-todos']" mat-list-item>
         <mat-icon>list</mat-icon>
         Todas mis reservas
       </a>
 
-      <a [routerLink]="['cliente-direcciones']" (click)="sidenav.close()" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['customers/balance']" mat-list-item>
+        <mat-icon>attach_money</mat-icon>
+        Balance
+      </a>
+
+      <a [routerLink]="['customers/direcciones']" (click)="sidenav.close()" mat-list-item>
         <mat-icon>location_on</mat-icon>
         Mis Direcciones
       </a>
