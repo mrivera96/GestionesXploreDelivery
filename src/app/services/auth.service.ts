@@ -34,7 +34,6 @@ export class AuthService {
       }));
   }
 
-
   setCurrUser(user){
     this.currentUserSubject.next(user);
   }

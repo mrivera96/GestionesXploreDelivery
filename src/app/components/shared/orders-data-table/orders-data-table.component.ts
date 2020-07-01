@@ -8,6 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ErrorModalComponent} from "../error-modal/error-modal.component";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
+import {ChangeOrderStateDialogComponent} from "./change-order-state-dialog/change-order-state-dialog.component";
 
 declare var $: any
 @Component({
@@ -159,6 +160,28 @@ export class OrdersDataTableComponent implements OnInit{
         this.reloadData()
       })
     }
+
+  }
+
+  showChangeStateDialog(currOrder) {
+
+    const dialogRef = this.dialog.open(ChangeOrderStateDialogComponent,
+      {
+        data: {
+          order: currOrder
+        }
+      }
+    )
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.datatableElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.ngOnInit()
+          })
+      }
+    })
 
   }
 

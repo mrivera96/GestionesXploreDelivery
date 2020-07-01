@@ -16,6 +16,8 @@ import {PendingDeliveriesComponent} from "../components/xplore/pending-deliverie
 import {XploreDriversComponent} from "../components/xplore/xplore-drivers/xplore-drivers.component";
 import {OrdersByDriverComponent} from "../components/xplore/xplore-reports/orders-by-driver/orders-by-driver.component";
 import {PaymentsComponent} from "../components/xplore/payments/payments.component";
+import {OrdersByCutomerComponent} from "../components/xplore/xplore-reports/orders-by-cutomer/orders-by-cutomer.component";
+import {XploreScheduleComponent} from "../components/xplore/xplore-schedule/xplore-schedule.component";
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -27,6 +29,7 @@ const routes: Routes = [
   {path: 'parametrizar-categorias', component: XploreCategoriesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-tarifas', component: XploreRatesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-recargos', component: XploreSurchargesComponent, canActivate: [XploreGuard]},
+  {path: 'parametrizar-horarios', component: XploreScheduleComponent, canActivate: [XploreGuard]},
   {path: 'clientes', component: XploreCustomersComponent, canActivate: [XploreGuard]},
   {path: 'agregar-cliente', component: XploreAddCustomerComponent, canActivate: [XploreGuard]},
   {path: 'envios-hoy', component: XploreTodayOrdersComponent, canActivate: [XploreGuard]},
@@ -34,6 +37,7 @@ const routes: Routes = [
   {path: 'reservas-pendientes', component: PendingDeliveriesComponent, canActivate: [XploreGuard]},
   {path: 'conductores', component: XploreDriversComponent, canActivate: [XploreGuard]},
   {path: 'reportes/envios-conductores', component: OrdersByDriverComponent, canActivate: [XploreGuard]},
+  {path: 'reportes/envios-clientes', component: OrdersByCutomerComponent, canActivate: [XploreGuard]},
   {path: 'pagos', component: PaymentsComponent, canActivate: [XploreGuard]},
 ];
 

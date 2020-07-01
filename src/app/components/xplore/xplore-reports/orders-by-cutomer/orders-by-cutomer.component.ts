@@ -1,18 +1,17 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {formatDate} from "@angular/common";
-import {UsersService} from "../../../../services/users.service";
-import {User} from "../../../../models/user";
-import {ReportOrdersByDriver} from "../../../../models/report-orders-by-driver";
-import {DeliveriesService} from "../../../../services/deliveries.service";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Subject} from "rxjs";
+import {Customer} from "../../../../models/customer";
+import {UsersService} from "../../../../services/users.service";
+import {DeliveriesService} from "../../../../services/deliveries.service";
+import {formatDate} from "@angular/common";
 
 @Component({
-  selector: 'app-orders-by-driver',
-  templateUrl: './orders-by-driver.component.html',
-  styleUrls: ['./orders-by-driver.component.css'],
+  selector: 'app-orders-by-cutomer',
+  templateUrl: './orders-by-cutomer.component.html',
+  styleUrls: ['./orders-by-cutomer.component.css'],
   animations: [
     trigger('fade', [
       transition('void => *', [
@@ -22,20 +21,21 @@ import {DataTableDirective} from "angular-datatables";
     ])
   ]
 })
-export class OrdersByDriverComponent implements OnInit {
-  @ViewChild(DataTableDirective,{static:false})
-  datatableElement:DataTableDirective
+export class OrdersByCutomerComponent implements OnInit {
+  @ViewChild(DataTableDirective, {static: false})
+  datatableElement: DataTableDirective
   loaders = {
     'loadingData': false,
     'loadingSubmit': false,
   }
   consultForm: FormGroup
-  drivers: User[]
-  filteredDrivers: User[]
-  consultResults: ReportOrdersByDriver[]
+  customers: Customer[]
   dtOptions: any
   dtTrigger: Subject<any>
+  consultResults: any
   totalOrders: number
+  filteredCustomers: Customer[]
+
   constructor(
     private formBuilder: FormBuilder,
     private usersService: UsersService,
@@ -49,16 +49,16 @@ export class OrdersByDriverComponent implements OnInit {
   }
 
   loadData() {
-    this.usersService.getDrivers().subscribe(response => {
-      this.drivers = response.data
-      this.filteredDrivers = response.data
+    this.usersService.getCustomers().subscribe(response => {
+      this.customers = response.data
+      this.filteredCustomers = response.data
     })
   }
 
   initialize() {
     this.dtTrigger = new Subject<any>()
     this.consultForm = this.formBuilder.group({
-      driverId: ['', [Validators.required]],
+      customerId: ['', [Validators.required]],
       initDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
       finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
     })
@@ -105,20 +105,20 @@ export class OrdersByDriverComponent implements OnInit {
     if (this.consultForm.valid) {
       this.loaders.loadingSubmit = true
       this.totalOrders = 0
-      this.deliveriesService.getOrdersByDriver(this.consultForm.value).subscribe(response => {
-        this.consultResults = response.data
+      this.deliveriesService.getOrdersByCustomer(this.consultForm.value).subscribe(response => {
+        this.consultResults = response.data.ordersReport
+
         this.consultResults.forEach(value => {
           this.totalOrders = this.totalOrders + +value.orders
         })
 
-
-        if(this.datatableElement.dtInstance){
+        if (this.datatableElement.dtInstance) {
           this.datatableElement.dtInstance.then(
             (dtInstance: DataTables.Api) => {
               dtInstance.destroy()
               this.dtTrigger.next()
             })
-        }else{
+        } else {
           this.dtTrigger.next()
         }
 
@@ -128,15 +128,15 @@ export class OrdersByDriverComponent implements OnInit {
   }
 
   onKey(value) {
-    this.filteredDrivers = this.search(value) ;
+    this.filteredCustomers = this.search(value) ;
   }
 
   search(value: string) {
     let filter = value.toLowerCase();
     if(filter != ""){
-      return  this.drivers.filter(option => option.nomUsuario.toLowerCase().includes(filter));
+      return  this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
     }
-    return this.drivers
+    return this.customers
   }
 
 }

@@ -43,7 +43,7 @@
                   <mat-label>Hora de recogida:</mat-label>
                   <input formControlName="hora" type="time" id="hora" required
                          matInput>
-                  <mat-hint>Horario: 7:00 a.m - 5:00 p.m</mat-hint>
+                  <mat-hint>Horario: {{todaySchedule?.inicio}} - {{todaySchedule?.final}}</mat-hint>
                   <mat-icon matPrefix>schedule</mat-icon>
                   <mat-error *ngIf="newForm.get('deliveryHeader.hora')?.errors?.required">
                     *Este campo es obligatorio

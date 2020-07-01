@@ -1,5 +1,6 @@
 import {FormGroup} from "@angular/forms";
 import {formatDate} from "@angular/common";
+import {Schedule} from "../models/schedule";
 
 export function DateValidate(controlName: string, control2Name: string) {
 
@@ -9,10 +10,9 @@ export function DateValidate(controlName: string, control2Name: string) {
     const date = control.value
     const currentDate = formatDate(new Date(), 'yyyy-MM-dd', 'en')
     const currentDateTime = new Date()
-    const opHour = formatDate(new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(),
-      null, 7, 0), 'HH:mm', 'en')
-    const clHour = formatDate(new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(),
-      null, 17, 0), 'HH:mm', 'en')
+    const todaySchedule: Schedule = JSON.parse(localStorage.getItem('todaySchedule'))
+    const tSSHour = formatDate('2020-06-29 ' + todaySchedule?.inicio, 'HH:mm', 'en')
+    const tSFHour = formatDate('2020-06-29 ' + todaySchedule?.final, 'HH:mm', 'en')
     let hour = control2.value
     const shour = hour.split(":")[0]
     const smin = hour.split(":")[1]
@@ -30,15 +30,15 @@ export function DateValidate(controlName: string, control2Name: string) {
     }
 
     if (datetime < currentDateTime) {
-      control2.setErrors({mustAfterHour:true})
+      control2.setErrors({mustAfterHour: true})
     }
 
-    if(date < currentDate){
+    if (date < currentDate) {
       control.setErrors({mustAfterDate: true})
     }
 
-    if (hour < opHour
-      || hour > clHour) {
+    if (hour < tSSHour
+      || hour > tSFHour) {
       control2.setErrors({mustAfterHour: true})
     }
 

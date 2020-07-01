@@ -2,6 +2,8 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "./services/auth.service";
 import {User} from "./models/user";
+import {SchedulesService} from "./services/schedules.service";
+import {Schedule} from "./models/schedule";
 
 @Component({
   selector: 'app-root',
@@ -12,13 +14,32 @@ import {User} from "./models/user";
 export class AppComponent {
   title = 'Gestiones Xplore Delivery'
   currentUser: User
+  schedules: Schedule[]
 
   constructor(
     private router: Router,
     private authenticationService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private schedulesService: SchedulesService,
   ) {
+    const today = new Date().getDay()
+    const savedSchedule = JSON.parse(localStorage.getItem('todaySchedule'))
+
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x)
+
+    this.schedulesService.getSchedule().subscribe(response => {
+      this.schedules = response.data
+      if (savedSchedule) {
+        localStorage.removeItem('todaySchedule')
+      }
+
+      this.schedules.forEach(value => {
+        if (value.cod == today) {
+          localStorage.setItem('todaySchedule', JSON.stringify(value));
+        }
+      })
+    })
+
   }
 
   logout() {
@@ -37,7 +58,6 @@ export class AppComponent {
   }
 
 
-
   //XPLORE'S FUNCTIONS
 
   showConfSubMenu() {
@@ -48,6 +68,9 @@ export class AppComponent {
     $('.customerSubMenu').toggleClass('d-none')
   }
 
+  showReportsSubMenu() {
+    $('.reportsSubMenu').toggleClass('d-none')
+  }
 
   //CUSTOMER'S FUNCTIONS
   showLogoutCustomer() {

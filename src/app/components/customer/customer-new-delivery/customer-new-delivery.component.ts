@@ -27,6 +27,8 @@ import {Customer} from "../../../models/customer";
 import {AuthService} from "../../../services/auth.service";
 import {NoUrlValidator} from "../../../helpers/noUrl.validator";
 import {GoogleMap} from "@angular/google-maps";
+import {Schedule} from "../../../models/schedule";
+import {SchedulesService} from "../../../services/schedules.service";
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -82,7 +84,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
   dtTrigger: Subject<any> = new Subject()
   errorMsg = ''
-
+  today: number
+  todaySchedule: Schedule
   pagos = []
   prohibitedDistance = false
   prohibitedDistanceMsg = ''
@@ -103,9 +106,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
     private branchService: BranchService,
     private router: Router,
     public dialog: MatDialog,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.currCustomer = this.authService.currentUserValue
+    this.todaySchedule = JSON.parse(localStorage.getItem('todaySchedule'))
   }
 
   ngOnInit(): void {
@@ -160,7 +164,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
           lng: position.coords.longitude,
         }
 
-        this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+        this.deliveryForm.get('deliveryHeader.dirRecogida')
+          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
       }, function (error) {
         switch (error.code) {
           case error.PERMISSION_DENIED:
@@ -260,6 +265,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
     })
+
+
   }
 
   get newForm() {

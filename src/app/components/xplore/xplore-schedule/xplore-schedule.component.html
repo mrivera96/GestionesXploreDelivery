@@ -1,8 +1,9 @@
+<!-- CARD START -->
 <!--CARD START -->
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title>
-      Parametrización de Recargos
+      Parametrización de Horarios
     </mat-card-title>
 
   </mat-card-header>
@@ -16,16 +17,16 @@
     </div>
 
     <!-- CONTAINER START -->
-
+<!--
     <div class="row justify-content-end">
       <div class="col">
-        <button mat-raised-button (click)="showNewForm()" type="button" color="primary" class="float-right mb-2">
+        <button mat-raised-button  type="button" color="primary" class="float-right mb-2">
           <i class="fa fa-plus"></i>
           Agregar Recargo
         </button>
       </div>
 
-    </div>
+    </div> -->
     <!-- CONTAINER BODY START -->
 
     <div class="table-responsive">
@@ -34,25 +35,21 @@
         <thead>
         <tr>
           <th>N°</th>
-          <th>Descripción de Recargo</th>
-          <th>Kilometraje Mínimo</th>
-          <th>Kilometraje Máximo</th>
-          <th>Monto</th>
-          <th>Cliente Asignado</th>
+          <th>Día</th>
+          <th>Hora de Inicio</th>
+          <th>Hora Final</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
         <tbody>
 
-        <tr *ngFor="let surcharge of surcharges">
-          <td>{{surcharge.idRecargo}}</td>
-          <td>{{surcharge.descRecargo}}</td>
-          <td>{{surcharge.kilomMinimo}}</td>
-          <td>{{surcharge.kilomMaximo}}</td>
-          <td>L. {{surcharge.monto}}</td>
-          <td>{{surcharge.cliente.nomEmpresa}}</td>
+        <tr *ngFor="let schedule of schedules">
+          <td>{{schedule.idHorario}}</td>
+          <td>{{schedule.dia}}</td>
+          <td>{{schedule.inicio}}</td>
+          <td>{{schedule.final}}</td>
           <td>
-            <a (click)="showEditForm(surcharge.idRecargo)" style="color: #0071A2">
+            <a (click)="showEditDialog(schedule)" style="color: #0071A2">
               <i class="fa fa-edit"></i> Editar
             </a>
           </td>

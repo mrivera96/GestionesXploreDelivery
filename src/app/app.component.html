@@ -1,5 +1,5 @@
 <!-- NAVBAR START -->
-<mat-toolbar class="app-toolbar" color="primary" >
+<mat-toolbar class="app-toolbar" color="primary">
   <mat-toolbar-row>
     <button mat-icon-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
@@ -11,7 +11,7 @@
 </mat-toolbar>
 <!-- NAVBAR END -->
 <!-- -->
-<mat-sidenav-container  style="min-height: 100vh;">
+<mat-sidenav-container style="min-height: 100vh;">
   <mat-sidenav #sidenav mode="over">
     <!-- ONLY XPLORE USER -->
     <mat-nav-list *ngIf="currentUser && currentUser.idPerfil === '1'">
@@ -51,7 +51,7 @@
 
       <a (click)="sidenav.close()" [routerLink]="['admins/envios-hoy']" mat-list-item>
         <mat-icon>today</mat-icon>
-         Envíos del Día
+        Envíos del Día
       </a>
 
       <a (click)="sidenav.close()" [routerLink]="['admins/envios-todos']" mat-list-item>
@@ -74,18 +74,30 @@
         Conductores
       </a>
 
-      <a [routerLink]="['admins/reportes/envios-conductores']" (click)="sidenav.close()" mat-list-item>
+      <a (click)="showReportsSubMenu()" mat-list-item>
         <mat-icon>analytics</mat-icon>
         Reportes
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
       </a>
 
-      <a (click)="showConfSubMenu()"  mat-list-item>
+      <mat-nav-list class="d-none reportsSubMenu">
+        <a [routerLink]="['admins/reportes/envios-conductores']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>sports_motorsports</mat-icon>
+          Envios por Conductor
+        </a>
+        <a [routerLink]="['admins/reportes/envios-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>people</mat-icon>
+          Envios por Cliente
+        </a>
+      </mat-nav-list>
+
+      <a (click)="showConfSubMenu()" mat-list-item>
         <mat-icon>settings</mat-icon>
         Configuraciones
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
       </a>
 
-      <mat-nav-list class="d-none confSubMenu" >
+      <mat-nav-list class="d-none confSubMenu">
         <a class="ml-3" (click)="sidenav.close()"
            [routerLink]="['admins/parametrizar-categorias']" mat-list-item>
           <mat-icon>list</mat-icon>
@@ -94,12 +106,20 @@
 
         <a [routerLink]="['admins/parametrizar-tarifas']"
            (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>attach_money</mat-icon> Tarifas
+          <mat-icon>attach_money</mat-icon>
+          Tarifas
         </a>
 
-        <a  [routerLink]="['admins/parametrizar-recargos']"
-            (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>attach_money</mat-icon> Recargos
+        <a [routerLink]="['admins/parametrizar-recargos']"
+           (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>attach_money</mat-icon>
+          Recargos
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-horarios']"
+           (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>schedule</mat-icon>
+          Horarios
         </a>
       </mat-nav-list>
     </mat-nav-list>
@@ -116,7 +136,8 @@
 
       <mat-nav-list class="d-none userSubMenu">
         <a [routerLink]="['customers/perfil']" id="profile" class="ml-3" (click)="sidenav.close()" mat-list-item>
-          <mat-icon>person</mat-icon> Perfil
+          <mat-icon>person</mat-icon>
+          Perfil
         </a>
         <a href="javascript:void(0)" class="ml-3" mat-list-item (click)="logout()">
           <mat-icon>exit_to_app</mat-icon>

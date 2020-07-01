@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {AuthService} from "../../../services/auth.service";
-import {Customer} from "../../../models/customer";
 import {User} from "../../../models/user";
 import {Payment} from "../../../models/payment";
 import {PaymentsService} from "../../../services/payments.service";
 import {Subject} from "rxjs";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {Order} from "../../../models/order";
 
 @Component({
   selector: 'app-customer-balance',
@@ -24,17 +25,23 @@ export class CustomerBalanceComponent implements OnInit {
   loaders = {
     'loadingData': false
   }
-  subtotal: number
+  subtotal: number = 0.00
   paid: number
   balance: number = 0.00
   currCustomer: User
   payments: Payment []
   myPayments: Payment []
   dtTrigger: Subject<any> = new Subject<any>()
+  dtTrigger1: Subject<any> = new Subject<any>()
   dtOptions: DataTables.Settings
+  myFinishedOrders: Order[]
+  totalSurcharges: number = 0.00
+  totalCTotal: number = 0.00
+
   constructor(
     private authService: AuthService,
-    private paymentsService: PaymentsService
+    private paymentsService: PaymentsService,
+    private deliveriesService: DeliveriesService
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
@@ -46,6 +53,7 @@ export class CustomerBalanceComponent implements OnInit {
   }
   initialize(){
     this.myPayments = new Array<Payment>()
+    this.myFinishedOrders = new Array<Order>()
     this.paid = 0.00
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -54,7 +62,7 @@ export class CustomerBalanceComponent implements OnInit {
       processing: true,
       info: true,
       autoWidth: true,
-      order:[1,'desc'],
+      order:[0,'asc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -85,6 +93,21 @@ export class CustomerBalanceComponent implements OnInit {
         }
       })
       this.dtTrigger.next()
+
+    })
+
+    this.deliveriesService.getCustomerOrders().subscribe(response => {
+      const allOrdrs: Order[] = response.data.todos
+      allOrdrs.forEach(value => {
+        if(value.estado.idEstado === 44){
+          this.subtotal = this.subtotal + +value.cTotal
+          this.totalCTotal = this.totalCTotal + +value.cTotal
+          this.totalSurcharges = this.totalSurcharges + +value.recargo
+          this.myFinishedOrders.push(value)
+        }
+      })
+      this.loaders.loadingData = false
+      this.dtTrigger1.next()
 
     })
 

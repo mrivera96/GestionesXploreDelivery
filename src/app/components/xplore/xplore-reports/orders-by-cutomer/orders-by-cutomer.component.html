@@ -2,7 +2,7 @@
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title>
-      Reportes Envíos por Conductor
+      Reportes Envíos por Cliente
     </mat-card-title>
 
   </mat-card-header>
@@ -12,21 +12,21 @@
     <!-- CONTAINER START -->
     <div class="row">
       <div class="col">
-        <form [formGroup]="consultForm" >
+        <form [formGroup]="consultForm">
           <div class="form-row">
             <mat-form-field appearance="outline" class="col-md">
-              <mat-label>Conductor:</mat-label>
-              <mat-select formControlName="driverId" required placeholder="- Seleccione un conductor -">
+              <mat-label>Cliente:</mat-label>
+              <mat-select formControlName="customerId" required placeholder="- Seleccione un cliente -">
                 <mat-form-field>
-                  <input matInput placeholder="Buscar Conductor" (keyup)="onKey($event.target.value)" >
+                  <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)" >
                   <mat-icon [inline]="true" matPrefix>search</mat-icon>
                 </mat-form-field>
                 <mat-option [value]="-1">Todos</mat-option>
-                <mat-option *ngFor="let driver of filteredDrivers" value="{{driver.idUsuario}}">
-                  {{driver.nomUsuario}}
+                <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
+                  {{customer.nomEmpresa}}
                 </mat-option>
               </mat-select>
-              <mat-icon matPrefix>sports_motorsports</mat-icon>
+              <mat-icon matPrefix>group</mat-icon>
               <mat-error>*Este campo es obligatorio</mat-error>
             </mat-form-field>
 
@@ -48,7 +48,8 @@
             </mat-form-field>
 
 
-            <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary" (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto" >
+            <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
+                    (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
               <mat-icon>search</mat-icon>
             </button>
           </div>
@@ -69,20 +70,20 @@
       <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
         <thead>
         <tr>
-          <th>Nombre Conductor</th>
+          <th>Cliente</th>
           <th>Fecha</th>
-          <th>Entregas Realizadas</th>
+          <th>Envíos Realizados</th>
         </tr>
         </thead>
         <tbody>
 
-        <tr *ngFor="let result of consultResults;">
-          <td>{{result.driver}}</td>
+        <tr *ngFor="let result of consultResults">
+          <td>{{result.customer}}</td>
           <td>{{result.fecha}}</td>
           <td>{{result.orders}}</td>
         </tr>
-        </tbody>
 
+        </tbody>
         <tfoot style="display: table-footer-group;">
         <tr>
           <th></th>
@@ -100,7 +101,3 @@
 </mat-card>
 
 <!-- CARD END -->
-
-
-
-

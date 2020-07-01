@@ -14,6 +14,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {PhoneMaskDirective} from "../phone-mask.directive";
 import {SuccessModalComponent} from "../components/shared/success-modal/success-modal.component";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {RouterModule} from "@angular/router";
 
 
 
@@ -24,22 +25,23 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     SuccessModalComponent,
 
   ],
-  imports: [
-    CommonModule,
-    DataTablesModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatDialogModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    FormsModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatButtonModule,
-    MatProgressSpinnerModule
+    imports: [
+        CommonModule,
+        DataTablesModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatDialogModule,
+        ReactiveFormsModule,
+        MatCardModule,
+        FormsModule,
+        MatSelectModule,
+        MatCheckboxModule,
+        MatInputModule,
+        MatButtonModule,
+        MatProgressSpinnerModule,
+        RouterModule
 
-  ],
+    ],
   exports:[
     OrdersDataTableComponent,
     DataTablesModule,

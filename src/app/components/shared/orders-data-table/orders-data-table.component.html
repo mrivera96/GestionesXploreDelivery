@@ -21,6 +21,7 @@
         </select>
       </th>
       <th></th>
+      <th></th>
     </tr>
     </tfoot>
     <thead>
@@ -36,6 +37,7 @@
       <th>Costo</th>
       <th>Estado</th>
       <th>Conductor</th>
+      <th *ngIf="currUser.idPerfil ==='1'" data-priority="1" >Acción</th>
     </tr>
     </thead>
     <tbody>
@@ -52,6 +54,13 @@
       <td>L. {{order.cTotal}}</td>
       <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">{{ 'Fecha: '+ order.fechaEntrega}}</p> </td>
       <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p> <p *ngIf="!order.conductor">Aún no asignada</p> </td>
+      <td *ngIf="currUser.idPerfil === '1'">
+        <a *ngIf="order.estado.idEstado !== 44" href="javascript:void(0)" (click)="showChangeStateDialog(order)" style="color: #0071A2">
+          <i class="fa fa-exchange-alt"></i>
+          Cambiar Estado
+        </a>
+        <p *ngIf="order.estado.idEstado === 44">--</p>
+      </td>
     </tr>
     </tbody>
   </table>

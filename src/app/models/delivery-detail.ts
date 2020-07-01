@@ -4,6 +4,7 @@ import {State} from "./state";
 
 export interface DeliveryDetail {
   idDelivery?: number
+  idDetalle?: number
   nFactura?: string
   nomDestinatario?: string
   numCel?: string

@@ -94,14 +94,14 @@ export class DeliveriesService {
     });
   }
 
-  getPending(){
+  getPending() {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getPendingDeliveries',
       tkn: this.authService.currentUserValue.access_token
     })
   }
 
-  changeDeliveryHour(form){
+  changeDeliveryHour(form) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'changeHour',
@@ -110,11 +110,30 @@ export class DeliveriesService {
       })
   }
 
-  getOrdersByDriver(form){
+  getOrdersByDriver(form) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'reportOrdersByDriver',
         form,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
+  getOrdersByCustomer(form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'reportOrdersByCustomer',
+        form,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
+  changeOrderState(id, ste) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'changeOrderState',
+        idDetalle: id,
+        idEstado: ste,
         tkn: this.authService.currentUserValue.access_token
       })
   }

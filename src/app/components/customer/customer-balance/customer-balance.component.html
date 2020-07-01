@@ -35,8 +35,58 @@
 
           </div>
           <hr>
-          <app-customer-datatable [deliveries]="3" (loadingData)="setLoading($event)"
-                                  (subtotal)="calcSubtotal($event)"></app-customer-datatable>
+          <div class="table-responsive">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" class="display compact"
+                   style="width:100%">
+
+              <thead>
+              <tr>
+                <th>N°</th>
+                <th data-priority="1">Destinatario</th>
+                <th data-priority="1">Celular del Destinatario</th>
+                <th>Dirección</th>
+                <th>Detalle</th>
+                <th>Distancia</th>
+                <th>Recargo</th>
+                <th>Costo Total</th>
+                <th>Fecha de entrega</th>
+                <th>Conductor</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              <tr *ngFor=" let i = index;let order of myFinishedOrders; let idx = index">
+                <td>{{idx + 1}}</td>
+                <td>{{order.nomDestinatario}}</td>
+                <td>{{order.numCel}}</td>
+                <td>{{order.direccion}}</td>
+                <td>{{order.nFactura}}</td>
+                <td>{{order.distancia}}</td>
+                <td>L. {{order.recargo}}</td>
+                <td>L. {{order.cTotal}}</td>
+                <td>{{order.fechaEntrega}}</td>
+                <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
+                  <p *ngIf="!order.conductor">Aún no asignada</p></td>
+              </tr>
+
+              </tbody>
+              <tfoot style="display: table-footer-group;">
+              <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Total:</th>
+                <th>L. {{totalSurcharges | number: '.2'}}</th>
+                <th>L. {{totalCTotal | number: '.2'}}</th>
+                <th></th>
+                <th></th>
+              </tr>
+              </tfoot>
+            </table>
+
+          </div>
           <!-- DATATABLE END -->
         </div>
       </mat-tab>
@@ -71,6 +121,7 @@
                    class="display compact" style="width:100%">
               <thead>
               <tr>
+                <th>N°</th>
                 <th>Fecha de Pago</th>
                 <th>Monto</th>
                 <th>Tipo de Pago</th>
@@ -81,7 +132,8 @@
               </thead>
               <tbody>
 
-              <tr *ngFor="let payment of myPayments">
+              <tr *ngFor="let payment of myPayments; let idx1 = index">
+                <td>{{idx1 + 1}}</td>
                 <td>{{payment.fechaPago}}</td>
                 <td>L. {{payment.monto}}</td>
                 <td>{{payment.payment_type.nomTipoPago}}</td>

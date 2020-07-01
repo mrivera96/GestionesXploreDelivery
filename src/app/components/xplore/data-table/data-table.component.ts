@@ -19,7 +19,7 @@ import {State} from "../../../models/state";
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
-export class DataTableComponent implements OnInit, AfterViewInit{
+export class DataTableComponent implements OnInit, AfterViewInit {
 
   @Input('deliveries') tDeliveries: number
   deliveries: Delivery[]
@@ -35,7 +35,7 @@ export class DataTableComponent implements OnInit, AfterViewInit{
 
   constructor(
     private router: Router,
-    private deliveriesService: DeliveriesService
+    private deliveriesService: DeliveriesService,
   ) {
   }
 
@@ -45,12 +45,12 @@ export class DataTableComponent implements OnInit, AfterViewInit{
 
   }
 
-  loadData(){
+  loadData() {
     this.deliveriesService.getStates().subscribe(response => {
       this.states = response.data.xploreDelivery
     })
 
-    this.deliveriesService.getDeliveries().subscribe( response => {
+    this.deliveriesService.getDeliveries().subscribe(response => {
       this.stopLoading.emit(false)
 
       switch (this.tDeliveries) {
@@ -89,7 +89,7 @@ export class DataTableComponent implements OnInit, AfterViewInit{
 
   }
 
-  initialize(){
+  initialize() {
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -97,7 +97,7 @@ export class DataTableComponent implements OnInit, AfterViewInit{
       processing: true,
       info: true,
       rowReorder: false,
-      order:[2,'desc'],
+      order: [2, 'desc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',

@@ -58,14 +58,6 @@ export class CustomerDatatableComponent implements OnInit {
           this.deliveries = response.data.todas
           break
         }
-        default: {
-          this.deliveries = response.data.deliveriesFinalizadas
-          let calcSubtotal = 0.00
-          this.deliveries.forEach(value => {
-            calcSubtotal = calcSubtotal + +value.total
-          })
-          this.subtotal.emit(calcSubtotal)
-        }
 
       }
 
