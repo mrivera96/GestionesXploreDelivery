@@ -18,6 +18,7 @@ import {OrdersByDriverComponent} from "../components/xplore/xplore-reports/order
 import {PaymentsComponent} from "../components/xplore/payments/payments.component";
 import {OrdersByCutomerComponent} from "../components/xplore/xplore-reports/orders-by-cutomer/orders-by-cutomer.component";
 import {XploreScheduleComponent} from "../components/xplore/xplore-schedule/xplore-schedule.component";
+import {XploreCustomerBalanceComponent} from "../components/xplore/xplore-customer-balance/xplore-customer-balance.component";
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -39,6 +40,7 @@ const routes: Routes = [
   {path: 'reportes/envios-conductores', component: OrdersByDriverComponent, canActivate: [XploreGuard]},
   {path: 'reportes/envios-clientes', component: OrdersByCutomerComponent, canActivate: [XploreGuard]},
   {path: 'pagos', component: PaymentsComponent, canActivate: [XploreGuard]},
+  {path: 'balance-cliente/:id', component: XploreCustomerBalanceComponent, canActivate: [XploreGuard]},
 ];
 
 @NgModule({

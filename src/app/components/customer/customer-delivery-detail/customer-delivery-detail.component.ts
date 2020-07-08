@@ -32,8 +32,9 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
   dddtOptions: any
   dddtTrigger: Subject<any>
   errorMSg: string
-  allowHourChange: boolean
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
+  allowHourChange: boolean = false
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective
 
   constructor(
     private deliveriesService: DeliveriesService,
@@ -93,7 +94,7 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
       this.loaders.loadingData = false
-      const registered_date = ((new Date(response.data.fechaReserva).getTime()) / 1000) /60
+      const registered_date = ((new Date(response.data.fechaNoFormatted).getTime()) / 1000) /60
       const new_date = ((new Date().getTime() / 1000) / 60)
       const diff = registered_date - new_date
       if(diff >= 30){

@@ -30,6 +30,8 @@
         <tr>
           <th data-priority="1">Nombre de Dirección</th>
           <th>Dirección</th>
+          <th>Instrucciones</th>
+          <th>Predeterminada</th>
           <th>email</th>
           <th>Celular</th>
           <th data-priority="1">Editar</th>
@@ -41,6 +43,8 @@
         <tr *ngFor="let branch of myBranchOffices" style="cursor: pointer">
           <td>{{branch.nomSucursal}}</td>
           <td>{{branch.direccion}}</td>
+          <td>{{branch.instrucciones || 'N/A'}}</td>
+          <td>{{branch.isDefault == true ? 'Sí' : 'No' }}</td>
           <td>{{branch.cliente.email}}</td>
           <td>{{branch.cliente.numTelefono}}</td>
           <td>

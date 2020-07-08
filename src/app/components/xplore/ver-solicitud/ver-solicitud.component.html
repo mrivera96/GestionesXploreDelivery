@@ -121,6 +121,7 @@
 
           <thead>
           <tr>
+            <th>N°</th>
             <th>Detalle de entrega</th>
             <th data-priority="1">Nombre de destinatario</th>
             <th data-priority="1">Número de teléfono</th>
@@ -136,6 +137,7 @@
 
           <tbody>
           <tr *ngFor="let detail of currentDeliveryDetail; let i = index">
+            <td>{{detail?.idDetalle}}</td>
             <td>{{detail?.nFactura}}</td>
             <td>{{detail?.nomDestinatario}}</td>
             <td>{{detail?.numCel}}</td>

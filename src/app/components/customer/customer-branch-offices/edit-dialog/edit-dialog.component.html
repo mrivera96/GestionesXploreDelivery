@@ -65,6 +65,24 @@
         Ubicación actual
       </mat-checkbox>
     </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Instrucciones de Recogida:</mat-label>
+        <textarea matInput id="instGenerales" formControlName="instrucciones" class="form-control"
+                  maxlength="150"
+                  placeholder="¿Necesitamos instrucciones para la recogida de tus envíos en esta dirección?">
+                </textarea>
+        <mat-icon matPrefix>assignment</mat-icon>
+        <mat-error>*Excede la longitud máxima permitida</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <mat-slide-toggle #matSlideToggle (toggleChange)="changeDefault(!matSlideToggle.checked)" [checked]="currBranch.isDefault == true" required>Dirección Predeterminada</mat-slide-toggle>
+      </div>
+    </div>
   </form>
 </mat-dialog-content>
 

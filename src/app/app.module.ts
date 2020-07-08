@@ -23,12 +23,7 @@ import {AdminsModule} from "./admins/admins.module";
 import {CustomersModule} from "./customers/customers.module";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {SharedModule} from "./shared/shared.module";
-import { RateCustomersDialogComponent } from './components/xplore/xplore-rates/rate-customers-dialog/rate-customers-dialog.component';
-import { AddCustomerRateDialogComponent } from './components/xplore/xplore-rates/rate-customers-dialog/add-customer-rate-dialog/add-customer-rate-dialog.component';
-import { OrdersByCutomerComponent } from './components/xplore/xplore-reports/orders-by-cutomer/orders-by-cutomer.component';
-import { ChangeOrderStateDialogComponent } from './components/shared/orders-data-table/change-order-state-dialog/change-order-state-dialog.component';
-import { XploreScheduleComponent } from './components/xplore/xplore-schedule/xplore-schedule.component';
-import { EditScheduleDialogComponent } from './components/xplore/xplore-schedule/edit-schedule-dialog/edit-schedule-dialog.component';
+
 
 @NgModule({
     declarations: [
@@ -36,35 +31,29 @@ import { EditScheduleDialogComponent } from './components/xplore/xplore-schedule
         LoginComponent,
         RootComponent,
         ErrorModalComponent,
-        RateCustomersDialogComponent,
-        AddCustomerRateDialogComponent,
-        OrdersByCutomerComponent,
-        ChangeOrderStateDialogComponent,
-        XploreScheduleComponent,
-        EditScheduleDialogComponent,
     ],
 
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    BrowserAnimationsModule,
-    MatDialogModule,
-    AdminsModule,
-    CustomersModule,
-    MatInputModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatListModule,
-    FormsModule,
-    MatCheckboxModule,
-    SharedModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        BrowserAnimationsModule,
+        MatDialogModule,
+        AdminsModule,
+        CustomersModule,
+        MatInputModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatListModule,
+        FormsModule,
+        MatCheckboxModule,
+        SharedModule,
+    ],
 
     entryComponents: [
         ErrorModalComponent,

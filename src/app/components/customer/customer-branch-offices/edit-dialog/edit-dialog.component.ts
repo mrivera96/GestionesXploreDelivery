@@ -41,7 +41,9 @@ export class EditDialogComponent implements OnInit {
         idSucursal: [this.currBranch.idSucursal],
         nomSucursal: [this.currBranch.nomSucursal, Validators.required],
         numTelefono: [this.currBranch.numTelefono, [Validators.minLength(9), Validators.maxLength(9)]],
-        direccion: [this.currBranch.direccion, Validators.required]
+        direccion: [this.currBranch.direccion, Validators.required],
+        instrucciones:[this.currBranch.instrucciones],
+        isDefault:[this.currBranch.isDefault, Validators.required]
       }, {
         validators: [
           BlankSpacesValidator('nomSucursal'),
@@ -59,6 +61,9 @@ export class EditDialogComponent implements OnInit {
       })
   }
 
+  get f(){
+    return this.edBranchForm.controls
+  }
 
   setCurrentLocation(checked) {
     if (!checked) {
@@ -120,6 +125,10 @@ export class EditDialogComponent implements OnInit {
   setCords() {
     this.edBranchForm.get('direccion').setValue(this.branchCords.nativeElement.value)
     this.gcords = false
+  }
+
+  changeDefault(checked){
+    this.f.isDefault.setValue(checked)
   }
 
 }

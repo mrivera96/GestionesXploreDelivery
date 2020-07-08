@@ -6,4 +6,7 @@ export interface Customer {
   numTelefono?: string
   email?: string
   isActivo?: boolean
+  subtotal?: number
+  paid?: number
+  balance?: number
 }

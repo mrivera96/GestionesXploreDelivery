@@ -33,6 +33,14 @@ import {SharedModule} from "../shared/shared.module";
 import {ChangeStateDialogComponent} from '../components/xplore/ver-solicitud/change-state-dialog/change-state-dialog.component';
 import {PaymentsComponent} from "../components/xplore/payments/payments.component";
 import {AddPaymentDialogComponent} from "../components/xplore/payments/add-payment-dialog/add-payment-dialog.component";
+import { RateCustomersDialogComponent } from '../components/xplore/xplore-rates/rate-customers-dialog/rate-customers-dialog.component';
+import { AddCustomerRateDialogComponent } from '../components/xplore/xplore-rates/rate-customers-dialog/add-customer-rate-dialog/add-customer-rate-dialog.component';
+import { OrdersByCutomerComponent } from '../components/xplore/xplore-reports/orders-by-cutomer/orders-by-cutomer.component';
+import { ChangeOrderStateDialogComponent } from '../components/shared/orders-data-table/change-order-state-dialog/change-order-state-dialog.component';
+import { XploreScheduleComponent } from '../components/xplore/xplore-schedule/xplore-schedule.component';
+import { EditScheduleDialogComponent } from '../components/xplore/xplore-schedule/edit-schedule-dialog/edit-schedule-dialog.component';
+import { XploreCustomerBalanceComponent } from '../components/xplore/xplore-customer-balance/xplore-customer-balance.component';
+import {MatTabsModule} from "@angular/material/tabs";
 
 @NgModule({
   declarations: [
@@ -66,6 +74,13 @@ import {AddPaymentDialogComponent} from "../components/xplore/payments/add-payme
     ChangeStateDialogComponent,
     PaymentsComponent,
     AddPaymentDialogComponent,
+    RateCustomersDialogComponent,
+    AddCustomerRateDialogComponent,
+    OrdersByCutomerComponent,
+    ChangeOrderStateDialogComponent,
+    XploreScheduleComponent,
+    EditScheduleDialogComponent,
+    XploreCustomerBalanceComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,
@@ -82,6 +97,7 @@ import {AddPaymentDialogComponent} from "../components/xplore/payments/add-payme
     SharedModule,
     AdminsRoutingModule,
     MatSlideToggleModule,
+    MatTabsModule,
   ],
 
 })

@@ -7,6 +7,11 @@ import {MatDialog} from "@angular/material/dialog";
 import {XploreAddCustomerComponent} from "../xplore-add-customer/xplore-add-customer.component";
 import {EditCustomerDialogComponent} from "./edit-customer-dialog/edit-customer-dialog.component";
 import {DataTableDirective} from "angular-datatables";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {Delivery} from "../../../models/delivery";
+import {Order} from "../../../models/order";
+import {PaymentsService} from "../../../services/payments.service";
+import {Payment} from "../../../models/payment";
 
 @Component({
   selector: 'app-xplore-customers',
@@ -29,17 +34,21 @@ export class XploreCustomersComponent implements OnInit {
     loadingData: false
   }
   dtOptions
+  deliveries: Order[] = []
+  payments: Payment[] = []
 
   constructor(
     private usersService: UsersService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private deliveriesService: DeliveriesService,
+    private paymentsService: PaymentsService
   ) {
   }
 
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 25,
       serverSide: false,
       processing: true,
       info: true,
@@ -67,18 +76,47 @@ export class XploreCustomersComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    this.usersService.getCustomers().subscribe(response => {
-      this.customers = response.data
-      this.loaders.loadingData = false
-      this.dtTrigger.next()
+    this.paymentsService.getPayments().subscribe(response => {
+      this.payments = response.data
     })
+    this.deliveriesService.getOrders().subscribe(response => {
+      this.deliveries = response.data.todos
+
+      this.usersService.getCustomers().subscribe(response => {
+        this.customers = response.data
+
+        this.customers.forEach(customer => {
+          customer.subtotal = 0.00
+          customer.paid = 0.00
+          customer.balance = 0.00
+          this.deliveries.forEach(delivery => {
+            if (customer.idCliente == delivery.delivery.idCliente && delivery.idEstado == 44) {
+              customer.subtotal = customer.subtotal + +delivery.cTotal
+            }
+          })
+
+          this.payments.forEach( payment => {
+            if (customer.idCliente === Number(payment.idCliente)) {
+              customer.paid = customer.paid + +payment.monto
+            }
+          })
+
+          customer.balance = customer.subtotal - customer.paid
+        })
+        this.loaders.loadingData = false
+        this.dtTrigger.next()
+      })
+    })
+
+
+
   }
 
-  showNewCustForm(){
+  showNewCustForm() {
     const dialogRef = this.dialog.open(XploreAddCustomerComponent)
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result){
+      if (result) {
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
@@ -102,7 +140,7 @@ export class XploreCustomersComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result){
+      if (result) {
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()

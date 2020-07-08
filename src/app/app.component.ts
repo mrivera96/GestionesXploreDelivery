@@ -14,6 +14,7 @@ import {Schedule} from "./models/schedule";
 export class AppComponent {
   title = 'Gestiones Xplore Delivery'
   currentUser: User
+
   schedules: Schedule[]
 
   constructor(
@@ -23,16 +24,14 @@ export class AppComponent {
     private schedulesService: SchedulesService,
   ) {
     const today = new Date().getDay()
-    const savedSchedule = JSON.parse(localStorage.getItem('todaySchedule'))
 
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x)
 
     this.schedulesService.getSchedule().subscribe(response => {
-      this.schedules = response.data
-      if (savedSchedule) {
-        localStorage.removeItem('todaySchedule')
-      }
 
+      localStorage.removeItem('todaySchedule')
+
+      this.schedules = response.data
       this.schedules.forEach(value => {
         if (value.cod == today) {
           localStorage.setItem('todaySchedule', JSON.stringify(value));

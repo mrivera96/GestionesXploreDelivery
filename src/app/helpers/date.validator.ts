@@ -11,8 +11,12 @@ export function DateValidate(controlName: string, control2Name: string) {
     const currentDate = formatDate(new Date(), 'yyyy-MM-dd', 'en')
     const currentDateTime = new Date()
     const todaySchedule: Schedule = JSON.parse(localStorage.getItem('todaySchedule'))
-    const tSSHour = formatDate('2020-06-29 ' + todaySchedule?.inicio, 'HH:mm', 'en')
-    const tSFHour = formatDate('2020-06-29 ' + todaySchedule?.final, 'HH:mm', 'en')
+    const tSSHour = formatDate( new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(),
+      null, Number(todaySchedule?.inicio.split(':')[0]), Number(todaySchedule?.inicio.split(':')[1]) ),
+      'HH:mm', 'en')
+    const tSFHour = formatDate(new Date(currentDateTime.getFullYear(), currentDateTime.getMonth(),
+      null, Number(todaySchedule?.final.split(':')[0]), Number(todaySchedule?.final.split(':')[1]) ),
+      'HH:mm', 'en')
     let hour = control2.value
     const shour = hour.split(":")[0]
     const smin = hour.split(":")[1]

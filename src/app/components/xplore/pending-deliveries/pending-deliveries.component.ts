@@ -1,7 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {Delivery} from "../../../models/delivery";
-import {Subject, TimeInterval} from "rxjs";
+import {Subject} from "rxjs";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {DataTableDirective} from "angular-datatables";
 
@@ -49,7 +49,7 @@ export class PendingDeliveriesComponent implements OnInit {
   initialize(){
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 100,
       serverSide: false,
       processing: true,
       info: true,

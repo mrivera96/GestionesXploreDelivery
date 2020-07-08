@@ -1,4 +1,4 @@
-import { Customer } from './customer';
+import {Customer} from './customer';
 
 export interface Branch {
   idSucursal?: number
@@ -6,5 +6,6 @@ export interface Branch {
   numTelefono?: string
   direccion?: string
   cliente?: Customer
-
+  instrucciones?: string
+  isDefault?: boolean
 }

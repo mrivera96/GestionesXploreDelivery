@@ -49,7 +49,9 @@ export class CustomerNewBranchComponent implements OnInit {
       {
         nomSucursal: ['', Validators.required],
         numTelefono: ['', [Validators.minLength(9), Validators.maxLength(9)]],
-        direccion: ['', Validators.required]
+        direccion: ['', Validators.required],
+        instrucciones: ['',Validators.maxLength(150)],
+        isDefault:[false, Validators.required]
       },{
         validators: [
           BlankSpacesValidator('nomSucursal'),
@@ -74,6 +76,14 @@ export class CustomerNewBranchComponent implements OnInit {
         })
       })
     }
+  }
+
+  get f(){
+    return this.nBranchForm.controls
+  }
+
+  changeDefault(){
+    this.f.isDefault.setValue(!this.f.isDefault.value)
   }
 
   searchAddress(event) {

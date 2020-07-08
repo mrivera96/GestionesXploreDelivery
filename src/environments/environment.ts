@@ -4,8 +4,9 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8069/intermediate/api.php'
+  apiUrl: 'http://localhost:8069/intermediate/api.php',
   //apiUrl: 'http://190.4.56.14/GestionesDelivery/assets/helpers/api.php'
+
 };
 
 /*

@@ -44,8 +44,7 @@
         <tr *ngFor="let category of categories">
           <td>{{category.idCategoria}}</td>
           <td>{{category.descCategoria}}</td>
-          <td><p *ngIf="category.isActivo == 1">Sí</p>
-            <p *ngIf="category.isActivo != 1">No</p></td>
+          <td>{{category.isActivo == true ? 'Sí' : 'No'}}</td>
           <td>
             <a (click)="showEditForm(category.idCategoria)" style="color: #0071A2">
               <i class="fa fa-edit"></i> Editar

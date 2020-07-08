@@ -21,7 +21,7 @@
         </select>
       </th>
       <th></th>
-      <th></th>
+      <th *ngIf="currUser.idPerfil === '1'"></th>
     </tr>
     </tfoot>
     <thead>
@@ -37,7 +37,7 @@
       <th>Costo</th>
       <th>Estado</th>
       <th>Conductor</th>
-      <th *ngIf="currUser.idPerfil ==='1'" data-priority="1" >Acción</th>
+      <th *ngIf="currUser.idPerfil === '1'" data-priority="1" >Acción</th>
     </tr>
     </thead>
     <tbody>

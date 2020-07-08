@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {environment} from "../../environments/environment";
-import {map} from "rxjs/operators";
-import {Response} from "../models/response";
+
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "./auth.service";
 
@@ -78,11 +77,21 @@ export class DeliveriesService {
     })
   }
 
-  getCustomerOrders() {
-    return this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'getCustomerOrders', tkn: this.authService.currentUserValue.access_token
-    })
+  getCustomerOrders(id?) {
+    if (id) {
+      return this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCustomerOrdersFAdmin',
+        customerId: id,
+        tkn: this.authService.currentUserValue.access_token
+      })
+    } else {
+      return this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCustomerOrders', tkn: this.authService.currentUserValue.access_token
+      })
+    }
+
   }
+
 
   newCustomerDelivery(deliveryForm, orders, pago) {
     return this.http.post<any>(`${environment.apiUrl}`, {

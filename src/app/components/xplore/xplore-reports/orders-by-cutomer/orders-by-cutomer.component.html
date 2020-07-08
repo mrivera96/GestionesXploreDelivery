@@ -18,10 +18,9 @@
               <mat-label>Cliente:</mat-label>
               <mat-select formControlName="customerId" required placeholder="- Seleccione un cliente -">
                 <mat-form-field>
-                  <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)" >
+                  <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)">
                   <mat-icon [inline]="true" matPrefix>search</mat-icon>
                 </mat-form-field>
-                <mat-option [value]="-1">Todos</mat-option>
                 <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
                   {{customer.nomEmpresa}}
                 </mat-option>
@@ -58,8 +57,8 @@
 
     </div>
 
-    <!-- CONTAINER BODY START -->
-    <div class="table-responsive">
+    <!-- REPORT CONTAINER START -->
+    <div class="container-fluid" #TABLE>
       <div class="row" *ngIf="loaders.loadingSubmit">
         <div class="col text-center">
           <img src="assets/img/loading.svg" width="5%" alt="loading">
@@ -67,36 +66,131 @@
         </div>
       </div>
 
-      <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
-        <thead>
-        <tr>
-          <th>Cliente</th>
-          <th>Fecha</th>
-          <th>Envíos Realizados</th>
-        </tr>
-        </thead>
+      <div class="col-12">
+        <button class="float-right" [disabled]="!consultResults" mat-raised-button color="primary" (click)="ExportTOExcel()"> Exportar
+          a Excel
+        </button>
+      </div>
+
+      <table>
         <tbody>
-
-        <tr *ngFor="let result of consultResults">
-          <td>{{result.customer}}</td>
-          <td>{{result.fecha}}</td>
-          <td>{{result.orders}}</td>
-        </tr>
-
-        </tbody>
-        <tfoot style="display: table-footer-group;">
         <tr>
-          <th></th>
-          <th>Total:</th>
-          <th data-priority="1">
-            {{totalOrders}}
-          </th>
-        </tr>
-        </tfoot>
+          <td>
+            <div class="row">
+              <div class="col-6"><h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2></div>
+            </div>
 
+          </td>
+
+        </tr>
+        <tr>
+          <td>
+            <div class="row">
+              <div class="col-12">
+                <p><strong>Envíos Totales: {{totalCustomerOrders}}</strong></p>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row">
+              <div class="col">
+                <h3>Envíos por categoría</h3>
+              </div>
+            </div>
+          </td>
+        </tr>
+        </tbody>
       </table>
+
+
+      <div class="table-responsive">
+
+        <table datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger1" class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th>N°</th>
+            <th>Categoría</th>
+            <th>Envíos Realizados</th>
+            <th>Recargos</th>
+            <th>Costos Totales</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr *ngFor="let res of ordersByCategory; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{res?.category}}</td>
+            <td>{{res?.orders}}</td>
+            <td>L. {{res?.totalSurcharges | number: '.2'}}</td>
+            <td>L. {{res?.cTotal | number: '.2'}}</td>
+          </tr>
+
+          </tbody>
+          <tfoot style="display: table-footer-group;">
+          <tr>
+            <th></th>
+            <th>Total:</th>
+            <th data-priority="1">
+              {{totalCustomerOrders}}
+            </th>
+            <th>L. {{ totalSurcharges | number: '.2' }}</th>
+            <th>L. {{ totalCosts | number: '.2' }}</th>
+          </tr>
+          </tfoot>
+
+        </table>
+      </div>
+
+
+      <div class="row">
+        <div class="col">
+          <h3>Envíos desde {{f.initDate.value}} hasta {{f.finDate.value}}</h3>
+        </div>
+      </div>
+
+      <!-- CONTAINER BODY START -->
+      <div class="table-responsive">
+
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+          <thead>
+
+          <tr>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Envíos Realizados</th>
+          </tr>
+
+          </thead>
+          <tbody>
+
+          <tr *ngFor="let result of consultResults">
+            <td>{{result.customer}}</td>
+            <td>{{result.fecha}}</td>
+            <td>{{result.orders}}</td>
+          </tr>
+
+
+          </tbody>
+          <tfoot style="display: table-footer-group;">
+          <tr>
+            <th></th>
+            <th>Total:</th>
+            <th data-priority="1">
+              {{totalOrders}}
+            </th>
+          </tr>
+          </tfoot>
+
+        </table>
+      </div>
+      <!-- CONTAINER END -->
     </div>
-    <!-- CONTAINER END -->
+    <!-- REPORT CONTAINER END -->
+
+
   </mat-card-content>
 </mat-card>
 

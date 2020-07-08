@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -7,6 +7,8 @@ import {Customer} from "../../../../models/customer";
 import {UsersService} from "../../../../services/users.service";
 import {DeliveriesService} from "../../../../services/deliveries.service";
 import {formatDate} from "@angular/common";
+import {OrdersByCategory} from "../../../../models/orders-by-category";
+import * as XLSX from 'xlsx'
 
 @Component({
   selector: 'app-orders-by-cutomer',
@@ -24,6 +26,8 @@ import {formatDate} from "@angular/common";
 export class OrdersByCutomerComponent implements OnInit {
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
+  @ViewChild('TABLE', { static: false })
+  TABLE: ElementRef;
   loaders = {
     'loadingData': false,
     'loadingSubmit': false,
@@ -31,10 +35,17 @@ export class OrdersByCutomerComponent implements OnInit {
   consultForm: FormGroup
   customers: Customer[]
   dtOptions: any
+  dtOptions1: any
   dtTrigger: Subject<any>
+  dtTrigger1: Subject<any>
   consultResults: any
   totalOrders: number
   filteredCustomers: Customer[]
+  currenCustomer: Customer
+  totalCustomerOrders: number = 0
+  ordersByCategory: OrdersByCategory[]
+  totalSurcharges: number
+  totalCosts: number
 
   constructor(
     private formBuilder: FormBuilder,
@@ -57,6 +68,7 @@ export class OrdersByCutomerComponent implements OnInit {
 
   initialize() {
     this.dtTrigger = new Subject<any>()
+    this.dtTrigger1 = new Subject<any>()
     this.consultForm = this.formBuilder.group({
       customerId: ['', [Validators.required]],
       initDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
@@ -69,15 +81,34 @@ export class OrdersByCutomerComponent implements OnInit {
       serverSide: false,
       processing: true,
       info: true,
-      dom: 'Bfrtip',
-      buttons: [
-        { extend: 'copy', footer: true},
-        {extend: 'print', footer: true},
-        {extend: 'csv', footer: true},
-        {extend: 'excel', footer: true}
-      ],
       rowReorder: false,
       order: [1, 'desc'],
+      responsive: true,
+      language: {
+        emptyTable: 'No hay datos para mostrar en esta tabla',
+        zeroRecords: 'No hay coincidencias',
+        lengthMenu: 'Mostrar _MENU_ elementos',
+        search: 'Buscar:',
+        info: 'De _START_ a _END_ de _TOTAL_ elementos',
+        infoEmpty: 'De 0 a 0 de 0 elementos',
+        infoFiltered: '(filtrados de _MAX_ elementos totales)',
+        paginate: {
+          first: 'Prim.',
+          last: 'Últ.',
+          next: 'Sig.',
+          previous: 'Ant.'
+        },
+      },
+    }
+
+    this.dtOptions1 = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      serverSide: false,
+      processing: true,
+      info: true,
+      rowReorder: false,
+      order: [0, 'asc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -105,6 +136,8 @@ export class OrdersByCutomerComponent implements OnInit {
     if (this.consultForm.valid) {
       this.loaders.loadingSubmit = true
       this.totalOrders = 0
+      this.totalSurcharges = 0
+      this.totalCosts = 0
       this.deliveriesService.getOrdersByCustomer(this.consultForm.value).subscribe(response => {
         this.consultResults = response.data.ordersReport
 
@@ -112,14 +145,26 @@ export class OrdersByCutomerComponent implements OnInit {
           this.totalOrders = this.totalOrders + +value.orders
         })
 
+        this.totalCustomerOrders = response.data?.totalOrders
+        this.ordersByCategory = response.data?.ordersByCategory
+
+        this.ordersByCategory.forEach(value => {
+          this.totalSurcharges = this.totalSurcharges +  +value.totalSurcharges
+          this.totalCosts = this.totalCosts + +value.cTotal
+        })
+
+        this.setResume()
+
         if (this.datatableElement.dtInstance) {
           this.datatableElement.dtInstance.then(
             (dtInstance: DataTables.Api) => {
               dtInstance.destroy()
               this.dtTrigger.next()
+              this.dtTrigger1.next()
             })
         } else {
           this.dtTrigger.next()
+          this.dtTrigger1.next()
         }
 
         this.loaders.loadingSubmit = false
@@ -128,15 +173,30 @@ export class OrdersByCutomerComponent implements OnInit {
   }
 
   onKey(value) {
-    this.filteredCustomers = this.search(value) ;
+    this.filteredCustomers = this.search(value);
   }
 
   search(value: string) {
     let filter = value.toLowerCase();
-    if(filter != ""){
-      return  this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
+    if (filter != "") {
+      return this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
     }
     return this.customers
+  }
+
+  setResume() {
+    this.customers.forEach(value => {
+      if (value.idCliente == this.f.customerId.value) {
+        this.currenCustomer = value
+      }
+    })
+  }
+
+  ExportTOExcel() {
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.TABLE.nativeElement);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Reporte Delivery' );
+    XLSX.writeFile(wb, 'Reporte Delivery - ' + this.currenCustomer.nomEmpresa + '.xlsx');
   }
 
 }

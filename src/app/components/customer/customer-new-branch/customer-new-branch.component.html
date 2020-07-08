@@ -34,34 +34,54 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline" floatLabel="always">
-      <mat-label>Direccion:</mat-label>
-      <input matInput (input)="searchAddress($event)" id="direccion" required
-             formControlName="direccion" [matAutocomplete]="auto" autocomplete="nope"
-             placeholder="¿Cuál es la dirección?">
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let s of places" [value]="s.text">
-          {{ s.text }}
-        </mat-option>
-      </mat-autocomplete>
-      <mat-icon matSuffix>location_on</mat-icon>
-      <mat-error>*Este campo es obligatorio</mat-error>
-      <mat-hint>
-        <a href="javascript:void(0);" (click)="gcords=true">
-          Ingresar Geocordenadas
-        </a>
-      </mat-hint>
-    </mat-form-field>
-    <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcords">
-      <input #branchCords matInput type="text" placeholder="Ej. 10.1508684, -87.61982"
-             (paste)="$event.preventDefault()">
-      <button mat-button mat-icon-button (click)="setCords()" matSuffix>
-        <mat-icon>done</mat-icon>
-      </button>
-    </mat-form-field>
-    <mat-checkbox #checkbox (change)="setCurrentLocation(!checkbox.checked)">
-      Ubicación actual
-    </mat-checkbox>
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Direccion:</mat-label>
+        <input matInput (input)="searchAddress($event)" id="direccion" required
+               formControlName="direccion" [matAutocomplete]="auto" autocomplete="nope"
+               placeholder="¿Cuál es la dirección?">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let s of places" [value]="s.text">
+            {{ s.text }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon matSuffix>location_on</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+        <mat-hint>
+          <a href="javascript:void(0);" (click)="gcords=true">
+            Ingresar Geocordenadas
+          </a>
+        </mat-hint>
+      </mat-form-field>
+      <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcords">
+        <input #branchCords matInput type="text" placeholder="Ej. 10.1508684, -87.61982"
+               (paste)="$event.preventDefault()">
+        <button mat-button mat-icon-button (click)="setCords()" matSuffix>
+          <mat-icon>done</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-checkbox #checkbox (change)="setCurrentLocation(!checkbox.checked)">
+        Ubicación actual
+      </mat-checkbox>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Instrucciones de Recogida:</mat-label>
+        <textarea matInput id="instGenerales" formControlName="instrucciones" class="form-control"
+                  maxlength="150"
+                  placeholder="¿Necesitamos instrucciones para la recogida de tus envíos en esta dirección?">
+                </textarea>
+        <mat-icon matPrefix>assignment</mat-icon>
+        <mat-error>*Excede la longitud máxima permitida</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <mat-slide-toggle  (toggleChange)="changeDefault()">Dirección Predeterminada</mat-slide-toggle>
+      </div>
+    </div>
 
   </form>
 

@@ -18,4 +18,5 @@ export interface Order {
   instrucciones?: string
   fechaEntrega?: Date
   delivery?: Delivery
+  idEstado?: number
 }

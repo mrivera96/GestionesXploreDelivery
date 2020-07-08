@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { CustomersRoutingModule } from './customers-routing.module';
 import {SharedModule} from "../shared/shared.module";
 import {TodosDeliveriesComponent} from '../components/customer/customer-todos-deliveries/todos-deliveries.component';
@@ -23,8 +22,8 @@ import {GoogleMapsModule} from "@angular/google-maps";
 import {CustomerBalanceComponent} from "../components/customer/customer-balance/customer-balance.component";
 import {ChangeHourDialogComponent} from "../components/customer/customer-delivery-detail/change-hour-dialog/change-hour-dialog.component";
 import {MatTabsModule} from "@angular/material/tabs";
-
-
+import {NgxDropzoneModule} from "ngx-dropzone";
+import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 @NgModule({
   declarations: [
     TodosDeliveriesComponent,
@@ -42,17 +41,19 @@ import {MatTabsModule} from "@angular/material/tabs";
     DeliveryConfirm,
     HomeCustomerComponent,
     CustomerBalanceComponent,
-    ChangeHourDialogComponent,
+    ChangeHourDialogComponent
   ],
-  imports: [
-    CommonModule,
-    CustomersRoutingModule,
-    SharedModule,
-    MatAutocompleteModule,
-    MatRadioModule,
-    GoogleMapsModule,
-    MatTabsModule,
-  ],
+    imports: [
+        CommonModule,
+        CustomersRoutingModule,
+        SharedModule,
+        MatAutocompleteModule,
+        MatRadioModule,
+        GoogleMapsModule,
+        MatTabsModule,
+        NgxDropzoneModule,
+        MatSlideToggleModule
+    ],
   entryComponents:[
     DeliveryConfirm,
     EditDialogComponent,
