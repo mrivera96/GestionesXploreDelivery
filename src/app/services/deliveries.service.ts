@@ -92,7 +92,6 @@ export class DeliveriesService {
 
   }
 
-
   newCustomerDelivery(deliveryForm, orders, pago) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       'function': 'insertCustomerDelivery',
@@ -137,12 +136,13 @@ export class DeliveriesService {
       })
   }
 
-  changeOrderState(id, ste) {
+  changeOrderState(id, ste, obsr) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'changeOrderState',
         idDetalle: id,
         idEstado: ste,
+        observaciones: obsr,
         tkn: this.authService.currentUserValue.access_token
       })
   }

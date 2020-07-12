@@ -19,4 +19,5 @@ export interface Order {
   fechaEntrega?: Date
   delivery?: Delivery
   idEstado?: number
+  observaciones?: string
 }

@@ -26,6 +26,13 @@
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
 
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Observaciones:</mat-label>
+      <textarea matInput formControlName="observaciones" maxlength="200" ></textarea>
+      <mat-icon matSuffix>notes</mat-icon>
+      <mat-error>*Excede la longitud máxima</mat-error>
+    </mat-form-field>
+
   </form>
 </mat-dialog-content>
 

@@ -57,9 +57,12 @@
                   <mat-label>Punto de recogida:</mat-label>
                   <mat-select id="prevDirRecogida" [(ngModel)]="locationOption" required [disabled]="orders.length > 0"
                               [ngModelOptions]="{standalone: true}">
-                    <mat-option [value]="1" (click)="setCurrentLocationOrigin();checkInsructions()">Ubicación Actual</mat-option>
-                    <mat-option [value]="2" (click)="clearLocationField();checkInsructions()">Ingresar Ubicación</mat-option>
-                    <mat-option [value]="3" (click)="clearLocationField();checkInsructions()">Dirección Existente</mat-option>
+                    <mat-option [value]="1" (click)="setCurrentLocationOrigin();checkInsructions()">Ubicación Actual
+                    </mat-option>
+                    <mat-option [value]="2" (click)="clearLocationField();checkInsructions()">Ingresar Ubicación
+                    </mat-option>
+                    <mat-option [value]="3" (click)="clearLocationField();checkInsructions()">Dirección Existente
+                    </mat-option>
                   </mat-select>
                   <mat-icon matPrefix>location_on</mat-icon>
                 </mat-form-field>
@@ -101,10 +104,10 @@
 
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6" *ngIf="locationOption == 3">
                   <mat-label>Punto de recogida:</mat-label>
-                  <mat-select id="dirRecogida" required formControlName="dirRecogida"  [disabled]="orders.length > 0"
-                              placeholder="- Seleccione un punto de recogida -" >
+                  <mat-select id="dirRecogida" required formControlName="dirRecogida" [disabled]="orders.length > 0"
+                              placeholder="- Seleccione un punto de recogida -">
                     <mat-option *ngFor="let branch of myBranchOffices" value="{{branch?.direccion}}"
-                                (click)="calculatedistanceBefore();checkInsructions()"  >
+                                (click)="calculatedistanceBefore();checkInsructions()">
                       {{branch.nomSucursal}}
                     </mat-option>
                   </mat-select>
@@ -265,7 +268,7 @@
           </div>
 
           <br>
-<!--
+
           <div class="row">
             <div class="col">
               <ngx-dropzone [accept]="'text/*'" [expandable]="true" (change)="onSelect($event)"
@@ -279,7 +282,7 @@
             </div>
           </div>
 
-          <br>-->
+          <br>
           <div class="form-row text-center">
             <div class="col">
               <span><i class="fa fa-clock"></i>
@@ -313,16 +316,16 @@
                 entrega
               </button>
             </div>
-<!--
+
             <div class="col-md-6" *ngIf="files.length">
               <button mat-raised-button type="button" (click)="onFileOrdersAdd()" color="primary"
                       [disabled]="deliveryForm.get('deliveryHeader').invalid ||
-                      loaders.loadingAdd"
+                                  loaders.loadingAdd"
                       class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                 entregas
               </button>
-            </div>-->
+            </div>
           </div>
 
           <div *ngIf="agregado" class="alert alert-success" role="alert">

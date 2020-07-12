@@ -138,7 +138,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       deliveryHeader: this.formBuilder.group({
         fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
         hora: [formatDate(new Date(), 'HH:mm', 'en'), Validators.required],
-        dirRecogida: ['' , [Validators.required]],
+        dirRecogida: ['', [Validators.required]],
         idCategoria: [1, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)]
       }, {
@@ -255,11 +255,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
-  checkInsructions(){
+  checkInsructions() {
     this.myBranchOffices.forEach(bOffice => {
       if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
         this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones)
-      }else {
+      } else {
         this.deliveryForm.get('deliveryHeader.instrucciones').setValue('')
       }
     })
@@ -679,7 +679,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       }
     })
   }
-/*
+
   onSelect(event) {
     if (this.files.length === 0) {
       this.files.push(...event.addedFiles)
@@ -722,6 +722,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   onFileRemove(event) {
     this.files.splice(this.files.indexOf(event), 1)
-  }*/
+  }
 
 }

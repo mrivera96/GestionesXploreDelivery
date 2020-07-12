@@ -92,7 +92,7 @@ export class DataTableComponent implements OnInit, AfterViewInit {
   initialize() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 100,
       serverSide: false,
       processing: true,
       info: true,

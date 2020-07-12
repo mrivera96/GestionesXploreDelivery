@@ -7,6 +7,7 @@ import {formatDate} from "@angular/common";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {DateValidate} from "../../../../helpers/date.validator";
+import {Schedule} from "../../../../models/schedule";
 
 @Component({
   selector: 'app-change-hour-dialog',
@@ -19,7 +20,10 @@ export class ChangeHourDialogComponent implements OnInit {
   }
   changeForm: FormGroup
   currDelivery: Delivery
-
+  today: number
+  todaySchedule: Schedule
+  hInit
+  hFin
   constructor(
     private formBuilder: FormBuilder,
     private deliveriesService: DeliveriesService,
@@ -31,6 +35,14 @@ export class ChangeHourDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.todaySchedule = JSON.parse(localStorage.getItem('todaySchedule'))
+    this.hInit = formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
+      null, Number(this.todaySchedule?.inicio.split(':')[0]), Number(this.todaySchedule?.inicio.split(':')[1])),
+      'hh:mm a', 'en')
+
+    this.hFin = formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
+      null, Number(this.todaySchedule?.final.split(':')[0]), Number(this.todaySchedule?.final.split(':')[1])),
+      'hh:mm a', 'en')
     this.initialize()
   }
 

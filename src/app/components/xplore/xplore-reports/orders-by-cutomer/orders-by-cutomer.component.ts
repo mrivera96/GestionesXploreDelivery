@@ -193,10 +193,15 @@ export class OrdersByCutomerComponent implements OnInit {
   }
 
   ExportTOExcel() {
-    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.TABLE.nativeElement);
+
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.TABLE.nativeElement);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
+
+
     XLSX.utils.book_append_sheet(wb, ws, 'Reporte Delivery' );
-    XLSX.writeFile(wb, 'Reporte Delivery - ' + this.currenCustomer.nomEmpresa + '.xlsx');
+
+
+    XLSX.writeFile(wb, 'Reporte Delivery - ' + this.currenCustomer.nomEmpresa +'(' + this.f.initDate.value +'-'+ this.f.finDate.value+ ')' + '.xlsx');
   }
 
 }

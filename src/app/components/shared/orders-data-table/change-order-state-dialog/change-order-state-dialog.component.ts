@@ -38,7 +38,8 @@ export class ChangeOrderStateDialogComponent implements OnInit {
 
   initialize() {
     this.changeForm = this.formBuilder.group({
-      idEstado: [this.currentOrder.idEstado, [Validators.required]]
+      idEstado: [this.currentOrder.idEstado, [Validators.required]],
+      observaciones: ['']
     })
   }
 
@@ -51,7 +52,9 @@ export class ChangeOrderStateDialogComponent implements OnInit {
   changeState() {
     if (this.changeForm.valid) {
       this.loaders.loadingSubmit = true
-      this.deliveriesService.changeOrderState(this.currentOrder.idDetalle, this.changeForm.get('idEstado').value)
+      this.deliveriesService.changeOrderState(this.currentOrder.idDetalle,
+        this.changeForm.get('idEstado').value,
+        this.changeForm.get('observaciones').value)
         .subscribe(response => {
           this.loaders.loadingSubmit = false
           this.openSuccessDialog('Operación Realizada Correctamente', response.data)
