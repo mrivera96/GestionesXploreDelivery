@@ -94,7 +94,7 @@ export class XploreCustomerBalanceComponent implements OnInit {
     this.deliveriesService.getCustomerOrders(this.customerId).subscribe(response => {
       const allOrdrs: Order[] = response.data.todos
       allOrdrs.forEach(value => {
-        if (+value.idEstado === 44) {
+        if (+value.idEstado === 44 || +value.estado.idEstado === 46 || +value.estado.idEstado === 47) {
           this.subtotal = this.subtotal + +value.cTotal
           this.totalCTotal = this.totalCTotal + +value.cTotal
           this.totalSurcharges = this.totalSurcharges + +value.recargo

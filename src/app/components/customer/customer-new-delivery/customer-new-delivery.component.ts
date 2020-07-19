@@ -471,12 +471,12 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.surcharges.forEach(value => {
       if (distance >= Number(value.kilomMinimo)
         && distance <= Number(value.kilomMaximo)
-        && value.cliente.idCliente == this.currCustomer.idCliente) {
+        && value.customer.idCliente == this.currCustomer.idCliente) {
 
         orderPayment.surcharges = Number(value.monto)
       } else if (distance >= Number(value.kilomMinimo)
         && distance <= Number(value.kilomMaximo)
-        && value.cliente.idCliente == 1) {
+        && value.customer.idCliente == 1) {
         orderPayment.surcharges = Number(value.monto)
       }
     })
@@ -702,7 +702,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       let myDetail = {
         nFactura: myOrder[0],
         nomDestinatario: myOrder[1],
-        numCel: myOrder[2],
+        numCel: myOrder[2].trim(),
         instrucciones: myOrder[3],
         direccion: myOrder[4],
         distancia: '',
@@ -710,6 +710,31 @@ export class CustomerNewDeliveryComponent implements OnInit {
         recargo: 0,
         cTotal: 0
       }
+
+      let errs = 0
+
+      if(myDetail.nFactura.length > 250){
+        errs ++
+      }else if(myDetail.nomDestinatario.length > 150){
+        errs ++
+      }else if(myDetail.numCel.length > 9){
+        errs ++
+      }else if(myDetail.instrucciones.length > 150){
+        errs ++
+      }else if(myDetail.direccion.length > 250){
+        errs ++
+      }else if(myDetail.distancia.length > 10){
+        errs ++
+      }
+
+      if(errs > 0){
+        this.openErrorDialog('Lo sentimos, Uno o más envíos podrían tener un formato incorrecto. ' +
+          'Por favor verifique el archivo e intentelo nuevamente.', false);
+        this.loaders.loadingAdd = false
+        return false
+      }
+
+
 
       let ordersCount = this.orders.length + 1
       //

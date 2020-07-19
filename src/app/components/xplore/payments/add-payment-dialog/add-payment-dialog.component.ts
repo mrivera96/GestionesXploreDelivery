@@ -49,7 +49,7 @@ export class AddPaymentDialogComponent implements OnInit {
     ]
     this.nPayForm = this.formBuilder.group({
       fechaPago:[formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
-      monto:[0.00, [Validators.required, Validators.min(0.01)]],
+      monto:[1.00, [Validators.required, Validators.min(0.01)]],
       tipoPago:[null, [Validators.required]],
       idCliente:[null, [Validators.required]],
       numAutorizacion:['',[Validators.minLength(6), Validators.maxLength(6)]],

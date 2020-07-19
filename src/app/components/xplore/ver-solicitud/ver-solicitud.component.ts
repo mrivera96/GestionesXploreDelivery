@@ -12,6 +12,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeStateDialogComponent} from "./change-state-dialog/change-state-dialog.component";
+import { XploreChangeHourDialogComponent } from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -33,8 +34,7 @@ export class VerSolicitudComponent implements OnInit {
   loaders = {
     'loadingData': false
   }
-  vehicles: Vehicle[]
-
+  allowHourChange: boolean = false
   succsMsg: string
   states: State[]
   dtOptions: any
@@ -42,7 +42,6 @@ export class VerSolicitudComponent implements OnInit {
 
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
-              private vehiclesService: VehiclesService,
               private usersService: UsersService,
               public dialog: MatDialog) {
     this.loaders.loadingData = true
@@ -90,10 +89,11 @@ export class VerSolicitudComponent implements OnInit {
       this.currentDeliveryDetail = response.data.detalle
       this.dtTrigger.next()
       this.loaders.loadingData = false
-      if (this.currentDelivery.idEstado == 33 || this.currentDelivery.idEstado == 36) {
-        this.vehiclesService.getVehicles().subscribe(response => {
-          this.vehicles = response.data
-        })
+
+      const state = response.data.idEstado
+    
+      if(state !== 39){
+        this.allowHourChange = true
       }
 
     }, error => {
@@ -134,5 +134,21 @@ export class VerSolicitudComponent implements OnInit {
       }
     })
   }
+
+  openChangeHourDialog(){
+    const dialogRef = this.dialog.open(XploreChangeHourDialogComponent,{
+      data:{
+        delivery: this.currentDelivery
+      }
+    })
+
+    dialogRef.afterClosed().subscribe( result => {
+      if(result){
+        this.ngOnInit()
+      }
+    })
+
+  }
+
 
 }

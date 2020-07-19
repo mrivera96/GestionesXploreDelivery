@@ -23,7 +23,8 @@ import {DataTableDirective} from "angular-datatables";
   ]
 })
 export class XploreSurchargesComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective
   dtOptions
   dtTrigger: Subject<any>
   loaders = {

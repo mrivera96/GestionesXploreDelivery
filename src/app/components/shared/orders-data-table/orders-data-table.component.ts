@@ -79,23 +79,22 @@ export class OrdersDataTableComponent implements OnInit{
     let service;
     switch (this.tOrders) {
       case 'customer-todos': {
-        service = this.deliveriesService.getCustomerOrders()
+        service = this.deliveriesService.getAllCustomerOrders()
         break;
       }
 
       case 'customer-hoy': {
-        service = this.deliveriesService.getCustomerOrders()
+        service = this.deliveriesService.getTodayCustomerOrders()
         break;
       }
 
-
       case 'xplore-todos': {
-        service = this.deliveriesService.getOrders()
+        service = this.deliveriesService.getAllOrders()
         break;
       }
 
       case 'xplore-hoy': {
-        service = this.deliveriesService.getOrders()
+        service = this.deliveriesService.getTodayOrders()
         break;
       }
 
@@ -103,24 +102,7 @@ export class OrdersDataTableComponent implements OnInit{
 
     service.subscribe(response => {
       this.stopLoading.emit(false)
-      switch (this.tOrders) {
-        case 'customer-todos': {
-          this.orders = response.data.todos
-          break
-        }
-        case 'customer-hoy': {
-          this.orders = response.data.pedidosDia
-          break
-        }
-        case 'xplore-todos': {
-          this.orders = response.data.todos
-          break
-        }
-        case 'xplore-hoy': {
-          this.orders = response.data.pedidosDia
-          break
-        }
-      }
+      this.orders = response.data
 
       this.dtTrigger.next()
       this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {

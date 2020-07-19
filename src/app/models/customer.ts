@@ -1,3 +1,6 @@
+import {Payment} from "./payment";
+import {Delivery} from "./delivery";
+
 export interface Customer {
   idCliente?: number
   nomEmpresa?: string
@@ -9,4 +12,6 @@ export interface Customer {
   subtotal?: number
   paid?: number
   balance?: number
+  payments?: Payment[]
+  deliveries?: Delivery[]
 }

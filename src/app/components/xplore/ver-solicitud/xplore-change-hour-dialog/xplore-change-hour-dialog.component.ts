@@ -1,5 +1,5 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DeliveriesService} from "../../../../services/deliveries.service";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Delivery} from "../../../../models/delivery";
@@ -8,13 +8,13 @@ import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.compo
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {DateValidate} from "../../../../helpers/date.validator";
 import {Schedule} from "../../../../models/schedule";
-
 @Component({
-  selector: 'app-change-hour-dialog',
-  templateUrl: './change-hour-dialog.component.html',
-  styleUrls: ['./change-hour-dialog.component.css']
+  selector: 'app-xplore-change-hour-dialog',
+  templateUrl: './xplore-change-hour-dialog.component.html',
+  styleUrls: ['./xplore-change-hour-dialog.component.css']
 })
-export class ChangeHourDialogComponent implements OnInit {
+export class XploreChangeHourDialogComponent implements OnInit {
+
   loaders = {
     'loadingSubmit': false
   }
@@ -27,7 +27,7 @@ export class ChangeHourDialogComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private deliveriesService: DeliveriesService,
-    public dialogRef: MatDialogRef<ChangeHourDialogComponent>,
+    public dialogRef: MatDialogRef<XploreChangeHourDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog
   ) {
@@ -49,10 +49,8 @@ export class ChangeHourDialogComponent implements OnInit {
   initialize() {
     this.changeForm = this.formBuilder.group({
       idDelivery: [this.currDelivery.idDelivery],
-      fecha: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'yyyy-MM-dd', 'en')],
-      hora: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'HH:mm', 'en')]
-    }, {
-      validators: DateValidate('fecha', 'hora'),
+      fecha: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'yyyy-MM-dd', 'en'), Validators.required],
+      hora: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'HH:mm', 'en'), Validators.required]
     })
   }
 
@@ -83,6 +81,7 @@ export class ChangeHourDialogComponent implements OnInit {
         error.subscribe(error => {
           this.openErrorDialog(error.statusText)
         })
+        
       })
     }
   }

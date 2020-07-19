@@ -25,8 +25,9 @@ export class NewRateDialogComponent implements OnInit {
   newRateForm: FormGroup
   categories: Category[]
   customers: Customer[]
-  rateCustomers: Customer[]
+  rateCustomers: Customer[] = []
   filteredCustomers: Customer[]
+  isGeneral: boolean = false
   constructor(
     private ratesService: RatesService,
     private categoriesService: CategoriesService,
@@ -37,7 +38,6 @@ export class NewRateDialogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.rateCustomers = new Array<Customer>()
     this.newRateForm = this.formBuilder.group(
       {
         descTarifa: ['', Validators.required],
@@ -91,6 +91,7 @@ export class NewRateDialogComponent implements OnInit {
 
   onFormNewSubmit() {
     if (this.newRateForm.valid) {
+     
       this.loaders.loadingSubmit = true
       this.ratesService.createRate(this.newRateForm.value, this.rateCustomers)
         .subscribe(response => {
@@ -103,6 +104,13 @@ export class NewRateDialogComponent implements OnInit {
               this.openErrorDialog(error.statusText)
             })
           })
+    }
+  }
+
+  changeGeneral(checked){
+    if(checked){
+      this.isGeneral = true
+      this.fNew.idCliente.setValue(1)
     }
   }
 

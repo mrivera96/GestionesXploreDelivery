@@ -19,6 +19,7 @@ import {PaymentsComponent} from "../components/xplore/payments/payments.componen
 import {OrdersByCutomerComponent} from "../components/xplore/xplore-reports/orders-by-cutomer/orders-by-cutomer.component";
 import {XploreScheduleComponent} from "../components/xplore/xplore-schedule/xplore-schedule.component";
 import {XploreCustomerBalanceComponent} from "../components/xplore/xplore-customer-balance/xplore-customer-balance.component";
+import {ExtraChargesComponent} from "../components/xplore/extra-charges/extra-charges.component";
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -31,6 +32,7 @@ const routes: Routes = [
   {path: 'parametrizar-tarifas', component: XploreRatesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-recargos', component: XploreSurchargesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-horarios', component: XploreScheduleComponent, canActivate: [XploreGuard]},
+  {path: 'parametrizar-cargos-extras', component: ExtraChargesComponent, canActivate: [XploreGuard]},
   {path: 'clientes', component: XploreCustomersComponent, canActivate: [XploreGuard]},
   {path: 'agregar-cliente', component: XploreAddCustomerComponent, canActivate: [XploreGuard]},
   {path: 'envios-hoy', component: XploreTodayOrdersComponent, canActivate: [XploreGuard]},

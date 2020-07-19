@@ -51,6 +51,7 @@ export class CustomerBalanceComponent implements OnInit {
     this.initialize()
     this.loadData()
   }
+
   initialize(){
     this.myPayments = new Array<Payment>()
     this.myFinishedOrders = new Array<Order>()
@@ -96,10 +97,10 @@ export class CustomerBalanceComponent implements OnInit {
 
     })
 
-    this.deliveriesService.getCustomerOrders().subscribe(response => {
-      const allOrdrs: Order[] = response.data.todos
+    this.deliveriesService.getAllCustomerOrders().subscribe(response => {
+      const allOrdrs: Order[] = response.data
       allOrdrs.forEach(value => {
-        if(value.estado.idEstado === 44){
+        if(value.estado.idEstado === 44 || value.estado.idEstado === 46 || value.estado.idEstado === 47){
           this.subtotal = this.subtotal + +value.cTotal
           this.totalCTotal = this.totalCTotal + +value.cTotal
           this.totalSurcharges = this.totalSurcharges + +value.recargo

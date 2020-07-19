@@ -104,10 +104,16 @@
         </div>
       </div>
       <br>
-      <div class="row" *ngIf="currentDelivery?.idEstado == 34">
-        <div class="col-sm">
+      <div class="row" >
+        <div class="col-sm" *ngIf="currentDelivery?.idEstado == 34">
           <button mat-raised-button color="primary" (click)="openChangeStateDialog()" >
             Cambiar Estado
+          </button>
+        </div>
+
+        <div class="col-sm" *ngIf="allowHourChange">
+          <button type="button" mat-raised-button color="primary" [disabled]="!allowHourChange" (click)="openChangeHourDialog()" >
+            Cambiar Hora de Recogida
           </button>
         </div>
       </div>

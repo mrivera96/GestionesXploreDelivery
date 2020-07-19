@@ -35,10 +35,10 @@ export class DeliveriesManianaComponent implements OnInit {
   deliveries: Delivery[]
 
   ngOnInit(): void {
-    this.loadData()
+
   }
 
-  loadData() {
+  /*loadData() {
     this.loaders.loadingData = true
     this.deliveriesService.getCustomerDeliveries().subscribe(response => {
       this.deliveries = response.data.deliveriesManiana
@@ -49,6 +49,6 @@ export class DeliveriesManianaComponent implements OnInit {
       this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
       $("#errModal").modal('show')
     })
-  }
+  }*/
 
 }

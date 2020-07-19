@@ -23,4 +23,6 @@ export interface Delivery {
   instrucciones?: string
   cantidad?: string
   descCategoria?: string
+  fechaNoFormatted?: string
+
 }

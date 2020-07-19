@@ -34,7 +34,7 @@ export class XploreCustomersComponent implements OnInit {
     loadingData: false
   }
   dtOptions
-  deliveries: Order[] = []
+  deliveries: Delivery[] = []
   payments: Payment[] = []
 
   constructor(
@@ -76,40 +76,33 @@ export class XploreCustomersComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    this.paymentsService.getPayments().subscribe(response => {
-      this.payments = response.data
-    })
-    this.deliveriesService.getOrders().subscribe(response => {
-      this.deliveries = response.data.todos
 
-      this.usersService.getCustomers().subscribe(response => {
-        this.customers = response.data
+    this.usersService.getCustomers().subscribe(response => {
+      this.customers = response.data
 
-        this.customers.forEach(customer => {
-          customer.subtotal = 0.00
-          customer.paid = 0.00
-          customer.balance = 0.00
-          this.deliveries.forEach(delivery => {
-            if (customer.idCliente == delivery.delivery.idCliente && delivery.idEstado == 44) {
-              customer.subtotal = customer.subtotal + +delivery.cTotal
+      this.customers.forEach(customer => {
+        customer.subtotal = 0.00
+        customer.paid = 0.00
+        customer.balance = 0.00
+
+        customer.deliveries.forEach(delivery => {
+          delivery.detalle.forEach(detail => {
+            if ( detail.idEstado == 44 || detail.idEstado == 46 || detail.idEstado == 47) {
+              customer.subtotal = customer.subtotal + +detail.cTotal
             }
           })
 
-          this.payments.forEach( payment => {
-            if (customer.idCliente === Number(payment.idCliente)) {
-              customer.paid = customer.paid + +payment.monto
-            }
-          })
-
-          customer.balance = customer.subtotal - customer.paid
         })
-        this.loaders.loadingData = false
-        this.dtTrigger.next()
+
+        customer.payments.forEach( payment => {
+            customer.paid = customer.paid + +payment.monto
+        })
+
+        customer.balance = customer.subtotal - customer.paid
       })
+      this.loaders.loadingData = false
+      this.dtTrigger.next()
     })
-
-
-
   }
 
   showNewCustForm() {

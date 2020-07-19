@@ -23,6 +23,10 @@ import {AdminsModule} from "./admins/admins.module";
 import {CustomersModule} from "./customers/customers.module";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {SharedModule} from "./shared/shared.module";
+import { EditExtraChargeDialogComponent } from './components/xplore/extra-charges/edit-extra-charge-dialog/edit-extra-charge-dialog.component';
+import { NewExtraChargeDialogComponent } from './components/xplore/extra-charges/new-extra-charge-dialog/new-extra-charge-dialog.component';
+import { XploreChangeHourDialogComponent } from './components/xplore/ver-solicitud/xplore-change-hour-dialog/xplore-change-hour-dialog.component';
+
 
 
 @NgModule({
@@ -31,6 +35,10 @@ import {SharedModule} from "./shared/shared.module";
         LoginComponent,
         RootComponent,
         ErrorModalComponent,
+        EditExtraChargeDialogComponent,
+        NewExtraChargeDialogComponent,
+        XploreChangeHourDialogComponent,
+
     ],
 
     imports: [

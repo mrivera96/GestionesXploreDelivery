@@ -15,6 +15,17 @@
   <form [formGroup]="changeForm" *ngIf="!loaders.loadingSubmit">
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Fecha de recogida:</mat-label>
+        <input formControlName="fecha" type="date" id="fecha" required matInput>
+        <mat-error *ngIf="f.fecha?.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.fecha?.errors?.mustAfterDate">
+          *Ups! Parece que esa fecha no es válida
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Hora de recogida:</mat-label>
         <input formControlName="hora" type="time" id="hora" required
                matInput>

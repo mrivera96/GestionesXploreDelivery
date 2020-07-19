@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {Delivery} from "../../../models/delivery";
 import {Router} from "@angular/router";
 import {DataTableDirective} from "angular-datatables";
@@ -19,7 +19,7 @@ import {State} from "../../../models/state";
   templateUrl: './data-table.component.html',
   styleUrls: ['./data-table.component.css']
 })
-export class DataTableComponent implements OnInit, AfterViewInit {
+export class DataTableComponent implements OnInit {
 
   @Input('deliveries') tDeliveries: number
   deliveries: Delivery[]
@@ -50,24 +50,29 @@ export class DataTableComponent implements OnInit, AfterViewInit {
       this.states = response.data.xploreDelivery
     })
 
-    this.deliveriesService.getDeliveries().subscribe(response => {
-      this.stopLoading.emit(false)
+    let service: Observable<any>
 
-      switch (this.tDeliveries) {
-        case 1: {
-          this.deliveries = response.data.deliveriesDia
-          break
-        }
-        case 2: {
-          this.deliveries = response.data.deliveriesManiana
-          break
-        }
-        default: {
-          this.deliveries = response.data.todas
-        }
-
+    switch (this.tDeliveries) {
+      case 1: {
+        service = this.deliveriesService.getTodayDeliveries()
+        break
+      }
+      case 2: {
+        service = this.deliveriesService.getTomorrowDeliveries()
+        break
+      }
+      default: {
+        service = this.deliveriesService.getAllDeliveries()
       }
 
+    }
+
+    service.subscribe(response => {
+      this.stopLoading.emit(false)
+      this.deliveries = response.data
+      this.deliveries.forEach(delivery => {
+        delivery.entregas = delivery.detalle.length
+      })
       this.dtTrigger.next()
       this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
         dtInstance.columns().every(function () {
@@ -81,13 +86,11 @@ export class DataTableComponent implements OnInit, AfterViewInit {
           })
         })
       })
-
     })
-  }
-  ngAfterViewInit(): void {
 
 
   }
+
 
   initialize() {
     this.dtOptions = {

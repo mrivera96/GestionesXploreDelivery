@@ -15,16 +15,38 @@ export class DeliveriesService {
   ) {
   }
 
-  getDeliveries() {
+  getTodayDeliveries() {
     return this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'getDeliveries',
+      function: 'getTodayDeliveries',
       tkn: this.authService.currentUserValue.access_token
     })
   }
 
-  getOrders() {
+  getTomorrowDeliveries() {
     return this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'getOrders',
+      function: 'getTomorrowDeliveries',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getAllDeliveries() {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getAllDeliveries',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+
+  getTodayOrders() {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getTodayOrders',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getAllOrders() {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getAllOrders',
       tkn: this.authService.currentUserValue.access_token
     })
   }
@@ -71,9 +93,15 @@ export class DeliveriesService {
   }
 
   //CUSTOMER'S SERVICES
-  getCustomerDeliveries() {
+  getTodayCustomerDeliveries() {
     return this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'getCustomerDeliveries', tkn: this.authService.currentUserValue.access_token
+      function: 'getTodayCustomerDeliveries', tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getAllCustomerDeliveries() {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getAllCustomerDeliveries', tkn: this.authService.currentUserValue.access_token
     })
   }
 
@@ -84,12 +112,20 @@ export class DeliveriesService {
         customerId: id,
         tkn: this.authService.currentUserValue.access_token
       })
-    } else {
-      return this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCustomerOrders', tkn: this.authService.currentUserValue.access_token
-      })
     }
 
+  }
+
+  getTodayCustomerOrders(){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getTodayCustomerOrders', tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getAllCustomerOrders(){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getAllCustomerOrders', tkn: this.authService.currentUserValue.access_token
+    })
   }
 
   newCustomerDelivery(deliveryForm, orders, pago) {

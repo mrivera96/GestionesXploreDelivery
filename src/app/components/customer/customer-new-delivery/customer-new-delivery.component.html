@@ -94,8 +94,7 @@
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcordsOrigin">
-                    <input #originCords matInput type="text" placeholder="Ej. 10.1508684, -87.61982"
-                           (paste)="$event.preventDefault()">
+                    <input #originCords matInput type="text" placeholder="Ej. 10.1508684, -87.61982">
                     <button mat-button mat-icon-button (click)="setCordsOrigin()" matSuffix>
                       <mat-icon>done</mat-icon>
                     </button>
@@ -135,7 +134,7 @@
                                       category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
                                       ? '#FF8C00': '#000'}">
                       <span class="fa d-block text-center" style="font-size: 24px"
-                            [ngClass]="{'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
+                            [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
                          'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4}"></span>
                       {{category.descCategoria}}
                     </mat-radio-button>

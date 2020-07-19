@@ -1,18 +1,21 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
-import {CategoriesService} from "../../../services/categories.service";
-import {Category} from "../../../models/category";
+import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
+import {ExtraCharge} from "../../../models/extra-charge";
+import {ExtraChargesService} from "../../../services/extra-charges.service";
+import {Surcharge} from "../../../models/surcharge";
+import {EditSurchargeDialogComponent} from "../xplore-surcharges/edit-surcharge-dialog/edit-surcharge-dialog.component";
+import {NewSurchargeDialogComponent} from "../xplore-surcharges/new-surcharge-dialog/new-surcharge-dialog.component";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
-import {EditCategoryDialogComponent} from "./edit-category-dialog/edit-category-dialog.component";
-import {NewCategoryDialogComponent} from "./new-category-dialog/new-category-dialog.component";
-import {DataTableDirective} from "angular-datatables";
+import {EditExtraChargeDialogComponent} from "./edit-extra-charge-dialog/edit-extra-charge-dialog.component";
+import {NewExtraChargeDialogComponent} from "./new-extra-charge-dialog/new-extra-charge-dialog.component";
 
 @Component({
-  selector: 'app-xplore-categories',
-  templateUrl: './xplore-categories.component.html',
-  styleUrls: ['./xplore-categories.component.css'],
+  selector: 'app-extra-charges',
+  templateUrl: './extra-charges.component.html',
+  styleUrls: ['./extra-charges.component.css'],
   animations: [
     trigger('fade', [
       transition('void => *', [
@@ -22,18 +25,19 @@ import {DataTableDirective} from "angular-datatables";
     ])
   ]
 })
-export class XploreCategoriesComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
+export class ExtraChargesComponent implements OnInit {
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective
   dtOptions
-  categories: Category[]
   dtTrigger: Subject<any>
   loaders = {
     loadingData: false,
     loadingSubmit: false
   }
+  extraCharges: ExtraCharge[]
 
   constructor(
-    private categoriesService: CategoriesService,
+    private extraChargesService: ExtraChargesService,
     public dialog: MatDialog
   ) {
   }
@@ -43,9 +47,8 @@ export class XploreCategoriesComponent implements OnInit {
     this.loadData()
   }
 
-  initialize() {
+  initialize(){
     this.dtTrigger = new Subject<any>()
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -71,38 +74,32 @@ export class XploreCategoriesComponent implements OnInit {
         },
       },
     }
-
   }
 
-  loadData() {
+  loadData(){
     this.loaders.loadingData = true
-    this.categoriesService.getAllCategories().subscribe(response => {
-      this.categories = response.data
+    this.extraChargesService.getExtraCharges().subscribe(response => {
+      this.extraCharges = response.data
       this.loaders.loadingData = false
       this.dtTrigger.next()
     })
   }
 
-  reloadData() {
-    this.ngOnInit()
-  }
-
   showEditForm(id) {
-    let currCat: Category = {}
-    this.categories.forEach(value => {
-      if (value.idCategoria == id) {
-        currCat = value
+    let currExtraCharge: ExtraCharge = {}
+    this.extraCharges.forEach(value => {
+      if (value.idCargoExtra === id) {
+        currExtraCharge = value
       }
     })
-
-    const dialogRef = this.dialog.open(EditCategoryDialogComponent, {
+    const dialogRef = this.dialog.open(EditExtraChargeDialogComponent, {
       data: {
-        category: currCat
+        extraCharge: currExtraCharge
       }
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result){
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
@@ -112,11 +109,11 @@ export class XploreCategoriesComponent implements OnInit {
     })
   }
 
-  showNewCatForm() {
-    const dialogRef = this.dialog.open(NewCategoryDialogComponent)
+  showNewForm() {
+    const dialogRef = this.dialog.open(NewExtraChargeDialogComponent)
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result){
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
@@ -133,10 +130,10 @@ export class XploreCategoriesComponent implements OnInit {
       }
     })
 
-    if (reload) {
+    if(reload){
       dialog.afterClosed().subscribe(result => {
         this.loaders.loadingData = true
-        this.reloadData()
+        this.ngOnInit()
       })
     }
 

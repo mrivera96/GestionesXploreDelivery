@@ -7,5 +7,5 @@ export interface Surcharge {
   kilomMaximo?: number
   monto?: number
   idCliente?: number
-  cliente?: Customer
+  customer?: Customer
 }

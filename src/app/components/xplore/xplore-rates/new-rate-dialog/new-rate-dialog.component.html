@@ -59,11 +59,16 @@
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
-
     </div>
-    <h4>Agregar Cliente</h4>
-    <hr>
+
     <div class="form-row">
+      <div class="col-md">
+        <mat-slide-toggle #matSlideToggle (toggleChange)="changeGeneral(!matSlideToggle.checked)" required>Tarifa General</mat-slide-toggle>
+      </div>
+    </div>
+    <h4 *ngIf="isGeneral == false">Agregar Cliente</h4>
+    <hr>
+    <div class="form-row" *ngIf="isGeneral == false">
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md-10">
         <mat-label>Cliente:</mat-label>
@@ -91,7 +96,7 @@
   </form>
   <br>
 
-  <div class="row">
+  <div class="row" *ngIf="isGeneral == false">
     <div class="col">
       <h4>Clientes Asignados</h4>
       <hr>
@@ -127,7 +132,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="newRateForm.invalid || loaders.loadingSubmit || rateCustomers.length == 0"
+  <button type="button" [disabled]="newRateForm.invalid || loaders.loadingSubmit"
           (click)="onFormNewSubmit()"
           mat-raised-button color="primary">
     Confimar

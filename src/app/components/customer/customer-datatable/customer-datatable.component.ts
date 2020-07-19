@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {Delivery} from "../../../models/delivery";
-import {Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {Router} from "@angular/router";
 
 import { DataTableDirective} from "angular-datatables";
@@ -46,20 +46,25 @@ export class CustomerDatatableComponent implements OnInit {
       this.states = response.data.xploreDelivery
     })
 
-    this.deliveriesService.getCustomerDeliveries().subscribe( response => {
-      this.stopLoading.emit(false)
-
-      switch (this.tDeliveries) {
-        case 1: {
-          this.deliveries = response.data.deliveriesDia
-          break
-        }
-        case 2: {
-          this.deliveries = response.data.todas
-          break
-        }
-
+    let service: Observable<any>
+    switch (this.tDeliveries) {
+      case 1: {
+        service = this.deliveriesService.getTodayCustomerDeliveries()
+        break
       }
+      case 2: {
+        service = this.deliveriesService.getAllCustomerDeliveries()
+        break
+      }
+
+    }
+
+    service.subscribe(response => {
+      this.stopLoading.emit(false)
+      this.deliveries = response.data
+      this.deliveries.forEach(delivery => {
+        delivery.entregas = delivery.detalle.length
+      })
 
       this.dtTrigger.next()
       this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -74,8 +79,9 @@ export class CustomerDatatableComponent implements OnInit {
           });
         });
       });
-
     })
+
+
   }
 
   initialize(){
