@@ -4,6 +4,8 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog
 import {ExtraChargesService} from "../../../../services/extra-charges.service";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
+import { Category } from 'src/app/models/category';
+import { CategoriesService } from 'src/app/services/categories.service';
 
 @Component({
   selector: 'app-new-extra-charge-dialog',
@@ -17,23 +19,36 @@ export class NewExtraChargeDialogComponent implements OnInit {
     loadingSubmit: false
   }
   newECForm: FormGroup
-
+  categories: Category[]
+  extraChargeCategories: Category[] = []
   constructor(
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<NewExtraChargeDialogComponent>,
+    private categoriesService: CategoriesService,
     private extraChargesService: ExtraChargesService
   ) {
   }
 
   ngOnInit(): void {
     this.initialize()
+    this.loadData()
+  }
+
+  loadData(){
+    this.loaders.loadingData = true
+    this.categoriesService.getAllCategories().subscribe(response => {
+      this.categories = response.data
+      this.loaders.loadingData = false
+    })
   }
 
   initialize(){
     this.newECForm = this.formBuilder.group({
       nombre:['', [Validators.required, Validators.maxLength(50)]],
-      costo:[1.00, [Validators.required]]
+      costo:[1.00, [Validators.required]],
+      tipoCargo:['',[Validators.required]],
+      idCategoria:[null, Validators.required]
     })
   }
 
@@ -52,7 +67,7 @@ export class NewExtraChargeDialogComponent implements OnInit {
   onNewFormSubmit() {
     if (this.newECForm.valid) {
       this.loaders.loadingSubmit = true
-      this.extraChargesService.createExtraCharge(this.newECForm.value)
+      this.extraChargesService.createExtraCharge(this.newECForm.value, this.extraChargeCategories)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.openSuccessDialog('Operación Realizada Correctamente', response.message)
@@ -64,6 +79,24 @@ export class NewExtraChargeDialogComponent implements OnInit {
             })
           })
     }
+  }
+
+  addCategoryToExtraCharge(idCat){
+    let categoryToAdd: Category = {}
+    this.categories.forEach(value => {
+      if(value.idCategoria == idCat){
+        categoryToAdd = value
+      }
+    })
+
+    if(!this.extraChargeCategories.includes(categoryToAdd)){
+      this.extraChargeCategories.push(categoryToAdd)
+    }
+  }
+
+  removeFromArray(item) {
+    let i = this.extraChargeCategories.indexOf(item)
+    this.extraChargeCategories.splice(i, 1)
   }
 
   openSuccessDialog(succsTitle, succssMsg) {

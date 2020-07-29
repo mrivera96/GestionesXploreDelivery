@@ -20,4 +20,5 @@ export interface Order {
   delivery?: Delivery
   idEstado?: number
   observaciones?: string
+  coordsDestino?: string
 }

@@ -35,7 +35,8 @@ export class EditExtraChargeDialogComponent implements OnInit {
   initialize(){
     this.editECForm = this.formBuilder.group({
       nombre:[this.currEc.nombre, [Validators.required, Validators.maxLength(50)]],
-      costo:[this.currEc.costo, [Validators.required]]
+      costo:[this.currEc.costo, [Validators.required]],
+      tipoCargo:[this.currEc.tipoCargo,[Validators.required]],
     })
   }
 

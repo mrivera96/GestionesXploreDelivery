@@ -65,7 +65,7 @@ export class OrdersByDriverComponent implements OnInit {
 
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 25,
       serverSide: false,
       processing: true,
       info: true,
@@ -108,9 +108,8 @@ export class OrdersByDriverComponent implements OnInit {
       this.deliveriesService.getOrdersByDriver(this.consultForm.value).subscribe(response => {
         this.consultResults = response.data
         this.consultResults.forEach(value => {
-          this.totalOrders = this.totalOrders + +value.orders
+          this.totalOrders = +this.totalOrders + +value.orders
         })
-
 
         if(this.datatableElement.dtInstance){
           this.datatableElement.dtInstance.then(

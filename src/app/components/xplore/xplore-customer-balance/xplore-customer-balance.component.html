@@ -41,7 +41,8 @@
 
               <thead>
               <tr>
-                <th>N°</th>
+                <th>N° de delivery</th>
+                <th>N° de envío</th>            
                 <th data-priority="1">Destinatario</th>
                 <th data-priority="1">Celular del Destinatario</th>
                 <th>Dirección</th>
@@ -56,7 +57,8 @@
               <tbody>
 
               <tr *ngFor=" let i = index;let order of myFinishedOrders; let idx = index">
-                <td>{{idx + 1}}</td>
+                <td>{{order.idDelivery}}</td>
+                <td>{{order.idDetalle}}</td>
                 <td>{{order.nomDestinatario}}</td>
                 <td>{{order.numCel}}</td>
                 <td>{{order.direccion}}</td>
@@ -72,6 +74,7 @@
               </tbody>
               <tfoot style="display: table-footer-group;">
               <tr>
+                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -106,7 +109,7 @@
             <mat-card-content>
               <h2>Sub-Total: L. {{subtotal | number: '.2'}} </h2>
               <h2>Pago Realizado: L. {{paid | number: '.2'}} </h2>
-              <h2>Balance: L. {{ subtotal - paid| number: '.2'}} </h2>
+              <h2>Balance: L. {{ balance | number: '.2'}} </h2>
             </mat-card-content>
           </mat-card>
           <!-- DATATABLE START -->
@@ -135,7 +138,7 @@
               <tr *ngFor="let payment of myPayments; let idx1 = index">
                 <td>{{idx1 + 1}}</td>
                 <td>{{payment.fechaPago}}</td>
-                <td>L. {{payment.monto}}</td>
+                <td>L. {{payment.monto | number: '.2'}}</td>
                 <td>{{payment.payment_type.nomTipoPago}}</td>
                 <td>{{payment.referencia || 'N/A'}}</td>
                 <td>{{payment.banco || 'N/A'}}</td>
@@ -146,7 +149,7 @@
               <tr>
                 <th></th>
                 <th>Total:</th>
-                <th>L. {{paid | number:'.2'}}</th>
+                <th>L. {{paid | number: '.2'}}</th>
                 <th></th>
                 <th></th>
                 <th></th>

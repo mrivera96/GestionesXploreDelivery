@@ -14,7 +14,7 @@
 <mat-sidenav-container style="min-height: 100vh;">
   <mat-sidenav #sidenav mode="over">
     <!-- ONLY XPLORE USER -->
-    <mat-nav-list *ngIf="currentUser && currentUser.idPerfil === '1'">
+    <mat-nav-list *ngIf="(currentUser && currentUser.idPerfil === '1') || (currentUser && currentUser.idPerfil === '9')">
       <a href="javascript:void(0);" mat-list-item (click)="showLogout()">
         <mat-icon>account_circle</mat-icon>
         {{currentUser.nomUsuario}}
@@ -121,7 +121,7 @@
           <mat-icon>schedule</mat-icon>
           Horarios
         </a>
-<!--
+        <!--
         <a [routerLink]="['admins/parametrizar-cargos-extras']"
            (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>attach_money</mat-icon>

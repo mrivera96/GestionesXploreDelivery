@@ -13,7 +13,7 @@ export class XploreGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const currentUser = this.authService.currentUserValue;
-    if (currentUser && currentUser.idPerfil === '1') {
+    if ((currentUser && currentUser.idPerfil === '1') || (currentUser && currentUser.idPerfil === '9')) {
       // El usuario está logueado y puede acceder a la ruta
       return true;
     }

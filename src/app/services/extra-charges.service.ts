@@ -33,14 +33,41 @@ export class ExtraChargesService {
     )
   }
 
-  createExtraCharge(form){
+  createExtraCharge(form, categories){
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'createExtraCharge',
         form,
+        categories: categories,
         tkn: this.authService.currentUserValue.access_token
       }
     )
+  }
+
+  getExtraChargeCategories(extraChargeId){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getExtraChargeCategories',
+      idCargoExtra: extraChargeId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  removeCategoryFromExtraCharge(extraChargeId, categoryId){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'removeCategoryFromExtraCharge',
+      idCategoria: categoryId,
+      idCargoExtra: extraChargeId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  addCategoryToExtraCharge(extraChargeId, categoryId){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'addCategoryToExtraCharge',
+      idCategoria: categoryId,
+      idCargoExtra: extraChargeId,
+      tkn: this.authService.currentUserValue.access_token
+    })
   }
 
 

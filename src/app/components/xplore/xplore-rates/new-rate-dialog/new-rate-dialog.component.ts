@@ -23,17 +23,17 @@ export class NewRateDialogComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject()
   dtOptions: any
   newRateForm: FormGroup
-  categories: Category[]
   customers: Customer[]
   rateCustomers: Customer[] = []
   filteredCustomers: Customer[]
+  categories: Category[]
   isGeneral: boolean = false
   constructor(
     private ratesService: RatesService,
-    private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     public dialog: MatDialog,
+    private categoriesService: CategoriesService,
     public dialogRef: MatDialogRef<any>
   ) { }
 
@@ -75,13 +75,14 @@ export class NewRateDialogComponent implements OnInit {
       },
     }
 
-    this.categoriesService.getAllCategories().subscribe(response => {
-      this.categories = response.data
-    })
-
     this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
       this.filteredCustomers = response.data
+    })
+
+    this.categoriesService.getAllCategories().subscribe(response => {
+      this.categories = response.data
+      this.loaders.loadingData = false
     })
   }
 
@@ -91,7 +92,6 @@ export class NewRateDialogComponent implements OnInit {
 
   onFormNewSubmit() {
     if (this.newRateForm.valid) {
-     
       this.loaders.loadingSubmit = true
       this.ratesService.createRate(this.newRateForm.value, this.rateCustomers)
         .subscribe(response => {

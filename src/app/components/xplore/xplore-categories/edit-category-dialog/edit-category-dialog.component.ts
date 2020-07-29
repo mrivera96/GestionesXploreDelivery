@@ -31,7 +31,8 @@ export class EditCategoryDialogComponent implements OnInit {
     this.edCatForm = new FormGroup(
       {
         idCategoria: new FormControl(this.currCategory.idCategoria),
-        descCategoria: new FormControl(this.currCategory.descCategoria, Validators.required),
+        descCategoria: new FormControl(this.currCategory.descCategoria, [Validators.required, Validators.maxLength(60)]),
+        descripcion: new FormControl('',[Validators.required, Validators.maxLength(250)]),
         isActivo: new FormControl(this.currCategory.isActivo, Validators.required)
       }
     )

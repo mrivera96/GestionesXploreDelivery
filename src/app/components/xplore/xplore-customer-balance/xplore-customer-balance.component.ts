@@ -8,6 +8,7 @@ import {DeliveriesService} from "../../../services/deliveries.service";
 import {ActivatedRoute} from "@angular/router";
 import {UsersService} from "../../../services/users.service";
 import {Customer} from "../../../models/customer";
+import {formatDate} from "@angular/common";
 
 @Component({
   selector: 'app-xplore-customer-balance',
@@ -19,7 +20,7 @@ export class XploreCustomerBalanceComponent implements OnInit {
     'loadingData': false
   }
   subtotal: number = 0.00
-  paid: number
+  paid: number = 0.00
   balance: number = 0.00
   currCustomer: Customer = {}
   payments: Payment []
@@ -33,7 +34,6 @@ export class XploreCustomerBalanceComponent implements OnInit {
   customerId: number
 
   constructor(
-    private paymentsService: PaymentsService,
     private deliveriesService: DeliveriesService,
     private activatedRoute: ActivatedRoute,
     private usersService: UsersService
@@ -44,15 +44,14 @@ export class XploreCustomerBalanceComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     this.initialize()
     this.loadData()
+
   }
 
   initialize() {
     this.myPayments = new Array<Payment>()
     this.myFinishedOrders = new Array<Order>()
-    this.paid = 0.00
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -87,6 +86,13 @@ export class XploreCustomerBalanceComponent implements OnInit {
       customers.forEach(customer => {
         if (customer.idCliente == this.customerId) {
           this.currCustomer = customer
+          this.myPayments = customer.payments
+          customer.payments.forEach(payment => {
+            this.paid = +this.paid + +payment.monto
+            payment.fechaPago = formatDate(new Date(payment.fechaPago), 'yyyy-MM-dd', 'en')
+          })
+          this.calcBalance()
+          this.dtTrigger.next()
         }
       })
     })
@@ -94,37 +100,21 @@ export class XploreCustomerBalanceComponent implements OnInit {
     this.deliveriesService.getCustomerOrders(this.customerId).subscribe(response => {
       const allOrdrs: Order[] = response.data.todos
       allOrdrs.forEach(value => {
-        if (+value.idEstado === 44 || +value.estado.idEstado === 46 || +value.estado.idEstado === 47) {
-          this.subtotal = this.subtotal + +value.cTotal
-          this.totalCTotal = this.totalCTotal + +value.cTotal
-          this.totalSurcharges = this.totalSurcharges + +value.recargo
-          this.myFinishedOrders.push(value)
-        }
+        this.subtotal = this.subtotal + +value.cTotal
+        this.totalCTotal = this.totalCTotal + +value.cTotal
+        this.totalSurcharges = this.totalSurcharges + +value.recargo
+        this.myFinishedOrders.push(value)
+      
       })
       this.loaders.loadingData = false
       this.dtTrigger1.next()
 
     })
 
-    this.paymentsService.getPayments().subscribe(response => {
-      this.payments = response.data
-      this.payments.forEach(value => {
-        if (value.idCliente == this.customerId) {
-          this.paid = this.paid + +value.monto
-          this.myPayments.push(value)
-          this.calcBalance()
-        }
-      })
-      this.dtTrigger.next()
-
-    })
-
-
   }
 
-
   calcBalance() {
-    this.balance = Number(this.subtotal) - Number(this.paid)
+    this.balance = +this.subtotal - +this.paid
   }
 
 }

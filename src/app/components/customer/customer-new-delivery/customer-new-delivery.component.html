@@ -26,8 +26,42 @@
           <!--DELIVERY HEADER GROUP START-->
           <div class="row">
             <div class="col-md">
+              <div class="row" >
+                <div class="col">
+                  <p class="card-title"><strong>Categoría a Reservar:</strong></p>
+                  <hr>
+                </div>
+              </div>
               <div class="form-row" formGroupName="deliveryHeader">
-                <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+
+                <div class="col">
+
+                  <br>
+                  <mat-radio-group (change)="calculatedistanceBefore()" formControlName="idCategoria"
+                                   [disabled]="orders.length > 0">
+                    <mat-radio-button [id]="category?.idCategoria" [value]="category.idCategoria" disableRipple="true"
+                                      *ngFor="let category of categories; let  i = index" [matTooltip]="category.descripcion"
+                                      [ngStyle]="{'color':
+                                      category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
+                                      ? '#FF8C00': '#000'}">
+                      <span class="fa d-block text-center" style="font-size: 24px"
+                            [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
+                         'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4}"></span>
+                      {{category.descCategoria}}
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+
+              </div>
+              <div class="row" >
+                <div class="col">
+                  <p class="card-title"><strong>Detalles de Recogida:</strong></p>
+                  <hr>
+                </div>
+              </div>
+              <div class="form-row" formGroupName="deliveryHeader">
+
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md">
                   <mat-label>Fecha de recogida:</mat-label>
                   <input formControlName="fecha" type="date" id="fecha" required matInput>
                   <mat-icon matPrefix>today</mat-icon>
@@ -39,7 +73,7 @@
                   </mat-error>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md">
                   <mat-label>Hora de recogida:</mat-label>
                   <input formControlName="hora" type="time" id="hora" required
                          matInput>
@@ -74,7 +108,7 @@
                     <mat-label>Direccion de recogida:</mat-label>
                     <input matInput (input)="searchOrigin($event)" autocomplete="nope" [matAutocomplete]="autoOrg"
                            id="inputdirRecogida" required formControlName="dirRecogida" [readonly]="orders.length > 0"
-                           placeholder="¿Dónde recogeremos tu pedido?" (paste)="$event.preventDefault()">
+                           placeholder="¿Dónde recogeremos tu pedido?">
                     <mat-autocomplete #autoOrg="matAutocomplete">
                       <mat-option *ngFor="let s of placesOrigin" [value]="s.text" (click)="calculatedistanceBefore()">
                         {{ s.text }}
@@ -123,23 +157,8 @@
                   <mat-error>*Excede la longitud máxima permitida</mat-error>
                 </mat-form-field>
 
-                <div class="col-md-6">
-                  <mat-label>Categoría a reservar:</mat-label>
-                  <br>
-                  <mat-radio-group (change)="calculatedistanceBefore()" formControlName="idCategoria"
-                                   [disabled]="orders.length > 0">
-                    <mat-radio-button [id]="category?.idCategoria" [value]="category.idCategoria" disableRipple="true"
-                                      *ngFor="let category of categories; let  i = index"
-                                      [ngStyle]="{'color':
-                                      category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
-                                      ? '#FF8C00': '#000'}">
-                      <span class="fa d-block text-center" style="font-size: 24px"
-                            [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
-                         'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4}"></span>
-                      {{category.descCategoria}}
-                    </mat-radio-button>
-                  </mat-radio-group>
-                </div>
+                <input type="text" formControlName="coordsOrigen" hidden>
+
 
               </div>
 
@@ -215,7 +234,7 @@
                     <input type="text" (input)="searchDestination($event)" autocomplete="off"
                            [matAutocomplete]="autoDest"
                            matInput formControlName="direccion" id="direccion" required
-                           placeholder="¿Dónde entregaremos tu pedido?" (paste)="$event.preventDefault()">
+                           placeholder="¿Dónde entregaremos tu pedido?" >
                     <mat-autocomplete #autoDest="matAutocomplete">
                       <mat-option *ngFor="let s of placesDestination" [value]="s.text"
                                   (click)="calculatedistanceBefore()">
@@ -272,12 +291,13 @@
             <div class="col">
               <ngx-dropzone [accept]="'text/*'" [expandable]="true" (change)="onSelect($event)"
                             [multiple]="false">
-                <ngx-dropzone-label> Arrastrar archivo de entregas aquí</ngx-dropzone-label>
+                <ngx-dropzone-label> Arrastrar archivo de entregas aquí (*Opcional)</ngx-dropzone-label>
                 <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onFileRemove(f)">
                   <ngx-dropzone-label>{{f?.name}}({{f?.type}})</ngx-dropzone-label>
 
                 </ngx-dropzone-preview>
               </ngx-dropzone>
+              <small><a href="./assets/helpers/archivo_prueba.txt" target="_blank">Archivo de muestra</a></small>
             </div>
           </div>
 

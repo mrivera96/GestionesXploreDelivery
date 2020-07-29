@@ -42,6 +42,10 @@ import { EditScheduleDialogComponent } from '../components/xplore/xplore-schedul
 import { XploreCustomerBalanceComponent } from '../components/xplore/xplore-customer-balance/xplore-customer-balance.component';
 import {MatTabsModule} from "@angular/material/tabs";
 import { ExtraChargesComponent } from '../components/xplore/extra-charges/extra-charges.component';
+import { EditExtraChargeDialogComponent } from '../components/xplore/extra-charges/edit-extra-charge-dialog/edit-extra-charge-dialog.component';
+import { NewExtraChargeDialogComponent } from '../components/xplore/extra-charges/new-extra-charge-dialog/new-extra-charge-dialog.component';
+import { XploreChangeHourDialogComponent } from '../components/xplore/ver-solicitud/xplore-change-hour-dialog/xplore-change-hour-dialog.component';
+
 @NgModule({
   declarations: [
     HomeComponent,
@@ -82,6 +86,9 @@ import { ExtraChargesComponent } from '../components/xplore/extra-charges/extra-
     EditScheduleDialogComponent,
     XploreCustomerBalanceComponent,
     ExtraChargesComponent,
+    EditExtraChargeDialogComponent,
+    NewExtraChargeDialogComponent,
+    XploreChangeHourDialogComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,

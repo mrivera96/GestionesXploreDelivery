@@ -42,7 +42,7 @@ export class PaymentsComponent implements OnInit {
 
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 25,
       serverSide: false,
       processing: true,
       info: true,

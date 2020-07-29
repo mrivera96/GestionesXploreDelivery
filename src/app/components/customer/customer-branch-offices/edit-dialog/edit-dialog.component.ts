@@ -42,8 +42,8 @@ export class EditDialogComponent implements OnInit {
         nomSucursal: [this.currBranch.nomSucursal, Validators.required],
         numTelefono: [this.currBranch.numTelefono, [Validators.minLength(9), Validators.maxLength(9)]],
         direccion: [this.currBranch.direccion, Validators.required],
-        instrucciones:[this.currBranch.instrucciones],
-        isDefault:[this.currBranch.isDefault, Validators.required]
+        instrucciones: [this.currBranch.instrucciones],
+        isDefault: [this.currBranch.isDefault, Validators.required]
       }, {
         validators: [
           BlankSpacesValidator('nomSucursal'),
@@ -55,13 +55,16 @@ export class EditDialogComponent implements OnInit {
 
   searchAddress(event) {
     let lugar = event.target.value
-    this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'})
-      .subscribe(response => {
-        this.places = response
-      })
+    if (lugar.trim().length >= 5) {
+      this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'})
+        .subscribe(response => {
+          this.places = response
+        })
+    }
+
   }
 
-  get f(){
+  get f() {
     return this.edBranchForm.controls
   }
 
@@ -127,7 +130,7 @@ export class EditDialogComponent implements OnInit {
     this.gcords = false
   }
 
-  changeDefault(checked){
+  changeDefault(checked) {
     this.f.isDefault.setValue(checked)
   }
 

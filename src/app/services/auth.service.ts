@@ -26,6 +26,13 @@ export class AuthService {
     return this.http.post<any>(`${environment.apiUrl}`, {function:'login',nickname, password})
   }
 
+  passwordRecovery(form) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function:'passwordRecovery',
+      form
+    })
+  }
+
   logout() {
     return this.http.post(`${environment.apiUrl}`,{function: 'logout', tkn: this.currentUserValue.access_token})
       .pipe(map(data => {

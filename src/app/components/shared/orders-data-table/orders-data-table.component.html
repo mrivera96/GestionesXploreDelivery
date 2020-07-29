@@ -13,6 +13,7 @@
       <th></th>
       <th></th>
       <th></th>
+      <th></th>
       <th>
         <select class="form-control-sm" name="search-last-name">
           <option value="">- Filtrar por Estado -</option>
@@ -27,7 +28,8 @@
     </tfoot>
     <thead>
     <tr>
-      <th>N°</th>
+      <th>N° Delivery</th>
+      <th>N° Envío</th>
       <th data-priority="1" *ngIf="currUser.idPerfil ==='1'">Cliente</th>
       <th data-priority="1">Destinatario</th>
       <th data-priority="1">Celular del Destinatario</th>
@@ -45,6 +47,7 @@
     <tbody>
 
     <tr *ngFor=" let i = index;let order of orders;">
+      <td>{{order.idDelivery}}</td>
       <td>{{order.idDetalle}}</td>
       <td *ngIf="currUser.idPerfil ==='1'">{{order.delivery.nomCliente}}</td>
       <td>{{order.nomDestinatario}}</td>
@@ -54,7 +57,7 @@
       <td>{{order.distancia}}</td>
       <td>L. {{order.recargo}}</td>
       <td>L. {{order.cTotal}}</td>
-      <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">{{ 'Fecha: '+ order.fechaEntrega}}</p> </td>
+      <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">Fecha: {{order.fechaEntrega}}</p> </td>
       <td>{{order.observaciones || 'N/A'}}</td>
       <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p> <p *ngIf="!order.conductor">Aún no asignada</p> </td>
       <td *ngIf="currUser.idPerfil === '1'">

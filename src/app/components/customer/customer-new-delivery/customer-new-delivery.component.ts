@@ -140,7 +140,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
         hora: [formatDate(new Date(), 'HH:mm', 'en'), Validators.required],
         dirRecogida: ['', [Validators.required]],
         idCategoria: [1, [Validators.required]],
-        instrucciones: ['', Validators.maxLength(150)]
+        instrucciones: ['', Validators.maxLength(150)],
+        coordsOrigen: ['']
       }, {
         validators: [
           DateValidate('fecha', 'hora'),
@@ -154,7 +155,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         nomDestinatario: ['', [Validators.required, Validators.maxLength(150), Validators.pattern(/^((?!\s{2,}).)*$/)]],
         numCel: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
         direccion: ['', Validators.required],
-        instrucciones: ['', Validators.maxLength(150)]
+        instrucciones: ['', Validators.maxLength(150)],
       }, {
         validators: [
           BlankSpacesValidator('nFactura'),
@@ -312,6 +313,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         numCel: this.newForm.get('order.numCel').value,
         direccion: this.newForm.get('order.direccion').value,
         instrucciones: this.newForm.get('order.instrucciones').value,
+        coordsDestino:'',
         distancia: '',
         tarifaBase: 0,
         recargo: 0,
@@ -437,16 +439,22 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   searchOrigin(event) {
     let lugar = event.target.value
-    this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
-      this.placesOrigin = response
-    })
+    if(lugar.trim().length >= 5){
+      this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+        this.placesOrigin = response
+      })
+    }
+
   }
 
   searchDestination(event) {
     let lugar = event.target.value
-    this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
-      this.placesDestination = response
-    })
+    if(lugar.trim().length >= 5){
+      this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+        this.placesDestination = response
+      })
+    }
+
   }
 
   calculateRate(ordersCount) {
@@ -490,6 +498,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
     const entrega = currOrder.direccion
     const tarifa = this.pago.baseRate
 
+    if(this.orders.length == 0){
+      this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCoords',
+        lugar: salida,
+      }).subscribe((response) => {
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
+      })
+    }
+
     this.http.post<any>(`${environment.apiUrl}`, {
       function: 'calculateDistance',
       salida: salida,
@@ -501,6 +518,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
       currOrder.tarifaBase = calculatedPayment.baseRate
       currOrder.recargo = calculatedPayment.surcharges
       currOrder.cTotal = calculatedPayment.total
+      this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCoords',
+        lugar: entrega,
+      }).subscribe((response) => {
+        currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
+      })
+
       this.deliveryForm.get('order').reset()
       this.orders.push(currOrder)
       this.pagos.push(calculatedPayment)

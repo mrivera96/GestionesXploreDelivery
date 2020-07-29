@@ -41,4 +41,13 @@ export class PaymentsService {
       }
     )
   }
+
+  getMyPayments(){
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'getMyPayments',
+        tkn: this.authService.currentUserValue.access_token
+      }
+    )
+  }
 }

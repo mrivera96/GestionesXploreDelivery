@@ -22,4 +22,6 @@ export interface DeliveryDetail {
   delivery?: Delivery
   estado?: State
   idEstado?: number
+  observaciones?: string
+  coordsDestino?: string
 }

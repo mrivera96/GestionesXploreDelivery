@@ -34,6 +34,7 @@
         <thead>
         <tr>
           <th>N°</th>
+          <th>Nombre de categoría</th>
           <th>Descripción de categoría</th>
           <th>Activa</th>
           <th data-priority="1">Acción</th>
@@ -44,6 +45,7 @@
         <tr *ngFor="let category of categories">
           <td>{{category.idCategoria}}</td>
           <td>{{category.descCategoria}}</td>
+          <td>{{category.descripcion || 'N/A'}}</td>
           <td>{{category.isActivo == true ? 'Sí' : 'No'}}</td>
           <td>
             <a (click)="showEditForm(category.idCategoria)" style="color: #0071A2">

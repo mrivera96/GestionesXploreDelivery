@@ -24,6 +24,7 @@ import {ChangeHourDialogComponent} from "../components/customer/customer-deliver
 import {MatTabsModule} from "@angular/material/tabs";
 import {NgxDropzoneModule} from "ngx-dropzone";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
+import {MatTooltipModule} from "@angular/material/tooltip";
 @NgModule({
   declarations: [
     TodosDeliveriesComponent,
@@ -52,7 +53,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
         GoogleMapsModule,
         MatTabsModule,
         NgxDropzoneModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        MatTooltipModule
     ],
   entryComponents:[
     DeliveryConfirm,

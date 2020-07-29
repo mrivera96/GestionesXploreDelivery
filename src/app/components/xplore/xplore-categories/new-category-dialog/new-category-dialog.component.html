@@ -12,10 +12,18 @@
 
   <form [formGroup]="newCatForm" *ngIf="!loaders.loadingSubmit">
     <mat-form-field appearance="outline" floatLabel="always">
-      <mat-label>Descripción de categoría:</mat-label>
+      <mat-label>Nombre de categoría:</mat-label>
       <input matInput id="ndescCategoria" type="text" formControlName="descCategoria" maxlength="60"
-             placeholder="¿Cuál será la descripción de la nueva categoría?" required>
+             placeholder="Nombre de la nueva categoría" required>
       <mat-icon matSuffix>create</mat-icon>
+      <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Descripción de categoría:</mat-label>
+      <input matInput id="descripcion" type="text" formControlName="descripcion" maxlength="250"
+             placeholder="¿Cuál será la descripción de la nueva categoría?" required>
+      <mat-icon matSuffix>subtitles</mat-icon>
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
   </form>

@@ -9,6 +9,7 @@ import {DeliveriesService} from "../../../../services/deliveries.service";
 import {formatDate} from "@angular/common";
 import {OrdersByCategory} from "../../../../models/orders-by-category";
 import * as XLSX from 'xlsx'
+import {DeliveryDetail} from "../../../../models/delivery-detail";
 
 @Component({
   selector: 'app-orders-by-cutomer',
@@ -46,6 +47,7 @@ export class OrdersByCutomerComponent implements OnInit {
   ordersByCategory: OrdersByCategory[]
   totalSurcharges: number
   totalCosts: number
+  orders: DeliveryDetail[]
 
   constructor(
     private formBuilder: FormBuilder,
@@ -148,6 +150,8 @@ export class OrdersByCutomerComponent implements OnInit {
         this.totalCustomerOrders = response.data?.totalOrders
         this.ordersByCategory = response.data?.ordersByCategory
 
+        this.orders = response.data.orders
+
         this.ordersByCategory.forEach(value => {
           this.totalSurcharges = this.totalSurcharges +  +value.totalSurcharges
           this.totalCosts = this.totalCosts + +value.cTotal
@@ -193,13 +197,10 @@ export class OrdersByCutomerComponent implements OnInit {
   }
 
   ExportTOExcel() {
-
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.TABLE.nativeElement);
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.TABLE.nativeElement);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
 
-
     XLSX.utils.book_append_sheet(wb, ws, 'Reporte Delivery' );
-
 
     XLSX.writeFile(wb, 'Reporte Delivery - ' + this.currenCustomer.nomEmpresa +'(' + this.f.initDate.value +'-'+ this.f.finDate.value+ ')' + '.xlsx');
   }

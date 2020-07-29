@@ -11,6 +11,7 @@ import {ErrorModalComponent} from "../../shared/error-modal/error-modal.componen
 import {MatDialog} from "@angular/material/dialog";
 import {EditExtraChargeDialogComponent} from "./edit-extra-charge-dialog/edit-extra-charge-dialog.component";
 import {NewExtraChargeDialogComponent} from "./new-extra-charge-dialog/new-extra-charge-dialog.component";
+import { ExtraChargeCategoriesComponent } from './extra-charge-categories/extra-charge-categories.component';
 
 @Component({
   selector: 'app-extra-charges',
@@ -137,6 +138,14 @@ export class ExtraChargesComponent implements OnInit {
       })
     }
 
+  }
+
+  showExtraChargeCategories(id) {
+    this.dialog.open(ExtraChargeCategoriesComponent, {
+      data: {
+        extraChargeId: id
+      }
+    })
   }
 
 }

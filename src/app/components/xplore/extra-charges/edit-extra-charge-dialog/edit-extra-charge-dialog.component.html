@@ -28,6 +28,16 @@
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
       </mat-form-field>
 
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Tipo de Cargo:</mat-label>
+        <mat-select formControlName='tipoCargo' required>
+          <mat-option value="F">Fijo</mat-option>
+          <mat-option value="V">Variable</mat-option>
+        </mat-select>
+        <mat-error>*Este campo es obligatorio</mat-error>
+        <mat-icon matSuffix>list</mat-icon>
+      </mat-form-field>
+
     </div>
 
 

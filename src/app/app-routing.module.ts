@@ -2,11 +2,13 @@ import {NgModule} from '@angular/core';
 import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
 import {LoginComponent} from "./components/shared/login/login.component";
 import {RootComponent} from "./components/shared/root/root.component";
+import {PasswordRecoveryComponent} from "./components/shared/password-recovery/password-recovery.component";
 
 const routes: Routes = [
   //RUTAS COMUNES
   {path: '', component: RootComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'password-recovery', component: PasswordRecoveryComponent},
   {
     path:'customers',
     loadChildren: './customers/customers.module#CustomersModule'

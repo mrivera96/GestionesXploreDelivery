@@ -24,7 +24,8 @@ export class NewCategoryDialogComponent implements OnInit {
   ngOnInit(): void {
     this.newCatForm = new FormGroup(
       {
-        descCategoria: new FormControl('', Validators.required)
+        descCategoria: new FormControl('', [Validators.required,Validators.maxLength(60)]),
+        descripcion: new FormControl('',[Validators.required, Validators.maxLength(250)])
       }
     )
   }

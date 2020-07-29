@@ -95,6 +95,16 @@
           <td style="width: 300px" >
             <div class="row">
               <div class="col">
+                <h2>Envíos desde {{f.initDate.value}} hasta {{f.finDate.value}}</h2>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="width: 300px" >
+            <div class="row">
+              <div class="col">
                 <h3>Envíos por categoría</h3>
               </div>
             </div>
@@ -132,7 +142,7 @@
             <th></th>
             <th>Total:</th>
             <th data-priority="1">
-              {{totalCustomerOrders}}
+              {{totalOrders}}
             </th>
             <th>L. {{ totalSurcharges | number: '.2' }}</th>
             <th>L. {{ totalCosts | number: '.2' }}</th>
@@ -143,11 +153,22 @@
       </div>
 
 
-      <div class="row">
-        <div class="col">
-          <h3>Envíos desde {{f.initDate.value}} hasta {{f.finDate.value}}</h3>
-        </div>
-      </div>
+
+        <table>
+          <tbody>
+
+          <tr>
+            <td style="width: 300px" >
+              <div class="row">
+                <div class="col">
+                  <h3>Envíos por fecha</h3>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          </tbody>
+        </table>
 
       <!-- CONTAINER BODY START -->
       <div class="table-responsive">
@@ -184,6 +205,64 @@
 
         </table>
       </div>
+
+      <table>
+        <tbody>
+
+        <tr>
+          <td style="width: 300px" >
+            <div class="row">
+              <div class="col">
+                <h3>Detalles de envíos</h3>
+              </div>
+            </div>
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+
+      <div class="table-responsive">
+        <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+               class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th>N° Envío</th>
+            <th>N° Reserva</th>
+            <th data-priority="1">Destinatario</th>
+            <th data-priority="1">Celular del Destinatario</th>
+            <th>Dirección</th>
+            <th>Detalle</th>
+            <th>Distancia</th>
+            <th>Recargo</th>
+            <th>Costo</th>
+            <th>Estado</th>
+            <th>Observaciones</th>
+            <th>Conductor</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr *ngFor=" let i = index;let order of orders;">
+            <td>{{order.idDetalle}}</td>
+            <td>{{order.idDelivery}}</td>
+            <td>{{order.nomDestinatario}}</td>
+            <td>{{order.numCel}}</td>
+            <td>{{order.direccion}}</td>
+            <td>{{order.nFactura}}</td>
+            <td>{{order.distancia}}</td>
+            <td>L. {{order.recargo | number: '.2'}}</td>
+            <td>L. {{order.cTotal | number: '.2'}}</td>
+            <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">{{ 'Fecha: '+ order.fechaEntrega}}</p> </td>
+            <td>{{order.observaciones || 'N/A'}}</td>
+            <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p> <p *ngIf="!order.conductor">Aún no asignada</p> </td>
+
+          </tr>
+          </tbody>
+        </table>
+
+      </div>
+
       <!-- CONTAINER END -->
     </div>
     <!-- REPORT CONTAINER END -->

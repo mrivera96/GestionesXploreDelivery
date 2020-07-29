@@ -24,5 +24,5 @@ export interface Delivery {
   cantidad?: string
   descCategoria?: string
   fechaNoFormatted?: string
-
+  coordsOrigen?: string
 }

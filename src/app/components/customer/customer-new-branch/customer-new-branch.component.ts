@@ -88,9 +88,12 @@ export class CustomerNewBranchComponent implements OnInit {
 
   searchAddress(event) {
     let lugar = event.target.value
-    this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
-      this.places = response
-    })
+    if(lugar.trim().length >= 5){
+      this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+        this.places = response
+      })
+    }
+
   }
 
   setCurrentLocation(checked) {
