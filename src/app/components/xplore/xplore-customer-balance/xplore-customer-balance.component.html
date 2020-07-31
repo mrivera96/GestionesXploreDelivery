@@ -23,7 +23,7 @@
                     *ngIf="!loaders.loadingData">
             <mat-card-content>
               <h2>{{currCustomer?.nomEmpresa}} </h2>
-              <h2>Sub-Total: L. {{subtotal | number: '.2'}} </h2>
+              <h2>Sub-Total: L. {{subtotalShow}} </h2>
 
             </mat-card-content>
           </mat-card>
@@ -42,7 +42,7 @@
               <thead>
               <tr>
                 <th>N° de delivery</th>
-                <th>N° de envío</th>            
+                <th>N° de envío</th>
                 <th data-priority="1">Destinatario</th>
                 <th data-priority="1">Celular del Destinatario</th>
                 <th>Dirección</th>
@@ -107,9 +107,9 @@
           <mat-card class="shadow mb-3  text-white text-center" style="background-color: #0277bd"
                     *ngIf="!loaders.loadingData">
             <mat-card-content>
-              <h2>Sub-Total: L. {{subtotal | number: '.2'}} </h2>
-              <h2>Pago Realizado: L. {{paid | number: '.2'}} </h2>
-              <h2>Balance: L. {{ balance | number: '.2'}} </h2>
+              <h2>Sub-Total: L. {{subtotalShow }} </h2>
+              <h2>Pago Realizado: L. {{paidShow }} </h2>
+              <h2>Balance: L. {{ balanceShow }} </h2>
             </mat-card-content>
           </mat-card>
           <!-- DATATABLE START -->
@@ -138,7 +138,7 @@
               <tr *ngFor="let payment of myPayments; let idx1 = index">
                 <td>{{idx1 + 1}}</td>
                 <td>{{payment.fechaPago}}</td>
-                <td>L. {{payment.monto | number: '.2'}}</td>
+                <td>L. {{payment.montoShow }}</td>
                 <td>{{payment.payment_type.nomTipoPago}}</td>
                 <td>{{payment.referencia || 'N/A'}}</td>
                 <td>{{payment.banco || 'N/A'}}</td>
@@ -149,7 +149,7 @@
               <tr>
                 <th></th>
                 <th>Total:</th>
-                <th>L. {{paid | number: '.2'}}</th>
+                <th>L. {{paidShow }}</th>
                 <th></th>
                 <th></th>
                 <th></th>

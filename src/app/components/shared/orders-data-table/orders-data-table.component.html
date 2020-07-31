@@ -28,7 +28,7 @@
     </tfoot>
     <thead>
     <tr>
-      <th>N° Delivery</th>
+      <th>N° Reserva</th>
       <th>N° Envío</th>
       <th data-priority="1" *ngIf="currUser.idPerfil ==='1'">Cliente</th>
       <th data-priority="1">Destinatario</th>
@@ -41,7 +41,7 @@
       <th>Estado</th>
       <th>Observaciones</th>
       <th>Conductor</th>
-      <th *ngIf="currUser.idPerfil === '1'" data-priority="1" >Acción</th>
+      <th *ngIf="currUser.idPerfil === '1'" data-priority="1">Acción</th>
     </tr>
     </thead>
     <tbody>
@@ -57,11 +57,14 @@
       <td>{{order.distancia}}</td>
       <td>L. {{order.recargo}}</td>
       <td>L. {{order.cTotal}}</td>
-      <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">Fecha: {{order.fechaEntrega}}</p> </td>
+      <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">Fecha: {{order.fechaEntrega}}</p></td>
       <td>{{order.observaciones || 'N/A'}}</td>
-      <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p> <p *ngIf="!order.conductor">Aún no asignada</p> </td>
+      <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
+        <p *ngIf="!order.conductor">Aún no asignada</p>
+      </td>
       <td *ngIf="currUser.idPerfil === '1'">
-        <a *ngIf="order.estado.idEstado !== 44" href="javascript:void(0)" (click)="showChangeStateDialog(order)" style="color: #0071A2">
+        <a *ngIf="order.estado.idEstado !== 44" href="javascript:void(0)" (click)="showChangeStateDialog(order)"
+           style="color: #0071A2">
           <i class="fa fa-exchange-alt"></i>
           Cambiar Estado
         </a>

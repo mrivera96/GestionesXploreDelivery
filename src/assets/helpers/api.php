@@ -2,8 +2,8 @@
 date_default_timezone_set("America/Tegucigalpa");
 setlocale(LC_TIME, 'es_HN');
 
-//$environment = 'XploreDeliveryAPIDesa';
-$environment = 'XploreDeliveryAPI';
+$environment = 'XploreDeliveryAPIDesa';
+//$environment = 'XploreDeliveryAPI';
 
 if (isset($_GET['function'])) {
     $func = $_GET['function'];
@@ -1341,5 +1341,65 @@ if (isset($_GET['function'])) {
 
              $output = curl_exec($handle);
              curl_close($handle);
+    }else if ($_POST['function'] == 'getExtraChargeOptions') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/getOptions";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'removeOptionFromExtraCharge') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/removeOption";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'addOptionToExtraCharge') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/addOption";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
     }
 }

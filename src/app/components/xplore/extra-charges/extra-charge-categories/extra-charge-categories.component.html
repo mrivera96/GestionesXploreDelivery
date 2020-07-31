@@ -1,6 +1,6 @@
 <!-- MODAL START -->
 <h2 mat-dialog-title class="text-info">
-    <mat-icon [inline]="true">group</mat-icon>
+    <mat-icon [inline]="true">list</mat-icon>
     Categorías Asignadas
   </h2>
   <mat-dialog-content >
@@ -10,7 +10,7 @@
         <p>Cargando información...</p>
       </div>
     </div>
-  
+
     <div class="row justify-content-end">
       <div class="col">
         <button mat-raised-button (click)="showAddDialog()" type="button" color="primary" class="float-right mb-2">
@@ -20,7 +20,7 @@
       </div>
     </div>
     <br>
-  
+
     <div class="row d-block" *ngIf="!loaders.loadingData" >
       <div class="col">
         <div class="table-responsive">
@@ -31,9 +31,9 @@
               <th scope="col">Categoría</th>
               <th scope="col" data-priority="1">Acción</th>
             </tr>
-  
+
             </thead>
-  
+
             <tbody>
             <tr *ngFor="let category of extraChargeCategories; let i = index">
               <td>{{i + 1}}</td>
@@ -47,22 +47,21 @@
               </td>
             </tr>
             </tbody>
-  
+
           </table>
         </div>
       </div>
     </div>
-  
+
   </mat-dialog-content>
-  
+
   <mat-dialog-actions>
-  
+
     <button type="button" mat-raised-button mat-dialog-close>
       Cerrar
     </button>
   </mat-dialog-actions>
-  
+
   <!-- MODAL END -->
-  
-  
-  
+
+

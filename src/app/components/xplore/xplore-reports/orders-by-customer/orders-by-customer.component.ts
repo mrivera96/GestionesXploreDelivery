@@ -6,15 +6,15 @@ import {Subject} from "rxjs";
 import {Customer} from "../../../../models/customer";
 import {UsersService} from "../../../../services/users.service";
 import {DeliveriesService} from "../../../../services/deliveries.service";
-import {formatDate} from "@angular/common";
+import {DatePipe, formatDate} from "@angular/common";
 import {OrdersByCategory} from "../../../../models/orders-by-category";
-import * as XLSX from 'xlsx'
 import {DeliveryDetail} from "../../../../models/delivery-detail";
-
+import { Workbook } from 'exceljs';
+import * as fs from 'file-saver';
 @Component({
   selector: 'app-orders-by-cutomer',
-  templateUrl: './orders-by-cutomer.component.html',
-  styleUrls: ['./orders-by-cutomer.component.css'],
+  templateUrl: './orders-by-customer.component.html',
+  styleUrls: ['./orders-by-customer.component.css'],
   animations: [
     trigger('fade', [
       transition('void => *', [
@@ -24,10 +24,10 @@ import {DeliveryDetail} from "../../../../models/delivery-detail";
     ])
   ]
 })
-export class OrdersByCutomerComponent implements OnInit {
+export class OrdersByCustomerComponent implements OnInit {
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
-  @ViewChild('TABLE', { static: false })
+  @ViewChild('TABLE', {static: false})
   TABLE: ElementRef;
   loaders = {
     'loadingData': false,
@@ -48,6 +48,8 @@ export class OrdersByCutomerComponent implements OnInit {
   totalSurcharges: number
   totalCosts: number
   orders: DeliveryDetail[]
+  totalCostsF: string
+  totalSurchF: string
 
   constructor(
     private formBuilder: FormBuilder,
@@ -137,9 +139,9 @@ export class OrdersByCutomerComponent implements OnInit {
   onConsultFormSubmit() {
     if (this.consultForm.valid) {
       this.loaders.loadingSubmit = true
-      this.totalOrders = 0
-      this.totalSurcharges = 0
-      this.totalCosts = 0
+      this.totalOrders = 0.00
+      this.totalSurcharges = 0.00
+      this.totalCosts = 0.00
       this.deliveriesService.getOrdersByCustomer(this.consultForm.value).subscribe(response => {
         this.consultResults = response.data.ordersReport
 
@@ -151,11 +153,13 @@ export class OrdersByCutomerComponent implements OnInit {
         this.ordersByCategory = response.data?.ordersByCategory
 
         this.orders = response.data.orders
-
         this.ordersByCategory.forEach(value => {
-          this.totalSurcharges = this.totalSurcharges +  +value.totalSurcharges
+          this.totalSurcharges = this.totalSurcharges + +value.totalSurcharges
           this.totalCosts = this.totalCosts + +value.cTotal
         })
+
+        this.totalCostsF = this.totalCosts.toFixed(2)
+        this.totalSurchF = this.totalSurcharges.toFixed(2)
 
         this.setResume()
 
@@ -196,13 +200,98 @@ export class OrdersByCutomerComponent implements OnInit {
     })
   }
 
-  ExportTOExcel() {
-    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.TABLE.nativeElement);
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
 
-    XLSX.utils.book_append_sheet(wb, ws, 'Reporte Delivery' );
+  generateExcel() {
 
-    XLSX.writeFile(wb, 'Reporte Delivery - ' + this.currenCustomer.nomEmpresa +'(' + this.f.initDate.value +'-'+ this.f.finDate.value+ ')' + '.xlsx');
+    //Excel Title, Header, Data
+    const title = 'Reporte de envíos - '+this.currenCustomer.nomEmpresa;
+    const header = ["Year", "Month", "Make", "Model", "Quantity", "Pct"]
+
+    //Create workbook and worksheet
+    let workbook = new Workbook();
+    let worksheet = workbook.addWorksheet('Reporte Envíos');
+    //Add Row and formatting
+    let titleRow = worksheet.addRow([title]);
+    titleRow.font = {name: 'Arial', family: 4, size: 16, underline: 'double', bold: true}
+    worksheet.addRow([]);
+    worksheet.addRow([]);
+    let subTitleRow = worksheet.addRow(['Desde : ' + this.f.initDate.value+' Hasta: '+this.f.finDate.value])
+    let totalOrders = worksheet.addRow(['Envíos Totales : ' + this.totalCustomerOrders])
+    worksheet.mergeCells('A1:D2');
+    worksheet.mergeCells('A3:C3');
+    worksheet.mergeCells('A4:B4');
+    //Blank Row
+    worksheet.addRow([]);
+    //Add Header Row
+    worksheet.addRow(['Envíos por categoría']);
+    worksheet.addRow([]);
+    const ordersByCategoryHeader = ["N°", "Categoría", "Envíos Realizados", "Recargos", "Costos Totales"]
+    let ordersByCategoryheaderRow = worksheet.addRow(ordersByCategoryHeader);
+
+    // Cell Style : Fill and Border
+    ordersByCategoryheaderRow.eachCell((cell, number) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {argb: 'D3D3D3'},
+        bgColor: {argb: 'D3D3D3'}
+      }
+      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
+    })
+    // worksheet.addRows(data);
+    // Add Data and Conditional Formatting
+    let arrayRow = []
+    let index = 1
+    this.ordersByCategory.forEach(d => {
+      let array = [index,d.category,d.orders,'L.'+d.totalSurcharges,'L.'+d.cTotal]
+      arrayRow.push(array)
+      index ++
+    })
+    arrayRow.forEach(v => {
+      let row = worksheet.addRow(v);
+    })
+
+    worksheet.addRow(['','Total:',this.totalOrders,'L.'+this.totalSurchF,'L.'+this.totalCostsF]);
+
+    worksheet.getColumn(3).width = 30;
+    worksheet.getColumn(4).width = 30;
+    worksheet.getColumn(5).width = 30;
+    worksheet.addRow([]);
+
+    //Add Header Row
+    worksheet.addRow(['Envíos por fecha']);
+
+    worksheet.addRow([]);
+    const ordersByDateHeader = ["Cliente", "fecha", "Envíos Realizados"]
+    let ordersByDateheaderRow = worksheet.addRow(ordersByDateHeader);
+
+    // Cell Style : Fill and Border
+    ordersByDateheaderRow.eachCell((cell, number) => {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: {argb: 'D3D3D3'},
+        bgColor: {argb: 'D3D3D3'}
+      }
+      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
+    })
+    // worksheet.addRows(data);
+    // Add Data and Conditional Formatting
+    let array1Row = []
+    this.consultResults.forEach(d => {
+      let array = [d.customer,d.fecha,d.orders]
+      array1Row.push(array)
+      index ++
+    })
+    array1Row.forEach(v => {
+      let row = worksheet.addRow(v);
+    })
+    //Generate Excel File with given name
+    workbook.xlsx.writeBuffer().then((data) => {
+      let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      fs.saveAs(blob, 'Reporte envíos ('+this.currenCustomer.nomEmpresa+').xlsx');
+    })
   }
+
 
 }

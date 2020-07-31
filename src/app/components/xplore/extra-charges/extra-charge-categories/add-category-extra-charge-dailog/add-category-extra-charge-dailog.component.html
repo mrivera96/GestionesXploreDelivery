@@ -10,13 +10,13 @@
         <p>Procesando información...</p>
       </div>
     </div>
-  
-    <form [formGroup]="catForm">
+
+    <form [formGroup]="catForm" *ngIf="!loaders.loadingSubmit">
       <div class="form-row">
         <mat-form-field appearance="outline" floatLabel="always" class="col-12">
           <mat-label>Categoría:</mat-label>
           <mat-select formControlName="idCategoria" required placeholder="- Seleccione una categoría -">
-        
+
             <mat-option *ngFor="let category of categories" value="{{category.idCategoria}}">
               {{category.descCategoria}}
             </mat-option>
@@ -25,11 +25,11 @@
           <mat-error>*Este campo es obligatorio</mat-error>
         </mat-form-field>
       </div>
-  
+
     </form>
-  
+
   </mat-dialog-content>
-  
+
   <mat-dialog-actions>
     <button type="button" [disabled]="catForm.invalid || loaders.loadingSubmit"
             (click)="onFormSubmit()"
@@ -40,8 +40,7 @@
       Cancelar
     </button>
   </mat-dialog-actions>
-  
+
   <!-- MODAL END -->
-  
-  
-  
+
+

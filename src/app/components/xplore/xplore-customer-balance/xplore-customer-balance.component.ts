@@ -1,9 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {User} from "../../../models/user";
 import {Payment} from "../../../models/payment";
 import {Subject} from "rxjs";
 import {Order} from "../../../models/order";
-import {PaymentsService} from "../../../services/payments.service";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {ActivatedRoute} from "@angular/router";
 import {UsersService} from "../../../services/users.service";
@@ -32,6 +30,10 @@ export class XploreCustomerBalanceComponent implements OnInit {
   totalSurcharges: number = 0.00
   totalCTotal: number = 0.00
   customerId: number
+  subtotalShow: string
+  paidShow: string
+  balanceShow: string
+  totalSurchargesShow: string
 
   constructor(
     private deliveriesService: DeliveriesService,
@@ -88,13 +90,16 @@ export class XploreCustomerBalanceComponent implements OnInit {
           this.currCustomer = customer
           this.myPayments = customer.payments
           customer.payments.forEach(payment => {
-            this.paid = +this.paid + +payment.monto
+            this.paid = this.paid + +payment.monto
             payment.fechaPago = formatDate(new Date(payment.fechaPago), 'yyyy-MM-dd', 'en')
+            payment.montoShow = Number(payment.monto).toFixed(2)
           })
+
           this.calcBalance()
           this.dtTrigger.next()
         }
       })
+
     })
 
     this.deliveriesService.getCustomerOrders(this.customerId).subscribe(response => {
@@ -104,17 +109,25 @@ export class XploreCustomerBalanceComponent implements OnInit {
         this.totalCTotal = this.totalCTotal + +value.cTotal
         this.totalSurcharges = this.totalSurcharges + +value.recargo
         this.myFinishedOrders.push(value)
-      
+
+        this.subtotalShow = Number(this.subtotal).toFixed(2)
+
+        this.totalSurchargesShow = Number(this.totalSurcharges).toFixed(2)
+
       })
       this.loaders.loadingData = false
       this.dtTrigger1.next()
 
     })
 
+
+
   }
 
   calcBalance() {
+    this.paidShow = Number(this.paid).toFixed(2)
     this.balance = +this.subtotal - +this.paid
+    this.balanceShow = Number(this.balance).toFixed(2)
   }
 
 }

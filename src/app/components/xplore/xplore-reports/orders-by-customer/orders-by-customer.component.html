@@ -67,7 +67,7 @@
       </div>
 
       <div class="col-12">
-        <button class="float-right" [disabled]="!consultResults" mat-raised-button color="primary" (click)="ExportTOExcel()"> Exportar
+        <button class="float-right" [disabled]="!consultResults" mat-raised-button color="primary" (click)="generateExcel()"> Exportar
           a Excel
         </button>
       </div>
@@ -132,8 +132,8 @@
             <td>{{i + 1}}</td>
             <td>{{res?.category}}</td>
             <td>{{res?.orders}}</td>
-            <td>L. {{res?.totalSurcharges | number: '.2'}}</td>
-            <td>L. {{res?.cTotal | number: '.2'}}</td>
+            <td>L. {{res?.totalSurcharges}}</td>
+            <td>L. {{res?.cTotal}}</td>
           </tr>
 
           </tbody>
@@ -144,15 +144,13 @@
             <th data-priority="1">
               {{totalOrders}}
             </th>
-            <th>L. {{ totalSurcharges | number: '.2' }}</th>
-            <th>L. {{ totalCosts | number: '.2' }}</th>
+            <th>L. {{ totalSurchF }}</th>
+            <th>L. {{ totalCostsF }}</th>
           </tr>
           </tfoot>
 
         </table>
       </div>
-
-
 
         <table>
           <tbody>
@@ -251,8 +249,8 @@
             <td>{{order.direccion}}</td>
             <td>{{order.nFactura}}</td>
             <td>{{order.distancia}}</td>
-            <td>L. {{order.recargo | number: '.2'}}</td>
-            <td>L. {{order.cTotal | number: '.2'}}</td>
+            <td>L. {{order.recargo }}</td>
+            <td>L. {{order.cTotal }}</td>
             <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">{{ 'Fecha: '+ order.fechaEntrega}}</p> </td>
             <td>{{order.observaciones || 'N/A'}}</td>
             <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p> <p *ngIf="!order.conductor">Aún no asignada</p> </td>

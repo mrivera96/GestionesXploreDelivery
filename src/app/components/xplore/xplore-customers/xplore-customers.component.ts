@@ -98,7 +98,13 @@ export class XploreCustomersComponent implements OnInit {
             customer.paid = customer.paid + +payment.monto
         })
 
+        customer.subtotalShow = Number(customer.subtotal).toFixed(2)
+        customer.paidShow = Number(customer.paid).toFixed(2)
+
+
         customer.balance = customer.subtotal - customer.paid
+
+        customer.balanceShow = Number(customer.balance).toFixed(2)
       })
       this.loaders.loadingData = false
       this.dtTrigger.next()

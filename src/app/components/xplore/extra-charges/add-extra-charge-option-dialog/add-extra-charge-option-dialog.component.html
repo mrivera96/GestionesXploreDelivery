@@ -1,7 +1,7 @@
 <!-- MODAL START -->
 <h2 mat-dialog-title class="text-info">
-  <mat-icon [inline]="true">group_add</mat-icon>
-  Agregar Cliente a Tarifa
+  <mat-icon [inline]="true">settings</mat-icon>
+  Agregar Opción a Cargo Extra
 </h2>
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
@@ -11,21 +11,19 @@
     </div>
   </div>
 
-  <form [formGroup]="custForm" *ngIf="!loaders.loadingSubmit">
+  <form [formGroup]="exChrgOptForm" *ngIf="!loaders.loadingSubmit">
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-12">
-        <mat-label>Cliente</mat-label>
-        <mat-select formControlName="idCliente" required placeholder="- Seleccione un cliente -">
-          <mat-form-field>
-            <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)" >
-            <mat-icon [inline]="true" matPrefix>search</mat-icon>
-          </mat-form-field>
+        <mat-label>Descripción:</mat-label>
+        <input type="text" matInput formControlName="descripcion" maxlength="100" required placeholder="Descripción de la opción">
+        <mat-icon matSuffix>subtitles</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
 
-          <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
-            {{customer.nomEmpresa}}
-          </mat-option>
-        </mat-select>
-        <mat-icon matSuffix>account_circle</mat-icon>
+      <mat-form-field appearance="outline" floatLabel="always" class="col-12">
+        <mat-label>Costo:</mat-label>
+        <input type="number" matInput formControlName="costo" required min="0" placeholder="Costo">
+        <mat-icon matSuffix>attach_money</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>
@@ -35,7 +33,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="custForm.invalid || loaders.loadingSubmit"
+  <button type="button" [disabled]="exChrgOptForm.invalid || loaders.loadingSubmit"
           (click)="onFormSubmit()"
           mat-raised-button color="primary">
     Confimar

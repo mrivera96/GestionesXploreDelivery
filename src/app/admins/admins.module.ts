@@ -35,7 +35,7 @@ import {PaymentsComponent} from "../components/xplore/payments/payments.componen
 import {AddPaymentDialogComponent} from "../components/xplore/payments/add-payment-dialog/add-payment-dialog.component";
 import { RateCustomersDialogComponent } from '../components/xplore/xplore-rates/rate-customers-dialog/rate-customers-dialog.component';
 import { AddCustomerRateDialogComponent } from '../components/xplore/xplore-rates/rate-customers-dialog/add-customer-rate-dialog/add-customer-rate-dialog.component';
-import { OrdersByCutomerComponent } from '../components/xplore/xplore-reports/orders-by-cutomer/orders-by-cutomer.component';
+import { OrdersByCustomerComponent } from '../components/xplore/xplore-reports/orders-by-customer/orders-by-customer.component';
 import { ChangeOrderStateDialogComponent } from '../components/shared/orders-data-table/change-order-state-dialog/change-order-state-dialog.component';
 import { XploreScheduleComponent } from '../components/xplore/xplore-schedule/xplore-schedule.component';
 import { EditScheduleDialogComponent } from '../components/xplore/xplore-schedule/edit-schedule-dialog/edit-schedule-dialog.component';
@@ -45,6 +45,9 @@ import { ExtraChargesComponent } from '../components/xplore/extra-charges/extra-
 import { EditExtraChargeDialogComponent } from '../components/xplore/extra-charges/edit-extra-charge-dialog/edit-extra-charge-dialog.component';
 import { NewExtraChargeDialogComponent } from '../components/xplore/extra-charges/new-extra-charge-dialog/new-extra-charge-dialog.component';
 import { XploreChangeHourDialogComponent } from '../components/xplore/ver-solicitud/xplore-change-hour-dialog/xplore-change-hour-dialog.component';
+import { ExtraChargeCategoriesComponent } from '../components/xplore/extra-charges/extra-charge-categories/extra-charge-categories.component';
+import { AddCategoryExtraChargeDailogComponent } from '../components/xplore/extra-charges/extra-charge-categories/add-category-extra-charge-dailog/add-category-extra-charge-dailog.component';
+import { ExtraChargesOptionsDialogComponent } from '../components/xplore/extra-charges/extra-charges-options-dialog/extra-charges-options-dialog.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +83,7 @@ import { XploreChangeHourDialogComponent } from '../components/xplore/ver-solici
     AddPaymentDialogComponent,
     RateCustomersDialogComponent,
     AddCustomerRateDialogComponent,
-    OrdersByCutomerComponent,
+    OrdersByCustomerComponent,
     ChangeOrderStateDialogComponent,
     XploreScheduleComponent,
     EditScheduleDialogComponent,
@@ -89,6 +92,9 @@ import { XploreChangeHourDialogComponent } from '../components/xplore/ver-solici
     EditExtraChargeDialogComponent,
     NewExtraChargeDialogComponent,
     XploreChangeHourDialogComponent,
+    ExtraChargeCategoriesComponent,
+    AddCategoryExtraChargeDailogComponent,
+    ExtraChargesOptionsDialogComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,

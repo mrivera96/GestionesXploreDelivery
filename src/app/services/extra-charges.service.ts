@@ -71,4 +71,31 @@ export class ExtraChargesService {
   }
 
 
+  getExtraChargeOptions(extraChargeId){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getExtraChargeOptions',
+      idCargoExtra: extraChargeId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  removeOptionFromExtraCharge(extraChargeId, optionId){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'removeOptionFromExtraCharge',
+      optionId: optionId,
+      idCargoExtra: extraChargeId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  addOptionToExtraCharge(extraChargeId, form){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'addOptionToExtraCharge',
+      form: form,
+      idCargoExtra: extraChargeId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+
 }

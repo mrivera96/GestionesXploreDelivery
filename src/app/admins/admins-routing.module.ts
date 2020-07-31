@@ -16,7 +16,7 @@ import {PendingDeliveriesComponent} from "../components/xplore/pending-deliverie
 import {XploreDriversComponent} from "../components/xplore/xplore-drivers/xplore-drivers.component";
 import {OrdersByDriverComponent} from "../components/xplore/xplore-reports/orders-by-driver/orders-by-driver.component";
 import {PaymentsComponent} from "../components/xplore/payments/payments.component";
-import {OrdersByCutomerComponent} from "../components/xplore/xplore-reports/orders-by-cutomer/orders-by-cutomer.component";
+import {OrdersByCustomerComponent} from "../components/xplore/xplore-reports/orders-by-customer/orders-by-customer.component";
 import {XploreScheduleComponent} from "../components/xplore/xplore-schedule/xplore-schedule.component";
 import {XploreCustomerBalanceComponent} from "../components/xplore/xplore-customer-balance/xplore-customer-balance.component";
 import {ExtraChargesComponent} from "../components/xplore/extra-charges/extra-charges.component";
@@ -40,7 +40,7 @@ const routes: Routes = [
   {path: 'reservas-pendientes', component: PendingDeliveriesComponent, canActivate: [XploreGuard]},
   {path: 'conductores', component: XploreDriversComponent, canActivate: [XploreGuard]},
   {path: 'reportes/envios-conductores', component: OrdersByDriverComponent, canActivate: [XploreGuard]},
-  {path: 'reportes/envios-clientes', component: OrdersByCutomerComponent, canActivate: [XploreGuard]},
+  {path: 'reportes/envios-clientes', component: OrdersByCustomerComponent, canActivate: [XploreGuard]},
   {path: 'pagos', component: PaymentsComponent, canActivate: [XploreGuard]},
   {path: 'balance-cliente/:id', component: XploreCustomerBalanceComponent, canActivate: [XploreGuard]},
 ];

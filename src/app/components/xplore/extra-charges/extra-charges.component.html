@@ -38,6 +38,7 @@
           <th>Costo</th>
           <th>Tipo de Cargo</th>
           <th>Categorías asignadas</th>
+          <th>Opciones</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
@@ -48,12 +49,17 @@
           <td>{{extraCharge.nombre}}</td>
           <td>L. {{extraCharge.costo | number:'.2'}}</td>
           <td>
-            <p *ngIf="extraCharge.tipoCargo">{{extraCharge.tipoCargo == 'F' ? 'Fijo' :  'Variable'}}</p> 
+            <p *ngIf="extraCharge.tipoCargo">{{extraCharge.tipoCargo == 'F' ? 'Fijo' :  'Variable'}}</p>
             <p *ngIf="!extraCharge.tipoCargo">N/A</p>
           </td>
           <td>
             <a (click)="showExtraChargeCategories(extraCharge.idCargoExtra)" style="color: #0071A2">
               <i class="fa fa-eye"></i> Ver Categorías
+            </a>
+          </td>
+          <td>
+            <a (click)="showExtraChargeOptions(extraCharge.idCargoExtra)" style="color: #0071A2">
+              <i class="fa fa-eye"></i> Ver Opciones
             </a>
           </td>
           <td>

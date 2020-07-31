@@ -14,4 +14,7 @@ export interface Customer {
   balance?: number
   payments?: Payment[]
   deliveries?: Delivery[]
+  subtotalShow?: string
+  paidShow?: string
+  balanceShow?: string
 }

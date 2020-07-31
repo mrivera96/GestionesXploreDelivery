@@ -4,14 +4,12 @@ import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
 import {ExtraCharge} from "../../../models/extra-charge";
 import {ExtraChargesService} from "../../../services/extra-charges.service";
-import {Surcharge} from "../../../models/surcharge";
-import {EditSurchargeDialogComponent} from "../xplore-surcharges/edit-surcharge-dialog/edit-surcharge-dialog.component";
-import {NewSurchargeDialogComponent} from "../xplore-surcharges/new-surcharge-dialog/new-surcharge-dialog.component";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {EditExtraChargeDialogComponent} from "./edit-extra-charge-dialog/edit-extra-charge-dialog.component";
 import {NewExtraChargeDialogComponent} from "./new-extra-charge-dialog/new-extra-charge-dialog.component";
 import { ExtraChargeCategoriesComponent } from './extra-charge-categories/extra-charge-categories.component';
+import {ExtraChargesOptionsDialogComponent} from "./extra-charges-options-dialog/extra-charges-options-dialog.component";
 
 @Component({
   selector: 'app-extra-charges',
@@ -142,6 +140,14 @@ export class ExtraChargesComponent implements OnInit {
 
   showExtraChargeCategories(id) {
     this.dialog.open(ExtraChargeCategoriesComponent, {
+      data: {
+        extraChargeId: id
+      }
+    })
+  }
+
+  showExtraChargeOptions(id) {
+    this.dialog.open(ExtraChargesOptionsDialogComponent, {
       data: {
         extraChargeId: id
       }

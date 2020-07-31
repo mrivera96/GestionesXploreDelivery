@@ -15,4 +15,5 @@ export interface Payment {
   banco?: string
   numAutorizacion?: string
   payment_type?: PaymentType
+  montoShow?:string
 }

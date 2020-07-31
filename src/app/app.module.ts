@@ -24,8 +24,7 @@ import {CustomersModule} from "./customers/customers.module";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {SharedModule} from "./shared/shared.module";
 import { PasswordRecoveryComponent } from './components/shared/password-recovery/password-recovery.component';
-import { ExtraChargeCategoriesComponent } from './components/xplore/extra-charges/extra-charge-categories/extra-charge-categories.component';
-import { AddCategoryExtraChargeDailogComponent } from './components/xplore/extra-charges/extra-charge-categories/add-category-extra-charge-dailog/add-category-extra-charge-dailog.component';
+import { AddExtraChargeOptionDialogComponent } from './components/xplore/extra-charges/add-extra-charge-option-dialog/add-extra-charge-option-dialog.component';
 
 
 
@@ -36,8 +35,7 @@ import { AddCategoryExtraChargeDailogComponent } from './components/xplore/extra
         RootComponent,
         ErrorModalComponent,
         PasswordRecoveryComponent,
-        ExtraChargeCategoriesComponent,
-        AddCategoryExtraChargeDailogComponent,
+        AddExtraChargeOptionDialogComponent,
     ],
 
     imports: [
