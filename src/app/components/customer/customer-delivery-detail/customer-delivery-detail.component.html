@@ -80,18 +80,23 @@
         </div>
 
         <div class="col-sm">
-          <strong>Total:</strong>
-          L. {{currentDelivery?.total}}
+          <strong>Cargos Extra:</strong>
+          L. {{currentDelivery?.cargosExtra || '0.00'}}
         </div>
 
         <div class="col-sm">
-          <strong>Estado Actual:</strong>
-          {{currentDelivery?.estado.descEstado}}
+          <strong>Total:</strong>
+          L. {{currentDelivery?.total}}
         </div>
 
       </div>
 
       <div class="row">
+        <div class="col-sm">
+          <strong>Estado Actual:</strong>
+          {{currentDelivery?.estado.descEstado}}
+        </div>
+
         <div class="col-sm" *ngIf="currentDelivery.idEstado == 37">
           <strong>Asignada a:</strong>
           {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
@@ -100,6 +105,12 @@
         <div class="col-sm" *ngIf="allowHourChange">
           <button type="button" mat-raised-button color="primary" [disabled]="!allowHourChange" (click)="openChangeHourDialog()" >
             Cambiar Hora de Recogida
+          </button>
+        </div>
+
+        <div class="col-sm" *ngIf="hasPhotos">
+          <button type="button" mat-raised-button color="primary" [disabled]="!hasPhotos" (click)="openPhotosDialog(currentDeliveryDetail)">
+            Ver Fotografías
           </button>
         </div>
 
@@ -121,6 +132,7 @@
             <th>Instrucciones de entrega</th>
             <th>Distancia</th>
             <th>Recargo</th>
+            <th>Cargos Extra</th>
             <th>Costo</th>
           </tr>
 
@@ -137,6 +149,7 @@
             <td>{{detail?.instrucciones}}</td>
             <td>{{detail.distancia}}</td>
             <td>L. {{detail.recargo}}</td>
+            <td>L. {{detail.cargosExtra || '0.00'}}</td>
             <td>L. {{detail.cTotal}}</td>
           </tr>
           </tbody>

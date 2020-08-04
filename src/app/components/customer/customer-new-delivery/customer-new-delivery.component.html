@@ -26,7 +26,7 @@
           <!--DELIVERY HEADER GROUP START-->
           <div class="row">
             <div class="col-md">
-              <div class="row" >
+              <div class="row">
                 <div class="col">
                   <p class="card-title"><strong>Categoría a Reservar:</strong></p>
                   <hr>
@@ -37,13 +37,15 @@
                 <div class="col">
 
                   <br>
-                  <mat-radio-group (change)="calculatedistanceBefore()" formControlName="idCategoria"
+                  <mat-radio-group (change)="calculatedistanceBefore();setSelectedCategory()"
+                                   formControlName="idCategoria"
                                    [disabled]="orders.length > 0">
                     <mat-radio-button [id]="category?.idCategoria" [value]="category.idCategoria" disableRipple="true"
-                                      *ngFor="let category of categories; let  i = index" [matTooltip]="category.descripcion"
+                                      *ngFor="let category of categories; let  i = index"
+                                      [matTooltip]="category.descripcion"
                                       [ngStyle]="{'color':
                                       category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
-                                      ? '#FF8C00': '#000'}">
+                                      ? '#FF8C00': '#000'}" class="cat-rb">
                       <span class="fa d-block text-center" style="font-size: 24px"
                             [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
                          'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4}"></span>
@@ -53,7 +55,7 @@
                 </div>
 
               </div>
-              <div class="row" >
+              <div class="row">
                 <div class="col">
                   <p class="card-title"><strong>Detalles de Recogida:</strong></p>
                   <hr>
@@ -234,7 +236,7 @@
                     <input type="text" (input)="searchDestination($event)" autocomplete="off"
                            [matAutocomplete]="autoDest"
                            matInput formControlName="direccion" id="direccion" required
-                           placeholder="¿Dónde entregaremos tu pedido?" >
+                           placeholder="¿Dónde entregaremos tu pedido?">
                     <mat-autocomplete #autoDest="matAutocomplete">
                       <mat-option *ngFor="let s of placesDestination" [value]="s.text"
                                   (click)="calculatedistanceBefore()">
@@ -265,6 +267,51 @@
                     Ubicación actual
                   </mat-checkbox>
                 </div>
+
+                <div class="col-md-6">
+                  <mat-slide-toggle  formControlName="tomarFoto">Tomar Fotografía</mat-slide-toggle>
+                </div>
+
+
+              </div>
+
+
+              <div class="row" *ngIf="selectedCategory?.category_extra_charges?.length > 0">
+                <div class="col">
+                  <p class="card-title"><strong>Opciones extra de envíos:</strong></p>
+                  <hr>
+                </div>
+              </div>
+
+              <div class="form-row" formGroupName="order" *ngIf="selectedCategory?.category_extra_charges?.length > 0">
+                <mat-form-field appearance="outline" floatLabel="always" class="col">
+                  <mat-label>Cargo Extra</mat-label>
+                  <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -" >
+                    <mat-option *ngFor="let extracharge of selectedCategory.category_extra_charges"
+                                (click)="setSelectedExtraCharge(extracharge.extra_charge)"
+                                [value]="extracharge.idCargoExtra">
+                    <span *ngIf="extracharge.extra_charge.tipoCargo === 'F'">
+                      {{extracharge.extra_charge.nombre}}
+                      <span class="badge badge-primary">L.{{ extracharge.extra_charge.costo | number: '.2'}}</span>
+                    </span>
+                      <span *ngIf="extracharge.extra_charge.tipoCargo === 'V'">
+                      {{extracharge.extra_charge.nombre}}
+                    </span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+
+                <mat-form-field appearance="outline" floatLabel="always" class="col" *ngIf="selectedExtraCharge.tipoCargo === 'V'">
+                  <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
+                  <mat-select  formControlName="idOpcionExtra"
+                              placeholder="- Seleccione una opción -" class="col">
+                    <mat-option *ngFor="let option of selectedExtraCharge.options"
+                                value="{{option.costo}}" (click)="setSelectedExtraChargeOption(option)">
+                      {{option.descripcion  }}<span class="badge badge-primary">L.{{ '  ' + option.costo | number: '.2'}}</span>
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
 
               </div>
 
@@ -378,6 +425,7 @@
               <th scope="col">Intsrucciones</th>
               <th scope="col">Dirección del Destinatario</th>
               <th scope="col">Distancia</th>
+              <th scope="col">Tomar Fotografía</th>
               <th scope="col" data-priority="1">Acción</th>
             </tr>
 
@@ -392,6 +440,7 @@
               <td>{{order.instrucciones}}</td>
               <td>{{order.direccion}}</td>
               <td>{{order.distancia}}</td>
+              <td>{{order.tomarFoto == true ? 'Sí': 'No'}}</td>
               <td>
                 <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(order)"><i
                   class="fa fa-trash-alt"></i>
@@ -422,7 +471,7 @@
           <span>
             <i class="fa fa-book"></i> Reservar
             <span class="badge badge-primary">
-              L. {{pago.total | number: '2.2'}}
+              L. {{pago.total | number: '.2'}}
             </span>
           </span>
         </mat-checkbox>

@@ -2,8 +2,6 @@ import {Component, OnInit} from '@angular/core'
 import {DeliveriesService} from "../../../services/deliveries.service"
 import {Delivery} from "../../../models/delivery"
 import {ActivatedRoute} from "@angular/router"
-import {Vehicle} from "../../../models/vehicle"
-import {VehiclesService} from "../../../services/vehicles.service"
 import {UsersService} from "../../../services/users.service"
 import {State} from "../../../models/state";
 import {Subject} from "rxjs";
@@ -13,6 +11,8 @@ import {ErrorModalComponent} from "../../shared/error-modal/error-modal.componen
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeStateDialogComponent} from "./change-state-dialog/change-state-dialog.component";
 import { XploreChangeHourDialogComponent } from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
+import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
+import {Photography} from "../../../models/photography";
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -39,10 +39,10 @@ export class VerSolicitudComponent implements OnInit {
   states: State[]
   dtOptions: any
   dtTrigger: Subject<any> = new Subject()
+  hasPhotos: boolean = false
 
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
-              private usersService: UsersService,
               public dialog: MatDialog) {
     this.loaders.loadingData = true
   }
@@ -89,9 +89,19 @@ export class VerSolicitudComponent implements OnInit {
       this.currentDeliveryDetail = response.data.detalle
       this.dtTrigger.next()
       this.loaders.loadingData = false
+      let photos = 0
+      this.currentDeliveryDetail.forEach(detail => {
+        if(detail.photography.length > 0){
+          photos ++
+        }
+      })
+
+      if(photos > 0){
+        this.hasPhotos = true
+      }
 
       const state = response.data.idEstado
-    
+
       if(state !== 39){
         this.allowHourChange = true
       }
@@ -145,6 +155,23 @@ export class VerSolicitudComponent implements OnInit {
     dialogRef.afterClosed().subscribe( result => {
       if(result){
         this.ngOnInit()
+      }
+    })
+
+  }
+
+  openPhotosDialog(details){
+    let photos: Photography[] = []
+
+    details.forEach(detail => {
+      detail.photography.forEach(photo => {
+        photos.push(photo)
+      })
+
+    })
+    const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
+      data:{
+        photos: photos
       }
     })
 

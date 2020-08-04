@@ -48,6 +48,7 @@
                 <th>Detalle</th>
                 <th>Distancia</th>
                 <th>Recargo</th>
+                <th>Cargos Extra</th>
                 <th>Costo Total</th>
                 <th>Fecha de entrega</th>
                 <th>Conductor</th>
@@ -63,6 +64,7 @@
                 <td>{{order.nFactura}}</td>
                 <td>{{order.distancia}}</td>
                 <td>L. {{order.recargo}}</td>
+                <td>L. {{order.cargosExtra || '0.00'}}</td>
                 <td>L. {{order.cTotal}}</td>
                 <td>{{order.fechaEntrega}}</td>
                 <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
@@ -79,6 +81,7 @@
                 <th></th>
                 <th>Total:</th>
                 <th>L. {{totalSurcharges | number: '.2'}}</th>
+                <th>L.{{totalExtraCharges | number: '.2'}}</th>
                 <th>L. {{totalCTotal | number: '.2'}}</th>
                 <th></th>
                 <th></th>

@@ -37,6 +37,7 @@ export class CustomerBalanceComponent implements OnInit {
   myFinishedOrders: Order[]
   totalSurcharges: number = 0.00
   totalCTotal: number = 0.00
+  totalExtraCharges: number = 0.00
 
   constructor(
     private authService: AuthService,
@@ -104,6 +105,7 @@ export class CustomerBalanceComponent implements OnInit {
           this.subtotal = this.subtotal + +value.cTotal
           this.totalCTotal = this.totalCTotal + +value.cTotal
           this.totalSurcharges = this.totalSurcharges + +value.recargo
+          this.totalExtraCharges = this.totalExtraCharges + +value.cargosExtra
           this.myFinishedOrders.push(value)
         }
       })

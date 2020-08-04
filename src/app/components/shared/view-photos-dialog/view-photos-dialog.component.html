@@ -1,0 +1,23 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-primary">
+  <i class="fa fa-camera"></i> Fotografías de envíos
+  <button class="btn float-right" (click)="dialogRef.close()">
+    <mat-icon>
+      close
+    </mat-icon>
+  </button>
+</h2>
+<mat-dialog-content>
+
+  <mat-card *ngFor="let photo of photos" class="mb-2">
+    <mat-card-header>
+      <mat-card-title>N° de Envío</mat-card-title>
+      <mat-card-subtitle>{{photo.idDetalle}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image alt="assets/img/loading.svg" src="{{imageRoute + photo.rutaFotografia}}" >
+  </mat-card>
+
+</mat-dialog-content>
+
+
+<!-- MODAL END -->

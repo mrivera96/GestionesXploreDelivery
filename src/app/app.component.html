@@ -83,11 +83,11 @@
       <mat-nav-list class="d-none reportsSubMenu">
         <a [routerLink]="['admins/reportes/envios-conductores']" (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>sports_motorsports</mat-icon>
-          Envios por Conductor
+          Envíos por Conductor
         </a>
         <a [routerLink]="['admins/reportes/envios-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>people</mat-icon>
-          Envios por Cliente
+          Envíos por Cliente
         </a>
       </mat-nav-list>
 
@@ -184,6 +184,11 @@
       <a [routerLink]="['customers/direcciones']" (click)="sidenav.close()" mat-list-item>
         <mat-icon>location_on</mat-icon>
         Mis Direcciones
+      </a>
+
+      <a [routerLink]="['customers/reporte-envios']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>analytics</mat-icon>
+        Reporte de Envíos
       </a>
 
     </mat-nav-list>

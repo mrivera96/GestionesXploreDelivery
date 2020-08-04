@@ -12,6 +12,7 @@ import {CustomerTodayOrdersComponent} from "../components/customer/customer-toda
 import {CustomerAllOrdersComponent} from "../components/customer/customer-all-orders/customer-all-orders.component";
 import {CustomerProfileComponent} from "../components/customer/customer-profile/customer-profile.component";
 import {CustomerBalanceComponent} from "../components/customer/customer-balance/customer-balance.component";
+import {CustomerReportsComponent} from "../components/customer/customer-reports/customer-reports.component";
 
 
 const routes: Routes = [
@@ -27,6 +28,7 @@ const routes: Routes = [
   {path: 'envios-todos', component: CustomerAllOrdersComponent, canActivate: [CustomerGuard]},
   {path: 'perfil', component: CustomerProfileComponent, canActivate: [CustomerGuard]},
   {path: 'balance', component: CustomerBalanceComponent, canActivate: [CustomerGuard]},
+  {path: 'reporte-envios', component: CustomerReportsComponent, canActivate: [CustomerGuard]},
 ];
 
 @NgModule({

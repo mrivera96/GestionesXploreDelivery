@@ -25,6 +25,8 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {NgxDropzoneModule} from "ngx-dropzone";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import { CustomerReportsComponent } from '../components/customer/customer-reports/customer-reports.component';
+
 @NgModule({
   declarations: [
     TodosDeliveriesComponent,
@@ -42,7 +44,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
     DeliveryConfirm,
     HomeCustomerComponent,
     CustomerBalanceComponent,
-    ChangeHourDialogComponent
+    ChangeHourDialogComponent,
+    CustomerReportsComponent,
   ],
     imports: [
         CommonModule,

@@ -1,21 +1,21 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {DataTableDirective} from "angular-datatables";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {DataTableDirective} from "angular-datatables";
 import {Subject} from "rxjs";
-import {Customer} from "../../../../models/customer";
-import {UsersService} from "../../../../services/users.service";
-import {DeliveriesService} from "../../../../services/deliveries.service";
+import {OrdersByCategory} from "../../../models/orders-by-category";
+import {DeliveryDetail} from "../../../models/delivery-detail";
+import {DeliveriesService} from "../../../services/deliveries.service";
 import {formatDate} from "@angular/common";
-import {OrdersByCategory} from "../../../../models/orders-by-category";
-import {DeliveryDetail} from "../../../../models/delivery-detail";
+import {AuthService} from "../../../services/auth.service";
+import {Customer} from "../../../models/customer";
 import {Workbook} from 'exceljs';
 import * as fs from 'file-saver';
+import {animate, style, transition, trigger} from "@angular/animations";
 
 @Component({
-  selector: 'app-orders-by-cutomer',
-  templateUrl: './orders-by-customer.component.html',
-  styleUrls: ['./orders-by-customer.component.css'],
+  selector: 'app-customer-reports',
+  templateUrl: './customer-reports.component.html',
+  styleUrls: ['./customer-reports.component.css'],
   animations: [
     trigger('fade', [
       transition('void => *', [
@@ -25,17 +25,16 @@ import * as fs from 'file-saver';
     ])
   ]
 })
-export class OrdersByCustomerComponent implements OnInit {
+export class CustomerReportsComponent implements OnInit {
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
   @ViewChild('TABLE', {static: false})
   TABLE: ElementRef;
+  consultForm: FormGroup
   loaders = {
     'loadingData': false,
     'loadingSubmit': false,
   }
-  consultForm: FormGroup
-  customers: Customer[]
   dtOptions: any
   dtOptions1: any
   dtTrigger: Subject<any>
@@ -43,41 +42,33 @@ export class OrdersByCustomerComponent implements OnInit {
   dtTrigger2: Subject<any>
   consultResults: any = []
   ordersInRange: number = 0
-  filteredCustomers: Customer[]
-  currenCustomer: Customer
   totalCustomerOrders: number = 0
   ordersByCategory: OrdersByCategory[]
   totalSurcharges: number
   totalCosts: number
   totalExtracharges: number
   orders: DeliveryDetail[] = []
-
+  currenCustomer: Customer
 
   constructor(
     private formBuilder: FormBuilder,
-    private usersService: UsersService,
-    private deliveriesService: DeliveriesService
+    private deliveriesService: DeliveriesService,
+    private authService: AuthService
   ) {
+    this.currenCustomer = this.authService.currentUserValue.cliente
   }
 
   ngOnInit(): void {
     this.initialize()
-    this.loadData()
-  }
-
-  loadData() {
-    this.usersService.getCustomers().subscribe(response => {
-      this.customers = response.data
-      this.filteredCustomers = response.data
-    })
   }
 
   initialize() {
+
     this.dtTrigger = new Subject<any>()
     this.dtTrigger1 = new Subject<any>()
     this.dtTrigger2 = new Subject<any>()
     this.consultForm = this.formBuilder.group({
-      customerId: ['', [Validators.required]],
+      customerId: [this.currenCustomer.idCliente, [Validators.required]],
       initDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
       finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
     })
@@ -155,7 +146,6 @@ export class OrdersByCustomerComponent implements OnInit {
         this.totalCosts = response.data.totalCosts
         this.totalExtracharges = response.data.totalExtraCharges
         this.ordersInRange = response.data.ordersInRange
-        this.setResume()
 
         if (this.datatableElement.dtInstance) {
           this.datatableElement.dtInstance.then(
@@ -176,25 +166,6 @@ export class OrdersByCustomerComponent implements OnInit {
     }
   }
 
-  onKey(value) {
-    this.filteredCustomers = this.search(value);
-  }
-
-  search(value: string) {
-    let filter = value.toLowerCase();
-    if (filter != "") {
-      return this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
-    }
-    return this.customers
-  }
-
-  setResume() {
-    this.customers.forEach(value => {
-      if (value.idCliente == this.f.customerId.value) {
-        this.currenCustomer = value
-      }
-    })
-  }
 
 
   generateExcel() {
@@ -367,6 +338,5 @@ export class OrdersByCustomerComponent implements OnInit {
       fs.saveAs(blob, 'Reporte envíos (' + this.currenCustomer.nomEmpresa + ').xlsx');
     })
   }
-
 
 }

@@ -39,7 +39,7 @@
           <tr *ngFor="let option of extraChargeOptions; let i = index">
             <td>{{i + 1}}</td>
             <td>{{option.descripcion}}</td>
-            <td>{{option.costo}}</td>
+            <td>L.{{option.costo}}</td>
             <td>
               <button type="button" class="btn btn-sm btn-outline-danger"
                       (click)="removeOptionFromExtraCharge(option.idDetalleOpcion)"><i

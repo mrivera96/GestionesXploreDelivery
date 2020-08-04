@@ -14,20 +14,6 @@
       <div class="col">
         <form [formGroup]="consultForm">
           <div class="form-row">
-            <mat-form-field appearance="outline" class="col-md">
-              <mat-label>Cliente:</mat-label>
-              <mat-select formControlName="customerId" required placeholder="- Seleccione un cliente -">
-                <mat-form-field>
-                  <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)">
-                  <mat-icon [inline]="true" matPrefix>search</mat-icon>
-                </mat-form-field>
-                <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
-                  {{customer.nomEmpresa}}
-                </mat-option>
-              </mat-select>
-              <mat-icon matPrefix>group</mat-icon>
-              <mat-error>*Este campo es obligatorio</mat-error>
-            </mat-form-field>
 
             <mat-form-field appearance="outline" class="col-md">
               <mat-label>Fecha Inicial:</mat-label>
@@ -36,9 +22,6 @@
               <mat-error>*Este campo es obligatorio</mat-error>
             </mat-form-field>
 
-          </div>
-
-          <div class="form-row">
             <mat-form-field appearance="outline" class="col-md">
               <mat-label>Fecha Final:</mat-label>
               <input matInput type="date" formControlName="finDate" required>
@@ -46,6 +29,9 @@
               <mat-error>*Este campo es obligatorio</mat-error>
             </mat-form-field>
 
+          </div>
+
+          <div class="form-row">
 
             <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
                     (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
@@ -67,7 +53,7 @@
       </div>
 
       <div class="row">
-        <div class="col-12">
+        <div class="col-12 mt-2">
           <button class="float-right" [disabled]="consultResults.length == 0" mat-raised-button color="primary"
                   (click)="generateExcel()">
             Exportar a Excel
@@ -76,7 +62,7 @@
       </div>
 
       <div class="row">
-        <div class="col"><h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2></div>
+        <div class="col"><h2>Resumen - {{currenCustomer.nomEmpresa}}</h2></div>
       </div>
 
       <div class="row">

@@ -16,6 +16,7 @@ export interface Delivery {
   category?: Category
   tarifaBase?: number
   recargos?: number
+  cargosExtra?: number
   total?: number
   isPagada?: boolean
   idCliente?: number

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Category} from "../../../models/category";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
@@ -28,7 +28,8 @@ import {AuthService} from "../../../services/auth.service";
 import {NoUrlValidator} from "../../../helpers/noUrl.validator";
 import {GoogleMap} from "@angular/google-maps";
 import {Schedule} from "../../../models/schedule";
-
+import {ExtraCharge} from "../../../models/extra-charge";
+import {ExtraChargeOption} from "../../../models/extra-charge-option";
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -62,7 +63,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   currCustomer: Customer
   directionsRenderer
   directionsService
-  categories: Category[]
+  categories: Category[] = []
   deliveryForm: FormGroup
   orders: Order[] = []
   agregado = false
@@ -78,6 +79,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   placesDestination = []
   pago = {
     'baseRate': 0.00,
+    'cargosExtra': 0.00,
     'recargos': 0.00,
     'total': 0.00,
   }
@@ -98,6 +100,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
   dtElement: DataTableDirective
   fileContentArray: String[] = []
   defaultBranch
+  selectedCategory: Category = {}
+  selectedExtraCharge: ExtraCharge = {}
+  selectedExtraChargeOption: ExtraChargeOption = {}
 
   constructor(
     private categoriesService: CategoriesService,
@@ -156,6 +161,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
         numCel: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
         direccion: ['', Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
+        idCargoExtra: [null],
+        idOpcionExtra: [null],
+        tomarFoto:[false,Validators.required]
       }, {
         validators: [
           BlankSpacesValidator('nFactura'),
@@ -313,11 +321,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
         numCel: this.newForm.get('order.numCel').value,
         direccion: this.newForm.get('order.direccion').value,
         instrucciones: this.newForm.get('order.instrucciones').value,
-        coordsDestino:'',
+        coordsDestino: '',
         distancia: '',
         tarifaBase: 0,
         recargo: 0,
-        cTotal: 0
+        cTotal: 0,
+        cargosExtra: 0,
+        idCargoExtra: null,
+        idDetalleOpcion: null,
+        tomarFoto: false
       }
 
       let ordersCount = this.orders.length + 1
@@ -439,7 +451,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   searchOrigin(event) {
     let lugar = event.target.value
-    if(lugar.trim().length >= 5){
+    if (lugar.trim().length >= 5) {
       this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
         this.placesOrigin = response
       })
@@ -449,7 +461,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   searchDestination(event) {
     let lugar = event.target.value
-    if(lugar.trim().length >= 5){
+    if (lugar.trim().length >= 5) {
       this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
         this.placesDestination = response
       })
@@ -474,6 +486,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     let orderPayment = {
       'baseRate': this.pago.baseRate,
       'surcharges': 0.00,
+      'cargosExtra': 0.00,
       'total': 0.00
     }
     this.surcharges.forEach(value => {
@@ -488,7 +501,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
         orderPayment.surcharges = Number(value.monto)
       }
     })
-    orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
+    if (this.selectedExtraCharge != null && this.selectedExtraCharge.tipoCargo === 'F') {
+      orderPayment.cargosExtra = this.selectedExtraCharge.costo
+      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraCharge.costo
+    } else if (this.selectedExtraCharge != null && this.selectedExtraCharge.tipoCargo === 'V') {
+      orderPayment.cargosExtra = this.selectedExtraChargeOption.costo
+      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraChargeOption.costo
+    } else {
+      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
+    }
 
     return orderPayment
   }
@@ -498,7 +519,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     const entrega = currOrder.direccion
     const tarifa = this.pago.baseRate
 
-    if(this.orders.length == 0){
+    if (this.orders.length == 0) {
       this.http.post<any>(`${environment.apiUrl}`, {
         function: 'getCoords',
         lugar: salida,
@@ -517,7 +538,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
       const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
       currOrder.tarifaBase = calculatedPayment.baseRate
       currOrder.recargo = calculatedPayment.surcharges
+      currOrder.cargosExtra = calculatedPayment.cargosExtra
       currOrder.cTotal = calculatedPayment.total
+      currOrder.idCargoExtra = this.selectedExtraCharge.idCargoExtra
+      currOrder.idDetalleOpcion = this.selectedExtraChargeOption.idDetalleOpcion
+      currOrder.tomarFoto = this.newForm.get('order.tomarFoto').value
       this.http.post<any>(`${environment.apiUrl}`, {
         function: 'getCoords',
         lugar: entrega,
@@ -529,6 +554,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.orders.push(currOrder)
       this.pagos.push(calculatedPayment)
       this.loaders.loadingAdd = false
+      this.selectedExtraChargeOption = {}
+      this.selectedExtraCharge = {}
 
       if (this.orders.length > 1) {
         this.dtElement.dtInstance.then(
@@ -559,9 +586,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
           const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
           let i = this.orders.indexOf(value)
           value.tarifaBase = this.pago.baseRate
+          value.cargosExtra = nPay.cargosExtra
           value.recargo = nPay.surcharges
           value.cTotal = nPay.total
           this.pagos[i].baseRate = nPay.baseRate
+          this.pago[i].cargosExtra = nPay.cargosExtra
           this.pagos[i].surcharges = nPay.surcharges
           this.pagos[i].total = nPay.total
         }
@@ -587,10 +616,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
       return +a + +b['surcharges']
     }, 0)
 
+    this.pago.cargosExtra = this.pagos.reduce(function (a, b) {
+      return +a + +b['cargosExtra']
+    }, 0)
+
     this.pago.total = this.pagos.reduce(function (a, b) {
       return +a + +b['total']
-
     }, 0)
+
   }
 
   removeFromArray(item) {
@@ -737,27 +770,26 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       let errs = 0
 
-      if(myDetail.nFactura.length > 250){
-        errs ++
-      }else if(myDetail.nomDestinatario.length > 150){
-        errs ++
-      }else if(myDetail.numCel.length > 9){
-        errs ++
-      }else if(myDetail.instrucciones.length > 150){
-        errs ++
-      }else if(myDetail.direccion.length > 250){
-        errs ++
-      }else if(myDetail.distancia.length > 10){
-        errs ++
+      if (myDetail.nFactura.length > 250) {
+        errs++
+      } else if (myDetail.nomDestinatario.length > 150) {
+        errs++
+      } else if (myDetail.numCel.length > 9) {
+        errs++
+      } else if (myDetail.instrucciones.length > 150) {
+        errs++
+      } else if (myDetail.direccion.length > 250) {
+        errs++
+      } else if (myDetail.distancia.length > 10) {
+        errs++
       }
 
-      if(errs > 0){
+      if (errs > 0) {
         this.openErrorDialog('Lo sentimos, Uno o más envíos podrían tener un formato incorrecto. ' +
           'Por favor verifique el archivo e intentelo nuevamente.', false);
         this.loaders.loadingAdd = false
         return false
       }
-
 
 
       let ordersCount = this.orders.length + 1
@@ -771,6 +803,22 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   onFileRemove(event) {
     this.files.splice(this.files.indexOf(event), 1)
+  }
+
+  setSelectedCategory() {
+    this.categories.forEach(category => {
+      if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
+        this.selectedCategory = category
+      }
+    })
+  }
+
+  setSelectedExtraCharge(extraCharge) {
+    this.selectedExtraCharge = extraCharge
+  }
+
+  setSelectedExtraChargeOption(option) {
+    this.selectedExtraChargeOption = option
   }
 
 }

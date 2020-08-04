@@ -24,7 +24,7 @@ import {CustomersModule} from "./customers/customers.module";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {SharedModule} from "./shared/shared.module";
 import { PasswordRecoveryComponent } from './components/shared/password-recovery/password-recovery.component';
-import { AddExtraChargeOptionDialogComponent } from './components/xplore/extra-charges/add-extra-charge-option-dialog/add-extra-charge-option-dialog.component';
+import { ViewPhotosDialogComponent } from './components/shared/view-photos-dialog/view-photos-dialog.component';
 
 
 
@@ -35,7 +35,8 @@ import { AddExtraChargeOptionDialogComponent } from './components/xplore/extra-c
         RootComponent,
         ErrorModalComponent,
         PasswordRecoveryComponent,
-        AddExtraChargeOptionDialogComponent,
+        ViewPhotosDialogComponent,
+
     ],
 
     imports: [

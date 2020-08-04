@@ -81,6 +81,11 @@
         </div>
 
         <div class="col-sm">
+          <strong>Cargos Extra:</strong>
+          L. {{currentDelivery?.cargosExtra}}
+        </div>
+
+        <div class="col-sm">
           <strong>Total:</strong>
           L. {{currentDelivery?.total}}
         </div>
@@ -90,14 +95,16 @@
           <span *ngIf="currentDelivery?.isPagada == true" class="text-success"> SI</span>
           <span *ngIf="currentDelivery?.isPagada == false" class="text-danger"> NO</span>
         </div>-->
+
+
+      </div>
+
+      <div class="row">
         <div class="col-sm">
           <strong>Estado Actual:</strong>
           {{currentDelivery?.estado.descEstado}}
         </div>
 
-      </div>
-
-      <div class="row">
         <div class="col-sm" *ngIf="currentDelivery?.idEstado == 37">
           <strong>Asignada a:</strong>
           {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
@@ -114,6 +121,12 @@
         <div class="col-sm" *ngIf="allowHourChange && currentDelivery.idEstado != 39">
           <button type="button" mat-raised-button color="primary" [disabled]="!allowHourChange" (click)="openChangeHourDialog()" >
             Cambiar Hora de Recogida
+          </button>
+        </div>
+
+        <div class="col-sm" *ngIf="hasPhotos">
+          <button type="button" mat-raised-button color="primary" [disabled]="!hasPhotos" (click)="openPhotosDialog(currentDeliveryDetail)">
+            Ver Fotografías
           </button>
         </div>
       </div>
@@ -135,6 +148,7 @@
             <th>Instrucciones de entrega</th>
             <th>Distancia</th>
             <th>Recargo</th>
+            <th>Cargos Extra</th>
             <th>Costo</th>
             <th>Estado</th>
           </tr>
@@ -153,6 +167,7 @@
             <td>{{detail?.instrucciones}}</td>
             <td>L. {{detail?.distancia}}</td>
             <td>L. {{detail?.recargo}}</td>
+            <td>L. {{detail?.cargosExtra}}</td>
             <td>L. {{detail?.cTotal}}</td>
             <td>{{detail?.estado.descEstado}}</td>
           </tr>

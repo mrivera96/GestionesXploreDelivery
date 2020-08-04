@@ -34,6 +34,7 @@ export class XploreCustomerBalanceComponent implements OnInit {
   paidShow: string
   balanceShow: string
   totalSurchargesShow: string
+  totalExtraCharges: number = 0.00
 
   constructor(
     private deliveriesService: DeliveriesService,
@@ -108,6 +109,7 @@ export class XploreCustomerBalanceComponent implements OnInit {
         this.subtotal = this.subtotal + +value.cTotal
         this.totalCTotal = this.totalCTotal + +value.cTotal
         this.totalSurcharges = this.totalSurcharges + +value.recargo
+        this.totalExtraCharges = this.totalExtraCharges + +value.cargosExtra
         this.myFinishedOrders.push(value)
 
         this.subtotalShow = Number(this.subtotal).toFixed(2)

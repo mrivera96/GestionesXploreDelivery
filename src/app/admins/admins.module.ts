@@ -48,6 +48,7 @@ import { XploreChangeHourDialogComponent } from '../components/xplore/ver-solici
 import { ExtraChargeCategoriesComponent } from '../components/xplore/extra-charges/extra-charge-categories/extra-charge-categories.component';
 import { AddCategoryExtraChargeDailogComponent } from '../components/xplore/extra-charges/extra-charge-categories/add-category-extra-charge-dailog/add-category-extra-charge-dailog.component';
 import { ExtraChargesOptionsDialogComponent } from '../components/xplore/extra-charges/extra-charges-options-dialog/extra-charges-options-dialog.component';
+import { AddExtraChargeOptionDialogComponent } from '../components/xplore/extra-charges/add-extra-charge-option-dialog/add-extra-charge-option-dialog.component';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { ExtraChargesOptionsDialogComponent } from '../components/xplore/extra-c
     ExtraChargeCategoriesComponent,
     AddCategoryExtraChargeDailogComponent,
     ExtraChargesOptionsDialogComponent,
+    AddExtraChargeOptionDialogComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,

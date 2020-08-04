@@ -14,6 +14,7 @@
       <th></th>
       <th></th>
       <th></th>
+      <th></th>
       <th>
         <select class="form-control-sm" name="search-last-name">
           <option value="">- Filtrar por Estado -</option>
@@ -37,6 +38,7 @@
       <th>Detalle</th>
       <th>Distancia</th>
       <th>Recargo</th>
+      <th>Cargos Extra</th>
       <th>Costo</th>
       <th>Estado</th>
       <th>Observaciones</th>
@@ -56,6 +58,7 @@
       <td>{{order.nFactura}}</td>
       <td>{{order.distancia}}</td>
       <td>L. {{order.recargo}}</td>
+      <td>L. {{order.cargosExtra || '0.00'}}</td>
       <td>L. {{order.cTotal}}</td>
       <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">Fecha: {{order.fechaEntrega}}</p></td>
       <td>{{order.observaciones || 'N/A'}}</td>

@@ -9,6 +9,8 @@ import {ErrorModalComponent} from "../../shared/error-modal/error-modal.componen
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeHourDialogComponent} from "./change-hour-dialog/change-hour-dialog.component";
 import {DataTableDirective} from "angular-datatables";
+import {Photography} from "../../../models/photography";
+import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
 @Component({
   selector: 'app-customer-delivery-detail',
   templateUrl: './customer-delivery-detail.component.html',
@@ -35,7 +37,7 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
   allowHourChange: boolean = false
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
-
+  hasPhotos: boolean = false
   constructor(
     private deliveriesService: DeliveriesService,
     private route: ActivatedRoute,
@@ -94,6 +96,17 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
       this.loaders.loadingData = false
+
+      let photos = 0
+      this.currentDeliveryDetail.forEach(detail => {
+        if(detail.photography.length > 0){
+          photos ++
+        }
+      })
+
+      if(photos > 0){
+        this.hasPhotos = true
+      }
       const registered_date = ((new Date(response.data.fechaNoFormatted).getTime()) / 1000) /60
       const new_date = ((new Date().getTime() / 1000) / 60)
       const diff = registered_date - new_date
@@ -139,6 +152,23 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
     dialogRef.afterClosed().subscribe( result => {
       if(result){
         this.reloadData()
+      }
+    })
+
+  }
+
+  openPhotosDialog(details){
+    let photos: Photography[] = []
+
+    details.forEach(detail => {
+      detail.photography.forEach(photo => {
+        photos.push(photo)
+      })
+
+    })
+    const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
+      data:{
+        photos: photos
       }
     })
 

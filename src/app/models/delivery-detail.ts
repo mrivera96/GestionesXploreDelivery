@@ -1,6 +1,9 @@
 import {User} from "./user";
 import {Delivery} from "./delivery";
 import {State} from "./state";
+import {ExtraCharge} from "./extra-charge";
+import {ExtraChargeOption} from "./extra-charge-option";
+import {Photography} from "./photography";
 
 export interface DeliveryDetail {
   idDelivery?: number
@@ -24,4 +27,11 @@ export interface DeliveryDetail {
   idEstado?: number
   observaciones?: string
   coordsDestino?: string
+  cargosExtra?: number
+  idCargoExtra?: number
+  idDetalleOpcion?: number
+  extra_charge?: ExtraCharge
+  extra_charge_option?: ExtraChargeOption
+  tomarFoto?: boolean
+  photography?: Photography[]
 }
