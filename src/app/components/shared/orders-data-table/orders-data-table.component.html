@@ -24,6 +24,7 @@
       </th>
       <th></th>
       <th></th>
+      <th></th>
       <th *ngIf="currUser.idPerfil === '1'"></th>
     </tr>
     </tfoot>
@@ -44,6 +45,7 @@
       <th>Observaciones</th>
       <th>Conductor</th>
       <th *ngIf="currUser.idPerfil === '1'" data-priority="1">Acción</th>
+      <th data-priority="1">Fotografías</th>
     </tr>
     </thead>
     <tbody>
@@ -72,6 +74,12 @@
           Cambiar Estado
         </a>
         <p *ngIf="order.estado.idEstado === 44">--</p>
+      </td>
+      <td>
+        <button *ngIf="order.photography.length > 0" button type="button" mat-raised-button color="primary"  (click)="openPhotosDialog(order.photography)">
+          Ver Fotografías
+        </button>
+        <span *ngIf="order.photography.length == 0">N/A</span>
       </td>
     </tr>
     </tbody>

@@ -39,7 +39,6 @@ export class VerSolicitudComponent implements OnInit {
   states: State[]
   dtOptions: any
   dtTrigger: Subject<any> = new Subject()
-  hasPhotos: boolean = false
 
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
@@ -89,17 +88,7 @@ export class VerSolicitudComponent implements OnInit {
       this.currentDeliveryDetail = response.data.detalle
       this.dtTrigger.next()
       this.loaders.loadingData = false
-      let photos = 0
-      this.currentDeliveryDetail.forEach(detail => {
-        if(detail.photography.length > 0){
-          photos ++
-        }
-      })
-
-      if(photos > 0){
-        this.hasPhotos = true
-      }
-
+    
       const state = response.data.idEstado
 
       if(state !== 39){
@@ -160,15 +149,8 @@ export class VerSolicitudComponent implements OnInit {
 
   }
 
-  openPhotosDialog(details){
-    let photos: Photography[] = []
-
-    details.forEach(detail => {
-      detail.photography.forEach(photo => {
-        photos.push(photo)
-      })
-
-    })
+  openPhotosDialog(photos){
+    
     const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
       data:{
         photos: photos
@@ -176,6 +158,5 @@ export class VerSolicitudComponent implements OnInit {
     })
 
   }
-
 
 }

@@ -157,15 +157,8 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
 
   }
 
-  openPhotosDialog(details){
-    let photos: Photography[] = []
-
-    details.forEach(detail => {
-      detail.photography.forEach(photo => {
-        photos.push(photo)
-      })
-
-    })
+  openPhotosDialog(photos){
+    
     const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
       data:{
         photos: photos

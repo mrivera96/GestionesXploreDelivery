@@ -124,11 +124,6 @@
           </button>
         </div>
 
-        <div class="col-sm" *ngIf="hasPhotos">
-          <button type="button" mat-raised-button color="primary" [disabled]="!hasPhotos" (click)="openPhotosDialog(currentDeliveryDetail)">
-            Ver Fotografías
-          </button>
-        </div>
       </div>
       <hr>
       <div>
@@ -151,6 +146,7 @@
             <th>Cargos Extra</th>
             <th>Costo</th>
             <th>Estado</th>
+            <th>Fotografías</th>
           </tr>
 
           </thead>
@@ -170,6 +166,12 @@
             <td>L. {{detail?.cargosExtra}}</td>
             <td>L. {{detail?.cTotal}}</td>
             <td>{{detail?.estado.descEstado}}</td>
+            <td>
+              <button *ngIf="detail.photography.length > 0" button type="button" mat-raised-button color="primary"  (click)="openPhotosDialog(detail.photography)">
+                Ver Fotografías
+              </button>
+              <span *ngIf="detail.photography.length == 0">N/A</span>
+            </td>
           </tr>
           </tbody>
         </table>

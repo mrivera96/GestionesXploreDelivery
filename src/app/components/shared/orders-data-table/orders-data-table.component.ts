@@ -9,6 +9,7 @@ import {ErrorModalComponent} from "../error-modal/error-modal.component";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
 import {ChangeOrderStateDialogComponent} from "./change-order-state-dialog/change-order-state-dialog.component";
+import { ViewPhotosDialogComponent } from '../view-photos-dialog/view-photos-dialog.component';
 
 declare var $: any
 @Component({
@@ -162,6 +163,16 @@ export class OrdersDataTableComponent implements OnInit{
             dtInstance.destroy()
             this.ngOnInit()
           })
+      }
+    })
+
+  }
+
+  openPhotosDialog(photos){
+    
+    const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
+      data:{
+        photos: photos
       }
     })
 
