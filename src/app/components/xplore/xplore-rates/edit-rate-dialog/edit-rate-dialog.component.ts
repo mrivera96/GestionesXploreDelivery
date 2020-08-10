@@ -8,6 +8,7 @@ import {Rate} from "../../../../models/rate";
 import {Category} from "../../../../models/category";
 import {Customer} from "../../../../models/customer";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
+import { RateType } from 'src/app/models/rate-type';
 
 @Component({
   selector: 'app-edit-rate-dialog',
@@ -24,6 +25,7 @@ export class EditRateDialogComponent implements OnInit {
     loadingSubmit: false
   }
   currRate: Rate
+  rateTypes: RateType[]
   constructor(
     private ratesService: RatesService,
     private categoriesService: CategoriesService,
@@ -44,11 +46,18 @@ export class EditRateDialogComponent implements OnInit {
         entregasMinimas: [this.currRate.entregasMinimas, Validators.required],
         entregasMaximas: [this.currRate.entregasMaximas, Validators.required],
         precio: [this.currRate.precio, Validators.required],
+        idTipoTarifa: [this.currRate.idTipoTarifa, Validators.required]
       }
     )
 
-    this.categoriesService.getAllCategories().subscribe(response => {
+    const cateoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
+      cateoriesSubscription.unsubscribe()
+    })
+
+    const ratesSubscription = this.ratesService.getRateTypes().subscribe(response => {
+      this.rateTypes = response.data
+      ratesSubscription.unsubscribe()
     })
   }
 

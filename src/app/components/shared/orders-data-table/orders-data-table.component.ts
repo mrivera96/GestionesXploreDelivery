@@ -1,14 +1,14 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Order} from "../../../models/order";
-import {Subject} from "rxjs";
-import {State} from "../../../models/state";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {DataTableDirective} from "angular-datatables";
-import {MatDialog} from "@angular/material/dialog";
-import {ErrorModalComponent} from "../error-modal/error-modal.component";
-import {AuthService} from "../../../services/auth.service";
-import {User} from "../../../models/user";
-import {ChangeOrderStateDialogComponent} from "./change-order-state-dialog/change-order-state-dialog.component";
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Order } from "../../../models/order";
+import { Subject } from "rxjs";
+import { State } from "../../../models/state";
+import { DeliveriesService } from "../../../services/deliveries.service";
+import { DataTableDirective } from "angular-datatables";
+import { MatDialog } from "@angular/material/dialog";
+import { ErrorModalComponent } from "../error-modal/error-modal.component";
+import { AuthService } from "../../../services/auth.service";
+import { User } from "../../../models/user";
+import { ChangeOrderStateDialogComponent } from "./change-order-state-dialog/change-order-state-dialog.component";
 import { ViewPhotosDialogComponent } from '../view-photos-dialog/view-photos-dialog.component';
 
 declare var $: any
@@ -17,14 +17,14 @@ declare var $: any
   templateUrl: './orders-data-table.component.html',
   styleUrls: ['./orders-data-table.component.css']
 })
-export class OrdersDataTableComponent implements OnInit{
+export class OrdersDataTableComponent implements OnInit {
   @Input('orders') tOrders: string
   @Output('loadingData') stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
   orders: Order[]
   dtTrigger: Subject<any> = new Subject<any>()
   dtOptions: DataTables.Settings
   msgError = ''
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective
 
   currUser: User
@@ -44,8 +44,8 @@ export class OrdersDataTableComponent implements OnInit{
     this.loadData()
   }
 
-  initialize(){
-    this.dtOptions =  {
+  initialize() {
+    this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 100,
       serverSide: false,
@@ -72,9 +72,10 @@ export class OrdersDataTableComponent implements OnInit{
     }
   }
 
-  loadData(){
-    this.deliveriesService.getStates().subscribe(response => {
+  loadData() {
+    const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
       this.states = response.data.xploreDeliveryEntregas
+      deliveriesSubscription.unsubscribe()
     })
 
     let service;
@@ -101,7 +102,7 @@ export class OrdersDataTableComponent implements OnInit{
 
     }
 
-    service.subscribe(response => {
+    const serviceSubscription = service.subscribe(response => {
       this.stopLoading.emit(false)
       this.orders = response.data
 
@@ -115,18 +116,21 @@ export class OrdersDataTableComponent implements OnInit{
                 .search(this['value'])
                 .draw();
             }
-          });
-        });
-      });
+          })
+        })
+      })
+
+      serviceSubscription.unsubscribe()
 
     }, error => {
       this.stopLoading.emit(false)
       this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-     this.openErrorDialog(this.msgError, true)
+      this.openErrorDialog(this.msgError, true)
+      serviceSubscription.unsubscribe()
     })
   }
 
-  reloadData(){
+  reloadData() {
     this.ngOnInit()
   }
 
@@ -137,7 +141,7 @@ export class OrdersDataTableComponent implements OnInit{
       }
     })
 
-    if(reload){
+    if (reload) {
       dialog.afterClosed().subscribe(result => {
         this.stopLoading.emit(true)
         this.reloadData()
@@ -157,7 +161,7 @@ export class OrdersDataTableComponent implements OnInit{
     )
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
+      if (result) {
         this.datatableElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
@@ -168,10 +172,10 @@ export class OrdersDataTableComponent implements OnInit{
 
   }
 
-  openPhotosDialog(photos){
-    
-    const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
-      data:{
+  openPhotosDialog(photos) {
+
+    const dialogRef = this.dialog.open(ViewPhotosDialogComponent, {
+      data: {
         photos: photos
       }
     })

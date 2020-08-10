@@ -70,10 +70,11 @@ export class PaymentsComponent implements OnInit {
 
   loadData(){
     this.loaders.loadingData = true
-    this.paymentsService.getPayments().subscribe(response => {
+    const paymentsSubscription = this.paymentsService.getPayments().subscribe(response => {
       this.payments = response.data
       this.loaders.loadingData = false
       this.dtTrigger.next()
+      paymentsSubscription.unsubscribe()
     })
   }
 

@@ -37,9 +37,10 @@ export class NewExtraChargeDialogComponent implements OnInit {
 
   loadData(){
     this.loaders.loadingData = true
-    this.categoriesService.getAllCategories().subscribe(response => {
+    const categoriesSubscription =  this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
       this.loaders.loadingData = false
+      categoriesSubscription.unsubscribe()
     })
   }
 
@@ -67,15 +68,17 @@ export class NewExtraChargeDialogComponent implements OnInit {
   onNewFormSubmit() {
     if (this.newECForm.valid) {
       this.loaders.loadingSubmit = true
-      this.extraChargesService.createExtraCharge(this.newECForm.value, this.extraChargeCategories)
+      const extrachargesSubscription = this.extraChargesService.createExtraCharge(this.newECForm.value, this.extraChargeCategories)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            extrachargesSubscription.unsubscribe()
           },
           error => {
             error.subscribe(error => {
               this.loaders.loadingSubmit = false
               this.openErrorDialog(error.statusText)
+              extrachargesSubscription.unsubscribe()
             })
           })
     }

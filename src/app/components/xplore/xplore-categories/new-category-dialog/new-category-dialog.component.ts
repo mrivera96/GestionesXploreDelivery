@@ -37,15 +37,17 @@ export class NewCategoryDialogComponent implements OnInit {
   onFormNewSubmit() {
     if (this.newCatForm.valid) {
       this.loaders.loadingSubmit = true
-      this.categoriesService.createCategory(this.newCatForm.value)
+      const categoriesSubscription = this.categoriesService.createCategory(this.newCatForm.value)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            categoriesSubscription.unsubscribe()
           },
           error => {
             error.subscribe(error => {
               this.loaders.loadingSubmit = false
               this.openErrorDialog(error.statusText)
+              categoriesSubscription.unsubscribe()
             })
           })
     }

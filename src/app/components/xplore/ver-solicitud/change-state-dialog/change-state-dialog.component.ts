@@ -33,8 +33,9 @@ export class ChangeStateDialogComponent implements OnInit {
     this.changeForm = new FormGroup({
       idEstado: new FormControl(this.data.idEstado, [Validators.required]),
     })
-    this.deliveriesService.getStates().subscribe(response => {
+    const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
       this.states = response.data.xploreDelivery
+      deliveriesSubscription.unsubscribe()
     })
   }
 
@@ -47,16 +48,17 @@ export class ChangeStateDialogComponent implements OnInit {
         this.openConfirmDialog()
       } else {
         this.loaders.loadingData = true
-        this.deliveriesService.changeState(this.deliveryId, this.changeForm.value).subscribe(response => {
-
+        const deliveriesSubscription = this.deliveriesService.changeState(this.deliveryId, this.changeForm.value).subscribe(response => {
           this.loaders.loadingData = false
           this.openSuccessDialog('Cambio de Estado de Reserva', response.data)
+          deliveriesSubscription.unsubscribe()
 
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
               this.loaders.loadingData = false
               this.openErrorDialog(error.statusText, false)
+              deliveriesSubscription.unsubscribe()
             })
           }
         })

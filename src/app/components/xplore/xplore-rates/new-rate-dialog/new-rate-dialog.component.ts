@@ -9,6 +9,11 @@ import {Customer} from "../../../../models/customer";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {Subject} from "rxjs";
+import {RateType} from 'src/app/models/rate-type';
+import {environment} from 'src/environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Schedule} from "../../../../models/schedule";
+import {formatDate} from "@angular/common";
 
 @Component({
   selector: 'app-new-rate-dialog',
@@ -28,14 +33,23 @@ export class NewRateDialogComponent implements OnInit {
   filteredCustomers: Customer[]
   categories: Category[]
   isGeneral: boolean = false
+  rateTypes: RateType[]
+  consolidatedForm: FormGroup
+  places = []
+  schedules: Schedule[]
+  schdeduleForm: FormGroup
+  rateSchedules: Schedule[] = []
+
   constructor(
     private ratesService: RatesService,
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     public dialog: MatDialog,
     private categoriesService: CategoriesService,
-    public dialogRef: MatDialogRef<any>
-  ) { }
+    public dialogRef: MatDialogRef<any>,
+    private http: HttpClient
+  ) {
+  }
 
   ngOnInit(): void {
     this.newRateForm = this.formBuilder.group(
@@ -45,7 +59,25 @@ export class NewRateDialogComponent implements OnInit {
         entregasMinimas: ['', Validators.required],
         entregasMaximas: ['', Validators.required],
         precio: ['', Validators.required],
-        idCliente: [null, Validators.required]
+        idCliente: [null],
+        idTipoTarifa: [null, Validators.required]
+      }
+    )
+
+    this.consolidatedForm = this.formBuilder.group(
+      {
+        radioMaximo: [1, Validators.required],
+        dirRecogida: ['', Validators.required]
+      }
+    )
+
+    this.schdeduleForm = this.formBuilder.group(
+      {
+        cod: [1, Validators.required],
+        dia: ['Lunes'],
+        inicio: [formatDate(new Date().setHours(7, 0, 0), 'HH:mm', 'en'), Validators.required],
+        final: [formatDate(new Date().setHours(16, 0, 0), 'HH:mm', 'en'), Validators.required],
+        descHorario: ['', [Validators.required, Validators.maxLength(60)]]
       }
     )
 
@@ -75,14 +107,21 @@ export class NewRateDialogComponent implements OnInit {
       },
     }
 
-    this.usersService.getCustomers().subscribe(response => {
+    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
       this.filteredCustomers = response.data
+      usersSubscription.unsubscribe()
     })
 
-    this.categoriesService.getAllCategories().subscribe(response => {
+    const categoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
       this.loaders.loadingData = false
+      categoriesSubscription.unsubscribe()
+    })
+
+    const ratesSubscription = this.ratesService.getRateTypes().subscribe(response => {
+      this.rateTypes = response.data
+      ratesSubscription.unsubscribe()
     })
   }
 
@@ -90,42 +129,89 @@ export class NewRateDialogComponent implements OnInit {
     return this.newRateForm.controls
   }
 
-  onFormNewSubmit() {
-    if (this.newRateForm.valid) {
-      this.loaders.loadingSubmit = true
-      this.ratesService.createRate(this.newRateForm.value, this.rateCustomers)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.openSuccessDialog('Operación Realizada Correctamente', response.message)
-          },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.openErrorDialog(error.statusText)
-            })
-          })
-    }
+  get consForm() {
+    return this.consolidatedForm.controls
   }
 
-  changeGeneral(checked){
-    if(checked){
+  get schForm() {
+    return this.schdeduleForm.controls
+  }
+
+  onFormNewSubmit() {
+    if (this.fNew.idTipoTarifa.value == 2) {
+      if (this.newRateForm.valid && this.consolidatedForm.valid) {
+        this.loaders.loadingSubmit = true
+        this.ratesService.createRate(this.newRateForm.value, this.rateCustomers, this.consolidatedForm.value, this.rateSchedules)
+          .subscribe(response => {
+              this.loaders.loadingSubmit = false
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            },
+            error => {
+              error.subscribe(error => {
+                this.loaders.loadingSubmit = false
+                this.openErrorDialog(error.statusText)
+              })
+            })
+      }
+    } else {
+      if (this.newRateForm.valid) {
+        this.loaders.loadingSubmit = true
+        this.ratesService.createRate(this.newRateForm.value, this.rateCustomers)
+          .subscribe(response => {
+              this.loaders.loadingSubmit = false
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            },
+            error => {
+              error.subscribe(error => {
+                this.loaders.loadingSubmit = false
+                this.openErrorDialog(error.statusText)
+              })
+            })
+      }
+    }
+
+  }
+
+  changeGeneral(checked) {
+    if (checked) {
       this.isGeneral = true
       this.fNew.idCliente.setValue(1)
+    } else {
+      this.isGeneral = false
+      this.fNew.idCliente.setValue(null)
     }
   }
 
-  addCustomerToRate(idCust){
+  addCustomerToRate(idCust) {
     let customerToAdd: Customer = {}
     this.customers.forEach(value => {
-      if(value.idCliente == idCust){
+      if (value.idCliente == idCust) {
         customerToAdd = value
       }
     })
 
-    if(!this.rateCustomers.includes(customerToAdd)){
+    if (!this.rateCustomers.includes(customerToAdd)) {
       this.rateCustomers.push(customerToAdd)
     }
 
+  }
+
+  addScheduleToRate(schedule) {
+    let scheduleToAdd: Schedule = {}
+    scheduleToAdd.descHorario = schedule.descHorario
+    scheduleToAdd.cod = schedule.cod
+    scheduleToAdd.dia = schedule.dia
+    scheduleToAdd.inicio = schedule.inicio
+    scheduleToAdd.final = schedule.final
+
+    if (!this.rateSchedules.includes(scheduleToAdd)) {
+      this.rateSchedules.push(scheduleToAdd)
+    }
+  }
+
+  removeSchdeuleFromArray(item) {
+    let i = this.rateSchedules.indexOf(item)
+    this.rateSchedules.splice(i, 1)
   }
 
   openErrorDialog(error: string): void {
@@ -155,15 +241,62 @@ export class NewRateDialogComponent implements OnInit {
   }
 
   onKey(value) {
-    this.filteredCustomers = this.search(value) ;
+    this.filteredCustomers = this.search(value);
   }
 
   search(value: string) {
     let filter = value.toLowerCase();
-    if(filter != ""){
-      return  this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
+    if (filter != "") {
+      return this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
     }
     return this.customers
+  }
+
+  searchAddress(event) {
+    let lugar = event.target.value
+    if (lugar.trim().length >= 5) {
+      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        lugar: lugar,
+        function: 'searchPlace'
+      }).subscribe(response => {
+        this.places = response
+        placeSubscription.unsubscribe()
+      })
+    }
+  }
+
+  setDay(dayCod) {
+    const days = [
+      {
+        cod: 1,
+        dia: 'Lunes'
+      }, {
+        cod: 2,
+        dia: 'Martes'
+      }, {
+        cod: 3,
+        dia: 'Miércoles'
+      }, {
+        cod: 4,
+        dia: 'Jueves'
+      }, {
+        cod: 5,
+        dia: 'Viernes'
+      }, {
+        cod: 6,
+        dia: 'Sábado'
+      }, {
+        cod: 0,
+        dia: 'Domingo'
+      }
+    ]
+
+    days.forEach(day => {
+      if(day.cod == dayCod){
+        this.schdeduleForm.get('dia').setValue(day.dia)
+      }
+    })
+
   }
 
 }

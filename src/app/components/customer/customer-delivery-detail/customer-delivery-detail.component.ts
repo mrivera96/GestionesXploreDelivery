@@ -9,7 +9,6 @@ import {ErrorModalComponent} from "../../shared/error-modal/error-modal.componen
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeHourDialogComponent} from "./change-hour-dialog/change-hour-dialog.component";
 import {DataTableDirective} from "angular-datatables";
-import {Photography} from "../../../models/photography";
 import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
 @Component({
   selector: 'app-customer-delivery-detail',
@@ -92,7 +91,7 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
 
   loadData() {
     this.loaders.loadingData = true
-    this.deliveriesService.getById(this.deliveryId).subscribe(response => {
+    const deliveriesSubscription = this.deliveriesService.getById(this.deliveryId).subscribe(response => {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
       this.loaders.loadingData = false
@@ -114,10 +113,13 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
         this.allowHourChange = true
       }
 
+      deliveriesSubscription.unsubscribe()
+
     }, error => {
       this.loaders.loadingData = false
       this.errorMSg = 'Lo sentimos, ha ocurrido un error al cargar la información. Por favor intente de nuevo.'
       this.openErrorDialog(this.errorMSg, true)
+      deliveriesSubscription.unsubscribe()
     })
 
   }

@@ -83,7 +83,7 @@ export class VerSolicitudComponent implements OnInit {
   }
 
   loadData() {
-    this.deliveriesService.getById(this.deliveryId).subscribe(response => {
+    const deliveriesSubscription = this.deliveriesService.getById(this.deliveryId).subscribe(response => {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
       this.dtTrigger.next()
@@ -94,14 +94,17 @@ export class VerSolicitudComponent implements OnInit {
       if(state !== 39){
         this.allowHourChange = true
       }
+      deliveriesSubscription.unsubscribe()
 
     }, error => {
       this.loaders.loadingData = false
       this.openErrorDialog("Lo sentimos, ha ocurrido un error al cargar los datos de esta reservación. Al dar clic en Aceptar, volveremos a intentarlo", true)
+      deliveriesSubscription.unsubscribe()
     })
 
-    this.deliveriesService.getStates().subscribe(response => {
+    const statesSubscription = this.deliveriesService.getStates().subscribe(response => {
       this.states = response.data.xploreDelivery
+      statesSubscription.unsubscribe()
     })
 
   }

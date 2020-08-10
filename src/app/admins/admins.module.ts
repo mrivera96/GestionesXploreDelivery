@@ -49,6 +49,8 @@ import { ExtraChargeCategoriesComponent } from '../components/xplore/extra-charg
 import { AddCategoryExtraChargeDailogComponent } from '../components/xplore/extra-charges/extra-charge-categories/add-category-extra-charge-dailog/add-category-extra-charge-dailog.component';
 import { ExtraChargesOptionsDialogComponent } from '../components/xplore/extra-charges/extra-charges-options-dialog/extra-charges-options-dialog.component';
 import { AddExtraChargeOptionDialogComponent } from '../components/xplore/extra-charges/add-extra-charge-option-dialog/add-extra-charge-option-dialog.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import { ConsolidatedRateDetailsComponent } from '../components/xplore/xplore-rates/consolidated-rate-details/consolidated-rate-details.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +99,7 @@ import { AddExtraChargeOptionDialogComponent } from '../components/xplore/extra-
     AddCategoryExtraChargeDailogComponent,
     ExtraChargesOptionsDialogComponent,
     AddExtraChargeOptionDialogComponent,
+    ConsolidatedRateDetailsComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,
@@ -108,13 +111,14 @@ import { AddExtraChargeOptionDialogComponent } from '../components/xplore/extra-
     NewSurchargeDialogComponent,
     ChangeStateDialogComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    AdminsRoutingModule,
-    MatSlideToggleModule,
-    MatTabsModule,
-  ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        AdminsRoutingModule,
+        MatSlideToggleModule,
+        MatTabsModule,
+        MatAutocompleteModule,
+    ],
 
 })
 export class AdminsModule { }

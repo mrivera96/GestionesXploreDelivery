@@ -40,7 +40,6 @@ export class XploreCustomersComponent implements OnInit {
   constructor(
     private usersService: UsersService,
     public dialog: MatDialog,
-    private deliveriesService: DeliveriesService,
     private paymentsService: PaymentsService
   ) {
   }
@@ -77,37 +76,13 @@ export class XploreCustomersComponent implements OnInit {
   loadData() {
     this.loaders.loadingData = true
 
-    this.usersService.getCustomers().subscribe(response => {
+    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
 
-      this.customers.forEach(customer => {
-        customer.subtotal = 0.00
-        customer.paid = 0.00
-        customer.balance = 0.00
-
-        customer.deliveries.forEach(delivery => {
-          delivery.detalle.forEach(detail => {
-            if ( detail.idEstado == 44 || detail.idEstado == 46 || detail.idEstado == 47) {
-              customer.subtotal = customer.subtotal + +detail.cTotal
-            }
-          })
-
-        })
-
-        customer.payments.forEach( payment => {
-            customer.paid = customer.paid + +payment.monto
-        })
-
-        customer.subtotalShow = Number(customer.subtotal).toFixed(2)
-        customer.paidShow = Number(customer.paid).toFixed(2)
-
-
-        customer.balance = customer.subtotal - customer.paid
-
-        customer.balanceShow = Number(customer.balance).toFixed(2)
-      })
+  
       this.loaders.loadingData = false
       this.dtTrigger.next()
+      usersSubscription.unsubscribe()
     })
   }
 

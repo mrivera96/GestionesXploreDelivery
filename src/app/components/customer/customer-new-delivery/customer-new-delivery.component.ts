@@ -163,7 +163,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
         instrucciones: ['', Validators.maxLength(150)],
         idCargoExtra: [null],
         idOpcionExtra: [null],
-        tomarFoto:[false,Validators.required]
       }, {
         validators: [
           BlankSpacesValidator('nFactura'),
@@ -234,22 +233,27 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   loadData() {
-    this.categoriesService.getCustomerCategories().subscribe(response => {
+    const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.data
+      categoriesSubscription.unsubscribe()
     }, error => {
       this.loaders.loadingData = false
       this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
       this.openErrorDialog(this.errorMsg, true)
+      categoriesSubscription.unsubscribe()
     })
 
-    this.ratesService.getCustomerRates().subscribe(response => {
+    const ratesSubscription = this.ratesService.getCustomerRates().subscribe(response => {
       this.rates = response.data
+      ratesSubscription.unsubscribe()
     })
 
-    this.surchargesService.getSurcharges().subscribe(response => {
+    const surchargesSubscription = this.surchargesService.getSurcharges().subscribe(response => {
       this.surcharges = response.data
+      surchargesSubscription.unsubscribe()
     })
-    this.branchService.getBranchOffices().subscribe(response => {
+
+    const branchSubscription = this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
       this.myBranchOffices.forEach(bOffice => {
         if (bOffice.isDefault == true) {
@@ -260,7 +264,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
         }
 
       })
+      branchSubscription.unsubscribe()
     })
+
+
 
   }
 
@@ -329,7 +336,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
         cargosExtra: 0,
         idCargoExtra: null,
         idDetalleOpcion: null,
-        tomarFoto: false
       }
 
       let ordersCount = this.orders.length + 1
@@ -348,24 +354,27 @@ export class CustomerNewDeliveryComponent implements OnInit {
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
 
       this.loaders.loadingSubmit = true
-      this.deliveriesService
+      const deliveriesSubscription  = this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
         .subscribe(response => {
           this.loaders.loadingSubmit = false
           this.exitMsg = response.message
           this.nDeliveryResponse = response.nDelivery
           this.openSuccessDialog('Operación Realizada Correctamente', this.exitMsg = response.message, this.nDeliveryResponse)
+          deliveriesSubscription.unsubscribe()
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
               this.loaders.loadingSubmit = false
               this.errorMsg = error.statusText
               this.openErrorDialog(this.errorMsg, false)
+              deliveriesSubscription.unsubscribe()
             })
           } else {
             this.loaders.loadingSubmit = false
             this.errorMsg = 'Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.'
             this.openErrorDialog(this.errorMsg, false)
+            deliveriesSubscription.unsubscribe()
           }
 
         })
@@ -384,7 +393,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       //
       this.calculateRate(ordersCount)
 
-      this.http.post<any>(`${environment.apiUrl}`, {
+      const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         function: 'calculateDistance',
         salida: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
         entrega: this.newForm.get('order.direccion').value,
@@ -400,7 +409,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
         this.directionsRenderer.setMap(this.googleMap._googleMap)
         this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer);
-
+        distanceSubscription.unsubscribe()
       }, error => {
         if (error.subscribe()) {
           error.subscribe(error => {
@@ -412,6 +421,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
             }, 2000)
           })
         }
+        distanceSubscription.unsubscribe()
 
       })
     }
@@ -444,16 +454,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
         })
       })
 
-
     })
-
   }
 
   searchOrigin(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
-      this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
         this.placesOrigin = response
+        placeSubscription.unsubscribe()
       })
     }
 
@@ -462,8 +471,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
   searchDestination(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
-      this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
         this.placesDestination = response
+        placeSubscription.unsubscribe()
       })
     }
 
@@ -520,15 +530,16 @@ export class CustomerNewDeliveryComponent implements OnInit {
     const tarifa = this.pago.baseRate
 
     if (this.orders.length == 0) {
-      this.http.post<any>(`${environment.apiUrl}`, {
+      const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         function: 'getCoords',
         lugar: salida,
       }).subscribe((response) => {
         this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
+        cordsSubscription.unsubscribe()
       })
     }
 
-    this.http.post<any>(`${environment.apiUrl}`, {
+    const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
       function: 'calculateDistance',
       salida: salida,
       entrega: entrega,
@@ -542,7 +553,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       currOrder.cTotal = calculatedPayment.total
       currOrder.idCargoExtra = this.selectedExtraCharge.idCargoExtra
       currOrder.idDetalleOpcion = this.selectedExtraChargeOption.idDetalleOpcion
-      currOrder.tomarFoto = this.newForm.get('order.tomarFoto').value
+
       this.http.post<any>(`${environment.apiUrl}`, {
         function: 'getCoords',
         lugar: entrega,
@@ -595,13 +606,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
           this.pagos[i].total = nPay.total
         }
       })
-
+      cDistanceSubscription.unsubscribe()
       this.calculatePayment()
+
     }, error => {
       error.subscribe(error => {
         this.prohibitedDistanceMsg = error.statusText
         this.prohibitedDistance = true
         this.loaders.loadingAdd = false
+        cDistanceSubscription.unsubscribe()
         setTimeout(() => {
           this.prohibitedDistance = false;
         }, 2000)

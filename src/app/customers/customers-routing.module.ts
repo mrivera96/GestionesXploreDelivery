@@ -13,6 +13,7 @@ import {CustomerAllOrdersComponent} from "../components/customer/customer-all-or
 import {CustomerProfileComponent} from "../components/customer/customer-profile/customer-profile.component";
 import {CustomerBalanceComponent} from "../components/customer/customer-balance/customer-balance.component";
 import {CustomerReportsComponent} from "../components/customer/customer-reports/customer-reports.component";
+import { CustomerDashboardComponent } from '../components/customer/customer-dashboard/customer-dashboard.component';
 
 
 const routes: Routes = [
@@ -29,6 +30,7 @@ const routes: Routes = [
   {path: 'perfil', component: CustomerProfileComponent, canActivate: [CustomerGuard]},
   {path: 'balance', component: CustomerBalanceComponent, canActivate: [CustomerGuard]},
   {path: 'reporte-envios', component: CustomerReportsComponent, canActivate: [CustomerGuard]},
+  {path: 'dashboard', component: CustomerDashboardComponent, canActivate: [CustomerGuard]},
 ];
 
 @NgModule({

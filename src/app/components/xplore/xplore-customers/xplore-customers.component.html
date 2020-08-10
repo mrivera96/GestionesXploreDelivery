@@ -34,10 +34,7 @@
           <th>Número de Identificación</th>
           <th>Número de Teléfono</th>
           <th>email</th>
-          <th>Sub Total</th>
-          <th>Cancelado</th>
           <th>Balance</th>
-          <th>Ver Detalle</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
@@ -50,12 +47,9 @@
           <td class="fId">{{customer.numIdentificacion}}</td>
           <td>{{customer.numTelefono}}</td>
           <td>{{customer.email}}</td>
-          <td>L. {{customer.subtotalShow }}</td>
-          <td>L. {{customer.paidShow}}</td>
-          <td>L. {{customer.balanceShow }}</td>
           <td>
-            <a [routerLink]="['/admins/balance-cliente',customer.idCliente]" style="color: #0071A2">
-              <i class="fa fa-eye"></i> Ver Pagos
+            <a [routerLink]="['/admins/balance-cliente',customer.idCliente,customer.nomEmpresa]" style="color: #0071A2">
+              <i class="fa fa-eye"></i> Ver Balance
             </a>
           </td>
           <td>

@@ -14,6 +14,7 @@ import {EditRateDialogComponent} from "./edit-rate-dialog/edit-rate-dialog.compo
 import {NewRateDialogComponent} from "./new-rate-dialog/new-rate-dialog.component";
 import {DataTableDirective} from "angular-datatables";
 import {RateCustomersDialogComponent} from "./rate-customers-dialog/rate-customers-dialog.component";
+import {ConsolidatedRateDetailsComponent} from "./consolidated-rate-details/consolidated-rate-details.component";
 
 
 @Component({
@@ -60,7 +61,7 @@ export class XploreRatesComponent implements OnInit {
     this.dtTrigger = new Subject<any>()
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 25,
       serverSide: false,
       processing: true,
       info: true,
@@ -88,18 +89,21 @@ export class XploreRatesComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    this.ratesService.getRates().subscribe(response => {
+    const ratesSubscription = this.ratesService.getRates().subscribe(response => {
       this.rates = response.data
       this.loaders.loadingData = false
       this.dtTrigger.next()
+      ratesSubscription.unsubscribe()
     })
 
-    this.categoriesService.getAllCategories().subscribe(response => {
+    const categoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
+      categoriesSubscription.unsubscribe()
     })
 
-    this.usersService.getCustomers().subscribe(response => {
+    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
+      usersSubscription.unsubscribe()
     })
   }
 
@@ -171,6 +175,23 @@ export class XploreRatesComponent implements OnInit {
       })
     }
 
+  }
+
+  showRateDetail(detail){
+    const dialogRef = this.dialog.open(ConsolidatedRateDetailsComponent, {
+      data: {
+        RateDetail: detail
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.reloadData()
+      }else{
+        dialogRef.close()
+      }
+
+    })
   }
 
 }

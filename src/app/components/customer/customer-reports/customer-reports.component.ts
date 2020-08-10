@@ -137,7 +137,7 @@ export class CustomerReportsComponent implements OnInit {
       this.loaders.loadingSubmit = true
       this.totalSurcharges = 0.00
       this.totalCosts = 0.00
-      this.deliveriesService.getOrdersByCustomer(this.consultForm.value).subscribe(response => {
+      const deliveriesSubscription = this.deliveriesService.getOrdersByCustomer(this.consultForm.value).subscribe(response => {
         this.consultResults = response.data.ordersReport
         this.totalCustomerOrders = response.data?.totalOrders
         this.ordersByCategory = response.data?.ordersByCategory
@@ -162,6 +162,7 @@ export class CustomerReportsComponent implements OnInit {
         }
 
         this.loaders.loadingSubmit = false
+        deliveriesSubscription.unsubscribe()
       })
     }
   }

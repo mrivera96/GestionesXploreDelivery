@@ -16,7 +16,8 @@
         <mat-label>Fecha de pago:</mat-label>
         <input matInput id="fechaPago" type="date" formControlName="fechaPago" required>
         <mat-icon matSuffix>today</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="f.fechaPago?.errors?.required">*Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="f.fechaPago?.errors?.mustBeforeDate">*Ups, parece que esa fecha no es válida</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
@@ -66,7 +67,7 @@
 
       <mat-form-field appearance="outline" floatLabel="always" *ngIf="f.tipoPago.value == 7" class="col-sm">
         <mat-label>Referencia:</mat-label>
-        <input matInput id="referencia" type="text" formControlName="referencia" maxlength="10"
+        <input matInput id="referencia" type="text" formControlName="referencia" maxlength="12"
                placeholder="¿Cuál es la referencia del pago?" [required]="f.tipoPago.value == 7"  >
         <mat-icon matSuffix>comment</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>

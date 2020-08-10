@@ -27,7 +27,7 @@ export class AppComponent {
 
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x)
 
-    this.schedulesService.getSchedule().subscribe(response => {
+    const scheduleSubscription = this.schedulesService.getSchedule().subscribe(response => {
 
       localStorage.removeItem('todaySchedule')
 
@@ -37,6 +37,7 @@ export class AppComponent {
           localStorage.setItem('todaySchedule', JSON.stringify(value));
         }
       })
+      scheduleSubscription.unsubscribe()
     })
 
   }

@@ -67,4 +67,12 @@ export class UsersService {
     })
   }
 
+  getCustomerBalance(customerId){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'getCustomerBalance',
+      idCliente:customerId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
 }

@@ -46,8 +46,9 @@ export class DataTableComponent implements OnInit {
   }
 
   loadData() {
-    this.deliveriesService.getStates().subscribe(response => {
+    const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
       this.states = response.data.xploreDelivery
+      deliveriesSubscription.unsubscribe()
     })
 
     let service: Observable<any>
@@ -67,7 +68,7 @@ export class DataTableComponent implements OnInit {
 
     }
 
-    service.subscribe(response => {
+    const serviceSubscription = service.subscribe(response => {
       this.stopLoading.emit(false)
       this.deliveries = response.data
       this.deliveries.forEach(delivery => {
@@ -86,9 +87,9 @@ export class DataTableComponent implements OnInit {
           })
         })
       })
+      serviceSubscription.unsubscribe()
     })
-
-
+    
   }
 
 

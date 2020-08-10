@@ -26,6 +26,7 @@ import {NgxDropzoneModule} from "ngx-dropzone";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { CustomerReportsComponent } from '../components/customer/customer-reports/customer-reports.component';
+import { CustomerDashboardComponent } from '../components/customer/customer-dashboard/customer-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -46,6 +47,7 @@ import { CustomerReportsComponent } from '../components/customer/customer-report
     CustomerBalanceComponent,
     ChangeHourDialogComponent,
     CustomerReportsComponent,
+    CustomerDashboardComponent,
   ],
     imports: [
         CommonModule,

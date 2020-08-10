@@ -15,14 +15,17 @@ export class RootComponent implements OnInit {
     private authService: AuthService,
     private router: Router
   ) {
-    this.authService.currentUser.subscribe(x => this.currentUser = x)
+    const authSubscription  = this.authService.currentUser.subscribe(x => {
+      this.currentUser = x
+      authSubscription.unsubscribe()
+    })
     if(!this.currentUser){
       this.router.navigate(['login'])
     }
     if(this.currentUser.idPerfil === '1'){
       this.router.navigate(['/admins/reservas-pendientes'])
     }else if(this.currentUser.idPerfil === '8'){
-      this.router.navigate(['/customers/inicio'])
+      this.router.navigate(['/customers/dashboard'])
     }
 
   }

@@ -35,9 +35,10 @@ export class ExtraChargeCategoriesComponent implements OnInit {
 
   loadData(){
     this.loaders.loadingData = true
-    this.extraChargesService.getExtraChargeCategories(this.extraChargeId).subscribe(response => {
+    const extraChargesSubscription = this.extraChargesService.getExtraChargeCategories(this.extraChargeId).subscribe(response => {
       this.extraChargeCategories = response.data
       this.loaders.loadingData = false
+      extraChargesSubscription.unsubscribe()
     })
   }
 
@@ -64,14 +65,15 @@ export class ExtraChargeCategoriesComponent implements OnInit {
 
   removeCategoryFromExtraCharge(category) {
     this.loaders.loadingData = true
-    this.extraChargesService.removeCategoryFromExtraCharge(this.extraChargeId, category).subscribe(response => {
+    const extraChargesSubscription = this.extraChargesService.removeCategoryFromExtraCharge(this.extraChargeId, category).subscribe(response => {
       this.openSuccessDialog('Operación Realizada Correctamente', response.message)
       this.loaders.loadingData = false
-
+      extraChargesSubscription.unsubscribe()
     }, error => {
       error.subscribe(error => {
         this.loaders.loadingData = false
         this.openErrorDialog(error.statusText)
+        extraChargesSubscription.unsubscribe()
       })
     })
   }

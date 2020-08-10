@@ -26,13 +26,25 @@ export class RatesService {
     })
   }
 
-  createRate(form, customers) {
-    return this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'createRate',
-      form,
-      customers: customers,
-      tkn: this.authService.currentUserValue.access_token
-    })
+  createRate(form, customers, detail?, schedules?) {
+    if(detail){
+      return this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'createRate',
+        form,
+        detail:detail,
+        schedules,
+        customers: customers,
+        tkn: this.authService.currentUserValue.access_token
+      })
+    }else{
+      return this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'createRate',
+        form,
+        customers: customers,
+        tkn: this.authService.currentUserValue.access_token
+      })
+    }
+
   }
 
   getCustomerRates() {
@@ -66,5 +78,30 @@ export class RatesService {
       idTarifa: rateId,
       tkn: this.authService.currentUserValue.access_token
     })
+  }
+
+  getRateTypes(){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getRateTypes',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  updateConsolidatedRateDetail(form, schedules?){
+    if(schedules){
+      return this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'updateConsolidatedRateDetail',
+        form,
+        schedules,
+        tkn: this.authService.currentUserValue.access_token
+      })
+    }else{
+      return this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'updateConsolidatedRateDetail',
+        form,
+        tkn: this.authService.currentUserValue.access_token
+      })
+    }
+
   }
 }

@@ -2,11 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {Payment} from "../../../models/payment";
 import {Subject} from "rxjs";
 import {Order} from "../../../models/order";
-import {DeliveriesService} from "../../../services/deliveries.service";
 import {ActivatedRoute} from "@angular/router";
 import {UsersService} from "../../../services/users.service";
 import {Customer} from "../../../models/customer";
-import {formatDate} from "@angular/common";
+
 
 @Component({
   selector: 'app-xplore-customer-balance',
@@ -37,12 +36,12 @@ export class XploreCustomerBalanceComponent implements OnInit {
   totalExtraCharges: number = 0.00
 
   constructor(
-    private deliveriesService: DeliveriesService,
     private activatedRoute: ActivatedRoute,
     private usersService: UsersService
   ) {
     this.activatedRoute.paramMap.subscribe(params => {
       this.customerId = Number(params.get("id"));
+      this.currCustomer.nomEmpresa = params.get("nombre");
     })
   }
 
@@ -84,52 +83,22 @@ export class XploreCustomerBalanceComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    this.usersService.getCustomers().subscribe(response => {
-      let customers: Customer[] = response.data
-      customers.forEach(customer => {
-        if (customer.idCliente == this.customerId) {
-          this.currCustomer = customer
-          this.myPayments = customer.payments
-          customer.payments.forEach(payment => {
-            this.paid = this.paid + +payment.monto
-            payment.fechaPago = formatDate(new Date(payment.fechaPago), 'yyyy-MM-dd', 'en')
-            payment.montoShow = Number(payment.monto).toFixed(2)
-          })
-
-          this.calcBalance()
-          this.dtTrigger.next()
-        }
-      })
-
-    })
-
-    this.deliveriesService.getCustomerOrders(this.customerId).subscribe(response => {
-      const allOrdrs: Order[] = response.data.todos
-      allOrdrs.forEach(value => {
-        this.subtotal = this.subtotal + +value.cTotal
-        this.totalCTotal = this.totalCTotal + +value.cTotal
-        this.totalSurcharges = this.totalSurcharges + +value.recargo
-        this.totalExtraCharges = this.totalExtraCharges + +value.cargosExtra
-        this.myFinishedOrders.push(value)
-
-        this.subtotalShow = Number(this.subtotal).toFixed(2)
-
-        this.totalSurchargesShow = Number(this.totalSurcharges).toFixed(2)
-
-      })
-      this.loaders.loadingData = false
+    const balanceSubscription = this.usersService.getCustomerBalance(this.customerId).subscribe(response => {
+      this.myPayments = response.payments
+      this.paid = response.paid
+      this.subtotal = response.subtotal
+      this.balance = response.balance
+      this.totalCTotal = response.footCTotal
+      this.totalSurcharges = response.footSurcharges
+      //this.totalExtraCharges = response.footExtraCharges 
+      this.myFinishedOrders = response.finishedOrders
+      this.dtTrigger.next()
       this.dtTrigger1.next()
-
+     
+      this.loaders.loadingData = false
+      balanceSubscription.unsubscribe
     })
 
-
-
-  }
-
-  calcBalance() {
-    this.paidShow = Number(this.paid).toFixed(2)
-    this.balance = +this.subtotal - +this.paid
-    this.balanceShow = Number(this.balance).toFixed(2)
   }
 
 }

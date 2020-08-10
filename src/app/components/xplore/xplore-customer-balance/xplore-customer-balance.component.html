@@ -23,7 +23,7 @@
                     *ngIf="!loaders.loadingData">
             <mat-card-content>
               <h2>{{currCustomer?.nomEmpresa}} </h2>
-              <h2>Sub-Total: L. {{subtotalShow}} </h2>
+              <h2>Sub-Total: L. {{subtotal}} </h2>
 
             </mat-card-content>
           </mat-card>
@@ -49,7 +49,7 @@
                 <th>Detalle</th>
                 <th>Distancia</th>
                 <th>Recargo</th>
-                <th>Cargos Extra</th>
+                <!--<th>Cargos Extra</th>-->
                 <th>Costo Total</th>
                 <th>Fecha de entrega</th>
                 <th>Conductor</th>
@@ -83,9 +83,9 @@
                 <th></th>
                 <th></th>
                 <th>Total:</th>
-                <th>L. {{totalSurcharges | number: '.2'}}</th>
-                <th>L. {{totalExtraCharges | number: '.2'}}</th>
-                <th>L. {{totalCTotal | number: '.2'}}</th>
+                <th>L. {{totalSurcharges}}</th>
+                <th>L. {{totalExtraCharges}}</th>
+                <th>L. {{totalCTotal}}</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -110,9 +110,9 @@
           <mat-card class="shadow mb-3  text-white text-center" style="background-color: #0277bd"
                     *ngIf="!loaders.loadingData">
             <mat-card-content>
-              <h2>Sub-Total: L. {{subtotalShow }} </h2>
-              <h2>Pago Realizado: L. {{paidShow }} </h2>
-              <h2>Balance: L. {{ balanceShow }} </h2>
+              <h2>Sub-Total: L. {{subtotal}} </h2>
+              <h2>Pago Realizado: L. {{paid }} </h2>
+              <h2>Balance: L. {{ balance }} </h2>
             </mat-card-content>
           </mat-card>
           <!-- DATATABLE START -->
@@ -141,7 +141,7 @@
               <tr *ngFor="let payment of myPayments; let idx1 = index">
                 <td>{{idx1 + 1}}</td>
                 <td>{{payment.fechaPago}}</td>
-                <td>L. {{payment.montoShow }}</td>
+                <td>L. {{payment.monto }}</td>
                 <td>{{payment.payment_type.nomTipoPago}}</td>
                 <td>{{payment.referencia || 'N/A'}}</td>
                 <td>{{payment.banco || 'N/A'}}</td>
@@ -152,7 +152,7 @@
               <tr>
                 <th></th>
                 <th>Total:</th>
-                <th>L. {{paidShow }}</th>
+                <th>L. {{paid }}</th>
                 <th></th>
                 <th></th>
                 <th></th>

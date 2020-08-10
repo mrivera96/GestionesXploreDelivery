@@ -44,9 +44,10 @@ export class AddCategoryExtraChargeDailogComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    this.categoriesService.getAllCategories().subscribe(response => {
+    const categoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
       this.loaders.loadingData = false
+      categoriesSubscription.unsubscribe()
     })
 
   }
@@ -54,15 +55,16 @@ export class AddCategoryExtraChargeDailogComponent implements OnInit {
   onFormSubmit() {
     if (this.catForm.valid) {
       this.loaders.loadingSubmit = true
-      this.extraChargesServices.addCategoryToExtraCharge(this.extraChargeId, this.catForm.get('idCategoria').value)
+      const extraChargesSubscription = this.extraChargesServices.addCategoryToExtraCharge(this.extraChargeId, this.catForm.get('idCategoria').value)
         .subscribe(response => {
           this.openSuccessDialog('Operación Realizada Correctamente', response.message)
           this.loaders.loadingSubmit = false
-
+          extraChargesSubscription.unsubscribe()
         }, error => {
           error.subscribe(error => {
             this.openErrorDialog(error.statusText)
             this.loaders.loadingSubmit = false
+            extraChargesSubscription.unsubscribe()
           })
         })
     }

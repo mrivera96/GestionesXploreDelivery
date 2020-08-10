@@ -76,12 +76,14 @@ export class ChangeHourDialogComponent implements OnInit {
   onEditFormSubmit() {
     if (this.changeForm.valid) {
       this.loaders.loadingSubmit = true
-      this.deliveriesService.changeDeliveryHour(this.changeForm.value).subscribe(response => {
+      const deliveriesSubscription = this.deliveriesService.changeDeliveryHour(this.changeForm.value).subscribe(response => {
         this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+        deliveriesSubscription.unsubscribe()
       }, error => {
         this.loaders.loadingSubmit = false
         error.subscribe(error => {
           this.openErrorDialog(error.statusText)
+          deliveriesSubscription.unsubscribe()
         })
       })
     }

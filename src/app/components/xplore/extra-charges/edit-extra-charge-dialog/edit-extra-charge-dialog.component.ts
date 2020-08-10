@@ -55,15 +55,17 @@ export class EditExtraChargeDialogComponent implements OnInit {
   onFormEditSubmit() {
     if (this.editECForm.valid) {
       this.loaders.loadingSubmit = true
-      this.extraChargesService.editExtraCharge(this.currEc.idCargoExtra, this.editECForm.value)
+      const extraChargesSubscription = this.extraChargesService.editExtraCharge(this.currEc.idCargoExtra, this.editECForm.value)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            extraChargesSubscription.unsubscribe()
           },
           error => {
             error.subscribe(error => {
               this.loaders.loadingSubmit = false
               this.openErrorDialog(error.statusText)
+              extraChargesSubscription.unsubscribe()
             })
           })
     }

@@ -77,10 +77,11 @@ export class ExtraChargesComponent implements OnInit {
 
   loadData(){
     this.loaders.loadingData = true
-    this.extraChargesService.getExtraCharges().subscribe(response => {
+    const extraChargesSubscription = this.extraChargesService.getExtraCharges().subscribe(response => {
       this.extraCharges = response.data
       this.loaders.loadingData = false
       this.dtTrigger.next()
+      extraChargesSubscription.unsubscribe()
     })
   }
 

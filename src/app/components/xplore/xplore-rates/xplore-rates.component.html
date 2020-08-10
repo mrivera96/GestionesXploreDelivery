@@ -38,7 +38,9 @@
           <th>Entregas Mínimas</th>
           <th>Entregas Máximas</th>
           <th>Monto</th>
-          <th>Clientes</th>
+          <th>Tipo de Tarifa</th>
+          <th data-priority="1">Clientes</th>
+          <th data-priority="1">Configuración Consolidada</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
@@ -51,10 +53,17 @@
           <td>{{rate.entregasMinimas}}</td>
           <td>{{rate.entregasMaximas}}</td>
           <td>L. {{rate.precio}}</td>
+          <td>{{rate.rate_type.descTipoTarifa}}</td>
           <td>
             <a (click)="showRateCustomers(rate.idTarifaDelivery)" style="color: #0071A2">
               <i class="fa fa-eye"></i> Ver Clientes
             </a>
+          </td>
+          <td>
+            <a  (click)="showRateDetail(rate.consolidated_detail)" *ngIf="rate.idTipoTarifa == 2"  style="color: #0071A2">
+              <i class="fa fa-sliders-h"></i> Configuraciones
+            </a>
+            <p *ngIf="rate.idTipoTarifa != 2">N/A</p>
           </td>
           <td>
             <a (click)="showEditForm(rate.idTarifaDelivery)" style="color: #0071A2">

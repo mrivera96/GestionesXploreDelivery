@@ -64,15 +64,17 @@ export class CustomerNewBranchComponent implements OnInit {
   onSubmitForm() {
     if (this.nBranchForm.valid) {
       this.loaders.loadingSubmit = true
-      this.branchService.newBranch(this.nBranchForm.value).subscribe(response => {
+      const branchSubscription = this.branchService.newBranch(this.nBranchForm.value).subscribe(response => {
         this.loaders.loadingSubmit = false
         this.succsMsg = response.message
         this.openSuccessDialog('Operación Realizada Correctamente', this.succsMsg)
+        branchSubscription.unsubscribe()
       }, error => {
         error.subscribe(error => {
           this.loaders.loadingSubmit = false
           this.errorMsg = error.statusText
           this.openErrorDialog(this.errorMsg)
+          branchSubscription.unsubscribe()
         })
       })
     }
@@ -89,11 +91,11 @@ export class CustomerNewBranchComponent implements OnInit {
   searchAddress(event) {
     let lugar = event.target.value
     if(lugar.trim().length >= 5){
-      this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
         this.places = response
+        placeSubscription.unsubscribe()
       })
     }
-
   }
 
   setCurrentLocation(checked) {

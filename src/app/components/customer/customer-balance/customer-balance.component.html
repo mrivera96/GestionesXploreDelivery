@@ -23,7 +23,7 @@
                     *ngIf="!loaders.loadingData">
             <mat-card-content>
               <h2>{{currCustomer.cliente.nomEmpresa}} </h2>
-              <h2>Sub-Total: L. {{subtotal | number: '.2'}} </h2>
+              <h2>Sub-Total: L. {{subtotal}} </h2>
 
             </mat-card-content>
           </mat-card>
@@ -48,7 +48,7 @@
                 <th>Detalle</th>
                 <th>Distancia</th>
                 <th>Recargo</th>
-                <th>Cargos Extra</th>
+                <!--<th>Cargos Extra</th>-->
                 <th>Costo Total</th>
                 <th>Fecha de entrega</th>
                 <th>Conductor</th>
@@ -80,9 +80,9 @@
                 <th></th>
                 <th></th>
                 <th>Total:</th>
-                <th>L. {{totalSurcharges | number: '.2'}}</th>
-                <th>L.{{totalExtraCharges | number: '.2'}}</th>
-                <th>L. {{totalCTotal | number: '.2'}}</th>
+                <th>L. {{totalSurcharges }}</th>
+                <th>L.{{totalExtraCharges }}</th>
+                <th>L. {{totalCTotal}}</th>
                 <th></th>
                 <th></th>
               </tr>
@@ -107,9 +107,9 @@
           <mat-card class="shadow mb-3  text-white text-center" style="background-color: #0277bd"
                     *ngIf="!loaders.loadingData">
             <mat-card-content>
-              <h2>Sub-Total: L. {{subtotal | number: '.2'}} </h2>
-              <h2>Pago Realizado: L. {{paid | number: '.2'}} </h2>
-              <h2>Balance: L. {{ subtotal - paid| number: '.2'}} </h2>
+              <h2>Sub-Total: L. {{subtotal}} </h2>
+              <h2>Pago Realizado: L. {{paid}} </h2>
+              <h2>Balance: L. {{balance}} </h2>
             </mat-card-content>
           </mat-card>
           <!-- DATATABLE START -->
@@ -144,6 +144,17 @@
                 <td>{{payment.banco || 'N/A'}}</td>
               </tr>
               </tbody>
+
+              <tfoot style="display: table-footer-group;">
+                <tr>
+                  <th></th>
+                  <th>Total:</th>
+                  <th>L.{{totalPaid}}</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+                </tfoot>
 
             </table>
           </div>

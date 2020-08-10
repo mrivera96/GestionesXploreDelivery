@@ -44,25 +44,28 @@ export class ChangeOrderStateDialogComponent implements OnInit {
   }
 
   loadData() {
-    this.deliveriesService.getStates().subscribe(response => {
+    const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
       this.states = response.data.xploreDeliveryEntregas
+      deliveriesSubscription.unsubscribe()
     })
   }
 
   changeState() {
     if (this.changeForm.valid) {
       this.loaders.loadingSubmit = true
-      this.deliveriesService.changeOrderState(this.currentOrder.idDetalle,
+      const deliveriesSubscription = this.deliveriesService.changeOrderState(this.currentOrder.idDetalle,
         this.changeForm.get('idEstado').value,
         this.changeForm.get('observaciones').value)
         .subscribe(response => {
           this.loaders.loadingSubmit = false
           this.openSuccessDialog('Operación Realizada Correctamente', response.data)
+          deliveriesSubscription.unsubscribe()
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
               this.loaders.loadingSubmit = false
               this.openErrorDialog(error.statusText)
+              deliveriesSubscription.unsubscribe()
             })
           }
         })

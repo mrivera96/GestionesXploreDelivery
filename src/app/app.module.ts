@@ -25,6 +25,7 @@ import {MatCheckboxModule} from "@angular/material/checkbox";
 import {SharedModule} from "./shared/shared.module";
 import { PasswordRecoveryComponent } from './components/shared/password-recovery/password-recovery.component';
 import { ViewPhotosDialogComponent } from './components/shared/view-photos-dialog/view-photos-dialog.component';
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 
 
@@ -59,6 +60,7 @@ import { ViewPhotosDialogComponent } from './components/shared/view-photos-dialo
         FormsModule,
         MatCheckboxModule,
         SharedModule,
+        MatAutocompleteModule,
     ],
 
     entryComponents: [

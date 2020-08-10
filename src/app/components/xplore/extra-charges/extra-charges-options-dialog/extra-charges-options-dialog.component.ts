@@ -30,9 +30,10 @@ export class ExtraChargesOptionsDialogComponent implements OnInit {
   }
   loadData(){
     this.loaders.loadingData = true
-    this.extraChargesService.getExtraChargeOptions(this.extraChargeId).subscribe(response => {
+    const extraChargesSubscription = this.extraChargesService.getExtraChargeOptions(this.extraChargeId).subscribe(response => {
       this.extraChargeOptions = response.data
       this.loaders.loadingData = false
+      extraChargesSubscription.unsubscribe()
     })
   }
 
@@ -59,14 +60,15 @@ export class ExtraChargesOptionsDialogComponent implements OnInit {
 
   removeOptionFromExtraCharge(option) {
     this.loaders.loadingData = true
-    this.extraChargesService.removeOptionFromExtraCharge(this.extraChargeId, option).subscribe(response => {
+    const extraChargesSubscription = this.extraChargesService.removeOptionFromExtraCharge(this.extraChargeId, option).subscribe(response => {
       this.openSuccessDialog('Operación Realizada Correctamente', response.message)
       this.loaders.loadingData = false
-
+      extraChargesSubscription.unsubscribe()
     }, error => {
       error.subscribe(error => {
         this.loaders.loadingData = false
         this.openErrorDialog(error.statusText)
+        extraChargesSubscription.unsubscribe()
       })
     })
   }

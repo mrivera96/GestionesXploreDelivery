@@ -42,8 +42,9 @@ export class CustomerDatatableComponent implements OnInit {
   }
 
   loadData(){
-    this.deliveriesService.getStates().subscribe(response => {
+    const stateSubscription = this.deliveriesService.getStates().subscribe(response => {
       this.states = response.data.xploreDelivery
+      stateSubscription.unsubscribe()
     })
 
     let service: Observable<any>
@@ -59,7 +60,7 @@ export class CustomerDatatableComponent implements OnInit {
 
     }
 
-    service.subscribe(response => {
+    const serviceSubscription = service.subscribe(response => {
       this.stopLoading.emit(false)
       this.deliveries = response.data
       this.deliveries.forEach(delivery => {
@@ -74,11 +75,12 @@ export class CustomerDatatableComponent implements OnInit {
             if (that.search() !== this['value']) {
               that
                 .search(this['value'])
-                .draw();
+                .draw()
             }
-          });
-        });
-      });
+          })
+        })
+      })
+      serviceSubscription.unsubscribe()
     })
 
 

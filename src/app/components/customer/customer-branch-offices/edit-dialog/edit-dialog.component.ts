@@ -56,9 +56,10 @@ export class EditDialogComponent implements OnInit {
   searchAddress(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
-      this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'})
+      const placesSubscription = this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'})
         .subscribe(response => {
           this.places = response
+          placesSubscription.unsubscribe()
         })
     }
 
@@ -90,15 +91,17 @@ export class EditDialogComponent implements OnInit {
   submitEditBranch() {
     if (this.edBranchForm.valid) {
       this.loaders.loadingSubmit = true
-      this.branchService.editBranch(this.edBranchForm.value)
+      const branchesSubscription = this.branchService.editBranch(this.edBranchForm.value)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            branchesSubscription.unsubscribe()
           },
           error => {
             error.subscribe(error => {
               this.loaders.loadingSubmit = false
               this.openErrorDialog(error.statusText)
+              branchesSubscription.unsubscribe()
             })
           })
     }

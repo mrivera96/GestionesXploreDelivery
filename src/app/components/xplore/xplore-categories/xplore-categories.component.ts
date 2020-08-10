@@ -76,10 +76,11 @@ export class XploreCategoriesComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    this.categoriesService.getAllCategories().subscribe(response => {
+    const categoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
       this.loaders.loadingData = false
       this.dtTrigger.next()
+      categoriesSubscription.unsubscribe()
     })
   }
 

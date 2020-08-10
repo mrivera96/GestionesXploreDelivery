@@ -67,15 +67,17 @@ export class CustomerProfileComponent implements OnInit {
         this.openErrorDialog(this.errorMsg, false)
       } else {
         this.loaders.loadingSubmit = true
-        this.usersService.changeCustomerPassword(this.passChangeForm.value).subscribe(response => {
+        const userSubscription = this.usersService.changeCustomerPassword(this.passChangeForm.value).subscribe(response => {
           this.loaders.loadingSubmit = false
           this.succsMsg = response.message
           this.openSuccessDialog('Operación Realizada Correctamente', this.succsMsg)
+          userSubscription.unsubscribe()
         }, error => {
           error.subscribe(error => {
             this.loaders.loadingSubmit = false
             this.errorMsg = error.statusText
             this.openErrorDialog(this.errorMsg, false)
+            userSubscription.unsubscribe()
           })
         })
 
@@ -85,8 +87,9 @@ export class CustomerProfileComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout().subscribe(data => {
+    const authSubscription = this.authService.logout().subscribe(data => {
       location.reload(true)
+      authSubscription.unsubscribe()
     })
   }
 

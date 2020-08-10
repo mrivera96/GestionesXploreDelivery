@@ -151,6 +151,11 @@
         </a>
       </mat-nav-list>
 
+      <a (click)="sidenav.close()" [routerLink]="['customers/dashboard']" mat-list-item>
+        <mat-icon>dashboard</mat-icon>
+        Dashboard
+      </a>
+
       <a (click)="sidenav.close()" [routerLink]="['customers/inicio']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery

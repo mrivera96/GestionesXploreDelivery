@@ -27,15 +27,18 @@ export class ConfirmDialogComponent implements OnInit {
   }
 
   deleteBranch() {
-    this.branchService.deleteBranch(this.branchToDelete).subscribe(response => {
+    const branchesSubscription = this.branchService.deleteBranch(this.branchToDelete).subscribe(response => {
         this.loaders.loadingSubmit = false
         this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+        branchesSubscription.unsubscribe()
       },
       error => {
         error.subscribe(error => {
           this.loaders.loadingSubmit = false
           this.openErrorDialog(error.statusText)
+          branchesSubscription.unsubscribe()
         })
+        
       })
   }
 

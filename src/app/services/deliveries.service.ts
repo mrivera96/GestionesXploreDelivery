@@ -15,6 +15,13 @@ export class DeliveriesService {
   ) {
   }
 
+  getCustomerDashboardData(){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getCustomerDashboardData',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
   getTodayDeliveries() {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getTodayDeliveries',
@@ -35,7 +42,6 @@ export class DeliveriesService {
       tkn: this.authService.currentUserValue.access_token
     })
   }
-
 
   getTodayOrders() {
     return this.http.post<any>(`${environment.apiUrl}`, {

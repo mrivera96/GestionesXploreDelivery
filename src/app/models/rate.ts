@@ -1,5 +1,8 @@
 import {Category} from "./category";
 import {Customer} from "./customer";
+import { RateType } from './rate-type';
+import {ConsolidatedRateDetail} from "./consolidated-rate-detail";
+import {Schedule} from "./schedule";
 
 export interface Rate {
   idTarifaDelivery?: number
@@ -11,4 +14,8 @@ export interface Rate {
   idCliente?: number
   category?: Category
   cliente?: Customer
+  rate_type?: RateType
+  idTipoTarifa?: number
+  consolidated_detail?: ConsolidatedRateDetail
+  schedule?: Schedule[]
 }

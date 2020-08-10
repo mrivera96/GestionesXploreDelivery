@@ -42,7 +42,7 @@ const routes: Routes = [
   {path: 'reportes/envios-conductores', component: OrdersByDriverComponent, canActivate: [XploreGuard]},
   {path: 'reportes/envios-clientes', component: OrdersByCustomerComponent, canActivate: [XploreGuard]},
   {path: 'pagos', component: PaymentsComponent, canActivate: [XploreGuard]},
-  {path: 'balance-cliente/:id', component: XploreCustomerBalanceComponent, canActivate: [XploreGuard]},
+  {path: 'balance-cliente/:id/:nombre', component: XploreCustomerBalanceComponent, canActivate: [XploreGuard]},
 ];
 
 @NgModule({

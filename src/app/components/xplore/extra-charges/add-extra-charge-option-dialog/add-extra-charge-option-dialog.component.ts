@@ -41,15 +41,17 @@ export class AddExtraChargeOptionDialogComponent implements OnInit {
   onFormSubmit() {
     if (this.exChrgOptForm.valid) {
       this.loaders.loadingSubmit = true
-      this.extraChargesServices.addOptionToExtraCharge(this.extraChargeId, this.exChrgOptForm.value)
+      const extraChargesSubscription = this.extraChargesServices.addOptionToExtraCharge(this.extraChargeId, this.exChrgOptForm.value)
         .subscribe(response => {
           this.openSuccessDialog('Operación Realizada Correctamente', response.message)
           this.loaders.loadingSubmit = false
+          extraChargesSubscription.unsubscribe()
 
         }, error => {
           error.subscribe(error => {
             this.openErrorDialog(error.statusText)
             this.loaders.loadingSubmit = false
+            extraChargesSubscription.unsubscribe()
           })
         })
     }

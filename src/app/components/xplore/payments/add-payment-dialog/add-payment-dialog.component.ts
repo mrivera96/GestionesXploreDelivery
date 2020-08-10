@@ -9,6 +9,7 @@ import {PaymentsService} from "../../../../services/payments.service";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {Bank} from "../../../../models/bank";
+import { PaymentDateValidator } from 'src/app/helpers/paymentDate.validator';
 
 @Component({
   selector: 'app-add-payment-dialog',
@@ -53,8 +54,12 @@ export class AddPaymentDialogComponent implements OnInit {
       tipoPago:[null, [Validators.required]],
       idCliente:[null, [Validators.required]],
       numAutorizacion:['',[Validators.minLength(6), Validators.maxLength(6)]],
-      referencia:['',[Validators.maxLength(10)]],
+      referencia:['',[Validators.maxLength(12)]],
       banco:['']
+    }, {
+      validators:[
+        PaymentDateValidator('fechaPago')
+      ]
     })
   }
 
@@ -63,13 +68,15 @@ export class AddPaymentDialogComponent implements OnInit {
   }
   loadData(){
 
-    this.usersService.getCustomers().subscribe(response => {
+    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
       this.filteredCustomers = response.data
+      usersSubscription.unsubscribe()
     })
 
-    this.paymentsService.getPaymentTypes().subscribe( response => {
+    const paymentTypeSubscription = this.paymentsService.getPaymentTypes().subscribe( response => {
       this.paymentTipes = response.data
+      paymentTypeSubscription.unsubscribe()
     })
 
   }
@@ -102,13 +109,15 @@ export class AddPaymentDialogComponent implements OnInit {
 
     if(this.nPayForm.valid){
       this.loaders.loadingSubmit = true
-      this.paymentsService.addPayment(this.nPayForm.value).subscribe(response => {
+      const paymentsSubscription = this.paymentsService.addPayment(this.nPayForm.value).subscribe(response => {
         this.loaders.loadingSubmit = false
         this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+        paymentsSubscription.unsubscribe()
       }, error => {
         error.subscribe(error => {
           this.loaders.loadingSubmit = false
           this.openErrorDialog(error.statusText)
+          paymentsSubscription.unsubscribe()
         })
       })
 

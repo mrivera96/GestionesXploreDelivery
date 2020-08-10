@@ -268,13 +268,8 @@
                   </mat-checkbox>
                 </div>
 
-                <div class="col-md-6">
-                  <mat-slide-toggle  formControlName="tomarFoto">Tomar Fotografía</mat-slide-toggle>
-                </div>
-
 
               </div>
-
 
               <div class="row" *ngIf="selectedCategory?.category_extra_charges?.length > 0">
                 <div class="col">
@@ -425,7 +420,6 @@
               <th scope="col">Intsrucciones</th>
               <th scope="col">Dirección del Destinatario</th>
               <th scope="col">Distancia</th>
-              <th scope="col">Tomar Fotografía</th>
               <th scope="col" data-priority="1">Acción</th>
             </tr>
 
@@ -440,7 +434,6 @@
               <td>{{order.instrucciones}}</td>
               <td>{{order.direccion}}</td>
               <td>{{order.distancia}}</td>
-              <td>{{order.tomarFoto == true ? 'Sí': 'No'}}</td>
               <td>
                 <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(order)"><i
                   class="fa fa-trash-alt"></i>

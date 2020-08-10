@@ -25,13 +25,15 @@ export class ConfirmModalComponent implements OnInit {
 
   finishDelivery() {
     this.loaders.loadingData = true
-    this.deliveriesService.finishDelivery(this.data.deliveryId).subscribe(response => {
+    const deliveriesSubscription = this.deliveriesService.finishDelivery(this.data.deliveryId).subscribe(response => {
       this.loaders.loadingData = false
       this.openSuccessDialog('Finalización de reserva',  response.data)
+      deliveriesSubscription.unsubscribe()
     }, error => {
       error.subscribe(error => {
         this.loaders.loadingData = false
         this.openErrorDialog(error.statusText)
+        deliveriesSubscription.unsubscribe()
       })
     })
   }

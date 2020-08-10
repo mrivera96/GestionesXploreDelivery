@@ -3,10 +3,10 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
 import {Payment} from "../../../models/payment";
-import {PaymentsService} from "../../../services/payments.service";
 import {Subject} from "rxjs";
-import {DeliveriesService} from "../../../services/deliveries.service";
 import {Order} from "../../../models/order";
+import { UsersService } from 'src/app/services/users.service';
+import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
 
 @Component({
   selector: 'app-customer-balance',
@@ -26,7 +26,7 @@ export class CustomerBalanceComponent implements OnInit {
     'loadingData': false
   }
   subtotal: number = 0.00
-  paid: number
+  paid: number = 0.00
   balance: number = 0.00
   currCustomer: User
   payments: Payment []
@@ -38,17 +38,17 @@ export class CustomerBalanceComponent implements OnInit {
   totalSurcharges: number = 0.00
   totalCTotal: number = 0.00
   totalExtraCharges: number = 0.00
+  dialog: any;
+  totalPaid: number = 0.00
 
   constructor(
     private authService: AuthService,
-    private paymentsService: PaymentsService,
-    private deliveriesService: DeliveriesService
+    private usersService: UsersService,
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
 
   ngOnInit(): void {
-    this.loaders.loadingData = true
     this.initialize()
     this.loadData()
   }
@@ -85,33 +85,27 @@ export class CustomerBalanceComponent implements OnInit {
   }
 
   loadData(){
-    this.paymentsService.getPayments().subscribe(response => {
-      this.payments = response.data
-      this.payments.forEach(value => {
-        if(value.idCliente == this.currCustomer.idCliente){
-          this.paid = this.paid + +value.monto
-          this.myPayments.push(value)
-          this.calcBalance()
-        }
-      })
-      this.dtTrigger.next()
-
-    })
-
-    this.deliveriesService.getAllCustomerOrders().subscribe(response => {
-      const allOrdrs: Order[] = response.data
-      allOrdrs.forEach(value => {
-        if(value.estado.idEstado === 44 || value.estado.idEstado === 46 || value.estado.idEstado === 47){
-          this.subtotal = this.subtotal + +value.cTotal
-          this.totalCTotal = this.totalCTotal + +value.cTotal
-          this.totalSurcharges = this.totalSurcharges + +value.recargo
-          this.totalExtraCharges = this.totalExtraCharges + +value.cargosExtra
-          this.myFinishedOrders.push(value)
-        }
-      })
+    this.loaders.loadingData = true
+    const balanceSubscription = this.usersService.getCustomerBalance(this.currCustomer.idCliente).subscribe(response => {
+      this.myPayments = response.payments
+      this.paid = response.paid
+      this.balance = response.balance
+      this.subtotal = response.subtotal
+      this.totalCTotal = response.footCTotal
+      this.totalSurcharges = response.footSurcharges
+      this.totalExtraCharges = response.footExtraCharges
+      this.totalPaid = response.footMonto
+      this.myFinishedOrders = response.finishedOrders
       this.loaders.loadingData = false
       this.dtTrigger1.next()
-
+      this.dtTrigger.next()
+      balanceSubscription.unsubscribe()
+    },error => {
+      if(error.subscribe()){
+        error.subscribe(error => {
+          this.openErrorDialog(error.statusText, true)
+        })
+      }
     })
 
   }
@@ -120,12 +114,20 @@ export class CustomerBalanceComponent implements OnInit {
     this.loaders.loadingData = event
   }
 
-  calcBalance(){
-    this.balance = Number(this.subtotal) - Number(this.paid)
-  }
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
 
-  calcSubtotal(event){
-    this.subtotal = event
+    if(reload){
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingData = true
+        this.ngOnInit
+      })
+    }
+
   }
 
 }
