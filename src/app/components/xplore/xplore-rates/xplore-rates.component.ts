@@ -177,10 +177,11 @@ export class XploreRatesComponent implements OnInit {
 
   }
 
-  showRateDetail(detail){
+  showRateDetail(detail, schedules){
     const dialogRef = this.dialog.open(ConsolidatedRateDetailsComponent, {
       data: {
-        RateDetail: detail
+        RateDetail: detail,
+        RateSchedules: schedules
       }
     })
 

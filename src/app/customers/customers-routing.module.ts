@@ -14,6 +14,7 @@ import {CustomerProfileComponent} from "../components/customer/customer-profile/
 import {CustomerBalanceComponent} from "../components/customer/customer-balance/customer-balance.component";
 import {CustomerReportsComponent} from "../components/customer/customer-reports/customer-reports.component";
 import { CustomerDashboardComponent } from '../components/customer/customer-dashboard/customer-dashboard.component';
+import {CustomerNewConsolidatedDeliveryComponent} from "../components/customer/customer-new-consolidated-delivery/customer-new-consolidated-delivery.component";
 
 
 const routes: Routes = [
@@ -31,6 +32,7 @@ const routes: Routes = [
   {path: 'balance', component: CustomerBalanceComponent, canActivate: [CustomerGuard]},
   {path: 'reporte-envios', component: CustomerReportsComponent, canActivate: [CustomerGuard]},
   {path: 'dashboard', component: CustomerDashboardComponent, canActivate: [CustomerGuard]},
+  {path: 'envio-consolidado', component: CustomerNewConsolidatedDeliveryComponent, canActivate: [CustomerGuard]},
 ];
 
 @NgModule({

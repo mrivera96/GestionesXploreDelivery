@@ -25,6 +25,7 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
   currRateDetail: ConsolidatedRateDetail
   rateSchedules: Schedule[] = []
   schdeduleForm: FormGroup
+  assignedSchedules: Schedule[] = []
 
   constructor(
     private ratesService: RatesService,
@@ -39,6 +40,17 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.initialize()
+    this.loadData()
+  }
+
+  loadData(){
+    this.loaders.loadingData = true
+    const schedulesSubscription = this.ratesService.getRateSchedules(this.currRateDetail.idTarifaDelivery)
+      .subscribe(response => {
+        this.assignedSchedules = response.data
+        this.loaders.loadingData = false
+        schedulesSubscription.unsubscribe()
+      })
   }
 
   initialize() {
@@ -73,7 +85,7 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
     })
   }
 
-  openSuccessDialog(succsTitle, succssMsg) {
+  openSuccessDialog(succsTitle, succssMsg, close) {
     const dialogRef = this.dialog.open(SuccessModalComponent, {
       data: {
         succsTitle: succsTitle,
@@ -81,9 +93,12 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
       }
     })
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.dialogRef.close(true)
-    })
+    if(close){
+      dialogRef.afterClosed().subscribe(result => {
+        this.dialogRef.close(true)
+      })
+    }
+
   }
 
   searchAddress(event) {
@@ -106,7 +121,7 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
         this.ratesService.updateConsolidatedRateDetail(this.consolidatedForm.value,this.rateSchedules)
           .subscribe(response => {
               this.loaders.loadingSubmit = false
-              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message, true)
             },
             error => {
               error.subscribe(error => {
@@ -118,7 +133,7 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
         this.ratesService.updateConsolidatedRateDetail(this.consolidatedForm.value)
           .subscribe(response => {
               this.loaders.loadingSubmit = false
-              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message, true)
             },
             error => {
               error.subscribe(error => {
@@ -147,6 +162,24 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
   removeSchdeuleFromArray(item) {
     let i = this.rateSchedules.indexOf(item)
     this.rateSchedules.splice(i, 1)
+  }
+
+  removeScheduleFromRate(schedule) {
+    this.loaders.loadingSubmit = true
+   const rmSchSubscription = this.ratesService.removeScheduleFromRate(this.currRateDetail.idTarifaDelivery, schedule.idHorario)
+     .subscribe(response => {
+       this.openSuccessDialog('Operación realizada correctamente', response.message, false)
+       this.loaders.loadingSubmit = false
+       rmSchSubscription.unsubscribe()
+       this.loadData()
+     },error => {
+       error.subscribe(error => {
+         this.openErrorDialog(error.statusText)
+         this.loaders.loadingSubmit = false
+         rmSchSubscription.unsubscribe()
+       })
+
+     })
   }
 
   setDay(dayCod) {

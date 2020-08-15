@@ -60,7 +60,7 @@
             </a>
           </td>
           <td>
-            <a  (click)="showRateDetail(rate.consolidated_detail)" *ngIf="rate.idTipoTarifa == 2"  style="color: #0071A2">
+            <a  (click)="showRateDetail(rate.consolidated_detail, rate.schedules)" *ngIf="rate.idTipoTarifa == 2"  style="color: #0071A2">
               <i class="fa fa-sliders-h"></i> Configuraciones
             </a>
             <p *ngIf="rate.idTipoTarifa != 2">N/A</p>

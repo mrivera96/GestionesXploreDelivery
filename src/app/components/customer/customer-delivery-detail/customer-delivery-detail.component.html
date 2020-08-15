@@ -102,7 +102,18 @@
           {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
         </div>
 
-        <div class="col-sm" *ngIf="allowHourChange">
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Tipo de delivery:</strong>
+          {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : 'Envío Normal'}}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm" *ngIf="allowHourChange && currentDelivery.isConsolidada == false">
           <button type="button" mat-raised-button color="primary" [disabled]="!allowHourChange" (click)="openChangeHourDialog()" >
             Cambiar Hora de Recogida
           </button>
@@ -126,7 +137,7 @@
             <th>Instrucciones de entrega</th>
             <th>Distancia</th>
             <th>Recargo</th>
-            <!--<th>Cargos Extra</th>-->
+            <th>Cargos Extra</th>
             <th>Costo</th>
             <th>Fotografías</th>
           </tr>

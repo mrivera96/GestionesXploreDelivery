@@ -17,4 +17,5 @@ export interface User {
   numCelular?: string
   agency?: Agency
   state?: string
+  permiteConsolidada?: boolean
 }

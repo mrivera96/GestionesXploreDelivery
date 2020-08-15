@@ -1,7 +1,7 @@
 <!-- NAVBAR START -->
 <mat-toolbar class="app-toolbar" color="primary">
   <mat-toolbar-row>
-    <a  mat-button>
+    <a mat-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
     </a>
     <a [routerLink]="['/']">
@@ -14,7 +14,8 @@
 <mat-sidenav-container style="min-height: 100vh;">
   <mat-sidenav #sidenav mode="over">
     <!-- ONLY XPLORE USER -->
-    <mat-nav-list *ngIf="(currentUser && currentUser.idPerfil === '1') || (currentUser && currentUser.idPerfil === '9')">
+    <mat-nav-list
+      *ngIf="(currentUser && currentUser.idPerfil === '1') || (currentUser && currentUser.idPerfil === '9')">
       <a href="javascript:void(0);" mat-list-item (click)="showLogout()">
         <mat-icon>account_circle</mat-icon>
         {{currentUser.nomUsuario}}
@@ -159,6 +160,12 @@
       <a (click)="sidenav.close()" [routerLink]="['customers/inicio']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery
+      </a>
+
+      <a *ngIf="currentUser.permiteConsolidada == true" (click)="sidenav.close()"
+         [routerLink]="['customers/envio-consolidado']" mat-list-item>
+        <mat-icon>add</mat-icon>
+        Agregar delivery (Carga Consolidada)
       </a>
 
       <a (click)="sidenav.close()" [routerLink]="['customers/envios-hoy']" mat-list-item>

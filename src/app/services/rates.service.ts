@@ -104,4 +104,23 @@ export class RatesService {
     }
 
   }
+
+  getRateSchedules(rateId){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getRateSchedules',
+      idTarifa: rateId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  removeScheduleFromRate(rateId, scheduleId) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'removeScheduleFromRate',
+      idHorario: scheduleId,
+      idTarifa: rateId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+
 }

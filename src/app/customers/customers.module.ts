@@ -27,6 +27,8 @@ import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { CustomerReportsComponent } from '../components/customer/customer-reports/customer-reports.component';
 import { CustomerDashboardComponent } from '../components/customer/customer-dashboard/customer-dashboard.component';
+import { CustomerNewConsolidatedDeliveryComponent } from '../components/customer/customer-new-consolidated-delivery/customer-new-consolidated-delivery.component';
+
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { CustomerDashboardComponent } from '../components/customer/customer-dash
     ChangeHourDialogComponent,
     CustomerReportsComponent,
     CustomerDashboardComponent,
+    CustomerNewConsolidatedDeliveryComponent,
   ],
     imports: [
         CommonModule,

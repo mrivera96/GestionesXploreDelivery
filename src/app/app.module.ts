@@ -26,7 +26,7 @@ import {SharedModule} from "./shared/shared.module";
 import { PasswordRecoveryComponent } from './components/shared/password-recovery/password-recovery.component';
 import { ViewPhotosDialogComponent } from './components/shared/view-photos-dialog/view-photos-dialog.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
-
+import { CustomerRestrictionsDialogComponent } from './components/customer/customer-restrictions-dialog/customer-restrictions-dialog.component';
 
 
 @NgModule({
@@ -37,6 +37,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
         ErrorModalComponent,
         PasswordRecoveryComponent,
         ViewPhotosDialogComponent,
+        CustomerRestrictionsDialogComponent,
+
 
     ],
 

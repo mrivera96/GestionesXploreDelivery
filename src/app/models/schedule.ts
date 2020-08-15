@@ -8,4 +8,6 @@ export interface Schedule {
   final?: string
   cod?: number
   rate?: Rate
+  finicio?: string
+  ffinal?: string
 }

@@ -26,4 +26,5 @@ export interface Delivery {
   descCategoria?: string
   fechaNoFormatted?: string
   coordsOrigen?: string
+  isConsolidada?: boolean
 }

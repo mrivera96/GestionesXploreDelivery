@@ -17,7 +17,7 @@ export class RootComponent implements OnInit {
   ) {
     const authSubscription  = this.authService.currentUser.subscribe(x => {
       this.currentUser = x
-      authSubscription.unsubscribe()
+
     })
     if(!this.currentUser){
       this.router.navigate(['login'])

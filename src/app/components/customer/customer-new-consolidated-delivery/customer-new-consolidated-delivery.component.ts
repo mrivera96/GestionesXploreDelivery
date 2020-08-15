@@ -1,40 +1,44 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {GoogleMap} from "@angular/google-maps";
+import {Customer} from "../../../models/customer";
 import {Category} from "../../../models/category";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Subject} from "rxjs";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {HttpClient} from "@angular/common/http";
-import {formatDate} from "@angular/common";
-import {environment} from "../../../../environments/environment";
 import {Order} from "../../../models/order";
 import {Rate} from "../../../models/rate";
-import {Branch} from "../../../models/branch";
-import {CategoriesService} from "../../../services/categories.service";
-import {RatesService} from "../../../services/rates.service";
-import {BranchService} from "../../../services/branch.service";
-import {DataTableDirective} from "angular-datatables";
-import {Router} from "@angular/router";
 import {Surcharge} from "../../../models/surcharge";
-import {SurchargesService} from "../../../services/surcharges.service";
-import {DateValidate} from "../../../helpers/date.validator";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
-import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
-import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
-import {Customer} from "../../../models/customer";
-import {AuthService} from "../../../services/auth.service";
-import {NoUrlValidator} from "../../../helpers/noUrl.validator";
-import {GoogleMap} from "@angular/google-maps";
-import {Schedule} from "../../../models/schedule";
+import {Subject} from "rxjs";
+import {DataTableDirective} from "angular-datatables";
 import {ExtraCharge} from "../../../models/extra-charge";
 import {ExtraChargeOption} from "../../../models/extra-charge-option";
+import {CategoriesService} from "../../../services/categories.service";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {RatesService} from "../../../services/rates.service";
+import {SurchargesService} from "../../../services/surcharges.service";
+import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {AuthService} from "../../../services/auth.service";
+import {formatDate} from "@angular/common";
+import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
+import {NoUrlValidator} from "../../../helpers/noUrl.validator";
+import {environment} from "../../../../environments/environment";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
+import {ConfirmDialogComponent} from "../customer-new-delivery/confirm-dialog/confirm-dialog.component";
+import {animate, style, transition, trigger} from "@angular/animations";
+import {BranchService} from "../../../services/branch.service";
+import {Branch} from "../../../models/branch";
+import {Schedule} from "../../../models/schedule";
+import * as moment from "moment";
+import {DateValidate} from "../../../helpers/date.validator";
+import {ConsolidatedDateValidate} from "../../../helpers/consolidatedDate.validator";
+import {CustomerRestrictionsDialogComponent} from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
+
 
 @Component({
-  selector: 'app-customer-new-delivery',
-  templateUrl: './customer-new-delivery.component.html',
-  styleUrls: ['./customer-new-delivery.component.css'],
+  selector: 'app-customer-new-consolidated-delivery',
+  templateUrl: './customer-new-consolidated-delivery.component.html',
+  styleUrls: ['./customer-new-consolidated-delivery.component.css'],
   animations: [
     trigger('fade', [
       transition('void => *', [
@@ -44,9 +48,7 @@ import {ExtraChargeOption} from "../../../models/extra-charge-option";
     ])
   ]
 })
-export class CustomerNewDeliveryComponent implements OnInit {
-  locationOption
-  myCurrentLocation
+export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   dtOptions: any
   @ViewChild('googleMap') googleMap: GoogleMap
   center: google.maps.LatLngLiteral
@@ -71,12 +73,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
   nDeliveryResponse
   rates: Rate[] = []
   surcharges: Surcharge[]
-  myBranchOffices: Branch[] = []
-  @ViewChild('originCords') originCords: ElementRef
-  @ViewChild('destinationCords') destinationCords: ElementRef
-  @Input() cardType
-  placesOrigin = []
-  placesDestination = []
   pago = {
     'baseRate': 0.00,
     'cargosExtra': 0.00,
@@ -85,24 +81,38 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
   dtTrigger: Subject<any> = new Subject()
   errorMsg = ''
-  today: number
-  todaySchedule: Schedule
-  pagos = []
   prohibitedDistance = false
   prohibitedDistanceMsg = ''
   paymentMethod: number = 1
-  hInit
-  hFin
-  files: File[] = []
-  gcordsOrigin = false
-  gcordsDestination = false
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
-  fileContentArray: String[] = []
-  defaultBranch
   selectedCategory: Category = {}
   selectedExtraCharge: ExtraCharge = {}
   selectedExtraChargeOption: ExtraChargeOption = {}
+  pagos = []
+  placesDestination = []
+  gcordsDestination = false
+  @ViewChild('destinationCords')
+  destinationCords: ElementRef
+  defaultBranch
+  gcordsOrigin = false
+  placesOrigin = []
+  @ViewChild('originCords')
+  originCords: ElementRef
+  myBranchOffices: Branch[] = []
+  locationOption
+  myCurrentLocation
+  selectedRate: Rate = {}
+  selectedCategoryRates: Rate[] = []
+  rateSchedules: Schedule[] = []
+  prohibitedAddress: boolean = false
+  prohibitedAddressCentinel: boolean = false
+  prohibitedAddressMsg: string = ''
+  datesToShow: Array<any> = []
+  hoursToShow: Array<any> = []
+  files: File[] = []
+  fileContentArray: String[] = []
+  restrictionsText = ''
 
   constructor(
     private categoriesService: CategoriesService,
@@ -111,45 +121,42 @@ export class CustomerNewDeliveryComponent implements OnInit {
     private ratesService: RatesService,
     private surchargesService: SurchargesService,
     private http: HttpClient,
-    private branchService: BranchService,
     private router: Router,
     public dialog: MatDialog,
     private authService: AuthService,
+    private branchService: BranchService,
   ) {
     this.currCustomer = this.authService.currentUserValue
-
   }
 
   ngOnInit(): void {
-    this.todaySchedule = JSON.parse(localStorage.getItem('todaySchedule'))
-    this.hInit = formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
-      null, Number(this.todaySchedule?.inicio.split(':')[0]), Number(this.todaySchedule?.inicio.split(':')[1])),
-      'hh:mm a', 'en')
-
-    this.hFin = formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
-      null, Number(this.todaySchedule?.final.split(':')[0]), Number(this.todaySchedule?.final.split(':')[1])),
-      'hh:mm a', 'en')
-
     this.initialize()
+
     this.loadData()
+
+
+
   }
 
   initialize() {
     this.directionsRenderer = new google.maps.DirectionsRenderer
     this.directionsService = new google.maps.DirectionsService
-    this.locationOption = 1
     this.paymentMethod = 1
+    this.locationOption = 1
     this.deliveryForm = this.formBuilder.group({
       deliveryHeader: this.formBuilder.group({
-        fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
-        hora: [formatDate(new Date().setHours(new Date().getHours(), new Date().getMinutes()+5), 'HH:mm', 'en'), Validators.required],
         dirRecogida: ['', [Validators.required]],
-        idCategoria: [1, [Validators.required]],
+        idCategoria: [{
+          value: 1,
+          disabled: false,
+        }, Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
-        coordsOrigen: ['']
+        coordsOrigen: [''],
+        fecha: ['', Validators.required],
+        hora: ['', Validators.required],
+        idTarifa:[null]
       }, {
         validators: [
-          DateValidate('fecha', 'hora'),
           BlankSpacesValidator('dirRecogida'),
           NoUrlValidator('dirRecogida'),
         ]
@@ -172,37 +179,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
         ]
       })
     })
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.myCurrentLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-        this.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-
-        this.deliveryForm.get('deliveryHeader.dirRecogida')
-          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-      }, function (error) {
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
-            break;
-          case error.POSITION_UNAVAILABLE:
-            // La ubicación no está disponible.
-            break;
-          case error.TIMEOUT:
-            // Se ha excedido el tiempo para obtener la ubicación.
-            break;
-        }
-
-      })
-    } else {
-      alert('El GPS está desactivado')
-    }
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -235,18 +211,52 @@ export class CustomerNewDeliveryComponent implements OnInit {
   loadData() {
     this.loaders.loadingData = true
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
-      this.categories = response.data
-      this.loaders.loadingData = false
+      this.categories = response.consolidatedCategories
       categoriesSubscription.unsubscribe()
+      this.loaders.loadingData = false
+      this.setSelectedCategory()
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          this.myCurrentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }
+          this.center = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }
+          this.deliveryForm.get('deliveryHeader.dirRecogida')
+            .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+          this.calculateRatio()
+          this.calculatedistanceBefore()
+        }, function (error) {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
+              break;
+            case error.POSITION_UNAVAILABLE:
+              // La ubicación no está disponible.
+              break;
+            case error.TIMEOUT:
+              // Se ha excedido el tiempo para obtener la ubicación.
+              break;
+          }
+
+        })
+      } else {
+        alert('El GPS está desactivado')
+      }
     }, error => {
       this.loaders.loadingData = false
       this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
       this.openErrorDialog(this.errorMsg, true)
       categoriesSubscription.unsubscribe()
+      this.loaders.loadingData = false
     })
 
     const ratesSubscription = this.ratesService.getCustomerRates().subscribe(response => {
-      this.rates = response.data
+      this.rates = response.consolidadas
       ratesSubscription.unsubscribe()
     })
 
@@ -259,9 +269,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.myBranchOffices = response.data
       this.myBranchOffices.forEach(bOffice => {
         if (bOffice.isDefault == true) {
-          this.locationOption = 3
-          this.defaultBranch = bOffice.idSucursal
-          this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(bOffice.direccion)
           this.checkInsructions()
         }
 
@@ -269,49 +276,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
       branchSubscription.unsubscribe()
     })
 
-  }
-
-  checkInsructions() {
-    this.myBranchOffices.forEach(bOffice => {
-      if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones)
-      } else {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue('')
-      }
-    })
-  }
-
-  clearLocationField() {
-    this.newForm.get('deliveryHeader.dirRecogida').setValue('')
-  }
-
-  setCurrentLocationOrigin() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.myCurrentLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-        this.deliveryForm.get('deliveryHeader.dirRecogida')
-          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-        this.calculatedistanceBefore()
-      }, function (error) {
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
-            break;
-          case error.POSITION_UNAVAILABLE:
-            // La ubicación no está disponible.
-            break;
-          case error.TIMEOUT:
-            // Se ha excedido el tiempo para obtener la ubicación.
-            break;
-        }
-
-      })
-    } else {
-      alert('El GPS está desactivado')
-    }
   }
 
   get newForm() {
@@ -352,9 +316,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   onFormSubmit() {
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
+      this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate.idTarifaDelivery)
 
       this.loaders.loadingSubmit = true
-      const deliveriesSubscription  = this.deliveriesService
+      const deliveriesSubscription = this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
         .subscribe(response => {
           this.loaders.loadingSubmit = false
@@ -385,6 +350,41 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
+  calculateRatio() {
+    if (this.newForm.get('deliveryHeader.dirRecogida').value != '') {
+      this.prohibitedAddress = false
+      let ordersCount = this.orders.length + 1
+      //
+      this.calculateRate(ordersCount)
+
+      const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'calculateDistance',
+        salida: this.selectedRate.consolidated_detail.dirRecogida,
+        entrega: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
+        tarifa: this.pago.baseRate
+      }).subscribe((response) => {
+        if (Number(response.distancia.split(" ")[0]) > this.selectedRate.consolidated_detail.radioMaximo) {
+          this.prohibitedAddressMsg = "El lugar de recogida seleccionado se encuentra fuera de nuestro radio de servicio. "
+          this.prohibitedAddress = true
+          this.prohibitedAddressCentinel = true
+          distanceSubscription.unsubscribe()
+        }
+
+        distanceSubscription.unsubscribe()
+      }, error => {
+        if (error.subscribe()) {
+          error.subscribe(error => {
+            this.prohibitedAddressMsg = error.statusText
+            this.prohibitedAddress = true
+
+          })
+        }
+        distanceSubscription.unsubscribe()
+
+      })
+    }
+  }
+
   calculatedistanceBefore() {
     this.directionsRenderer.setMap(null)
     if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
@@ -395,7 +395,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         function: 'calculateDistance',
-        salida: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
+        salida: this.selectedRate.consolidated_detail.dirRecogida,
         entrega: this.newForm.get('order.direccion').value,
         tarifa: this.pago.baseRate
       }).subscribe((response) => {
@@ -404,7 +404,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
         const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
         this.befTime = response.tiempo
         this.befCost = calculatedPayment.total
-        this.placesOrigin = []
         this.placesDestination = []
 
         this.directionsRenderer.setMap(this.googleMap._googleMap)
@@ -418,7 +417,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
             this.loaders.loadingDistBef = false
             setTimeout(() => {
               this.prohibitedDistance = false;
-            }, 2000)
+            }, 6000)
           })
         }
         distanceSubscription.unsubscribe()
@@ -433,7 +432,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
     const dirRecogida = this.newForm.get('deliveryHeader.dirRecogida').value
     const dirEntrega = this.newForm.get('order.direccion').value
     const geocoder1 = new google.maps.Geocoder()
-
 
     const geocoder2 = new google.maps.Geocoder()
     geocoder1.geocode({'address': dirRecogida}, results => {
@@ -457,21 +455,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
-  searchOrigin(event) {
-    let lugar = event.target.value
-    if (lugar.trim().length >= 5) {
-      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
-        this.placesOrigin = response
-        placeSubscription.unsubscribe()
-      })
-    }
-
-  }
-
   searchDestination(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
-      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        lugar: lugar,
+        function: 'searchPlace'
+      }).subscribe(response => {
         this.placesDestination = response
         placeSubscription.unsubscribe()
       })
@@ -480,15 +470,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculateRate(ordersCount) {
-    this.rates.forEach(value => {
-      if (ordersCount >= value?.entregasMinimas
-        && ordersCount <= value?.entregasMaximas
-        && this.deliveryForm.get('deliveryHeader.idCategoria').value == value?.idCategoria) {
-        this.pago.baseRate = value.precio
-      } else if (ordersCount == 0) {
-        this.pago.baseRate = 0.00
-      }
-    })
+    this.pago.baseRate = this.selectedRate.precio
   }
 
   calculateOrderPayment(distance) {
@@ -499,18 +481,21 @@ export class CustomerNewDeliveryComponent implements OnInit {
       'cargosExtra': 0.00,
       'total': 0.00
     }
-    this.surcharges.forEach(value => {
-      if (distance >= Number(value.kilomMinimo)
-        && distance <= Number(value.kilomMaximo)
-        && value.customer.idCliente == this.currCustomer.idCliente) {
+    if (distance > this.selectedRate.consolidated_detail.radioMaximo) {
+      this.surcharges.forEach(value => {
+        if (distance >= Number(value.kilomMinimo)
+          && distance <= Number(value.kilomMaximo)
+          && value.customer.idCliente == this.currCustomer.idCliente) {
 
-        orderPayment.surcharges = Number(value.monto)
-      } else if (distance >= Number(value.kilomMinimo)
-        && distance <= Number(value.kilomMaximo)
-        && value.customer.idCliente == 1) {
-        orderPayment.surcharges = Number(value.monto)
-      }
-    })
+          orderPayment.surcharges = Number(value.monto)
+        } else if (distance >= Number(value.kilomMinimo)
+          && distance <= Number(value.kilomMaximo)
+          && value.customer.idCliente == 1) {
+          orderPayment.surcharges = Number(value.monto)
+        }
+      })
+    }
+
     if (this.selectedExtraCharge != null && this.selectedExtraCharge.tipoCargo === 'F') {
       orderPayment.cargosExtra = this.selectedExtraCharge.costo
       orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraCharge.costo
@@ -525,7 +510,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculateDistance(currOrder, reloadTable?) {
-    const salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value
+    const salida = this.selectedRate.consolidated_detail.dirRecogida
     const entrega = currOrder.direccion
     const tarifa = this.pago.baseRate
 
@@ -677,16 +662,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
-  setCordsOrigin() {
-    this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.originCords.nativeElement.value)
-    this.gcordsOrigin = false
-
-    if (this.deliveryForm.get('order.direccion').value != '') {
-      this.calculatedistanceBefore()
-    }
-
-  }
-
   setCordsDestination() {
     this.deliveryForm.get('order.direccion').setValue(this.destinationCords.nativeElement.value)
     this.gcordsDestination = false
@@ -748,6 +723,148 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       }
     })
+  }
+
+  setSelectedCategory() {
+    const today = new Date().getDay()
+    this.categories.forEach(category => {
+      if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
+        this.selectedCategory = category
+        this.setSelectedRate(category.rate)
+        this.rateSchedules = category.rate.schedules
+        this.datesToShow = category.datesToShow
+
+      }
+    })
+
+  }
+
+  setSelectedExtraCharge(extraCharge) {
+    this.selectedExtraCharge = extraCharge
+  }
+
+  setSelectedExtraChargeOption(option) {
+    this.selectedExtraChargeOption = option
+  }
+
+  setSelectedRate(rate) {
+    this.selectedRate = rate
+  }
+
+  setCordsOrigin() {
+    this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.originCords.nativeElement.value)
+    this.gcordsOrigin = false
+
+    if (this.deliveryForm.get('order.direccion').value != '') {
+      this.calculatedistanceBefore()
+    }
+
+  }
+
+  searchOrigin(event) {
+    let lugar = event.target.value
+    if (lugar.trim().length >= 5) {
+      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        lugar: lugar,
+        function: 'searchPlace'
+      }).subscribe(response => {
+        this.placesOrigin = response
+        placeSubscription.unsubscribe()
+      })
+    }
+
+  }
+
+  setCurrentLocationOrigin() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.myCurrentLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
+        this.deliveryForm.get('deliveryHeader.dirRecogida')
+          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+        this.calculateRatio()
+        this.calculatedistanceBefore()
+      }, function (error) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
+            break;
+          case error.POSITION_UNAVAILABLE:
+            // La ubicación no está disponible.
+            break;
+          case error.TIMEOUT:
+            // Se ha excedido el tiempo para obtener la ubicación.
+            break;
+        }
+
+      })
+    } else {
+      alert('El GPS está desactivado')
+    }
+  }
+
+  clearLocationField() {
+    this.newForm.get('deliveryHeader.dirRecogida').setValue('')
+  }
+
+  checkInsructions() {
+    this.myBranchOffices.forEach(bOffice => {
+      if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
+        this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones)
+      } else {
+        this.deliveryForm.get('deliveryHeader.instrucciones').setValue('')
+      }
+    })
+  }
+
+  setDate(date){
+    this.hoursToShow = []
+
+    try {
+      this.rateSchedules.forEach(schedule => {
+        if (schedule.cod == date.cod) {
+
+          const hour = {
+            hour: formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
+              null, Number(schedule?.inicio.split(':')[0]), Number(schedule?.inicio.split(':')[1])),
+              'HH:mm', 'en'),
+            label: formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
+              null, Number(schedule?.inicio.split(':')[0]), Number(schedule?.inicio.split(':')[1])),
+              'hh:mm a', 'en')
+          }
+
+          const datetime = new Date(date.date + ' ' + hour.hour)
+          const currentDateTime = new Date()
+
+          if (this.hoursToShow.indexOf(hour) == -1 && datetime >= currentDateTime) {
+            this.hoursToShow.push(hour)
+          }
+
+        }
+      })
+      let i = 0
+      this.hoursToShow.forEach(hour => {
+        i++
+        if(i == 1){
+          this.deliveryForm.get('deliveryHeader.hora').setValue(hour.hour)
+        }
+      })
+    }catch (e) {
+      alert(e.message)
+    }
+
+
+
+    /*this.formatedSchedules.forEach(schedule => {
+          schedule.finicio = formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
+            null, Number(schedule?.inicio.split(':')[0]), Number(schedule?.inicio.split(':')[1])),
+            'hh:mm a', 'en')
+          schedule.ffinal = formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
+            null, Number(schedule?.final.split(':')[0]), Number(schedule?.final.split(':')[1])),
+            'hh:mm a', 'en')
+        })*/
   }
 
   onSelect(event) {
@@ -818,20 +935,12 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.files.splice(this.files.indexOf(event), 1)
   }
 
-  setSelectedCategory() {
-    this.categories.forEach(category => {
-      if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
-        this.selectedCategory = category
-      }
+  openRestrictionsDialog(){
+    const dialogRef = this.dialog.open(CustomerRestrictionsDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      dialogRef.close()
     })
-  }
-
-  setSelectedExtraCharge(extraCharge) {
-    this.selectedExtraCharge = extraCharge
-  }
-
-  setSelectedExtraChargeOption(option) {
-    this.selectedExtraChargeOption = option
   }
 
 }

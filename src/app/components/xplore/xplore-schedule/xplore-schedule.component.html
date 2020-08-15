@@ -38,7 +38,6 @@
           <th>Día</th>
           <th>Hora de Inicio</th>
           <th>Hora Final</th>
-          <th>Tarifa Asignada</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
@@ -49,7 +48,6 @@
           <td>{{schedule.dia}}</td>
           <td>{{schedule.inicio}}</td>
           <td>{{schedule.final}}</td>
-          <td>{{schedule?.rate?.descTarifa || 'Este horario se aplica en envío normal'}}</td>
           <td>
             <a (click)="showEditDialog(schedule)" style="color: #0071A2">
               <i class="fa fa-edit"></i> Editar
