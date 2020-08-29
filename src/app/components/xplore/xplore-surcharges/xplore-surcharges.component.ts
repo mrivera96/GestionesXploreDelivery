@@ -89,13 +89,8 @@ export class XploreSurchargesComponent implements OnInit {
     this.ngOnInit()
   }
 
-  showEditForm(id) {
-    let currSurcharge: Surcharge = {}
-    this.surcharges.forEach(value => {
-      if (value.idRecargo === id) {
-        currSurcharge = value
-      }
-    })
+  showEditForm(currSurcharge) {
+
     const dialogRef = this.dialog.open(EditSurchargeDialogComponent, {
       data: {
         surcharge: currSurcharge

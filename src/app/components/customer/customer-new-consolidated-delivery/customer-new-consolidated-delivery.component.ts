@@ -1,38 +1,38 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {GoogleMap} from "@angular/google-maps";
-import {Customer} from "../../../models/customer";
-import {Category} from "../../../models/category";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Order} from "../../../models/order";
-import {Rate} from "../../../models/rate";
-import {Surcharge} from "../../../models/surcharge";
-import {Subject} from "rxjs";
-import {DataTableDirective} from "angular-datatables";
-import {ExtraCharge} from "../../../models/extra-charge";
-import {ExtraChargeOption} from "../../../models/extra-charge-option";
-import {CategoriesService} from "../../../services/categories.service";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {RatesService} from "../../../services/rates.service";
-import {SurchargesService} from "../../../services/surcharges.service";
-import {HttpClient} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {AuthService} from "../../../services/auth.service";
-import {formatDate} from "@angular/common";
-import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
-import {NoUrlValidator} from "../../../helpers/noUrl.validator";
-import {environment} from "../../../../environments/environment";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
-import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
-import {ConfirmDialogComponent} from "../customer-new-delivery/confirm-dialog/confirm-dialog.component";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {BranchService} from "../../../services/branch.service";
-import {Branch} from "../../../models/branch";
-import {Schedule} from "../../../models/schedule";
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { GoogleMap } from "@angular/google-maps";
+import { Customer } from "../../../models/customer";
+import { Category } from "../../../models/category";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Order } from "../../../models/order";
+import { Rate } from "../../../models/rate";
+import { Surcharge } from "../../../models/surcharge";
+import { Subject } from "rxjs";
+import { DataTableDirective } from "angular-datatables";
+import { ExtraCharge } from "../../../models/extra-charge";
+import { ExtraChargeOption } from "../../../models/extra-charge-option";
+import { CategoriesService } from "../../../services/categories.service";
+import { DeliveriesService } from "../../../services/deliveries.service";
+import { RatesService } from "../../../services/rates.service";
+import { SurchargesService } from "../../../services/surcharges.service";
+import { HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { MatDialog } from "@angular/material/dialog";
+import { AuthService } from "../../../services/auth.service";
+import { formatDate } from "@angular/common";
+import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator";
+import { NoUrlValidator } from "../../../helpers/noUrl.validator";
+import { environment } from "../../../../environments/environment";
+import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
+import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component";
+import { ConfirmDialogComponent } from "../customer-new-delivery/confirm-dialog/confirm-dialog.component";
+import { animate, style, transition, trigger } from "@angular/animations";
+import { BranchService } from "../../../services/branch.service";
+import { Branch } from "../../../models/branch";
+import { Schedule } from "../../../models/schedule";
 import * as moment from "moment";
-import {DateValidate} from "../../../helpers/date.validator";
-import {ConsolidatedDateValidate} from "../../../helpers/consolidatedDate.validator";
-import {CustomerRestrictionsDialogComponent} from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
+import { DateValidate } from "../../../helpers/date.validator";
+import { ConsolidatedDateValidate } from "../../../helpers/consolidatedDate.validator";
+import { CustomerRestrictionsDialogComponent } from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
 
 
 @Component({
@@ -42,8 +42,8 @@ import {CustomerRestrictionsDialogComponent} from "../customer-restrictions-dial
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
@@ -84,7 +84,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   prohibitedDistance = false
   prohibitedDistanceMsg = ''
   paymentMethod: number = 1
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective
   selectedCategory: Category = {}
   selectedExtraCharge: ExtraCharge = {}
@@ -118,7 +118,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
     private deliveriesService: DeliveriesService,
-    private ratesService: RatesService,
     private surchargesService: SurchargesService,
     private http: HttpClient,
     private router: Router,
@@ -133,7 +132,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.initialize()
 
     this.loadData()
-
 
 
   }
@@ -154,7 +152,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         coordsOrigen: [''],
         fecha: ['', Validators.required],
         hora: ['', Validators.required],
-        idTarifa:[null]
+        idTarifa: [null]
       }, {
         validators: [
           BlankSpacesValidator('dirRecogida'),
@@ -255,11 +253,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       this.loaders.loadingData = false
     })
 
-    const ratesSubscription = this.ratesService.getCustomerRates().subscribe(response => {
-      this.rates = response.consolidadas
-      ratesSubscription.unsubscribe()
-    })
-
     const surchargesSubscription = this.surchargesService.getSurcharges().subscribe(response => {
       this.surcharges = response.data
       surchargesSubscription.unsubscribe()
@@ -294,6 +287,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         instrucciones: this.newForm.get('order.instrucciones').value,
         coordsDestino: '',
         distancia: '',
+        tiempo:'',
         tarifaBase: 0,
         recargo: 0,
         cTotal: 0,
@@ -434,9 +428,9 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     const geocoder1 = new google.maps.Geocoder()
 
     const geocoder2 = new google.maps.Geocoder()
-    geocoder1.geocode({'address': dirRecogida}, results => {
+    geocoder1.geocode({ 'address': dirRecogida }, results => {
       const originLL = results[0].geometry.location
-      geocoder2.geocode({'address': dirEntrega}, results => {
+      geocoder2.geocode({ 'address': dirEntrega }, results => {
         const destLL = results[0].geometry.location
         directionsService.route({
           origin: originLL,  // Haight.
@@ -531,6 +525,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       tarifa: tarifa
     }).subscribe((response) => {
       currOrder.distancia = response.distancia
+      currOrder.tiempo = response.tiempo
       const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
       currOrder.tarifaBase = calculatedPayment.baseRate
       currOrder.recargo = calculatedPayment.surcharges
@@ -726,14 +721,14 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   }
 
   setSelectedCategory() {
-    const today = new Date().getDay()
+
     this.categories.forEach(category => {
       if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
         this.selectedCategory = category
-        this.setSelectedRate(category.rate)
-        this.rateSchedules = category.rate.schedules
-        this.datesToShow = category.datesToShow
-
+        const selectedCatRate = category.ratesToShow[0]
+        this.rateSchedules = selectedCatRate.schedules
+        this.setSelectedRate(selectedCatRate)
+        this.datesToShow = selectedCatRate.datesToShow
       }
     })
 
@@ -819,52 +814,16 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     })
   }
 
-  setDate(date){
-    this.hoursToShow = []
+  setDate(date) {
+    this.hoursToShow = date.hoursToShow
 
-    try {
-      this.rateSchedules.forEach(schedule => {
-        if (schedule.cod == date.cod) {
-
-          const hour = {
-            hour: formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
-              null, Number(schedule?.inicio.split(':')[0]), Number(schedule?.inicio.split(':')[1])),
-              'HH:mm', 'en'),
-            label: formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
-              null, Number(schedule?.inicio.split(':')[0]), Number(schedule?.inicio.split(':')[1])),
-              'hh:mm a', 'en')
-          }
-
-          const datetime = new Date(date.date + ' ' + hour.hour)
-          const currentDateTime = new Date()
-
-          if (this.hoursToShow.indexOf(hour) == -1 && datetime >= currentDateTime) {
-            this.hoursToShow.push(hour)
-          }
-
-        }
-      })
-      let i = 0
-      this.hoursToShow.forEach(hour => {
-        i++
-        if(i == 1){
-          this.deliveryForm.get('deliveryHeader.hora').setValue(hour.hour)
-        }
-      })
-    }catch (e) {
-      alert(e.message)
-    }
-
-
-
-    /*this.formatedSchedules.forEach(schedule => {
-          schedule.finicio = formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
-            null, Number(schedule?.inicio.split(':')[0]), Number(schedule?.inicio.split(':')[1])),
-            'hh:mm a', 'en')
-          schedule.ffinal = formatDate(new Date(new Date().getFullYear(), new Date().getMonth(),
-            null, Number(schedule?.final.split(':')[0]), Number(schedule?.final.split(':')[1])),
-            'hh:mm a', 'en')
-        })*/
+    let i = 0
+    this.hoursToShow.forEach(hour => {
+      i++
+      if (i == 1) {
+        this.deliveryForm.get('deliveryHeader.hora').setValue(hour.hour)
+      }
+    })
   }
 
   onSelect(event) {
@@ -935,7 +894,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.files.splice(this.files.indexOf(event), 1)
   }
 
-  openRestrictionsDialog(){
+  openRestrictionsDialog() {
     const dialogRef = this.dialog.open(CustomerRestrictionsDialogComponent)
 
     dialogRef.afterClosed().subscribe(result => {

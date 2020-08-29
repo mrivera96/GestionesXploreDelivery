@@ -39,7 +39,6 @@ export class AddPaymentDialogComponent implements OnInit {
   ngOnInit(): void {
     this.initialize()
     this.loadData()
-
   }
 
   initialize(){

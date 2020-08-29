@@ -67,7 +67,9 @@ export class NewRateDialogComponent implements OnInit {
     this.consolidatedForm = this.formBuilder.group(
       {
         radioMaximo: [1, Validators.required],
-        dirRecogida: ['', Validators.required]
+        dirRecogida: ['', Validators.required],
+       /* radioMaximoEntrega: [1],
+        dirEntrega: ['']*/
       }
     )
 
@@ -297,6 +299,17 @@ export class NewRateDialogComponent implements OnInit {
       }
     })
 
+  }
+
+  updateValidator(idTipoTarifa){
+    console.log(idTipoTarifa)
+    if(idTipoTarifa == 4){
+      this.consForm.radioMaximoEntrega.setValidators([Validators.required])
+      this.consForm.dirEntrega.setValidators([Validators.required])
+    }else{
+      this.consForm.radioMaximoEntrega.setValidators(null)
+      this.consForm.dirEntrega.setValidators(null)
+    }
   }
 
 }

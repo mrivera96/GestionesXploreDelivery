@@ -1,7 +1,7 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {CategoriesService} from "../../../../services/categories.service";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 

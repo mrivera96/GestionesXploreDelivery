@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {environment} from "../../environments/environment";
+import { Injectable } from '@angular/core';
+import { environment } from "../../environments/environment";
 
-import {HttpClient} from "@angular/common/http";
-import {AuthService} from "./auth.service";
+import { HttpClient } from "@angular/common/http";
+import { AuthService } from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,7 @@ export class DeliveriesService {
   ) {
   }
 
-  getCustomerDashboardData(){
+  getCustomerDashboardData() {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getCustomerDashboardData',
       tkn: this.authService.currentUserValue.access_token
@@ -95,7 +95,7 @@ export class DeliveriesService {
   }
 
   getStates() {
-    return this.http.get<any>(`${environment.apiUrl}`, {params: {function: 'listStates'}})
+    return this.http.get<any>(`${environment.apiUrl}`, { params: { function: 'listStates' } })
   }
 
   //CUSTOMER'S SERVICES
@@ -119,16 +119,15 @@ export class DeliveriesService {
         tkn: this.authService.currentUserValue.access_token
       })
     }
-
   }
 
-  getTodayCustomerOrders(){
+  getTodayCustomerOrders() {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getTodayCustomerOrders', tkn: this.authService.currentUserValue.access_token
     })
   }
 
-  getAllCustomerOrders(){
+  getAllCustomerOrders() {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getAllCustomerOrders', tkn: this.authService.currentUserValue.access_token
     })
@@ -185,6 +184,25 @@ export class DeliveriesService {
         idDetalle: id,
         idEstado: ste,
         observaciones: obsr,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
+  assigOrder(orderId, driverId) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'assignOrder',
+        idDetalle: orderId,
+        idConductor: driverId,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
+  addExtraChargeToOrder(form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'addExtraChargeToOrder',
+        form,
         tkn: this.authService.currentUserValue.access_token
       })
   }

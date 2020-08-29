@@ -61,8 +61,8 @@
         <mat-label>Tipo de Tarifa:</mat-label>
         <mat-select formControlName="idTipoTarifa"
                     placeholder="- Seleccione un tipo de tarifa -" required>
-          <mat-option *ngFor="let rateType of rateTypes"
-                      [value]="rateType.idTipoTarifa">{{rateType.descTipoTarifa}}</mat-option>
+          <mat-option *ngFor="let rateType of rateTypes" 
+                      [value]="rateType.idTipoTarifa">{{rateType.descTipoTarifa}}</mat-option> <!--(click)="updateValidator(rateType.idTipoTarifa)"-->
         </mat-select>
         <mat-icon matSuffix>attach_money</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
@@ -143,18 +143,10 @@
   </div>
 
   <br>
-  <h4 *ngIf="fNew.idTipoTarifa.value == 2 && isGeneral == false && !loaders.loadingSubmit">Configuración de Tarifa de Carga Consolidada</h4>
-  <hr *ngIf="fNew.idTipoTarifa.value == 2 && isGeneral == false && !loaders.loadingSubmit">
-  <form [formGroup]="consolidatedForm" *ngIf="fNew.idTipoTarifa.value == 2 && isGeneral == false && !loaders.loadingSubmit">
+  <h4 *ngIf="fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit">Configuración de Tarifa de Carga Consolidada</h4> <!--|| fNew.idTipoTarifa.value == 4 -->
+  <hr *ngIf="fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit"> <!--|| fNew.idTipoTarifa.value == 4 -->
+  <form [formGroup]="consolidatedForm" *ngIf="fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit"> <!--|| fNew.idTipoTarifa.value == 4 -->
     <div class="form-row mt-3">
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Radio Máximo:</mat-label>
-        <input matInput type="number" formControlName="radioMaximo"
-               required placeholder="Radio Máximo desde punto de recogida">
-        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
-      </mat-form-field>
-
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Dirección de recogida:</mat-label>
         <input matInput type="text" formControlName="dirRecogida" (input)="searchAddress($event)"
@@ -167,13 +159,45 @@
         <mat-icon matSuffix>location_on</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Radio Máximo de Recogida:</mat-label>
+        <input matInput type="number" formControlName="radioMaximo"
+               required placeholder="Radio Máximo desde punto de recogida">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
     </div>
+    <!--
+    <div class="form-row mt-3" *ngIf="fNew.idTipoTarifa.value == 4">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Dirección de entrega:</mat-label>
+        <input matInput type="text" formControlName="dirEntrega" (input)="searchAddress($event)"
+               required placeholder="Punto de entrega" [matAutocomplete]="auto" autocomplete="nope">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let s of places" [value]="s.text">
+            {{ s.text }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon matSuffix>location_on</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Radio Máximo de Entrega:</mat-label>
+        <input matInput type="number" formControlName="radioMaximoEntrega"
+               required placeholder="Radio Máximo desde punto de entrega">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>-->
   </form>
 
-  <h4 *ngIf="fNew.idTipoTarifa.value == 2 && isGeneral == false && !loaders.loadingSubmit">Asignar Horario Tarifa de Carga Consolidada</h4>
-  <hr *ngIf="fNew.idTipoTarifa.value == 2 && isGeneral == false && !loaders.loadingSubmit">
+  <h4 *ngIf="fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit">Asignar Horario Tarifa de Carga Consolidada</h4><!--|| fNew.idTipoTarifa.value == 4-->
+  <hr *ngIf="fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit"> <!--|| fNew.idTipoTarifa.value == 4 -->
 
-  <form [formGroup]="schdeduleForm" *ngIf="fNew.idTipoTarifa.value == 2 && isGeneral == false && !loaders.loadingSubmit">
+  <form [formGroup]="schdeduleForm" *ngIf="fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit"> <!--|| fNew.idTipoTarifa.value == 4-->
     <div class="form-row mt-3">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Descripción de horario:</mat-label>
@@ -226,7 +250,7 @@
     </div>
   </form>
   <br>
-  <div class="form-row" *ngIf="fNew.idTipoTarifa.value == 2 && isGeneral == false && !loaders.loadingSubmit">
+  <div class="form-row" *ngIf="fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit"> <!--|| fNew.idTipoTarifa.value == 4 -->
     <div class="col">
       <h4>Horarios Asignados</h4>
       <hr>
@@ -269,6 +293,12 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
+ <!-- <button *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4" type="button"
+          [disabled]="newRateForm.invalid || consolidatedForm.invalid || loaders.loadingSubmit"
+          (click)="onFormNewSubmit()"
+          mat-raised-button color="primary">
+    Confimar
+  </button>-->
   <button *ngIf="fNew.idTipoTarifa.value == 2" type="button"
           [disabled]="newRateForm.invalid || consolidatedForm.invalid || loaders.loadingSubmit"
           (click)="onFormNewSubmit()"

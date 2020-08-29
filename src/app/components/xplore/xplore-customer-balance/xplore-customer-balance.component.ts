@@ -90,7 +90,7 @@ export class XploreCustomerBalanceComponent implements OnInit {
       this.balance = response.balance
       this.totalCTotal = response.footCTotal
       this.totalSurcharges = response.footSurcharges
-      //this.totalExtraCharges = response.footExtraCharges 
+      this.totalExtraCharges = response.footExtraCharges 
       this.myFinishedOrders = response.finishedOrders
       this.dtTrigger.next()
       this.dtTrigger1.next()

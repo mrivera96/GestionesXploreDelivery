@@ -11,7 +11,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/categories/list";
-        $url = "http://190.4.56.14/".$environment."/api/shared/categories/showAll";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/categories/showAll";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -23,7 +23,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/getTarifas";
-        $url = "http://190.4.56.14/".$environment."/api/shared/rates/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/rates/get";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -35,7 +35,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/getTarifas";
-        $url = "http://190.4.56.14/".$environment."/api/shared/surcharges/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/surcharges/get";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -43,13 +43,12 @@ if (isset($_GET['function'])) {
         $output = curl_exec($handle);
 
         curl_close($handle);
-    }else if ($func == 'listStates')
-    {
+    } else if ($func == 'listStates') {
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/shared/states/list";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/states/list";
 
 
         // Set the url
@@ -60,11 +59,11 @@ if (isset($_GET['function'])) {
         curl_close($handle);
 
         return json_encode($output);
-    }else if ($func == 'getSchedule') {
+    } else if ($func == 'getSchedule') {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/shared/schedule/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/schedule/get";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -85,7 +84,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/new";
-        $url = "http://190.4.56.14/".$environment."/api/deliveries/new";
+        $url = "http://190.4.56.14/" . $environment . "/api/deliveries/new";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -157,7 +156,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/auth/login";
-        $url = "http://190.4.56.14/".$environment."/api/auth/login";
+        $url = "http://190.4.56.14/" . $environment . "/api/auth/login";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -179,7 +178,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/auth/login";
-        $url = "http://190.4.56.14/".$environment."/api/admins/deliveries/assign";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/assign";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -202,7 +201,7 @@ if (isset($_GET['function'])) {
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         //$url = "http://190.4.56.14/".$environment."/api/auth/login";
-        $url = "http://190.4.56.14/".$environment."/api/admins/deliveries/finish";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/finish";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
@@ -225,7 +224,7 @@ if (isset($_GET['function'])) {
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         //$url = "http://190.4.56.14/".$environment."/api/auth/login";
-        $url = "http://190.4.56.14/".$environment."/api/admins/deliveries/changeState";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/changeState";
         /* set the content type json */
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
         // Set the url
@@ -246,7 +245,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/auth/logout";
+        $url = "http://190.4.56.14/" . $environment . "/api/auth/logout";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
 
@@ -265,7 +264,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/customers/deliveries/getToday";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/deliveries/getToday";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         /* set the content type json */
@@ -277,13 +276,13 @@ if (isset($_GET['function'])) {
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
         $output = curl_exec($handle);
         curl_close($handle);
-    }  else if ($_POST['function'] == 'getAllCustomerDeliveries') {
+    } else if ($_POST['function'] == 'getAllCustomerDeliveries') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/customers/deliveries/getAll";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/deliveries/getAll";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         /* set the content type json */
@@ -295,13 +294,13 @@ if (isset($_GET['function'])) {
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getCustomerBranchOffices') {
+    } else if ($_POST['function'] == 'getCustomerBranchOffices') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/customers/address/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/address/get";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         /* set the content type json */
@@ -319,7 +318,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/customers/deliveries/new";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/deliveries/new";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         /* set the content type json */
@@ -338,7 +337,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/admins/deliveries/getToday";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/getToday";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -349,14 +348,14 @@ if (isset($_GET['function'])) {
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getTomorrowDeliveries') {
+    } else if ($_POST['function'] == 'getTomorrowDeliveries') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/admins/deliveries/getTomorrow";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/getTomorrow";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -367,14 +366,14 @@ if (isset($_GET['function'])) {
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getAllDeliveries') {
+    } else if ($_POST['function'] == 'getAllDeliveries') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/admins/deliveries/getAll";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/getAll";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -385,14 +384,14 @@ if (isset($_GET['function'])) {
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getDeliveryById') {
+    } else if ($_POST['function'] == 'getDeliveryById') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/deliveries/list";
-        $url = "http://190.4.56.14/".$environment."/api/shared/deliveries/getById";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/deliveries/getById";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
 
@@ -411,7 +410,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/categories/showAll";
-        $url = "http://190.4.56.14/".$environment."/api/shared/categories/showAll";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/categories/showAll";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -431,7 +430,7 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/categories/update";
-        $url = "http://190.4.56.14/".$environment."/api/admins/categories/update";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/categories/update";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -444,14 +443,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'editRate') {
+    } else if ($_POST['function'] == 'editRate') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/rates/update";
-        $url = "http://190.4.56.14/".$environment."/api/admins/rates/update";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/update";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -464,14 +463,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getTodayCustomerOrders') {
+    } else if ($_POST['function'] == 'getTodayCustomerOrders') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/getCustomerOrders";
-        $url = "http://190.4.56.14/".$environment."/api/customers/orders/getToday";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/orders/getToday";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -484,14 +483,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getAllCustomerOrders') {
+    } else if ($_POST['function'] == 'getAllCustomerOrders') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/getCustomerOrders";
-        $url = "http://190.4.56.14/".$environment."/api/customers/orders/getAll";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/orders/getAll";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -504,14 +503,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getCustomers') {
+    } else if ($_POST['function'] == 'getCustomers') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/getCustomerOrders";
-        $url = "http://190.4.56.14/".$environment."/api/admins/customers/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/customers/get";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -524,14 +523,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'newCustomer') {
+    } else if ($_POST['function'] == 'newCustomer') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/getCustomerOrders";
-        $url = "http://190.4.56.14/".$environment."/api/admins/customers/new";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/customers/new";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -544,14 +543,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'newBranch') {
+    } else if ($_POST['function'] == 'newBranch') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/getCustomerOrders";
-        $url = "http://190.4.56.14/".$environment."/api/customers/address/new";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/address/new";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -564,14 +563,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'changeCustomerPassword') {
+    } else if ($_POST['function'] == 'changeCustomerPassword') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/changePassword";
-        $url = "http://190.4.56.14/".$environment."/api/admins/customers/changePassword";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/customers/changePassword";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -584,14 +583,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'updateBranch') {
+    } else if ($_POST['function'] == 'updateBranch') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/changePassword";
-        $url = "http://190.4.56.14/".$environment."/api/customers/address/update";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/address/update";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -604,14 +603,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'deleteBranch') {
+    } else if ($_POST['function'] == 'deleteBranch') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/changePassword";
-        $url = "http://190.4.56.14/".$environment."/api/customers/address/delete";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/address/delete";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -624,14 +623,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getTodayOrders') {
+    } else if ($_POST['function'] == 'getTodayOrders') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/changePassword";
-        $url = "http://190.4.56.14/".$environment."/api/admins/orders/getToday";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/getToday";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -644,14 +643,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getAllOrders') {
+    } else if ($_POST['function'] == 'getAllOrders') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/customers/changePassword";
-        $url = "http://190.4.56.14/".$environment."/api/admins/orders/getAll";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/getAll";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -664,14 +663,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createCategory') {
+    } else if ($_POST['function'] == 'createCategory') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/categories/create";
-        $url = "http://190.4.56.14/".$environment."/api/admins/categories/create";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/categories/create";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -684,14 +683,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createRate') {
+    } else if ($_POST['function'] == 'createRate') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/rates/create";
-        $url = "http://190.4.56.14/".$environment."/api/admins/rates/create";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/create";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -710,7 +709,7 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/customers/rates/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/rates/get";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -730,7 +729,7 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/customers/surcharges/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/surcharges/get";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -744,14 +743,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createSurcharge') {
+    } else if ($_POST['function'] == 'createSurcharge') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/rates/create";
-        $url = "http://190.4.56.14/".$environment."/api/admins/surcharges/create";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/surcharges/create";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -764,14 +763,14 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'editSurcharge') {
+    } else if ($_POST['function'] == 'editSurcharge') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
         //$url = "http://190.4.56.14/".$environment."/api/rates/create";
-        $url = "http://190.4.56.14/".$environment."/api/admins/surcharges/update";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/surcharges/update";
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
         // Set the url
@@ -784,33 +783,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getMyCategories') {
+    } else if ($_POST['function'] == 'getMyCategories') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/customers/categories/get";
-
-        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
-
-        // Set the url
-        curl_setopt($handle, CURLOPT_URL, $url);
-
-        curl_setopt($handle, CURLOPT_POST, TRUE);
-        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-        /* set return type json */
-
-        $output = curl_exec($handle);
-        curl_close($handle);
-    }else if ($_POST['function'] == 'getDrivers') {
-        $post = file_get_contents('php://input');
-        $array = json_decode($post);
-
-        $handle = curl_init();
-
-        $url = "http://190.4.56.14/".$environment."/api/admins/drivers/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/categories/get";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -824,13 +803,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createDriver') {
+    } else if ($_POST['function'] == 'getDrivers') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/drivers/create";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/drivers/get";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -844,13 +823,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'editDriver') {
+    } else if ($_POST['function'] == 'createDriver') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/drivers/update";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/drivers/create";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -864,13 +843,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'editCustomer') {
+    } else if ($_POST['function'] == 'editDriver') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/customers/update";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/drivers/update";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -884,13 +863,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getPendingDeliveries') {
+    } else if ($_POST['function'] == 'editCustomer') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/deliveries/getPending";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/customers/update";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -904,13 +883,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getCities') {
+    } else if ($_POST['function'] == 'getPendingDeliveries') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/cities/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/getPending";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -924,13 +903,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getAgencies') {
+    } else if ($_POST['function'] == 'getCities') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/agencies/list";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/cities/get";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -944,13 +923,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'changeHour') {
+    } else if ($_POST['function'] == 'getAgencies') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/customers/deliveries/changeHour";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/agencies/list";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -964,13 +943,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'reportOrdersByDriver') {
+    } else if ($_POST['function'] == 'changeHour') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/reports/ordersByDriver";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/deliveries/changeHour";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -984,13 +963,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createPayment') {
+    } else if ($_POST['function'] == 'reportOrdersByDriver') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/payments/create";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/reports/ordersByDriver";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1004,13 +983,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getPayments') {
+    } else if ($_POST['function'] == 'createPayment') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/shared/payments/list";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/payments/create";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1024,13 +1003,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getPaymentTypes') {
+    } else if ($_POST['function'] == 'getPayments') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/payments/listTypes";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/payments/list";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1044,13 +1023,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'removeCustomerFromRate') {
+    } else if ($_POST['function'] == 'getPaymentTypes') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/rates/removeCustomer";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/payments/listTypes";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1064,13 +1043,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getRateCustomers') {
+    } else if ($_POST['function'] == 'removeCustomerFromRate') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/rates/getCustomers";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/removeCustomer";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1084,13 +1063,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'addCustomerToRate') {
+    } else if ($_POST['function'] == 'getRateCustomers') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/rates/addCustomer";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/getCustomers";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1104,13 +1083,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'changeOrderState') {
+    } else if ($_POST['function'] == 'addCustomerToRate') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/orders/changeState";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/addCustomer";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1124,13 +1103,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'editSchedule') {
+    } else if ($_POST['function'] == 'changeOrderState') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/schedule/update";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/changeState";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1144,13 +1123,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'reportOrdersByCustomer') {
+    } else if ($_POST['function'] == 'editSchedule') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/reports/ordersByCustomer";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/schedule/update";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1164,13 +1143,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getCustomerOrdersFAdmin') {
+    } else if ($_POST['function'] == 'reportOrdersByCustomer') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/orders/getOrdersByCustomer";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/reports/ordersByCustomer";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1184,13 +1163,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getExtraCharges') {
+    } else if ($_POST['function'] == 'getCustomerOrdersFAdmin') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/getOrdersByCustomer";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1204,13 +1183,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createExtraCharge') {
+    } else if ($_POST['function'] == 'getExtraCharges') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/create";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/get";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1224,13 +1203,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'updateExtraCharge') {
+    } else if ($_POST['function'] == 'createExtraCharge') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/update";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/create";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1244,13 +1223,33 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'passwordRecovery') {
+    } else if ($_POST['function'] == 'updateExtraCharge') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/auth/passwordRecovery";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/update";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'passwordRecovery') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/auth/passwordRecovery";
 
 
         // Set the url
@@ -1263,13 +1262,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getExtraChargeCategories') {
+    } else if ($_POST['function'] == 'getExtraChargeCategories') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/getCategories";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/getCategories";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1283,13 +1282,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'removeCategoryFromExtraCharge') {
+    } else if ($_POST['function'] == 'removeCategoryFromExtraCharge') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/removeCategory";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/removeCategory";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1303,13 +1302,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'addCategoryToExtraCharge') {
+    } else if ($_POST['function'] == 'addCategoryToExtraCharge') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/addCategory";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/addCategory";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1323,31 +1322,31 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getCoords') {
-             $handle = curl_init();
-     		$post = file_get_contents('php://input');
-             $array = json_decode($post);
+    } else if ($_POST['function'] == 'getCoords') {
+        $handle = curl_init();
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-             $url = "http://190.4.56.14/GoogleApi/geocode.php";
+        $url = "http://190.4.56.14/GoogleApi/geocode.php";
 
-             // Set the url
-             curl_setopt($handle, CURLOPT_URL, $url);
-     		curl_setopt($handle, CURLOPT_POST, TRUE);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+        curl_setopt($handle, CURLOPT_POST, TRUE);
 
-     		 curl_setopt($handle, CURLOPT_POSTFIELDS, $array);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $array);
 
-             //curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
-             /* set return type json */
+        //curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
 
-             $output = curl_exec($handle);
-             curl_close($handle);
-    }else if ($_POST['function'] == 'getExtraChargeOptions') {
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getExtraChargeOptions') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/getOptions";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/getOptions";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1361,13 +1360,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'removeOptionFromExtraCharge') {
+    } else if ($_POST['function'] == 'removeOptionFromExtraCharge') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/removeOption";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/removeOption";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1381,13 +1380,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'addOptionToExtraCharge') {
+    } else if ($_POST['function'] == 'addOptionToExtraCharge') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/extraCharges/addOption";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/extraCharges/addOption";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1401,13 +1400,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getCustomerDashboardData') {
+    } else if ($_POST['function'] == 'getCustomerDashboardData') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/customers/myDashboard";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/myDashboard";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1421,13 +1420,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getCustomerBalance') {
+    } else if ($_POST['function'] == 'getCustomerBalance') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/customers/balance";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/balance";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1441,13 +1440,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getRateTypes') {
+    } else if ($_POST['function'] == 'getRateTypes') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/ratesType/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/ratesType/get";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1461,13 +1460,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'updateConsolidatedRateDetail') {
+    } else if ($_POST['function'] == 'updateConsolidatedRateDetail') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/".$environment."/api/admins/rates/updateDetail";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/updateDetail";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -1481,47 +1480,85 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getRateSchedules') {
-             $post = file_get_contents('php://input');
-             $array = json_decode($post);
+    } else if ($_POST['function'] == 'getRateSchedules') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-             $handle = curl_init();
+        $handle = curl_init();
 
-             $url = "http://190.4.56.14/".$environment."/api/admins/rates/getRateSchedules";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/getRateSchedules";
 
-             $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
-             // Set the url
-             curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
 
-             curl_setopt($handle, CURLOPT_POST, TRUE);
-             curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-             curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-             /* set return type json */
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
 
-             $output = curl_exec($handle);
-             curl_close($handle);
-         }else if ($_POST['function'] == 'removeScheduleFromRate') {
-                       $post = file_get_contents('php://input');
-                       $array = json_decode($post);
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'removeScheduleFromRate') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-                       $handle = curl_init();
+        $handle = curl_init();
 
-                       $url = "http://190.4.56.14/".$environment."/api/admins/rates/removeSchedule";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/removeSchedule";
 
-                       $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
-                       // Set the url
-                       curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
 
-                       curl_setopt($handle, CURLOPT_POST, TRUE);
-                       curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-                       curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-                       /* set return type json */
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
 
-                       $output = curl_exec($handle);
-                       curl_close($handle);
-                   }
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'assignOrder') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
+        $handle = curl_init();
 
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/assign";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'addExtraChargeToOrder') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/addExtracharge";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }
 }

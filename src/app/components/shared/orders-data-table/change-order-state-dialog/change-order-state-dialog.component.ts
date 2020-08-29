@@ -5,7 +5,6 @@ import {SuccessModalComponent} from "../../success-modal/success-modal.component
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {State} from "../../../../models/state";
 import {DeliveriesService} from "../../../../services/deliveries.service";
-import {Order} from "../../../../models/order";
 import {DeliveryDetail} from "../../../../models/delivery-detail";
 
 @Component({

@@ -162,7 +162,7 @@
         Agregar delivery
       </a>
 
-      <a *ngIf="currentUser.permiteConsolidada == true" (click)="sidenav.close()"
+      <a (click)="sidenav.close()"
          [routerLink]="['customers/envio-consolidado']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery (Carga Consolidada)

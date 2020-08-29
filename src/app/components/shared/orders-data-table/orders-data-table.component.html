@@ -40,12 +40,12 @@
       <th>Distancia</th>
       <th>Recargo</th>
       <th>Cargos Extra</th>
-      <th>Costo</th>
-      <th>Estado</th>
+      <th data-priority="1">Costo</th>
+      <th data-priority="1">Estado</th>
       <th>Observaciones</th>
       <th>Conductor</th>
-      <th *ngIf="currUser.idPerfil === '1'" data-priority="1">Acción</th>
       <th data-priority="1">Fotografías</th>
+      <th *ngIf="currUser.idPerfil === '1'" data-priority="1">Acción</th>
     </tr>
     </thead>
     <tbody>
@@ -60,26 +60,39 @@
       <td>{{order.nFactura}}</td>
       <td>{{order.distancia}}</td>
       <td>L. {{order.recargo}}</td>
-      <td>L. {{order.cargosExtra || '0.00'}}</td>
+      <td>L. {{order.cargosExtra}}</td>
       <td>L. {{order.cTotal}}</td>
       <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">Fecha: {{order.fechaEntrega}}</p></td>
       <td>{{order.observaciones || 'N/A'}}</td>
       <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
         <p *ngIf="!order.conductor">Aún no asignada</p>
       </td>
-      <td *ngIf="currUser.idPerfil === '1'">
-        <a *ngIf="order.estado.idEstado !== 44" href="javascript:void(0)" (click)="showChangeStateDialog(order)"
-           style="color: #0071A2">
-          <i class="fa fa-exchange-alt"></i>
-          Cambiar Estado
-        </a>
-        <p *ngIf="order.estado.idEstado === 44">--</p>
-      </td>
       <td>
-        <button *ngIf="order.photography.length > 0" button type="button" mat-raised-button color="primary"  (click)="openPhotosDialog(order.photography)">
+        <button *ngIf="order.photography.length > 0" type="button" mat-raised-button color="primary"  (click)="openPhotosDialog(order.photography)">
           Ver Fotografías
         </button>
         <span *ngIf="order.photography.length == 0">N/A</span>
+      </td>
+      <td *ngIf="currUser.idPerfil === '1'">
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button *ngIf="order.estado.idEstado !== 44" mat-menu-item
+                  (click)="showChangeStateDialog(order)">
+            <mat-icon>tune</mat-icon>
+            <span>Cambiar Estado</span>
+          </button>
+          <button *ngIf="order.estado.idEstado == 34" mat-menu-item
+                  (click)="showAssignDriverDialog(order)">
+            <mat-icon>assignment_ind</mat-icon>
+            <span>Asignar Conductor</span>
+          </button>
+          <button mat-menu-item (click)="showAddExtrachargeDialog(order)" >
+            <mat-icon>attach_money</mat-icon>
+            <span>Agregar Cargo Extra</span>
+          </button>
+        </mat-menu>
       </td>
     </tr>
     </tbody>

@@ -223,7 +223,7 @@ export class OrdersByCustomerComponent implements OnInit {
     const catTitle = worksheet.addRow(['Envíos por categoría']);
     catTitle.font = {name: 'Arial', family: 4, size: 12, bold: true}
     worksheet.addRow([]);
-    const ordersByCategoryHeader = ["N°", "Categoría", "Envíos Realizados", "Recargos", "Costos Totales"]
+    const ordersByCategoryHeader = ["N°", "Categoría", "Envíos Realizados", "Recargos","Cargos Extra", "Costos Totales"]
     let ordersByCategoryheaderRow = worksheet.addRow(ordersByCategoryHeader);
 
     // Cell Style : Fill and Border
@@ -241,7 +241,7 @@ export class OrdersByCustomerComponent implements OnInit {
     let arrayRow = []
     let index = 1
     this.ordersByCategory.forEach(d => {
-      let array = [index, d.category, d.orders, d.totalSurcharges, d.cTotal]
+      let array = [index, d.category, d.orders, d.totalSurcharges, d.totalExtraCharges, d.cTotal]
       arrayRow.push(array)
       index++
     })
@@ -250,16 +250,19 @@ export class OrdersByCustomerComponent implements OnInit {
       row.getCell(3).numFmt = '#,##0'
       row.getCell(4).numFmt = 'L#,##0.00'
       row.getCell(5).numFmt = 'L#,##0.00'
+      row.getCell(6).numFmt = 'L#,##0.00'
     })
 
-    const ordersCategoriestotals = worksheet.addRow(['', 'Total:', this.ordersInRange, this.totalSurcharges, this.totalCosts]);
+    const ordersCategoriestotals = worksheet.addRow(['', 'Total:', this.ordersInRange, this.totalSurcharges,this.totalExtracharges, this.totalCosts]);
     ordersCategoriestotals.font = {bold: true}
     ordersCategoriestotals.getCell(3).numFmt = '#,##0'
     ordersCategoriestotals.getCell(4).numFmt = 'L#,##0.00'
     ordersCategoriestotals.getCell(5).numFmt = 'L#,##0.00'
+    ordersCategoriestotals.getCell(6).numFmt = 'L#,##0.00'
     worksheet.getColumn(1).width = 30;
     worksheet.getColumn(2).width = 30;
     worksheet.getColumn(3).width = 40;
+    worksheet.getColumn(4).width = 40;
 
     worksheet.addRow([]);
 
@@ -309,6 +312,7 @@ export class OrdersByCustomerComponent implements OnInit {
       "Detalle",
       "Distancia",
       "Recargo",
+      "Cargos Extra",
       "Costo",
       "Estado",
       "Observaciones",
@@ -336,6 +340,7 @@ export class OrdersByCustomerComponent implements OnInit {
         d.direccion,
         d.nFactura,
         d.distancia,
+        Number(d.cargosExtra),
         Number(d.recargo),
         Number(d.cTotal),
         d.estado.descEstado + ' Fecha: ' + d.fechaEntrega,
@@ -351,15 +356,16 @@ export class OrdersByCustomerComponent implements OnInit {
       row.getCell(2).numFmt = '#,##0'
       row.getCell(8).numFmt = 'L#,##0.00'
       row.getCell(9).numFmt = 'L#,##0.00'
-
+      row.getCell(10).numFmt = 'L#,##0.00'
+      row.getCell(11).numFmt = 'L#,##0.00'
     })
 
     worksheet.getColumn(4).width = 30;
     worksheet.getColumn(5).width = 40;
 
-    worksheet.getColumn(10).width = 40;
     worksheet.getColumn(11).width = 40;
     worksheet.getColumn(12).width = 40;
+    worksheet.getColumn(13).width = 40;
 
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {

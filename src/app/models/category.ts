@@ -7,6 +7,5 @@ export interface Category {
   isActivo?: boolean
   descripcion?: string
   category_extra_charges?: ExtraChargeCategory[]
-  rate?: Rate
-  datesToShow?: any[]
+  ratesToShow?: Rate
 }

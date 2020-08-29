@@ -12,7 +12,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {ChangeStateDialogComponent} from "./change-state-dialog/change-state-dialog.component";
 import { XploreChangeHourDialogComponent } from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
 import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
-import {Photography} from "../../../models/photography";
 
 @Component({
   selector: 'app-ver-solicitud',

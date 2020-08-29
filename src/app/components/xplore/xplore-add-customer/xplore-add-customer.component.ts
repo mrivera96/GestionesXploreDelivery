@@ -71,16 +71,17 @@ export class XploreAddCustomerComponent implements OnInit {
   onFormSubmit() {
     if (this.nCustomerForm.valid) {
       this.loaders.loadingSubmit = true
-      this.usersService.addCustomer(this.nCustomerForm.value).subscribe(response => {
+      const usersSubscription = this.usersService.addCustomer(this.nCustomerForm.value).subscribe(response => {
         this.loaders.loadingSubmit = false
         this.succsMsg = response.message
         this.openSuccessDialog('Operación Realizada Correctamente', this.succsMsg)
-
+        usersSubscription.unsubscribe()
       }, error => {
         error.subscribe(error => {
           this.loaders.loadingSubmit = false
           this.errorMsg = error.statusText
           this.openErrorDialog(this.errorMsg)
+          usersSubscription.unsubscribe()
         })
       })
     }

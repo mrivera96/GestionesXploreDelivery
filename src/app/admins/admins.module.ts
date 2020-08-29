@@ -51,6 +51,9 @@ import { ExtraChargesOptionsDialogComponent } from '../components/xplore/extra-c
 import { AddExtraChargeOptionDialogComponent } from '../components/xplore/extra-charges/add-extra-charge-option-dialog/add-extra-charge-option-dialog.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { ConsolidatedRateDetailsComponent } from '../components/xplore/xplore-rates/consolidated-rate-details/consolidated-rate-details.component';
+import {AssignDriverComponent} from "../components/shared/orders-data-table/assign-driver/assign-driver.component";
+import {AddOrderExtrachargeDialogComponent} from "../components/shared/orders-data-table/add-order-extracharge-dialog/add-order-extracharge-dialog.component";
+import {MatMenuModule} from "@angular/material/menu";
 
 @NgModule({
   declarations: [
@@ -100,6 +103,8 @@ import { ConsolidatedRateDetailsComponent } from '../components/xplore/xplore-ra
     ExtraChargesOptionsDialogComponent,
     AddExtraChargeOptionDialogComponent,
     ConsolidatedRateDetailsComponent,
+    AssignDriverComponent,
+    AddOrderExtrachargeDialogComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,
@@ -118,6 +123,7 @@ import { ConsolidatedRateDetailsComponent } from '../components/xplore/xplore-ra
         MatSlideToggleModule,
         MatTabsModule,
         MatAutocompleteModule,
+        MatMenuModule,
     ],
 
 })

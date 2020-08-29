@@ -7,6 +7,8 @@ import {UsersService} from "../../../../services/users.service";
 import {Customer} from "../../../../models/customer";
 import {Surcharge} from "../../../../models/surcharge";
 import {SurchargesService} from "../../../../services/surcharges.service";
+import {Category} from "../../../../models/category";
+import {CategoriesService} from "../../../../services/categories.service";
 
 @Component({
   selector: 'app-edit-surcharge-dialog',
@@ -22,12 +24,14 @@ export class EditSurchargeDialogComponent implements OnInit {
   customers: Customer[]
   filteredCustomers: Customer[]
   currSurch: Surcharge
+  categories: Category[] = []
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     private surchargesService: SurchargesService,
+    private categoriesServices: CategoriesService,
     public dialogRef: MatDialogRef<EditSurchargeDialogComponent>
   ) {
     this.currSurch = data.surcharge
@@ -41,13 +45,20 @@ export class EditSurchargeDialogComponent implements OnInit {
         kilomMinimo: [this.currSurch.kilomMinimo, Validators.required],
         kilomMaximo: [this.currSurch.kilomMaximo, Validators.required],
         monto: [this.currSurch.monto, Validators.required],
-        idCliente: [this.currSurch.idCliente, Validators.required]
+        idCliente: [this.currSurch.idCliente, Validators.required],
+        idCategoria: [this.currSurch.idCategoria, Validators.required]
       }
     )
 
-    this.usersService.getCustomers().subscribe(response => {
+    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
       this.filteredCustomers = response.data
+      usersSubscription.unsubscribe()
+    })
+
+    const categoriesSubscription = this.categoriesServices.getAllCategories().subscribe(response => {
+      this.categories = response.data
+      categoriesSubscription.unsubscribe()
     })
   }
 

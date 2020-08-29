@@ -1,10 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ExtraChargesService} from "../../../../services/extra-charges.service";
-import {ExtraCharge} from "../../../../models/extra-charge";
-import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
-import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ExtraChargesService } from "../../../../services/extra-charges.service";
+import { ExtraCharge } from "../../../../models/extra-charge";
+import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
+import { SuccessModalComponent } from "../../../shared/success-modal/success-modal.component";
 
 @Component({
   selector: 'app-edit-extra-charge-dialog',
@@ -32,11 +32,11 @@ export class EditExtraChargeDialogComponent implements OnInit {
     this.initialize()
   }
 
-  initialize(){
+  initialize() {
     this.editECForm = this.formBuilder.group({
-      nombre:[this.currEc.nombre, [Validators.required, Validators.maxLength(50)]],
-      costo:[this.currEc.costo, [Validators.required]],
-      tipoCargo:[this.currEc.tipoCargo,[Validators.required]],
+      nombre: [this.currEc.nombre, [Validators.required, Validators.maxLength(50)]],
+      costo: [this.currEc.costo, [Validators.required]],
+      tipoCargo: [this.currEc.tipoCargo, [Validators.required]],
     })
   }
 
@@ -57,17 +57,16 @@ export class EditExtraChargeDialogComponent implements OnInit {
       this.loaders.loadingSubmit = true
       const extraChargesSubscription = this.extraChargesService.editExtraCharge(this.currEc.idCargoExtra, this.editECForm.value)
         .subscribe(response => {
+          this.loaders.loadingSubmit = false
+          this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+          extraChargesSubscription.unsubscribe()
+        }, error => {
+          error.subscribe(error => {
             this.loaders.loadingSubmit = false
-            this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            this.openErrorDialog(error.statusText)
             extraChargesSubscription.unsubscribe()
-          },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.openErrorDialog(error.statusText)
-              extraChargesSubscription.unsubscribe()
-            })
           })
+        })
     }
   }
 

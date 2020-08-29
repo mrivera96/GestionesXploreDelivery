@@ -6,6 +6,8 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {UsersService} from "../../../../services/users.service";
 import {SurchargesService} from "../../../../services/surcharges.service";
 import {Customer} from "../../../../models/customer";
+import {Category} from "../../../../models/category";
+import {CategoriesService} from "../../../../services/categories.service";
 
 @Component({
   selector: 'app-new-surcharge-dialog',
@@ -18,12 +20,15 @@ export class NewSurchargeDialogComponent implements OnInit {
     loadingData: false,
     loadingSubmit: false
   }
-  customers: Customer[]
+  customers: Customer[] = []
+  categories: Category[] = []
   filteredCustomers: Customer[]
+  surchargeCategories: Category[] = []
   constructor(
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
     private usersService: UsersService,
+    private categoriesServices: CategoriesService,
     private surchargesService: SurchargesService,
     public dialogRef: MatDialogRef<NewSurchargeDialogComponent>
   ) { }
@@ -36,13 +41,20 @@ export class NewSurchargeDialogComponent implements OnInit {
         kilomMinimo: ['', Validators.required],
         kilomMaximo: ['', Validators.required],
         monto: ['', Validators.required],
-        idCliente: [null, Validators.required]
+        idCliente: [1, Validators.required],
+        idCategoria:[null,Validators.required]
       }
     )
 
-    this.usersService.getCustomers().subscribe(response => {
+    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
       this.filteredCustomers = response.data
+      usersSubscription.unsubscribe()
+    })
+
+    const categoriesSubscription = this.categoriesServices.getAllCategories().subscribe(response => {
+      this.categories = response.data
+      categoriesSubscription.unsubscribe()
     })
   }
   get fNew() {
@@ -97,5 +109,7 @@ export class NewSurchargeDialogComponent implements OnInit {
     }
     return this.customers
   }
+
+
 
 }

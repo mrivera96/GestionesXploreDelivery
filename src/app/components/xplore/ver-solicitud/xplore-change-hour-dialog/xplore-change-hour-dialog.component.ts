@@ -6,7 +6,6 @@ import {Delivery} from "../../../../models/delivery";
 import {formatDate} from "@angular/common";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
-import {DateValidate} from "../../../../helpers/date.validator";
 import {Schedule} from "../../../../models/schedule";
 @Component({
   selector: 'app-xplore-change-hour-dialog',

@@ -1,0 +1,60 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-edit"></i> Agregar Cargo Extra a Envío
+</h2>
+<mat-dialog-content>
+
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Procesando Información...</p>
+    </div>
+  </div>
+
+  <form class="row" [formGroup]="extraChargeForm" *ngIf="!loaders.loadingSubmit">
+    <mat-form-field appearance="outline" floatLabel="always" class="col-12">
+      <mat-label>Cargo Extra</mat-label>
+      <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -">
+        <mat-option *ngFor="let extracharge of extraCharges"
+                    (click)="setSelectedExtraCharge(extracharge)"
+                    [value]="extracharge.idCargoExtra">
+                    <span *ngIf="extracharge.tipoCargo === 'F'">
+                      {{extracharge.nombre + ' '}}
+                      <span class="badge badge-primary">L.{{ extracharge.costo }}</span>
+                    </span>
+          <span *ngIf="extracharge.tipoCargo === 'V'">
+                      {{extracharge.nombre + ' '}}
+                    </span>
+        </mat-option>
+      </mat-select>
+      <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline" floatLabel="always" class="col-12" *ngIf="selectedExtraCharge.tipoCargo === 'V'">
+      <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
+      <mat-select formControlName="idOpcionExtra"
+                  placeholder="- Seleccione una opción -" class="col">
+        <mat-option *ngFor="let option of selectedExtraCharge.options"
+                    value="{{option.idDetalleOpcion}}" (click)="setSelectedExtraChargeOption(option)">
+          {{option.descripcion  }}<span class="badge badge-primary">L.{{ '  ' + option.costo}}</span>
+        </mat-option>
+      </mat-select>
+      <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" mat-raised-button [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
+    Cambiar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+
+

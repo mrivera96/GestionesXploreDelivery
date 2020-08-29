@@ -24,9 +24,7 @@ export class ReservasManianaComponent implements OnInit {
     loadingData: false
   }
 
-  constructor(
-    private deliveriesService: DeliveriesService,
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.loaders.loadingData = true

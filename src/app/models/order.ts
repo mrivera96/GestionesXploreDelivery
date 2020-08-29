@@ -11,6 +11,7 @@ export interface Order {
   numCel?: string
   direccion?: string
   distancia?: string
+  tiempo?: string
   estado?: State
   conductor?: User
   tarifaBase?: number

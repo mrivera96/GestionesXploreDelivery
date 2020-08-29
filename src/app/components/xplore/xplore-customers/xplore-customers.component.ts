@@ -27,13 +27,14 @@ import {Payment} from "../../../models/payment";
   ]
 })
 export class XploreCustomersComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
+  @ViewChild(DataTableDirective, {static: false}) 
+  dtElement: DataTableDirective
   customers: Customer[]
   dtTrigger: Subject<any> = new Subject()
   loaders = {
     loadingData: false
   }
-  dtOptions
+  dtOptions: DataTables.Settings
   deliveries: Delivery[] = []
   payments: Payment[] = []
 
@@ -50,6 +51,9 @@ export class XploreCustomersComponent implements OnInit {
       pageLength: 25,
       serverSide: false,
       processing: true,
+      columnDefs:[
+        { type: "string", targets: 0 }
+    ],
       info: true,
       order: [0, 'asc'],
       autoWidth: true,
@@ -71,6 +75,8 @@ export class XploreCustomersComponent implements OnInit {
       },
     }
     this.loadData()
+
+  
   }
 
   loadData() {
@@ -79,9 +85,21 @@ export class XploreCustomersComponent implements OnInit {
     const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
 
-  
       this.loaders.loadingData = false
       this.dtTrigger.next()
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      
+        dtInstance.columns().every(function () {
+          const that = this;
+          $('select', this.footer()).on('change', function () {
+            if (that.search() !== this['value']) {
+              that
+                .search(this['value'])
+                .draw();
+            }
+          })
+        })
+      })
       usersSubscription.unsubscribe()
     })
   }

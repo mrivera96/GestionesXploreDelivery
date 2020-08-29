@@ -81,7 +81,7 @@
 
         <div class="col-sm">
           <strong>Cargos Extra:</strong>
-          L. {{currentDelivery?.cargosExtra || '0.00'}}
+          L. {{currentDelivery?.cargosExtra}}
         </div>
 
         <div class="col-sm">
@@ -155,7 +155,7 @@
             <td>{{detail?.instrucciones}}</td>
             <td>{{detail.distancia}}</td>
             <td>L. {{detail.recargo}}</td>
-            <td>L. {{detail.cargosExtra || '0.00'}}</td>
+            <td>L. {{detail.cargosExtra }}</td>
             <td>L. {{detail.cTotal}}</td>
             <td>
               <button *ngIf="detail.photography.length > 0" button type="button" mat-raised-button color="primary"  (click)="openPhotosDialog(detail.photography)">

@@ -13,6 +13,7 @@ export interface DeliveryDetail {
   numCel?: string
   direccion?: string
   distancia?: string
+  tiempo?: string
   entregado?: boolean
   fechaEntrega?: string
   nomRecibio?: string

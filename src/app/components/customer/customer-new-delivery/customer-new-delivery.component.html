@@ -255,8 +255,7 @@
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcordsDestination">
-                    <input #destinationCords matInput type="text" placeholder=" Ej. 10.1508684, -87.61982"
-                           (paste)="$event.preventDefault()">
+                    <input #destinationCords matInput type="text" placeholder=" Ej. 10.1508684, -87.61982">
                     <button mat-button mat-icon-button (click)="setCordsDestination()" matSuffix>
                       <mat-icon>done</mat-icon>
                     </button>
@@ -286,11 +285,11 @@
                                 (click)="setSelectedExtraCharge(extracharge.extra_charge)"
                                 [value]="extracharge.idCargoExtra">
                     <span *ngIf="extracharge.extra_charge.tipoCargo === 'F'">
-                      {{extracharge.extra_charge.nombre}}
-                      <span class="badge badge-primary">L.{{ extracharge.extra_charge.costo | number: '.2'}}</span>
+                      {{extracharge.extra_charge.nombre + ' '}}
+                      <span class="badge badge-primary">L.{{ extracharge.extra_charge.costo }}</span>
                     </span>
                       <span *ngIf="extracharge.extra_charge.tipoCargo === 'V'">
-                      {{extracharge.extra_charge.nombre}}
+                      {{extracharge.extra_charge.nombre + ' '}}
                     </span>
                     </mat-option>
                   </mat-select>
@@ -303,7 +302,7 @@
                               placeholder="- Seleccione una opción -" class="col">
                     <mat-option *ngFor="let option of selectedExtraCharge.options"
                                 value="{{option.costo}}" (click)="setSelectedExtraChargeOption(option)">
-                      {{option.descripcion  }}<span class="badge badge-primary">L.{{ '  ' + option.costo | number: '.2'}}</span>
+                      {{option.descripcion  }}<span class="badge badge-primary">L.{{ '  ' + option.costo}}</span>
                     </mat-option>
                   </mat-select>
                 </mat-form-field>

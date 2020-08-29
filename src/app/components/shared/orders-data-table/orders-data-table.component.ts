@@ -10,6 +10,8 @@ import { AuthService } from "../../../services/auth.service";
 import { User } from "../../../models/user";
 import { ChangeOrderStateDialogComponent } from "./change-order-state-dialog/change-order-state-dialog.component";
 import { ViewPhotosDialogComponent } from '../view-photos-dialog/view-photos-dialog.component';
+import { AssignDriverComponent } from './assign-driver/assign-driver.component';
+import {AddOrderExtrachargeDialogComponent} from "./add-order-extracharge-dialog/add-order-extracharge-dialog.component";
 
 declare var $: any
 @Component({
@@ -151,7 +153,6 @@ export class OrdersDataTableComponent implements OnInit {
   }
 
   showChangeStateDialog(currOrder) {
-
     const dialogRef = this.dialog.open(ChangeOrderStateDialogComponent,
       {
         data: {
@@ -173,13 +174,52 @@ export class OrdersDataTableComponent implements OnInit {
   }
 
   openPhotosDialog(photos) {
-
     const dialogRef = this.dialog.open(ViewPhotosDialogComponent, {
       data: {
         photos: photos
       }
     })
 
+  }
+
+  showAssignDriverDialog(currOrder){
+    const dialogRef = this.dialog.open(AssignDriverComponent,
+      {
+        data: {
+          order: currOrder.idDetalle
+        }
+      }
+    )
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.datatableElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.ngOnInit()
+          })
+      }
+    })
+  }
+
+  showAddExtrachargeDialog(currOrder){
+    const dialogRef = this.dialog.open(AddOrderExtrachargeDialogComponent,
+      {
+        data: {
+          order: currOrder.idDetalle
+        }
+      }
+    )
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.datatableElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.ngOnInit()
+          })
+      }
+    })
   }
 
 }

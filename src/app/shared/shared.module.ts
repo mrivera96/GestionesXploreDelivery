@@ -15,6 +15,7 @@ import {PhoneMaskDirective} from "../phone-mask.directive";
 import {SuccessModalComponent} from "../components/shared/success-modal/success-modal.component";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {RouterModule} from "@angular/router";
+import {MatMenuModule} from "@angular/material/menu";
 
 
 
@@ -39,7 +40,8 @@ import {RouterModule} from "@angular/router";
         MatInputModule,
         MatButtonModule,
         MatProgressSpinnerModule,
-        RouterModule
+        RouterModule,
+        MatMenuModule
 
     ],
   exports:[

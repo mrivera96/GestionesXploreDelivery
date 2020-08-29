@@ -18,4 +18,6 @@ export interface Rate {
   idTipoTarifa?: number
   consolidated_detail?: ConsolidatedRateDetail
   schedules?: Schedule[]
+  rate_detail?: any[]
+  datesToShow?: any[]
 }

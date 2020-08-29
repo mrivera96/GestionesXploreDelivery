@@ -236,6 +236,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.loaders.loadingData = true
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.data
+      this.setSelectedCategory()
       this.loaders.loadingData = false
       categoriesSubscription.unsubscribe()
     }, error => {
@@ -330,6 +331,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         instrucciones: this.newForm.get('order.instrucciones').value,
         coordsDestino: '',
         distancia: '',
+        tiempo: '',
         tarifaBase: 0,
         recargo: 0,
         cTotal: 0,
@@ -546,6 +548,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       tarifa: tarifa
     }).subscribe((response) => {
       currOrder.distancia = response.distancia
+      currOrder.tiempo = response.tiempo
       const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
       currOrder.tarifaBase = calculatedPayment.baseRate
       currOrder.recargo = calculatedPayment.surcharges

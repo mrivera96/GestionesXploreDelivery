@@ -193,7 +193,6 @@
                 </div>
               </div>
 
-
               <div class="form-row" formGroupName="order" *ngIf="!files.length">
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Detalle de envío:</mat-label>
@@ -274,8 +273,7 @@
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" floatLabel="always" *ngIf="gcordsDestination">
-                    <input #destinationCords matInput type="text" placeholder=" Ej. 10.1508684, -87.61982"
-                           (paste)="$event.preventDefault()">
+                    <input #destinationCords matInput type="text" placeholder=" Ej. 10.1508684, -87.61982">
                     <button type="button" mat-button mat-icon-button (click)="setCordsDestination()" matSuffix>
                       <mat-icon>done</mat-icon>
                     </button>

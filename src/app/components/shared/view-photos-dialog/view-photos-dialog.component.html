@@ -8,11 +8,13 @@
   </a>
 </h2>
 <mat-dialog-content>
-
-  <mat-card *ngFor="let photo of photos" class="mb-2">
-    <img mat-card-image alt="Cargando imagen..." src="{{imageRoute + photo.rutaFotografia}}" >
-  </mat-card>
-
+  <div class="row text-center" >
+    <div [ngClass]="photos.length >= 2 ? 'col-6' : 'col-12'"  *ngFor="let photo of photos">
+      <mat-card class="mb-2" >
+        <img mat-card-image alt="Cargando imagen..." src="{{imageRoute + photo.rutaFotografia}}" >
+      </mat-card>
+    </div>
+  </div>
 </mat-dialog-content>
 
 

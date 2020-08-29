@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <form [formGroup]="edSurChForm">
+  <form [formGroup]="edSurChForm" *ngIf="!loaders.loadingSubmit">
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Descripción de Recargo:</mat-label>
@@ -59,6 +59,20 @@
         <mat-icon matSuffix>account_circle</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
 
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Categoría:</mat-label>
+        <mat-select  formControlName="idCategoria" placeholder="- Seleccione una categoría -"
+                     required>
+          <mat-option *ngFor="let category of categories" value="{{category.idCategoria}}">
+            {{category.descCategoria}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>list</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>
 

@@ -24,7 +24,8 @@ export class DataTableComponent implements OnInit {
   @Input('deliveries') tDeliveries: number
   deliveries: Delivery[]
   dtTrigger: Subject<any> = new Subject<any>()
-  @Output('loadingData') stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @Output('loadingData') 
+  stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
 
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
@@ -42,7 +43,6 @@ export class DataTableComponent implements OnInit {
   ngOnInit(): void {
     this.initialize()
     this.loadData()
-
   }
 
   loadData() {
@@ -89,9 +89,7 @@ export class DataTableComponent implements OnInit {
       })
       serviceSubscription.unsubscribe()
     })
-    
   }
-
 
   initialize() {
     this.dtOptions = {

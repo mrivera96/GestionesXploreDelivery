@@ -79,8 +79,8 @@ export class PendingDeliveriesComponent implements OnInit {
     const deliveriesSubscription = this.deliveriesService.getPending().subscribe(response => {
       this.deliveries = response.data
       this.loaders.loadingData = false
-      deliveriesSubscription.unsubscribe()
       this.dtTrigger.next()
+      deliveriesSubscription.unsubscribe()
       
     })
   }

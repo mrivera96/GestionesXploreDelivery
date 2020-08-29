@@ -80,18 +80,20 @@ export class LoginComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authService.login(this.f.nickName.value, this.f.password.value)
+    const authSubscription = this.authService.login(this.f.nickName.value, this.f.password.value)
       .subscribe(
         response => {
           const user = response.user;
           localStorage.setItem('currentUserManagement', JSON.stringify(user));
           this.authService.setCurrUser(user)
+          authSubscription.unsubscribe()
           this.router.navigate([''])
         }, error => {
           error.subscribe(error => {
             this.error = error.statusText
             this.openErrorDialog(this.error)
             this.loading = false
+            authSubscription.unsubscribe()
           })
 
         })
