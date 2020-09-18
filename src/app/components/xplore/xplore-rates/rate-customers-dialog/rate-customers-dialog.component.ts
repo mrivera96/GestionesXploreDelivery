@@ -14,7 +14,6 @@ export class RateCustomersDialogComponent implements OnInit {
   loaders = {
     loadingData: false
   }
-
   rateCustomers: []
   rateId: number
 
@@ -33,22 +32,25 @@ export class RateCustomersDialogComponent implements OnInit {
 
   loadData(){
     this.loaders.loadingData = true
-    this.ratesService.getRateCustomers(this.rateId).subscribe(response => {
+    const ratesSubscription = this.ratesService.getRateCustomers(this.rateId).subscribe(response => {
       this.rateCustomers = response.data
       this.loaders.loadingData = false
+      ratesSubscription.unsubscribe()
     })
   }
 
   removeCustomerFromRate(customer) {
     this.loaders.loadingData = true
-    this.ratesService.removeCustomerFromRate(this.rateId, customer).subscribe(response => {
+    const ratesSubscription = this.ratesService.removeCustomerFromRate(this.rateId, customer).subscribe(response => {
       this.openSuccessDialog('Operación Realizada Correctamente', response.message)
       this.loaders.loadingData = false
+      ratesSubscription.unsubscribe()
 
     }, error => {
       error.subscribe(error => {
         this.loaders.loadingData = false
         this.openErrorDialog(error.statusText)
+        ratesSubscription.unsubscribe()
       })
     })
   }

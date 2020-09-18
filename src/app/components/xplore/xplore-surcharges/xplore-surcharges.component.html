@@ -38,20 +38,18 @@
           <th>Kilometraje Mínimo</th>
           <th>Kilometraje Máximo</th>
           <th>Monto</th>
-          <th>Cliente Asignado</th>
           <th>Categoría Asignada</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
         <tbody>
 
-        <tr *ngFor="let surcharge of surcharges">
-          <td>{{surcharge.idRecargo}}</td>
+        <tr *ngFor="let surcharge of surcharges; let i = index">
+          <td>{{i + 1}}</td>
           <td>{{surcharge.descRecargo}}</td>
           <td>{{surcharge.kilomMinimo}}</td>
           <td>{{surcharge.kilomMaximo}}</td>
           <td>L. {{surcharge.monto}}</td>
-          <td>{{surcharge.customer.nomEmpresa}}</td>
           <td>{{surcharge?.category?.descCategoria || 'N/A'}}</td>
           <td>
             <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -61,6 +59,11 @@
               <button (click)="showEditForm(surcharge)" mat-menu-item>
                 <mat-icon>create</mat-icon>
                 <span>Editar</span>
+              </button>
+
+              <button (click)="showSurchargeCustomers(surcharge.idRecargo)" mat-menu-item>
+                <mat-icon>people</mat-icon>
+                <span>Ver Clientes</span>
               </button>
             </mat-menu>
           </td>

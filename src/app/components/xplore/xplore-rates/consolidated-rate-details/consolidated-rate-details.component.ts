@@ -26,6 +26,7 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
   rateSchedules: Schedule[] = []
   schdeduleForm: FormGroup
   assignedSchedules: Schedule[] = []
+  rateType: number
 
   constructor(
     private ratesService: RatesService,
@@ -36,29 +37,24 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.currRateDetail = this.data.RateDetail
+    this.rateType = this.data.rateType
+    this.assignedSchedules = data.RateSchedules
+
   }
 
   ngOnInit(): void {
     this.initialize()
-    this.loadData()
   }
 
-  loadData(){
-    this.loaders.loadingData = true
-    const schedulesSubscription = this.ratesService.getRateSchedules(this.currRateDetail.idTarifaDelivery)
-      .subscribe(response => {
-        this.assignedSchedules = response.data
-        this.loaders.loadingData = false
-        schedulesSubscription.unsubscribe()
-      })
-  }
 
   initialize() {
     this.consolidatedForm = this.formBuilder.group(
       {
         idTarifaDelivery: [this.currRateDetail.idTarifaDelivery],
         radioMaximo: [this.currRateDetail.radioMaximo, Validators.required],
-        dirRecogida: [this.currRateDetail.dirRecogida, Validators.required]
+        dirRecogida: [this.currRateDetail.dirRecogida, Validators.required],
+        radioMaximoEntrega: [this.currRateDetail.radioMaximoEntrega],
+        dirEntrega: [this.currRateDetail.dirEntrega]
       }
     )
 
@@ -171,7 +167,6 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
        this.openSuccessDialog('Operación realizada correctamente', response.message, false)
        this.loaders.loadingSubmit = false
        rmSchSubscription.unsubscribe()
-       this.loadData()
      },error => {
        error.subscribe(error => {
          this.openErrorDialog(error.statusText)

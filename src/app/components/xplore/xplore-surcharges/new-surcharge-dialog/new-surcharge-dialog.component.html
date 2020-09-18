@@ -1,6 +1,7 @@
 <!-- MODAL START -->
 <h2 mat-dialog-title class="text-info">
-  <mat-icon [inline]="true">note_add</mat-icon> Nuevo Recargo
+  <mat-icon [inline]="true">note_add</mat-icon>
+  Nuevo Recargo
 </h2>
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit">
@@ -27,9 +28,7 @@
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
-    </div>
 
-    <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Kilometraje Máximo:</mat-label>
         <input matInput id="kilomMaximoN" type="number" formControlName="kilomMaximo"
@@ -37,7 +36,9 @@
         <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
+    </div>
 
+    <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Monto:</mat-label>
         <input matInput id="montoN" type="number" formControlName="monto"
@@ -45,32 +46,11 @@
         <mat-icon matSuffix>attach_money</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
-    </div>
 
-    <div class="form-row">
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Cliente:</mat-label>
-        <mat-select  id="idClienteN" formControlName="idCliente"
-                     placeholder="- Seleccione un cliente -"
-                     required>
-          <mat-form-field>
-            <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)" >
-            <mat-icon [inline]="true" matPrefix>search</mat-icon>
-          </mat-form-field>
-          <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
-            {{customer.nomEmpresa}}
-          </mat-option>
-        </mat-select>
-        <mat-icon matSuffix>account_circle</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
-      </mat-form-field>
-    </div>
-
-    <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Categoría:</mat-label>
-        <mat-select  formControlName="idCategoria" placeholder="- Seleccione una categoría -"
-                     required>
+        <mat-select formControlName="idCategoria" placeholder="- Seleccione una categoría -"
+                    required>
           <mat-option *ngFor="let category of categories" value="{{category.idCategoria}}">
             {{category.descCategoria}}
           </mat-option>
@@ -79,8 +59,75 @@
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>
-  </form>
 
+    <div class="form-row">
+      <div class="col-md">
+        <mat-slide-toggle #matSlideToggle (toggleChange)="changeGeneral(!matSlideToggle.checked)" required>Recargo
+          General
+        </mat-slide-toggle>
+      </div>
+    </div>
+    <br>
+    <h4 *ngIf="isGeneral == false">Agregar Cliente</h4>
+    <hr>
+    <div class="form-row" *ngIf="isGeneral == false">
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md-10">
+        <mat-label>Cliente:</mat-label>
+        <mat-select id="idClienteN" formControlName="idCliente" required placeholder="- Seleccione un cliente -">
+          <mat-form-field>
+            <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)">
+            <mat-icon [inline]="true" matPrefix>search</mat-icon>
+          </mat-form-field>
+          <mat-option *ngFor="let customer of filteredCustomers" [value]="customer.idCliente">
+            {{customer.nomEmpresa}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <div class="col-md-2">
+        <button class="btn-sm" mat-raised-button color="primary" (click)="addCustomerToSurcharge(fNew.idCliente.value)"
+                [disabled]="newSurchForm.invalid || loaders.loadingSubmit">
+          Agregar
+        </button>
+      </div>
+    </div>
+  </form>
+  <br>
+  <div class="form-row" *ngIf="isGeneral == false && !loaders.loadingSubmit" >
+    <div class="col">
+      <h4>Clientes Asignados</h4>
+      <hr>
+      <div class="table-responsive">
+        <table id="dTable" class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th scope="col">N°</th>
+            <th scope="col">Cliente</th>
+            <th scope="col" data-priority="1">Acción</th>
+          </tr>
+
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let customer of surchargeCustomers; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{customer.nomEmpresa}}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(customer)"><i
+                class="fa fa-trash-alt"></i>
+                Quitar
+              </button>
+            </td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
 
 </mat-dialog-content>
 

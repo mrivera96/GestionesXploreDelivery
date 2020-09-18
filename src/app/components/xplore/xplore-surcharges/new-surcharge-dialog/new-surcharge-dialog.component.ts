@@ -24,6 +24,8 @@ export class NewSurchargeDialogComponent implements OnInit {
   categories: Category[] = []
   filteredCustomers: Customer[]
   surchargeCategories: Category[] = []
+  isGeneral: boolean = false
+  surchargeCustomers: Customer[] = []
   constructor(
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
@@ -41,7 +43,7 @@ export class NewSurchargeDialogComponent implements OnInit {
         kilomMinimo: ['', Validators.required],
         kilomMaximo: ['', Validators.required],
         monto: ['', Validators.required],
-        idCliente: [1, Validators.required],
+        idCliente: [null],
         idCategoria:[null,Validators.required]
       }
     )
@@ -64,7 +66,7 @@ export class NewSurchargeDialogComponent implements OnInit {
   onFormNewSubmit() {
     if (this.newSurchForm.valid) {
       this.loaders.loadingSubmit = true
-      this.surchargesService.createSurcharge(this.newSurchForm.value)
+      this.surchargesService.createSurcharge(this.newSurchForm.value, this.surchargeCustomers)
         .subscribe(response => {
             this.loaders.loadingSubmit = false
             this.openSuccessDialog('Operación Realizada Correctamente',response.message)
@@ -76,6 +78,30 @@ export class NewSurchargeDialogComponent implements OnInit {
             })
           })
     }
+  }
+
+  changeGeneral(checked) {
+    if (checked) {
+      this.isGeneral = true
+      this.fNew.idCliente.setValue(1)
+    } else {
+      this.isGeneral = false
+      this.fNew.idCliente.setValue(null)
+    }
+  }
+
+  addCustomerToSurcharge(idCust) {
+    let customerToAdd: Customer = {}
+    this.customers.forEach(value => {
+      if (value.idCliente == idCust) {
+        customerToAdd = value
+      }
+    })
+
+    if (!this.surchargeCustomers.includes(customerToAdd)) {
+      this.surchargeCustomers.push(customerToAdd)
+    }
+
   }
 
   openSuccessDialog(succsTitle, succssMsg) {
@@ -110,6 +136,9 @@ export class NewSurchargeDialogComponent implements OnInit {
     return this.customers
   }
 
-
+  removeFromArray(item) {
+    let i = this.surchargeCustomers.indexOf(item)
+    this.surchargeCustomers.splice(i, 1)
+  }
 
 }

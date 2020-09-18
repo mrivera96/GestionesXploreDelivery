@@ -1,10 +1,29 @@
 <!--CARD START -->
 <mat-card @fade>
+
   <mat-card-header>
-    <mat-card-title>
-      <a [routerLink]="['/']"> <i class="fa fa-home m-r-xs"></i></a>
-      Solicitud N° {{deliveryId}}
-    </mat-card-title>
+    <mat-card-title-group>
+      <mat-card-title>
+        <a [routerLink]="['/']"> <i class="fa fa-home m-r-xs"></i></a>
+        Solicitud N° {{deliveryId}}
+      </mat-card-title>
+    </mat-card-title-group>
+    <div class="ml-auto float-right">
+      <button mat-icon-button  [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button *ngIf="currentDelivery?.idEstado == 34" mat-menu-item (click)="openChangeStateDialog()">
+          Cambiar Estado
+        </button>
+
+        <button type="button" mat-menu-item *ngIf="allowHourChange && currentDelivery.idEstado != 39"
+                [disabled]="!allowHourChange" (click)="openChangeHourDialog()">
+          Cambiar Hora de Recogida
+        </button>
+
+      </mat-menu>
+    </div>
 
   </mat-card-header>
 
@@ -89,12 +108,12 @@
           <strong>Total:</strong>
           L. {{currentDelivery?.total}}
         </div>
-<!--
-        <div class="col-sm">
-          <strong>Pagada:</strong>
-          <span *ngIf="currentDelivery?.isPagada == true" class="text-success"> SI</span>
-          <span *ngIf="currentDelivery?.isPagada == false" class="text-danger"> NO</span>
-        </div>-->
+        <!--
+                <div class="col-sm">
+                  <strong>Pagada:</strong>
+                  <span *ngIf="currentDelivery?.isPagada == true" class="text-success"> SI</span>
+                  <span *ngIf="currentDelivery?.isPagada == false" class="text-danger"> NO</span>
+                </div>-->
 
 
       </div>
@@ -118,21 +137,6 @@
         </div>
       </div>
 
-      <br>
-      <div class="row" >
-        <div class="col-sm" *ngIf="currentDelivery?.idEstado == 34">
-          <button mat-raised-button color="primary" (click)="openChangeStateDialog()" >
-            Cambiar Estado
-          </button>
-        </div>
-
-        <div class="col-sm" *ngIf="allowHourChange && currentDelivery.idEstado != 39">
-          <button type="button" mat-raised-button color="primary" [disabled]="!allowHourChange" (click)="openChangeHourDialog()" >
-            Cambiar Hora de Recogida
-          </button>
-        </div>
-
-      </div>
       <hr>
       <div>
         <h4 class="card-title">Entregas programadas</h4>
@@ -169,13 +173,14 @@
               <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
             </td>
             <td>{{detail?.instrucciones}}</td>
-            <td>L. {{detail?.distancia}}</td>
+            <td>{{detail?.distancia}}</td>
             <td>L. {{detail?.recargo}}</td>
             <td>L. {{detail?.cargosExtra}}</td>
             <td>L. {{detail?.cTotal}}</td>
             <td>{{detail?.estado.descEstado}}</td>
             <td>
-              <button *ngIf="detail.photography.length > 0" button type="button" mat-raised-button color="primary"  (click)="openPhotosDialog(detail.photography)">
+              <button *ngIf="detail.photography.length > 0" type="button" mat-raised-button color="primary"
+                      (click)="openPhotosDialog(detail.photography)">
                 Ver Fotografías
               </button>
               <span *ngIf="detail.photography.length == 0">N/A</span>

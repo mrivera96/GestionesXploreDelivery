@@ -58,9 +58,10 @@
             </a>
           </td>
           <td>
-            <a (click)="showExtraChargeOptions(extraCharge.idCargoExtra)" style="color: #0071A2">
+            <a *ngIf="extraCharge.tipoCargo == 'F'" (click)="showExtraChargeOptions(extraCharge.idCargoExtra)" style="color: #0071A2">
               <i class="fa fa-eye"></i> Ver Opciones
             </a>
+            <p *ngIf="extraCharge.tipoCargo == 'V'">N/A</p>
           </td>
           <td>
             <a (click)="showEditForm(extraCharge.idCargoExtra)" style="color: #0071A2">

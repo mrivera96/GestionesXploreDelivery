@@ -16,7 +16,6 @@ import {BranchService} from "../../../services/branch.service";
 import {DataTableDirective} from "angular-datatables";
 import {Router} from "@angular/router";
 import {Surcharge} from "../../../models/surcharge";
-import {SurchargesService} from "../../../services/surcharges.service";
 import {DateValidate} from "../../../helpers/date.validator";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
@@ -30,6 +29,7 @@ import {GoogleMap} from "@angular/google-maps";
 import {Schedule} from "../../../models/schedule";
 import {ExtraCharge} from "../../../models/extra-charge";
 import {ExtraChargeOption} from "../../../models/extra-charge-option";
+import {ExtraChargeCategory} from 'src/app/models/extra-charge-category';
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -101,15 +101,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
   fileContentArray: String[] = []
   defaultBranch
   selectedCategory: Category = {}
-  selectedExtraCharge: ExtraCharge = {}
+  selectedExtraCharge: ExtraCharge = null
   selectedExtraChargeOption: ExtraChargeOption = {}
+  extraCharges: ExtraChargeCategory[] = []
 
   constructor(
     private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
     private deliveriesService: DeliveriesService,
     private ratesService: RatesService,
-    private surchargesService: SurchargesService,
     private http: HttpClient,
     private branchService: BranchService,
     private router: Router,
@@ -117,7 +117,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
     private authService: AuthService,
   ) {
     this.currCustomer = this.authService.currentUserValue
-
   }
 
   ngOnInit(): void {
@@ -142,7 +141,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.deliveryForm = this.formBuilder.group({
       deliveryHeader: this.formBuilder.group({
         fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
-        hora: [formatDate(new Date().setHours(new Date().getHours(), new Date().getMinutes()+5), 'HH:mm', 'en'), Validators.required],
+        hora: [formatDate(new Date().setHours(new Date().getHours(), new Date().getMinutes() + 5), 'HH:mm', 'en'), Validators.required],
         dirRecogida: ['', [Validators.required]],
         idCategoria: [1, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
@@ -251,11 +250,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
       ratesSubscription.unsubscribe()
     })
 
-    const surchargesSubscription = this.surchargesService.getSurcharges().subscribe(response => {
-      this.surcharges = response.data
-      surchargesSubscription.unsubscribe()
-    })
-
     const branchSubscription = this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
       this.myBranchOffices.forEach(bOffice => {
@@ -356,7 +350,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
 
       this.loaders.loadingSubmit = true
-      const deliveriesSubscription  = this.deliveriesService
+      const deliveriesSubscription = this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
         .subscribe(response => {
           this.loaders.loadingSubmit = false
@@ -462,7 +456,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
   searchOrigin(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
-      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        lugar: lugar,
+        function: 'searchPlace'
+      }).subscribe(response => {
         this.placesOrigin = response
         placeSubscription.unsubscribe()
       })
@@ -473,7 +470,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
   searchDestination(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
-      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {lugar: lugar, function: 'searchPlace'}).subscribe(response => {
+      const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        lugar: lugar,
+        function: 'searchPlace'
+      }).subscribe(response => {
         this.placesDestination = response
         placeSubscription.unsubscribe()
       })
@@ -504,21 +504,20 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.surcharges.forEach(value => {
       if (distance >= Number(value.kilomMinimo)
         && distance <= Number(value.kilomMaximo)
-        && value.customer.idCliente == this.currCustomer.idCliente) {
-
-        orderPayment.surcharges = Number(value.monto)
-      } else if (distance >= Number(value.kilomMinimo)
-        && distance <= Number(value.kilomMaximo)
-        && value.customer.idCliente == 1) {
+      ) {
         orderPayment.surcharges = Number(value.monto)
       }
     })
-    if (this.selectedExtraCharge != null && this.selectedExtraCharge.tipoCargo === 'F') {
-      orderPayment.cargosExtra = this.selectedExtraCharge.costo
-      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraCharge.costo
-    } else if (this.selectedExtraCharge != null && this.selectedExtraCharge.tipoCargo === 'V') {
-      orderPayment.cargosExtra = this.selectedExtraChargeOption.costo
-      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraChargeOption.costo
+
+    if (this.selectedExtraCharge != null) {
+      if (this.selectedExtraCharge.options) {
+        orderPayment.cargosExtra = this.selectedExtraChargeOption.costo
+        orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraChargeOption.costo
+      }else{
+        orderPayment.cargosExtra = this.selectedExtraCharge.costo
+        orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraCharge.costo
+      }
+
     } else {
       orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
     }
@@ -554,8 +553,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
       currOrder.recargo = calculatedPayment.surcharges
       currOrder.cargosExtra = calculatedPayment.cargosExtra
       currOrder.cTotal = calculatedPayment.total
-      currOrder.idCargoExtra = this.selectedExtraCharge.idCargoExtra
-      currOrder.idDetalleOpcion = this.selectedExtraChargeOption.idDetalleOpcion
+      currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra || null
+      currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion || null
 
       this.http.post<any>(`${environment.apiUrl}`, {
         function: 'getCoords',
@@ -568,8 +567,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.orders.push(currOrder)
       this.pagos.push(calculatedPayment)
       this.loaders.loadingAdd = false
-      this.selectedExtraChargeOption = {}
-      this.selectedExtraCharge = {}
+      this.selectedExtraChargeOption = null
+      this.selectedExtraCharge = null
 
       if (this.orders.length > 1) {
         this.dtElement.dtInstance.then(
@@ -825,6 +824,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.categories.forEach(category => {
       if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
         this.selectedCategory = category
+        this.surcharges = this.selectedCategory.surcharges
       }
     })
   }

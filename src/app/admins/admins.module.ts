@@ -36,7 +36,7 @@ import {AddPaymentDialogComponent} from "../components/xplore/payments/add-payme
 import { RateCustomersDialogComponent } from '../components/xplore/xplore-rates/rate-customers-dialog/rate-customers-dialog.component';
 import { AddCustomerRateDialogComponent } from '../components/xplore/xplore-rates/rate-customers-dialog/add-customer-rate-dialog/add-customer-rate-dialog.component';
 import { OrdersByCustomerComponent } from '../components/xplore/xplore-reports/orders-by-customer/orders-by-customer.component';
-import { ChangeOrderStateDialogComponent } from '../components/shared/orders-data-table/change-order-state-dialog/change-order-state-dialog.component';
+import { ChangeOrderStateDialogComponent } from '../components/shared/change-order-state-dialog/change-order-state-dialog.component';
 import { XploreScheduleComponent } from '../components/xplore/xplore-schedule/xplore-schedule.component';
 import { EditScheduleDialogComponent } from '../components/xplore/xplore-schedule/edit-schedule-dialog/edit-schedule-dialog.component';
 import { XploreCustomerBalanceComponent } from '../components/xplore/xplore-customer-balance/xplore-customer-balance.component';
@@ -51,9 +51,21 @@ import { ExtraChargesOptionsDialogComponent } from '../components/xplore/extra-c
 import { AddExtraChargeOptionDialogComponent } from '../components/xplore/extra-charges/add-extra-charge-option-dialog/add-extra-charge-option-dialog.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { ConsolidatedRateDetailsComponent } from '../components/xplore/xplore-rates/consolidated-rate-details/consolidated-rate-details.component';
-import {AssignDriverComponent} from "../components/shared/orders-data-table/assign-driver/assign-driver.component";
-import {AddOrderExtrachargeDialogComponent} from "../components/shared/orders-data-table/add-order-extracharge-dialog/add-order-extracharge-dialog.component";
+import {AssignDriverComponent} from "../components/shared/assign-driver/assign-driver.component";
+import {AddOrderExtrachargeDialogComponent} from "../components/shared/add-order-extracharge-dialog/add-order-extracharge-dialog.component";
 import {MatMenuModule} from "@angular/material/menu";
+import {DeliveriesReportComponent} from "../components/xplore/xplore-reports/deliveries-report/deliveries-report.component";
+import {PaymentsReportComponent} from "../components/xplore/xplore-reports/payments-report/payments-report.component";
+import {CustomersReportComponent} from "../components/xplore/xplore-reports/customers-report/customers-report.component";
+import {CustomersBalanceReportComponent} from "../components/xplore/xplore-reports/customer-balance-report/customers-balance-report.component";
+import {CustomersTrackingReportComponent} from "../components/xplore/xplore-reports/customers-tracking-report/customers-tracking-report.component";
+import {CustomerWorkLinesComponent} from "../components/xplore/xplore-customers/customer-work-lines/customer-work-lines.component";
+import { AddWorkLineComponent } from '../components/xplore/xplore-customers/customer-work-lines/add-work-line/add-work-line.component';
+import { SurchargeCustomersDialogComponent } from '../components/xplore/xplore-surcharges/surcharge-customers-dialog/surcharge-customers-dialog.component';
+import { AddCustomerSurchargeDialogComponent } from '../components/xplore/xplore-surcharges/add-customer-surcharge-dialog/add-customer-surcharge-dialog.component';
+import { XploreWorkLinesComponent } from '../components/xplore/xplore-work-lines/xplore-work-lines.component';
+import { EditWorklineDialogComponent } from '../components/xplore/xplore-work-lines/edit-workline-dialog/edit-workline-dialog.component';
+import { NewWorklineDialogComponent } from '../components/xplore/xplore-work-lines/new-workline-dialog/new-workline-dialog.component';
 
 @NgModule({
   declarations: [
@@ -105,6 +117,19 @@ import {MatMenuModule} from "@angular/material/menu";
     ConsolidatedRateDetailsComponent,
     AssignDriverComponent,
     AddOrderExtrachargeDialogComponent,
+    DeliveriesReportComponent,
+    PaymentsReportComponent,
+    CustomersReportComponent,
+    CustomersBalanceReportComponent,
+    CustomersTrackingReportComponent,
+    CustomerWorkLinesComponent,
+    AddWorkLineComponent,
+    SurchargeCustomersDialogComponent,
+    AddCustomerSurchargeDialogComponent,
+    XploreWorkLinesComponent,
+    EditWorklineDialogComponent,
+    NewWorklineDialogComponent,
+
   ],
   entryComponents:[
     ConfirmModalComponent,

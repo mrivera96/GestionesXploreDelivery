@@ -10,55 +10,66 @@
   <mat-card-content>
 
     <!-- CONTAINER START -->
-    <div class="row">
-      <div class="col">
-        <form [formGroup]="consultForm" >
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="col-md">
-              <mat-label>Conductor:</mat-label>
-              <mat-select formControlName="driverId" required placeholder="- Seleccione un conductor -">
-                <mat-form-field>
-                  <input matInput placeholder="Buscar Conductor" (keyup)="onKey($event.target.value)" >
-                  <mat-icon [inline]="true" matPrefix>search</mat-icon>
-                </mat-form-field>
-                <mat-option [value]="-1">Todos</mat-option>
-                <mat-option *ngFor="let driver of filteredDrivers" value="{{driver.idUsuario}}">
-                  {{driver.nomUsuario}}
-                </mat-option>
-              </mat-select>
-              <mat-icon matPrefix>sports_motorsports</mat-icon>
-              <mat-error>*Este campo es obligatorio</mat-error>
-            </mat-form-field>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <form [formGroup]="consultForm">
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="col-md">
+                <mat-label>Conductor:</mat-label>
+                <mat-select formControlName="driverId" required placeholder="- Seleccione un conductor -">
+                  <mat-form-field>
+                    <input matInput placeholder="Buscar Conductor" (keyup)="onKey($event.target.value)">
+                    <mat-icon [inline]="true" matPrefix>search</mat-icon>
+                  </mat-form-field>
+                  <mat-option [value]="-1">Todos</mat-option>
+                  <mat-option *ngFor="let driver of filteredDrivers" value="{{driver.idUsuario}}">
+                    {{driver.nomUsuario}}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matPrefix>sports_motorsports</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+              </mat-form-field>
 
-            <mat-form-field appearance="outline" class="col-md">
-              <mat-label>Fecha Inicial:</mat-label>
-              <input matInput type="date" formControlName="initDate" required>
-              <mat-icon matPrefix>today</mat-icon>
-              <mat-error>*Este campo es obligatorio</mat-error>
-            </mat-form-field>
+              <mat-form-field appearance="outline" class="col-md">
+                <mat-label>Fecha Inicial:</mat-label>
+                <input matInput type="date" formControlName="initDate" required>
+                <mat-icon matPrefix>today</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+              </mat-form-field>
 
-          </div>
+            </div>
 
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="col-md">
-              <mat-label>Fecha Final:</mat-label>
-              <input matInput type="date" formControlName="finDate" required>
-              <mat-icon matPrefix>today</mat-icon>
-              <mat-error>*Este campo es obligatorio</mat-error>
-            </mat-form-field>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="col-md">
+                <mat-label>Fecha Final:</mat-label>
+                <input matInput type="date" formControlName="finDate" required>
+                <mat-icon matPrefix>today</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+              </mat-form-field>
 
 
-            <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary" (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto" >
-              <mat-icon>search</mat-icon>
-            </button>
-          </div>
-        </form>
+              <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
+                (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+                <mat-icon>search</mat-icon>
+              </button>
+            </div>
+          </form>
+        </div>
+
       </div>
 
-    </div>
+      <div class="row mt-2">
+        <div class="col-12">
+          <button class="float-right" [disabled]="consultResults.length == 0" mat-raised-button color="primary"
+            (click)="generateExcel()">
+            Exportar a Excel
+          </button>
+        </div>
+      </div>
 
-    <!-- CONTAINER BODY START -->
-    <div class="table-responsive">
+    
+      
       <div class="row" *ngIf="loaders.loadingSubmit">
         <div class="col text-center">
           <img src="assets/img/loading.svg" width="5%" alt="loading">
@@ -66,41 +77,97 @@
         </div>
       </div>
 
-      <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
-        <thead>
-        <tr>
-          <th>Nombre Conductor</th>
-          <th>Fecha</th>
-          <th>Entregas Realizadas</th>
-        </tr>
-        </thead>
-        <tbody>
 
-        <tr *ngFor="let result of consultResults;">
-          <td>{{result.driver}}</td>
-          <td>{{result.fecha}}</td>
-          <td>{{result.orders}}</td>
-        </tr>
-        </tbody>
+      <div class="row">
+        <div class="col">
+          <h3>Envíos por fecha</h3>
+        </div>
+      </div>
 
-        <tfoot style="display: table-footer-group;">
-        <tr>
-          <th></th>
-          <th>Total:</th>
-          <th data-priority="1">
-            {{totalOrders}}
-          </th>
-        </tr>
-        </tfoot>
+      <!-- CONTAINER BODY START -->
+      <div class="table-responsive" id="printTable">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th style="text-align:center" colspan="2">Moto</th>
+            
+              <th style="text-align:center" colspan="2">Turismo</th>
+             
+              <th style="text-align:center" colspan="2">Pick-Up</th>
+             
+              <th style="text-align:center" colspan="2">Panel</th>
+             
+              <th style="text-align:center" colspan="2">Pick-Up + Auxiliar</th>
+             
+              <th style="text-align:center" colspan="2">Panel + Auxiliar</th>
+             
+              <th style="text-align:center" colspan="2">Totales</th>
+              
+            </tr>
 
-      </table>
-    </div>
-    <!-- CONTAINER END -->
+            <tr>
+              <th>Conductor</th>
+              <th>Fecha</th>
+              <th>Entregas</th>
+              <th>Tiempo</th>
+              <th>Entregas</th>
+              <th>Tiempo</th>
+              <th>Entregas</th>
+              <th>Tiempo</th>
+              <th>Entregas</th>
+              <th>Tiempo</th>
+              <th>Entregas</th>
+              <th>Tiempo</th>
+              <th>Entregas</th>
+              <th>Tiempo</th>
+              <th>Entregas Realizadas</th>
+              <th>Tiempo de Entregas</th>
+            </tr>
+            <!--
+          <tr>
+            <th>Nombre Conductor</th>
+            <th>Fecha</th>
+            <th>Entregas Realizadas</th>
+          </tr>-->
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let result of consultResults;">
+              <td>{{result.driver}}</td>
+              <td>{{result.fecha}}</td>
+              <td>{{result.moto}}</td>
+              <td>{{result.motoTime}}</td>
+              <td>{{result.turismo}}</td>
+              <td>{{result.turismoTime}}</td>
+              <td>{{result.pickup}}</td>
+              <td>{{result.pickupTime}}</td>
+              <td>{{result.panel}}</td>
+              <td>{{result.panelTime}}</td>
+              <td>{{result.pickupAuxiliar}}</td>
+              <td>{{result.pickupAuxiliarTime}}</td>
+              <td>{{result.panelAuxiliar}}</td>
+              <td>{{result.panelAuxiliarTime}}</td>
+              <td>{{result.totalOrders}}</td>
+              <td>{{result.totalTime}}</td>
+            </tr>
+          </tbody>
+          <!--
+                    <tfoot style="display: table-footer-group;">
+                    <tr>
+                      <th></th>
+                      <th>Total:</th>
+                      <th data-priority="1">
+                        {{totalOrders}}
+                      </th>
+                    </tr>
+                    </tfoot>-->
+
+        </table>
+      </div>
+      
+    </div> <!-- CONTAINER END -->
   </mat-card-content>
 </mat-card>
-
 <!-- CARD END -->
-
-
-
-

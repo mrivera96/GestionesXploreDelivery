@@ -75,4 +75,28 @@ export class UsersService {
     })
   }
 
+  getCustomersBalanceReport(form){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'customersBalanceReport',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getCustomersTrackingReport(form){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'customersTrackingReport',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getCustomerWorkLines(customerId){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'customerWorkLines',
+      customerId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
 }

@@ -25,10 +25,11 @@ export class SurchargesService {
     })
   }
 
-  createSurcharge(form){
+  createSurcharge(form, customers){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'createSurcharge',
       form,
+      customers,
       tkn: this.authService.currentUserValue.access_token
     })
   }
@@ -36,6 +37,32 @@ export class SurchargesService {
   getCustomerSurcharges(){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'getMySurcharges',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getSurchargeCustomers(surchargeId) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getSurchargeCustomers',
+      idRecargo: surchargeId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  removeCustomerFromSurcharge(surchargeId, customerId) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'removeCustomerFromSurcharge',
+      idCliente: customerId,
+      idRecargo: surchargeId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  addCustomerToSurcharge(surchargeId, customerId) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'addCustomerToSurcharge',
+      idCliente: customerId,
+      idRecargo: surchargeId,
       tkn: this.authService.currentUserValue.access_token
     })
   }

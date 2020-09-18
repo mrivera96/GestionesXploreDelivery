@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Order } from "../../../models/order";
 import { Subject } from "rxjs";
 import { State } from "../../../models/state";
@@ -8,10 +8,8 @@ import { MatDialog } from "@angular/material/dialog";
 import { ErrorModalComponent } from "../error-modal/error-modal.component";
 import { AuthService } from "../../../services/auth.service";
 import { User } from "../../../models/user";
-import { ChangeOrderStateDialogComponent } from "./change-order-state-dialog/change-order-state-dialog.component";
 import { ViewPhotosDialogComponent } from '../view-photos-dialog/view-photos-dialog.component';
-import { AssignDriverComponent } from './assign-driver/assign-driver.component';
-import {AddOrderExtrachargeDialogComponent} from "./add-order-extracharge-dialog/add-order-extracharge-dialog.component";
+import {OrderDetailDialogComponent} from "../order-detail-dialog/order-detail-dialog.component";
 
 declare var $: any
 @Component({
@@ -152,26 +150,7 @@ export class OrdersDataTableComponent implements OnInit {
 
   }
 
-  showChangeStateDialog(currOrder) {
-    const dialogRef = this.dialog.open(ChangeOrderStateDialogComponent,
-      {
-        data: {
-          order: currOrder
-        }
-      }
-    )
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.datatableElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.ngOnInit()
-          })
-      }
-    })
-
-  }
 
   openPhotosDialog(photos) {
     const dialogRef = this.dialog.open(ViewPhotosDialogComponent, {
@@ -182,16 +161,19 @@ export class OrdersDataTableComponent implements OnInit {
 
   }
 
-  showAssignDriverDialog(currOrder){
-    const dialogRef = this.dialog.open(AssignDriverComponent,
+
+
+  showDetailDialog(order){
+    const dialogRef = this.dialog.open(OrderDetailDialogComponent,
       {
         data: {
-          order: currOrder.idDetalle
+          currentOrder: order,
+          currentUser: this.currUser
         }
       }
     )
 
-    dialogRef.afterClosed().subscribe(result => {
+    /*dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.datatableElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
@@ -199,27 +181,7 @@ export class OrdersDataTableComponent implements OnInit {
             this.ngOnInit()
           })
       }
-    })
-  }
-
-  showAddExtrachargeDialog(currOrder){
-    const dialogRef = this.dialog.open(AddOrderExtrachargeDialogComponent,
-      {
-        data: {
-          order: currOrder.idDetalle
-        }
-      }
-    )
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.datatableElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.ngOnInit()
-          })
-      }
-    })
+    })*/
   }
 
 }

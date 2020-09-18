@@ -1,1 +1,184 @@
-<p>order-detail-dialog works!</p>
+<!-- MODAL START -->
+<h2 mat-dialog-title>
+  <i class="fa fa-box"></i> Detalles de Envío N° {{currentOrder.idDetalle}}
+
+  <button mat-icon-button class="float-right" [matMenuTriggerFor]="menu" *ngIf="currentUser.idPerfil == 1">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button *ngIf="currentOrder.estado.idEstado !== 44 " mat-menu-item
+            (click)="showChangeStateDialog(currentOrder)">
+      <mat-icon>tune</mat-icon>
+      <span>Cambiar Estado</span>
+    </button>
+    <button *ngIf="currentOrder.estado.idEstado == 34" mat-menu-item
+            (click)="showAssignDriverDialog(currentOrder)">
+      <mat-icon>assignment_ind</mat-icon>
+      <span>Asignar Conductor</span>
+    </button>
+    <button mat-menu-item (click)="showAddExtrachargeDialog(currentOrder)">
+      <mat-icon>attach_money</mat-icon>
+      <span>Agregar Cargo Extra</span>
+    </button>
+
+  </mat-menu>
+</h2>
+<mat-dialog-content>
+
+  <div class="row">
+    <div class="col-md">
+      <p>N° de Reserva: <strong>{{currentOrder.idDelivery}}</strong></p>
+    </div>
+    <div class="col-md">
+      Estado: <strong>{{currentOrder.estado.descEstado}} <p *ngIf="currentOrder.estado.idEstado == 44">Fecha: {{currentOrder.fechaEntrega}}</p></strong>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-md">
+      Detalle de envío:
+    </div>
+    <div class="col-md">
+      <strong>{{currentOrder.nFactura}}</strong>
+    </div>
+    <div class="col-md">
+      Tarifa Base:
+    </div>
+    <div class="col-md">
+      <strong>L. {{currentOrder.tarifaBase}}</strong>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md">
+      Destinatario:
+    </div>
+    <div class="col-md">
+      <strong>{{currentOrder.nomDestinatario}}</strong>
+    </div>
+    <div class="col-md">
+      Recargos por distancia:
+    </div>
+    <div class="col-md">
+      <strong>L. {{currentOrder.recargo}}</strong>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md">
+      Número celular:
+    </div>
+    <div class="col-md">
+      <strong>{{currentOrder.numCel}}</strong>
+    </div>
+    <div class="col-md">
+      Cargos Extras:
+    </div>
+    <div class="col-md">
+      <strong>L. {{currentOrder.cargosExtra}}</strong>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md">
+      Dirección de Entrega:
+    </div>
+    <div class="col-md">
+      <strong>{{currentOrder.direccion}}</strong>
+    </div>
+    <div class="col-md">
+      Costo Total:
+    </div>
+    <div class="col-md">
+      <strong>L. {{currentOrder.cTotal}}</strong>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md">
+      Distancia:
+    </div>
+    <div class="col-md">
+      <strong>{{currentOrder.distancia}}</strong>
+    </div>
+    <div class="col-md">
+      Tiempo:
+    </div>
+    <div class="col-md">
+      <strong>{{currentOrder.tiempo || 'Sin Registro'}}</strong>
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md">
+      Observaciones:
+    </div>
+    <div class="col-md">
+      <strong>{{currentOrder.observaciones || 'Sin Registro'}}</strong>
+    </div>
+    <div class="col-md">
+      Conductor:
+    </div>
+    <div class="col-md">
+      <strong>
+        <p *ngIf="currentOrder.conductor">{{currentOrder.conductor.nomUsuario + ' - ' + currentOrder?.conductor?.numCelular}}</p>
+        <p *ngIf="!currentOrder.conductor">Aún no asignada</p>
+      </strong>
+    </div>
+
+  </div>
+
+  <!--
+
+  <div class="row">
+
+
+
+
+
+
+
+  </div>
+
+  <div class="row">
+
+
+
+
+  </div>
+-->
+  <!--<div class="row">
+    <div class="col-md">
+      <p>Distancia: {{currentOrder.distancia}}</p><br>
+      <p>Tiempo: {{currentOrder.tiempo || 'Sin Registro'}}</p>
+    </div>
+
+    <div class="col-md">
+      <p> </p><br>
+      <p> </p><br>
+      <pd> </pd>
+
+    </div>
+  </div>-->
+
+  <div class="row">
+    <div class="col-md">
+
+    </div>
+    <div class="col-md">
+
+    </div>
+    <div class="col-md">
+
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button mat-dialog-close>
+    Cerrar
+  </button>
+</mat-dialog-actions>

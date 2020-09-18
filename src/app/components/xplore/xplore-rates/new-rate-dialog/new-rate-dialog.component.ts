@@ -68,8 +68,8 @@ export class NewRateDialogComponent implements OnInit {
       {
         radioMaximo: [1, Validators.required],
         dirRecogida: ['', Validators.required],
-       /* radioMaximoEntrega: [1],
-        dirEntrega: ['']*/
+        radioMaximoEntrega: [1],
+        dirEntrega: ['']
       }
     )
 
@@ -140,7 +140,7 @@ export class NewRateDialogComponent implements OnInit {
   }
 
   onFormNewSubmit() {
-    if (this.fNew.idTipoTarifa.value == 2) {
+    if (this.fNew.idTipoTarifa.value == 2 || this.fNew.idTipoTarifa.value == 4) {
       if (this.newRateForm.valid && this.consolidatedForm.valid) {
         this.loaders.loadingSubmit = true
         this.ratesService.createRate(this.newRateForm.value, this.rateCustomers, this.consolidatedForm.value, this.rateSchedules)
@@ -302,7 +302,6 @@ export class NewRateDialogComponent implements OnInit {
   }
 
   updateValidator(idTipoTarifa){
-    console.log(idTipoTarifa)
     if(idTipoTarifa == 4){
       this.consForm.radioMaximoEntrega.setValidators([Validators.required])
       this.consForm.dirEntrega.setValidators([Validators.required])

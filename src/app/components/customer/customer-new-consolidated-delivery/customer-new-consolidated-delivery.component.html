@@ -287,18 +287,18 @@
 
               </div>
 
-              <div class="row" *ngIf="selectedCategory?.category_extra_charges?.length > 0">
+              <!--<div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
                 <div class="col">
                   <p class="card-title"><strong>Opciones extra de envíos:</strong></p>
                   <hr>
                 </div>
               </div>
 
-              <div class="form-row" formGroupName="order" *ngIf="selectedCategory?.category_extra_charges?.length > 0">
+              <div class="form-row" formGroupName="order" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
                 <mat-form-field appearance="outline" floatLabel="always" class="col">
                   <mat-label>Cargo Extra</mat-label>
                   <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -">
-                    <mat-option *ngFor="let extracharge of selectedCategory.category_extra_charges"
+                    <mat-option *ngFor="let extracharge of selectedCategory.categoryExtraCharges"
                                 (click)="setSelectedExtraCharge(extracharge.extra_charge)"
                                 [value]="extracharge.idCargoExtra">
                     <span *ngIf="extracharge.extra_charge.tipoCargo === 'F'">
@@ -314,7 +314,7 @@
 
 
                 <mat-form-field appearance="outline" floatLabel="always" class="col"
-                                *ngIf="selectedExtraCharge.tipoCargo === 'V'">
+                                *ngIf="selectedExtraCharge?.options?.length > 0">
                   <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
                   <mat-select formControlName="idOpcionExtra"
                               placeholder="- Seleccione una opción -" class="col">
@@ -325,9 +325,7 @@
                     </mat-option>
                   </mat-select>
                 </mat-form-field>
-
-              </div>
-
+              </div>-->
             </div>
 
             <div class="col-md" *ngIf="!files.length">

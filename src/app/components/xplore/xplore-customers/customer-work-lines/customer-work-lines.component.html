@@ -1,1 +1,69 @@
-<p>customer-work-lines works!</p>
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">business_center</mat-icon> Rubros Cliente
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingData">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <div class="row justify-content-end">
+    <div class="col">
+      <button mat-raised-button (click)="showAddDialog()" type="button" color="primary" class="float-right mb-2">
+        <i class="fa fa-plus"></i>
+        Agregar Rubro
+      </button>
+    </div>
+  </div>
+  <br>
+
+  <div class="row d-block" *ngIf="!loaders.loadingData" >
+    <div class="col">
+      <div class="table-responsive">
+        <table id="dTable" class="table table-striped" style="width:100%">
+          <thead>
+          <tr>
+            <th scope="col">N°</th>
+            <th scope="col">Rubro</th>
+            <th scope="col">Descripción</th>
+            <th scope="col" data-priority="1">Acción</th>
+          </tr>
+
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let res of customerWorkLines; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{res.work_line.nomRubro}}</td>
+            <td>{{res.work_line.descRubro}}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-outline-danger"
+                      (click)="removeCustomerFromWorkLine(res.idRubro)"><i
+                class="fa fa-trash-alt"></i>
+                Quitar
+              </button>
+            </td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+  <button type="button" mat-raised-button mat-dialog-close>
+    Cerrar
+  </button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+
+
+

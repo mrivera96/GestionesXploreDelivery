@@ -50,4 +50,14 @@ export class PaymentsService {
       }
     )
   }
+
+  getPaymentsReport(form){
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'paymentsReport',
+        form,
+        tkn: this.authService.currentUserValue.access_token
+      }
+    )
+  }
 }

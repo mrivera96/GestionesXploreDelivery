@@ -18,4 +18,5 @@ export interface User {
   agency?: Agency
   state?: string
   permiteConsolidada?: boolean
+  permiteConsolidadaForanea?: boolean
 }

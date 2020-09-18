@@ -57,6 +57,14 @@ export class DeliveriesService {
     })
   }
 
+  getFilteredOrders(form) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getFilteredOrders',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
   getById(id) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getDeliveryById',
@@ -202,6 +210,25 @@ export class DeliveriesService {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'addExtraChargeToOrder',
+        form,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
+  removeExtraChargeFromOrder(idDetalle, id) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'removeExtraChargeFromOrder',
+        idDetalle,
+        id,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
+  getDeliveriesReport(form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'deliveriesReport',
         form,
         tkn: this.authService.currentUserValue.access_token
       })

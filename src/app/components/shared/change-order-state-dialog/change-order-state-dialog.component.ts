@@ -1,11 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {ErrorModalComponent} from "../../error-modal/error-modal.component";
-import {SuccessModalComponent} from "../../success-modal/success-modal.component";
+import {ErrorModalComponent} from "../error-modal/error-modal.component";
+import {SuccessModalComponent} from "../success-modal/success-modal.component";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {State} from "../../../../models/state";
-import {DeliveriesService} from "../../../../services/deliveries.service";
-import {DeliveryDetail} from "../../../../models/delivery-detail";
+import {State} from "../../../models/state";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {DeliveryDetail} from "../../../models/delivery-detail";
 
 @Component({
   selector: 'app-change-order-state-dialog',

@@ -7,11 +7,10 @@ import {MatDialog} from "@angular/material/dialog";
 import {XploreAddCustomerComponent} from "../xplore-add-customer/xplore-add-customer.component";
 import {EditCustomerDialogComponent} from "./edit-customer-dialog/edit-customer-dialog.component";
 import {DataTableDirective} from "angular-datatables";
-import {DeliveriesService} from "../../../services/deliveries.service";
 import {Delivery} from "../../../models/delivery";
-import {Order} from "../../../models/order";
-import {PaymentsService} from "../../../services/payments.service";
 import {Payment} from "../../../models/payment";
+import { Router } from '@angular/router';
+import {CustomerWorkLinesComponent} from "./customer-work-lines/customer-work-lines.component";
 
 @Component({
   selector: 'app-xplore-customers',
@@ -27,7 +26,7 @@ import {Payment} from "../../../models/payment";
   ]
 })
 export class XploreCustomersComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false}) 
+  @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
   customers: Customer[]
   dtTrigger: Subject<any> = new Subject()
@@ -41,7 +40,7 @@ export class XploreCustomersComponent implements OnInit {
   constructor(
     private usersService: UsersService,
     public dialog: MatDialog,
-    private paymentsService: PaymentsService
+    private router: Router
   ) {
   }
 
@@ -76,7 +75,7 @@ export class XploreCustomersComponent implements OnInit {
     }
     this.loadData()
 
-  
+
   }
 
   loadData() {
@@ -88,7 +87,7 @@ export class XploreCustomersComponent implements OnInit {
       this.loaders.loadingData = false
       this.dtTrigger.next()
       this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      
+
         dtInstance.columns().every(function () {
           const that = this;
           $('select', this.footer()).on('change', function () {
@@ -141,6 +140,28 @@ export class XploreCustomersComponent implements OnInit {
       }
     })
 
+  }
+
+  showCustomerBalance(customerId, name){
+    this.router.navigate(['/admins/balance-cliente',customerId, name])
+  }
+
+  showCustomerWorkLines(customerId){
+    const dialogRef = this.dialog.open(CustomerWorkLinesComponent, {
+      data: {
+        customer: customerId
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
   }
 
 }

@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core'
 import {DeliveriesService} from "../../../services/deliveries.service"
 import {Delivery} from "../../../models/delivery"
 import {ActivatedRoute} from "@angular/router"
-import {UsersService} from "../../../services/users.service"
 import {State} from "../../../models/state";
 import {Subject} from "rxjs";
 import {DeliveryDetail} from "../../../models/delivery-detail";
@@ -87,7 +86,7 @@ export class VerSolicitudComponent implements OnInit {
       this.currentDeliveryDetail = response.data.detalle
       this.dtTrigger.next()
       this.loaders.loadingData = false
-    
+
       const state = response.data.idEstado
 
       if(state !== 39){
@@ -152,7 +151,7 @@ export class VerSolicitudComponent implements OnInit {
   }
 
   openPhotosDialog(photos){
-    
+
     const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
       data:{
         photos: photos

@@ -46,8 +46,8 @@
         </thead>
         <tbody>
 
-        <tr *ngFor="let rate of rates">
-          <td>{{rate.idTarifaDelivery}}</td>
+        <tr *ngFor="let rate of rates; let i = index">
+          <td>{{i + 1}}</td>
           <td>{{rate.descTarifa}}</td>
           <td>{{rate.category.descCategoria}}</td>
           <td>{{rate.entregasMinimas}}</td>
@@ -60,10 +60,10 @@
             </a>
           </td>
           <td>
-            <a  (click)="showRateDetail(rate.consolidated_detail, rate.schedules)" *ngIf="rate.idTipoTarifa == 2"  style="color: #0071A2">
+            <a  (click)="showRateDetail(rate.consolidated_detail, rate.schedules, rate.idTipoTarifa)" *ngIf="rate.idTipoTarifa == 2 || rate.idTipoTarifa == 4"  style="color: #0071A2">
               <i class="fa fa-sliders-h"></i> Configuraciones
             </a>
-            <p *ngIf="rate.idTipoTarifa != 2">N/A</p>
+            <p *ngIf="rate.idTipoTarifa != 2 && rate.idTipoTarifa != 4">N/A</p>
           </td>
           <td>
             <a (click)="showEditForm(rate.idTarifaDelivery)" style="color: #0071A2">

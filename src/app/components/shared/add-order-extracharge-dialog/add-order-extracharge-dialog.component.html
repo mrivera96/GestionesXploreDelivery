@@ -6,7 +6,7 @@
 
   <div class="row" *ngIf="loaders.loadingSubmit">
     <div class="col text-center">
-      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <img src="../../../../assets/img/loading.svg" width="35%" alt="loading">
       <p>Procesando Información...</p>
     </div>
   </div>
@@ -52,37 +52,38 @@
 
   </form>
 
-  <div class="row" *ngIf="currentOrder.extra_charge">
+  <div class="row" *ngIf="currentOrder.extra_charges">
     <div class="col-12">
-      <h3>Cargo Aplicado</h3>
+      <h3>Cargos Aplicados</h3>
     </div>
 
     <div class="col-12" >
-      <div class="row">
+      <div class="row" *ngFor="let extraCharge of currentOrder.extra_charges">
         <div class="col-md">
-          <p>{{currentOrder.extra_charge.nombre}}</p>
+          <p>{{extraCharge.extracharge.nombre}}</p>
         </div>
         <div class="col-md">
-          <button type="button" class="btn btn-sm btn-outline-danger">
+          <button *ngIf="extraCharge.extracharge.tipoCargo == 'F'" type="button" class="btn btn-sm btn-outline-danger"
+                  (click)="removeExtraCharge(extraCharge)">
             <i class="fa fa-trash-alt"></i>
             Quitar
           </button>
         </div>
       </div>
-      
-      
+
+
     </div>
   </div>
 
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button *ngIf="selectedExtraCharge?.options?.length > 0" type="button" mat-raised-button 
+  <button *ngIf="selectedExtraCharge?.options?.length > 0" type="button" mat-raised-button
     [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
     Cambiar
   </button>
 
-  <button *ngIf="selectedExtraCharge?.options?.length == 0 || !selectedExtraCharge.options" 
+  <button *ngIf="selectedExtraCharge?.options?.length == 0 || !selectedExtraCharge.options"
   type="button" mat-raised-button [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
     Cambiar
   </button>

@@ -46,10 +46,11 @@ export class AddCustomerRateDialogComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    this.usersService.getCustomers().subscribe(response => {
+    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
       this.filteredCustomers = response.data
       this.loaders.loadingData = false
+      usersSubscription.unsubscribe()
     })
 
   }
@@ -57,15 +58,16 @@ export class AddCustomerRateDialogComponent implements OnInit {
   onFormSubmit() {
     if (this.custForm.valid) {
       this.loaders.loadingSubmit = true
-      this.ratesService.addCustomerToRate(this.rateId, this.custForm.get('idCliente').value)
+      const ratesSubscription = this.ratesService.addCustomerToRate(this.rateId, this.custForm.get('idCliente').value)
         .subscribe(response => {
           this.openSuccessDialog('Operación Realizada Correctamente', response.message)
           this.loaders.loadingSubmit = false
-
+          ratesSubscription.unsubscribe()
         }, error => {
           error.subscribe(error => {
             this.openErrorDialog(error.statusText)
             this.loaders.loadingSubmit = false
+            ratesSubscription.unsubscribe()
           })
         })
     }

@@ -12,13 +12,10 @@ import { ExtraCharge } from "../../../models/extra-charge";
 import { ExtraChargeOption } from "../../../models/extra-charge-option";
 import { CategoriesService } from "../../../services/categories.service";
 import { DeliveriesService } from "../../../services/deliveries.service";
-import { RatesService } from "../../../services/rates.service";
-import { SurchargesService } from "../../../services/surcharges.service";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { AuthService } from "../../../services/auth.service";
-import { formatDate } from "@angular/common";
 import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator";
 import { NoUrlValidator } from "../../../helpers/noUrl.validator";
 import { environment } from "../../../../environments/environment";
@@ -29,9 +26,6 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import { BranchService } from "../../../services/branch.service";
 import { Branch } from "../../../models/branch";
 import { Schedule } from "../../../models/schedule";
-import * as moment from "moment";
-import { DateValidate } from "../../../helpers/date.validator";
-import { ConsolidatedDateValidate } from "../../../helpers/consolidatedDate.validator";
 import { CustomerRestrictionsDialogComponent } from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
 
 
@@ -87,14 +81,13 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective
   selectedCategory: Category = {}
-  selectedExtraCharge: ExtraCharge = {}
+  selectedExtraCharge: ExtraCharge = null
   selectedExtraChargeOption: ExtraChargeOption = {}
   pagos = []
   placesDestination = []
   gcordsDestination = false
   @ViewChild('destinationCords')
   destinationCords: ElementRef
-  defaultBranch
   gcordsOrigin = false
   placesOrigin = []
   @ViewChild('originCords')
@@ -112,13 +105,11 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   hoursToShow: Array<any> = []
   files: File[] = []
   fileContentArray: String[] = []
-  restrictionsText = ''
 
   constructor(
     private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
     private deliveriesService: DeliveriesService,
-    private surchargesService: SurchargesService,
     private http: HttpClient,
     private router: Router,
     public dialog: MatDialog,
@@ -130,10 +121,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   ngOnInit(): void {
     this.initialize()
-
     this.loadData()
-
-
   }
 
   initialize() {
@@ -251,11 +239,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       this.openErrorDialog(this.errorMsg, true)
       categoriesSubscription.unsubscribe()
       this.loaders.loadingData = false
-    })
-
-    const surchargesSubscription = this.surchargesService.getSurcharges().subscribe(response => {
-      this.surcharges = response.data
-      surchargesSubscription.unsubscribe()
     })
 
     const branchSubscription = this.branchService.getBranchOffices().subscribe(response => {
@@ -479,23 +462,22 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       this.surcharges.forEach(value => {
         if (distance >= Number(value.kilomMinimo)
           && distance <= Number(value.kilomMaximo)
-          && value.customer.idCliente == this.currCustomer.idCliente) {
+        ) {
 
-          orderPayment.surcharges = Number(value.monto)
-        } else if (distance >= Number(value.kilomMinimo)
-          && distance <= Number(value.kilomMaximo)
-          && value.customer.idCliente == 1) {
           orderPayment.surcharges = Number(value.monto)
         }
       })
     }
 
-    if (this.selectedExtraCharge != null && this.selectedExtraCharge.tipoCargo === 'F') {
-      orderPayment.cargosExtra = this.selectedExtraCharge.costo
-      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraCharge.costo
-    } else if (this.selectedExtraCharge != null && this.selectedExtraCharge.tipoCargo === 'V') {
-      orderPayment.cargosExtra = this.selectedExtraChargeOption.costo
-      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraChargeOption.costo
+    if (this.selectedExtraCharge != null) {
+      if (this.selectedExtraCharge.options) {
+        orderPayment.cargosExtra = this.selectedExtraChargeOption.costo
+        orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraChargeOption.costo
+      }else{
+        orderPayment.cargosExtra = this.selectedExtraCharge.costo
+        orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraCharge.costo
+      }
+
     } else {
       orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
     }
@@ -531,8 +513,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       currOrder.recargo = calculatedPayment.surcharges
       currOrder.cargosExtra = calculatedPayment.cargosExtra
       currOrder.cTotal = calculatedPayment.total
-      currOrder.idCargoExtra = this.selectedExtraCharge.idCargoExtra
-      currOrder.idDetalleOpcion = this.selectedExtraChargeOption.idDetalleOpcion
+      currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra
+      currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion
 
       this.http.post<any>(`${environment.apiUrl}`, {
         function: 'getCoords',
@@ -546,7 +528,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       this.pagos.push(calculatedPayment)
       this.loaders.loadingAdd = false
       this.selectedExtraChargeOption = {}
-      this.selectedExtraCharge = {}
+      this.selectedExtraCharge = null
 
       if (this.orders.length > 1) {
         this.dtElement.dtInstance.then(
@@ -729,6 +711,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         this.rateSchedules = selectedCatRate.schedules
         this.setSelectedRate(selectedCatRate)
         this.datesToShow = selectedCatRate.datesToShow
+        this.surcharges = this.selectedCategory.surcharges
       }
     })
 

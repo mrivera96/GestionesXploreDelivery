@@ -1,5 +1,19 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {Order} from "../../../models/order";
+import {Subject} from "rxjs";
+import {DataTableDirective} from "angular-datatables";
+import {User} from "../../../models/user";
+import {State} from "../../../models/state";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {AuthService} from "../../../services/auth.service";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
+import {OrderDetailDialogComponent} from "../../shared/order-detail-dialog/order-detail-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {formatDate} from "@angular/common";
+import {ActivatedRoute, Router} from "@angular/router";
 declare var $: any
 @Component({
   selector: 'app-xplore-all-orders',
@@ -15,18 +29,207 @@ declare var $: any
   ]
 })
 export class XploreAllOrdersComponent implements OnInit {
+  consultForm: FormGroup
+  orders: Order[]
+  dtTrigger: Subject<any> = new Subject<any>()
+  dtOptions: DataTables.Settings
+  msgError = ''
+  @ViewChild(DataTableDirective, { static: false })
+  datatableElement: DataTableDirective
+  initDate: any = null
+  finDate: any = null
+
+  currUser: User
+  states: State[]
   loaders = {
     'loadingData': false
   }
 
-  constructor() { }
+  constructor(
+    private deliveriesService: DeliveriesService,
+    public authService: AuthService,
+    public dialog: MatDialog,
+    private formBuilder: FormBuilder,
+    private activatedRoute: ActivatedRoute,
+    private route: Router
+  ) { }
 
   ngOnInit(): void {
-    this.loaders.loadingData = true
+    this.initialize()
+    this.currUser = this.authService.currentUserValue
+
+    this.loadData()
   }
 
-  setLoading(event){
-    this.loaders.loadingData = event
+  initialize() {
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 100,
+      serverSide: false,
+      processing: true,
+      info: true,
+      order: [0, 'asc'],
+      autoWidth: true,
+      responsive: true,
+      language: {
+        emptyTable: 'No hay datos para mostrar en esta tabla',
+        zeroRecords: 'No hay coincidencias',
+        lengthMenu: 'Mostrar _MENU_ elementos',
+        search: 'Buscar:',
+        info: 'De _START_ a _END_ de _TOTAL_ elementos',
+        infoEmpty: 'De 0 a 0 de 0 elementos',
+        infoFiltered: '(filtrados de _MAX_ elementos totales)',
+        paginate: {
+          first: 'Prim.',
+          last: 'Últ.',
+          next: 'Sig.',
+          previous: 'Ant.'
+        },
+      },
+    }
+
+    this.consultForm = this.formBuilder.group({
+      initDate: [formatDate(new Date().setDate(new Date().getDate() - 7), 'yyyy-MM-dd', 'en'), Validators.required],
+      finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
+    })
+  }
+
+  loadData() {
+    this.loaders.loadingData = true
+    const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
+      this.states = response.data.xploreDeliveryEntregas
+      deliveriesSubscription.unsubscribe()
+    })
+
+    this.activatedRoute.paramMap.subscribe(params => {
+      if(params.get("initDate") && params.get("finDate") ){
+        this.initDate = true
+        this.consultForm.get('initDate').setValue(params.get("initDate"))
+        this.consultForm.get('finDate').setValue(params.get("finDate"))
+      }
+    })
+
+    if(this.initDate == true){
+      const serviceSubscription = this.deliveriesService.getFilteredOrders(this.consultForm.value).subscribe(response => {
+        this.orders = response.data
+        this.orders.forEach(order => {
+          order.delivery.fechaReserva = formatDate(new Date(order.delivery.fechaReserva), 'yyyy-MM-dd', 'en')
+        })
+
+        this.dtTrigger.next()
+        this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.columns().every(function () {
+            const that = this;
+            $('select', this.footer()).on('change', function () {
+              if (that.search() !== this['value']) {
+                that
+                  .search(this['value'])
+                  .draw();
+              }
+            })
+          })
+        })
+        this.loaders.loadingData = false
+
+        serviceSubscription.unsubscribe()
+
+      }, error => {
+        this.loaders.loadingData = false
+        this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+        this.openErrorDialog(this.msgError, true)
+        serviceSubscription.unsubscribe()
+      })
+    }else{
+      const serviceSubscription = this.deliveriesService.getAllOrders().subscribe(response => {
+        this.orders = response.data
+        this.orders.forEach(order => {
+          order.delivery.fechaReserva = formatDate(new Date(order.delivery.fechaReserva), 'yyyy-MM-dd', 'en')
+        })
+        this.dtTrigger.next()
+        this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.columns().every(function () {
+            const that = this;
+            $('select', this.footer()).on('change', function () {
+              if (that.search() !== this['value']) {
+                that
+                  .search(this['value'])
+                  .draw();
+              }
+            })
+          })
+        })
+        this.loaders.loadingData = false
+
+        serviceSubscription.unsubscribe()
+
+      }, error => {
+        this.loaders.loadingData = false
+        this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+        this.openErrorDialog(this.msgError, true)
+        serviceSubscription.unsubscribe()
+      })
+    }
+
+
+  }
+
+  reloadData() {
+    this.ngOnInit()
+  }
+
+  openErrorDialog(error: string, reload: boolean): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
+
+    if (reload) {
+      dialog.afterClosed().subscribe(result => {
+        this.loaders.loadingData = false
+        this.reloadData()
+      })
+    }
+
+  }
+
+
+  openPhotosDialog(photos) {
+    const dialogRef = this.dialog.open(ViewPhotosDialogComponent, {
+      data: {
+        photos: photos
+      }
+    })
+
+  }
+
+  showDetailDialog(order){
+    const dialogRef = this.dialog.open(OrderDetailDialogComponent,
+      {
+        data: {
+          currentOrder: order,
+          currentUser: this.currUser
+        }
+      }
+    )
+
+    /*dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.datatableElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.ngOnInit()
+          })
+      }
+    })*/
+  }
+
+  onConsultFormSubmit() {
+
+    if (this.consultForm.valid) {
+      this.route.navigate(['/admins/envios-todos',this.consultForm.get('initDate').value,
+        this.consultForm.get('finDate').value])
+    }
   }
 
 }

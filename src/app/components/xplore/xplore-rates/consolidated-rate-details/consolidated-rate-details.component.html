@@ -14,14 +14,6 @@
   <form [formGroup]="consolidatedForm" *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
     <div class="form-row mt-3">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Radio Máximo:</mat-label>
-        <input matInput type="number" formControlName="radioMaximo"
-               required placeholder="Radio Máximo desde punto de recogida">
-        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Dirección de recogida:</mat-label>
         <input matInput type="text" formControlName="dirRecogida" (input)="searchAddress($event)"
                required placeholder="Punto de recogida" [matAutocomplete]="auto" autocomplete="nope">
@@ -31,6 +23,35 @@
           </mat-option>
         </mat-autocomplete>
         <mat-icon matSuffix>location_on</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Radio Máximo:</mat-label>
+        <input matInput type="number" formControlName="radioMaximo"
+               required placeholder="Radio Máximo desde punto de recogida">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="form-row mt-3" *ngIf="rateType == 4">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Dirección de entrega:</mat-label>
+        <input matInput type="text" formControlName="dirEntrega" (input)="searchAddress($event)"
+               required placeholder="Punto de entrega" [matAutocomplete]="auto" autocomplete="nope">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let s of places" [value]="s.text">
+            {{ s.text }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon matSuffix>location_on</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Radio Máximo de Entrega:</mat-label>
+        <input matInput type="number" formControlName="radioMaximoEntrega"
+               required placeholder="Radio Máximo desde punto de entrega">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>

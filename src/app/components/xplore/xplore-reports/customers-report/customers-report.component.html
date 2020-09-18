@@ -1,1 +1,62 @@
-<p>customers-report works!</p>
+<!-- CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Clientes
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="row" *ngIf="loaders.loadingData">
+      <div class="col text-center">
+        <img src="assets/img/loading.svg" width="5%" alt="loading">
+        <p>Cargando información...</p>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row mt-2">
+        <div class="col-12">
+          <button class="float-right" [disabled]="customers.length == 0" mat-raised-button color="primary"
+                  (click)="generateExcel()">
+            Exportar a Excel
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-2">
+        <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+               class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th data-priority="1">N°</th>
+            <th>Nombre de Empresa</th>
+            <th>Nombre de Representante</th>
+            <th>Número de Identificación</th>
+            <th>Número de Teléfono</th>
+            <th>email</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr *ngFor="let customer of customers; let i = index">
+            <td class="id">{{i + 1}}</td>
+            <td>{{customer.nomEmpresa}}</td>
+            <td>{{customer.nomRepresentante}}</td>
+            <td class="fId">{{customer.numIdentificacion}}</td>
+            <td>{{customer.numTelefono}}</td>
+            <td>{{customer.email}}</td>
+
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+    </div>
+
+  </mat-card-content>
+
+</mat-card>
+
+<!-- CARD END -->

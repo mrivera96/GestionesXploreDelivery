@@ -4,6 +4,7 @@ import {State} from "./state";
 import {ExtraCharge} from "./extra-charge";
 import {ExtraChargeOption} from "./extra-charge-option";
 import {Photography} from "./photography";
+import {OrderExtraCharges} from "./order-extra-charges";
 
 export interface DeliveryDetail {
   idDelivery?: number
@@ -31,8 +32,8 @@ export interface DeliveryDetail {
   cargosExtra?: number
   idCargoExtra?: number
   idDetalleOpcion?: number
-  extra_charge?: ExtraCharge
   extra_charge_option?: ExtraChargeOption
   tomarFoto?: boolean
   photography?: Photography[]
+  extra_charges?: OrderExtraCharges[]
 }

@@ -8,6 +8,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {EditSurchargeDialogComponent} from "./edit-surcharge-dialog/edit-surcharge-dialog.component";
 import {NewSurchargeDialogComponent} from "./new-surcharge-dialog/new-surcharge-dialog.component";
 import {DataTableDirective} from "angular-datatables";
+import {RateCustomersDialogComponent} from "../xplore-rates/rate-customers-dialog/rate-customers-dialog.component";
+import {SurchargeCustomersDialogComponent} from "./surcharge-customers-dialog/surcharge-customers-dialog.component";
 
 @Component({
   selector: 'app-xplore-surcharges',
@@ -136,6 +138,14 @@ export class XploreSurchargesComponent implements OnInit {
       })
     }
 
+  }
+
+  showSurchargeCustomers(id) {
+    this.dialog.open(SurchargeCustomersDialogComponent, {
+      data: {
+        surchargeId: id
+      }
+    })
   }
 
 }

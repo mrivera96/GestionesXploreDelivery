@@ -45,7 +45,7 @@ export class EditSurchargeDialogComponent implements OnInit {
         kilomMinimo: [this.currSurch.kilomMinimo, Validators.required],
         kilomMaximo: [this.currSurch.kilomMaximo, Validators.required],
         monto: [this.currSurch.monto, Validators.required],
-        idCliente: [this.currSurch.idCliente, Validators.required],
+        idCliente: [1, Validators.required],
         idCategoria: [this.currSurch.idCategoria, Validators.required]
       }
     )

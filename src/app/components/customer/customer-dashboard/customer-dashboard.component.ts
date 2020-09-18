@@ -3,7 +3,6 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { DeliveriesService } from 'src/app/services/deliveries.service';
 import { Order } from 'src/app/models/order';
 import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs';
 import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
 import { formatDate } from '@angular/common';
 
@@ -22,7 +21,7 @@ import { formatDate } from '@angular/common';
   ]
 })
 export class CustomerDashboardComponent implements OnInit {
-  
+
   loaders = {
     'loadingData': false
   }
@@ -93,10 +92,12 @@ export class CustomerDashboardComponent implements OnInit {
         error.subscribe(error => {
           this.openErrorDialog(error.statusText, true)
         })
+      }else{
+        this.openErrorDialog(error, true)
       }
     })
 
-    
+
   }
 
   openErrorDialog(error: string, reload: boolean): void {

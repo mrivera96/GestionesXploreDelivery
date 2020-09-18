@@ -78,7 +78,7 @@ export class OrdersByCustomerComponent implements OnInit {
     this.dtTrigger2 = new Subject<any>()
     this.consultForm = this.formBuilder.group({
       customerId: ['', [Validators.required]],
-      initDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
+      initDate: [formatDate(new Date().setDate(new Date().getDate() - 7), 'yyyy-MM-dd', 'en'), Validators.required],
       finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
     })
 
@@ -196,7 +196,6 @@ export class OrdersByCustomerComponent implements OnInit {
     })
   }
 
-
   generateExcel() {
 
     //Excel Title, Header, Data
@@ -304,7 +303,7 @@ export class OrdersByCustomerComponent implements OnInit {
     worksheet.addRow([]);
     //Agregar los detalles de los envios
     const ordersHeader = [
-      " N° Envío",
+      "N° Envío",
       "N° Reserva",
       "Destinatario",
       "Celular del Destinatario",
@@ -373,6 +372,5 @@ export class OrdersByCustomerComponent implements OnInit {
       fs.saveAs(blob, 'Reporte envíos (' + this.currenCustomer.nomEmpresa + ').xlsx');
     })
   }
-
 
 }

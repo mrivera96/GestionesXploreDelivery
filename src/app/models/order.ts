@@ -2,6 +2,8 @@ import {State} from "./state";
 import {User} from "./user";
 import {Delivery} from "./delivery";
 import {Photography} from "./photography";
+import { ExtraCharge } from './extra-charge';
+import {OrderExtraCharges} from "./order-extra-charges";
 
 export interface Order {
   idDetalle?: number
@@ -26,4 +28,6 @@ export interface Order {
   cargosExtra?: number
   tomarFoto?: boolean
   photography?: Photography[]
+  extra_charges?: OrderExtraCharges[]
+  time?: any
 }

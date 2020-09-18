@@ -82,13 +82,39 @@
       </a>
 
       <mat-nav-list class="d-none reportsSubMenu">
+        <a [routerLink]="['admins/reportes/envios-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>people</mat-icon>
+          Envíos por Cliente
+        </a>
+
         <a [routerLink]="['admins/reportes/envios-conductores']" (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>sports_motorsports</mat-icon>
           Envíos por Conductor
         </a>
-        <a [routerLink]="['admins/reportes/envios-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+<!--
+        <a [routerLink]="['admins/reportes/clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>people</mat-icon>
-          Envíos por Cliente
+          Reporte de Clientes
+        </a>-->
+
+        <a [routerLink]="['admins/reportes/envios']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>local_shippings</mat-icon>
+          Reporte de Envíos
+        </a>
+
+        <a [routerLink]="['admins/reportes/pagos']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>attach_money</mat-icon>
+          Reporte de Pagos
+        </a>
+
+        <a [routerLink]="['admins/reportes/balance-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>account_balance_wallet</mat-icon>
+          Reporte de Balances
+        </a>
+
+        <a [routerLink]="['admins/reportes/seguimiento-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>timeline</mat-icon>
+          Reporte de Seguimiento a Clientes
         </a>
       </mat-nav-list>
 
@@ -99,11 +125,6 @@
       </a>
 
       <mat-nav-list class="d-none confSubMenu">
-        <a class="ml-3" (click)="sidenav.close()"
-           [routerLink]="['admins/parametrizar-categorias']" mat-list-item>
-          <mat-icon>list</mat-icon>
-          Categorías
-        </a>
 
         <a [routerLink]="['admins/parametrizar-tarifas']"
            (click)="sidenav.close()" mat-list-item class="ml-3">
@@ -117,16 +138,28 @@
           Recargos
         </a>
 
+        <a [routerLink]="['admins/parametrizar-cargos-extras']"
+           (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>attach_money</mat-icon>
+          Cargos Extras
+        </a>
+
+        <a class="ml-3" (click)="sidenav.close()"
+           [routerLink]="['admins/parametrizar-categorias']" mat-list-item>
+          <mat-icon>list</mat-icon>
+          Categorías
+        </a>
+
         <a [routerLink]="['admins/parametrizar-horarios']"
            (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>schedule</mat-icon>
           Horarios
         </a>
 
-        <a [routerLink]="['admins/parametrizar-cargos-extras']"
+        <a [routerLink]="['admins/parametrizar-rubros']"
            (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>attach_money</mat-icon>
-          Cargos Extras
+          <mat-icon>business_center</mat-icon>
+          Rubros
         </a>
       </mat-nav-list>
     </mat-nav-list>
@@ -162,11 +195,17 @@
         Agregar delivery
       </a>
 
-      <a (click)="sidenav.close()"
+      <a *ngIf="currentUser.permiteConsolidada" (click)="sidenav.close()"
          [routerLink]="['customers/envio-consolidado']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery (Carga Consolidada)
       </a>
+<!--
+      <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
+         [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
+        <mat-icon>add</mat-icon>
+        Agregar delivery Foráneo (Carga Consolidada)
+      </a>-->
 
       <a (click)="sidenav.close()" [routerLink]="['customers/envios-hoy']" mat-list-item>
         <mat-icon>today</mat-icon>

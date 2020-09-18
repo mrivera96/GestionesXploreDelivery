@@ -69,7 +69,7 @@ export class CustomerReportsComponent implements OnInit {
     this.dtTrigger2 = new Subject<any>()
     this.consultForm = this.formBuilder.group({
       customerId: [this.currenCustomer.idCliente, [Validators.required]],
-      initDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
+      initDate: [formatDate(new Date().setDate(new Date().getDate() - 7), 'yyyy-MM-dd', 'en'), Validators.required],
       finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
     })
 

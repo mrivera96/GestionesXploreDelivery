@@ -12,7 +12,6 @@ import {Category} from "../../../../models/category";
   styleUrls: ['./edit-category-dialog.component.css']
 })
 export class EditCategoryDialogComponent implements OnInit {
-
   currCategory: Category
   edCatForm: FormGroup
   loaders = {
@@ -32,7 +31,7 @@ export class EditCategoryDialogComponent implements OnInit {
       {
         idCategoria: new FormControl(this.currCategory.idCategoria),
         descCategoria: new FormControl(this.currCategory.descCategoria, [Validators.required, Validators.maxLength(60)]),
-        descripcion: new FormControl('',[Validators.required, Validators.maxLength(250)]),
+        descripcion: new FormControl(this.currCategory.descripcion,[Validators.required, Validators.maxLength(250)]),
         isActivo: new FormControl(this.currCategory.isActivo, Validators.required)
       }
     )

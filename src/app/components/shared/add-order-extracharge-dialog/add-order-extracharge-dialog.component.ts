@@ -1,13 +1,14 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DeliveriesService} from "../../../../services/deliveries.service";
-import {ExtraChargesService} from "../../../../services/extra-charges.service";
-import {ExtraCharge} from "../../../../models/extra-charge";
-import {ExtraChargeOption} from "../../../../models/extra-charge-option";
-import { ErrorModalComponent } from '../../error-modal/error-modal.component';
-import { SuccessModalComponent } from '../../success-modal/success-modal.component';
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {ExtraChargesService} from "../../../services/extra-charges.service";
+import {ExtraCharge} from "../../../models/extra-charge";
+import {ExtraChargeOption} from "../../../models/extra-charge-option";
+import { ErrorModalComponent } from '../error-modal/error-modal.component';
+import { SuccessModalComponent } from '../success-modal/success-modal.component';
 import { Order } from 'src/app/models/order';
+import {OrderExtraCharges} from "../../../models/order-extra-charges";
 
 @Component({
   selector: 'app-add-order-extracharge-dialog',
@@ -116,5 +117,21 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
     })
   }
 
+  removeExtraCharge(extraCharge: OrderExtraCharges){
+    this.loaders.loadingSubmit = true
+    const extrachargeSubscription = this.deliveriesService
+      .removeExtraChargeFromOrder(this.currentOrder.idDetalle, extraCharge.id)
+      .subscribe(response => {
+        this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+        this.loaders.loadingSubmit = false
+        extrachargeSubscription.unsubscribe()
+      },error => {
+        error.subscribe(error => {
+          this.openErrorDialog(error.statusText)
+          this.loaders.loadingSubmit = false
+          extrachargeSubscription.unsubscribe()
+        })
+      })
+  }
 
 }

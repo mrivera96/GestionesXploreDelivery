@@ -1,32 +1,32 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {CategoriesService} from "../../../services/categories.service";
-import {Category} from "../../../models/category";
-import {Subject} from "rxjs";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {EditCategoryDialogComponent} from "./edit-category-dialog/edit-category-dialog.component";
-import {NewCategoryDialogComponent} from "./new-category-dialog/new-category-dialog.component";
-import {DataTableDirective} from "angular-datatables";
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { WorkLine } from 'src/app/models/work-line';
+import { WorkLinesService } from 'src/app/services/work-lines.service';
+import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
+import { EditWorklineDialogComponent } from './edit-workline-dialog/edit-workline-dialog.component';
+import { NewWorklineDialogComponent } from './new-workline-dialog/new-workline-dialog.component';
 
 @Component({
-  selector: 'app-xplore-categories',
-  templateUrl: './xplore-categories.component.html',
-  styleUrls: ['./xplore-categories.component.css'],
-  animations: [
+  selector: 'app-xplore-work-lines',
+  templateUrl: './xplore-work-lines.component.html',
+  styles: [
+  ], animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
 })
-export class XploreCategoriesComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false}) 
+export class XploreWorkLinesComponent implements OnInit {
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective
   dtOptions
-  categories: Category[]
+  workLines: WorkLine[] = []
   dtTrigger: Subject<any>
   loaders = {
     loadingData: false,
@@ -34,7 +34,7 @@ export class XploreCategoriesComponent implements OnInit {
   }
 
   constructor(
-    private categoriesService: CategoriesService,
+    private worklinesService: WorkLinesService,
     public dialog: MatDialog
   ) {
   }
@@ -77,12 +77,13 @@ export class XploreCategoriesComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    const categoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
-      this.categories = response.data
-      this.loaders.loadingData = false
-      this.dtTrigger.next()
-      categoriesSubscription.unsubscribe()
-    })
+    const worklineSubscription = this.worklinesService.getAllWorkLines()
+      .subscribe(response => {
+        this.workLines = response.data
+        this.loaders.loadingData = false
+        this.dtTrigger.next()
+        worklineSubscription.unsubscribe()
+      })
   }
 
   reloadData() {
@@ -90,16 +91,16 @@ export class XploreCategoriesComponent implements OnInit {
   }
 
   showEditForm(id) {
-    let currCat: Category = {}
-    this.categories.forEach(value => {
-      if (value.idCategoria == id) {
-        currCat = value
+    let currWL: WorkLine = {}
+    this.workLines.forEach(value => {
+      if (value.idRubro == id) {
+        currWL = value
       }
     })
 
-    const dialogRef = this.dialog.open(EditCategoryDialogComponent, {
+    const dialogRef = this.dialog.open(EditWorklineDialogComponent, {
       data: {
-        category: currCat
+        workline: currWL
       }
     })
 
@@ -114,8 +115,8 @@ export class XploreCategoriesComponent implements OnInit {
     })
   }
 
-  showNewCatForm() {
-    const dialogRef = this.dialog.open(NewCategoryDialogComponent)
+  showNewWLForm() {
+    const dialogRef = this.dialog.open(NewWorklineDialogComponent)
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -143,5 +144,6 @@ export class XploreCategoriesComponent implements OnInit {
     }
 
   }
+
 
 }

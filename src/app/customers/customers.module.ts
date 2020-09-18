@@ -28,6 +28,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
 import { CustomerReportsComponent } from '../components/customer/customer-reports/customer-reports.component';
 import { CustomerDashboardComponent } from '../components/customer/customer-dashboard/customer-dashboard.component';
 import { CustomerNewConsolidatedDeliveryComponent } from '../components/customer/customer-new-consolidated-delivery/customer-new-consolidated-delivery.component';
+import {CustomerRestrictionsDialogComponent} from "../components/customer/customer-restrictions-dialog/customer-restrictions-dialog.component";
+import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/customer/customer-new-consolidated-foreign-delivery/customer-new-consolidated-foreign-delivery.component";
 
 
 @NgModule({
@@ -51,6 +53,8 @@ import { CustomerNewConsolidatedDeliveryComponent } from '../components/customer
     CustomerReportsComponent,
     CustomerDashboardComponent,
     CustomerNewConsolidatedDeliveryComponent,
+    CustomerRestrictionsDialogComponent,
+    CustomerNewConsolidatedForeignDeliveryComponent,
   ],
     imports: [
         CommonModule,

@@ -66,7 +66,7 @@ export class XploreRatesComponent implements OnInit {
       processing: true,
       info: true,
       rowReorder: false,
-      order: [2, 'desc'],
+      order: [6, 'desc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -177,11 +177,12 @@ export class XploreRatesComponent implements OnInit {
 
   }
 
-  showRateDetail(detail, schedules){
+  showRateDetail(detail, schedules, typeId){
     const dialogRef = this.dialog.open(ConsolidatedRateDetailsComponent, {
       data: {
         RateDetail: detail,
-        RateSchedules: schedules
+        RateSchedules: schedules,
+        rateType: typeId
       }
     })
 
