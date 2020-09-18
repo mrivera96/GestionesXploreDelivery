@@ -7,6 +7,7 @@ import {ExtraCharge} from "../../../../models/extra-charge";
 import {ExtraChargeOption} from "../../../../models/extra-charge-option";
 import { ErrorModalComponent } from '../../error-modal/error-modal.component';
 import { SuccessModalComponent } from '../../success-modal/success-modal.component';
+import { Order } from 'src/app/models/order';
 
 @Component({
   selector: 'app-add-order-extracharge-dialog',
@@ -18,7 +19,7 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
   extraCharges: ExtraCharge[] = []
   selectedExtraCharge: ExtraCharge = {}
   selectedExtraChargeOption: ExtraChargeOption = {}
-  currentOrder: number
+  currentOrder: Order
   loaders = {
     'loadingData': false,
     'loadingSubmit': false
@@ -42,9 +43,10 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
 
   initialize() {
     this.extraChargeForm = this.formBuilder.group({
-      idDetalle: [this.currentOrder, [Validators.required]],
+      idDetalle: [this.currentOrder.idDetalle, [Validators.required]],
       idCargoExtra: [null, [Validators.required]],
       idOpcionExtra: [null],
+      montoCargoVariable: [1.00],
     })
   }
 
@@ -79,8 +81,12 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
 
   setSelectedExtraCharge(extraCharge) {
     this.selectedExtraCharge = extraCharge
-    if(this.selectedExtraCharge.options.length > 0){
+    if(this.selectedExtraCharge.tipoCargo == 'F'){
       this.extraChargeForm.controls.idOpcionExtra.setValidators([Validators.required])
+      this.extraChargeForm.controls.montoCargoVariable.setValidators(null)
+    }else{
+      this.extraChargeForm.controls.idOpcionExtra.setValidators(null)
+      this.extraChargeForm.controls.montoCargoVariable.setValidators([Validators.required])
     }
   }
 

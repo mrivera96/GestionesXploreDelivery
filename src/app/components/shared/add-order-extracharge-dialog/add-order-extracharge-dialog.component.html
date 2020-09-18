@@ -14,7 +14,7 @@
   <form class="row" [formGroup]="extraChargeForm" *ngIf="!loaders.loadingSubmit">
     <mat-form-field appearance="outline" floatLabel="always" class="col-12">
       <mat-label>Cargo Extra</mat-label>
-      <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -">
+      <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -" required>
         <mat-option *ngFor="let extracharge of extraCharges"
                     (click)="setSelectedExtraCharge(extracharge)"
                     [value]="extracharge.idCargoExtra">
@@ -31,9 +31,9 @@
     </mat-form-field>
 
 
-    <mat-form-field appearance="outline" floatLabel="always" class="col-12" *ngIf="selectedExtraCharge.tipoCargo === 'V'">
+    <mat-form-field appearance="outline" floatLabel="always" class="col-12" *ngIf="selectedExtraCharge?.options?.length > 0">
       <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
-      <mat-select formControlName="idOpcionExtra"
+      <mat-select formControlName="idOpcionExtra" required
                   placeholder="- Seleccione una opción -" class="col">
         <mat-option *ngFor="let option of selectedExtraCharge.options"
                     value="{{option.idDetalleOpcion}}" (click)="setSelectedExtraChargeOption(option)">
@@ -43,12 +43,47 @@
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
 
+    <mat-form-field appearance="outline" floatLabel="always" class="col-12" *ngIf="selectedExtraCharge?.tipoCargo == 'V'">
+      <mat-label>Monto de Cargo Variable:</mat-label>
+      <input type="number" min="1" matInput required formControlName="montoCargoVariable">
+      <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
+
+
   </form>
+
+  <div class="row" *ngIf="currentOrder.extra_charge">
+    <div class="col-12">
+      <h3>Cargo Aplicado</h3>
+    </div>
+
+    <div class="col-12" >
+      <div class="row">
+        <div class="col-md">
+          <p>{{currentOrder.extra_charge.nombre}}</p>
+        </div>
+        <div class="col-md">
+          <button type="button" class="btn btn-sm btn-outline-danger">
+            <i class="fa fa-trash-alt"></i>
+            Quitar
+          </button>
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>
 
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" mat-raised-button [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
+  <button *ngIf="selectedExtraCharge?.options?.length > 0" type="button" mat-raised-button 
+    [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
+    Cambiar
+  </button>
+
+  <button *ngIf="selectedExtraCharge?.options?.length == 0 || !selectedExtraCharge.options" 
+  type="button" mat-raised-button [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
     Cambiar
   </button>
   <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
