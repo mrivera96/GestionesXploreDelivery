@@ -60,16 +60,47 @@
       </div>
 
       <div class="row mt-2">
-        <div class="col-12">
-          <button class="float-right" [disabled]="consultResults.length == 0" mat-raised-button color="primary"
-            (click)="generateExcel()">
+        <div class="col">
+          <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+            Menú de Opciones
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <!-- <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generatePDF()">
+              Exportar PDF
+            </button>  -->
+
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generateExcel()">
+              Exportar a Excel
+            </button>
+
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="printReport()">
+              Imprimir
+            </button>
+          </mat-menu>
+        </div>
+
+        <!-- <div class="col mx-auto">
+          <button [disabled]="consultResults.length == 0" mat-raised-button color="basic" (click)="generatePDF()">
+            Exportar PDF
+          </button>
+        </div>
+
+        <div class="col mx-auto">
+          <button [disabled]="consultResults.length == 0" mat-raised-button color="primary" (click)="generateExcel()">
             Exportar a Excel
           </button>
         </div>
+
+        <div class="col mx-auto">
+          <button [disabled]="consultResults.length == 0" mat-raised-button color="warn" (click)="printReport()">
+            Imprimir
+          </button>
+        </div> -->
       </div>
 
-    
-      
+
+
       <div class="row" *ngIf="loaders.loadingSubmit">
         <div class="col text-center">
           <img src="assets/img/loading.svg" width="5%" alt="loading">
@@ -91,39 +122,54 @@
             <tr>
               <th></th>
               <th></th>
-              <th style="text-align:center" colspan="2">Moto</th>
-            
-              <th style="text-align:center" colspan="2">Turismo</th>
-             
-              <th style="text-align:center" colspan="2">Pick-Up</th>
-             
-              <th style="text-align:center" colspan="2">Panel</th>
-             
-              <th style="text-align:center" colspan="2">Pick-Up + Auxiliar</th>
-             
-              <th style="text-align:center" colspan="2">Panel + Auxiliar</th>
-             
-              <th style="text-align:center" colspan="2">Totales</th>
-              
+              <th style="text-align:center" colspan="3">Moto</th>
+
+              <th style="text-align:center" colspan="3">Turismo</th>
+
+              <th style="text-align:center" colspan="3">Pick-Up</th>
+
+              <th style="text-align:center" colspan="3">Panel</th>
+
+              <th style="text-align:center" colspan="3">Pick-Up + Auxiliar</th>
+
+              <th style="text-align:center" colspan="3">Panel + Auxiliar</th>
+
+              <th style="text-align:center" colspan="4">Totales</th>
+
             </tr>
 
             <tr>
-              <th>Conductor</th>
-              <th>Fecha</th>
-              <th>Entregas</th>
-              <th>Tiempo</th>
-              <th>Entregas</th>
-              <th>Tiempo</th>
-              <th>Entregas</th>
-              <th>Tiempo</th>
-              <th>Entregas</th>
-              <th>Tiempo</th>
-              <th>Entregas</th>
-              <th>Tiempo</th>
-              <th>Entregas</th>
-              <th>Tiempo</th>
-              <th>Entregas Realizadas</th>
-              <th>Tiempo de Entregas</th>
+              <th style="text-align:center">Conductor</th>
+              <th style="text-align:center">Fecha</th>
+
+              <th style="text-align:center; width: 5%;">Entregas</th>
+              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
+
+              <th style="text-align:center; width: 5%;">Entregas</th>
+              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
+
+              <th style="text-align:center; width: 5%;">Entregas</th>
+              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
+
+              <th style="text-align:center; width: 5%;">Entregas</th>
+              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
+
+              <th style="text-align:center; width: 5%;">Entregas</th>
+              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
+
+              <th style="text-align:center; width: 5%;">Entregas</th>
+              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
+
+              <th style="text-align:center; width: 5%;">Entregas</th>
+              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
+              <th style="text-align:center; width: 5%;">Efectivo</th>
             </tr>
             <!--
           <tr>
@@ -135,38 +181,117 @@
           <tbody>
 
             <tr *ngFor="let result of consultResults;">
-              <td>{{result.driver}}</td>
-              <td>{{result.fecha}}</td>
-              <td>{{result.moto}}</td>
-              <td>{{result.motoTime}}</td>
-              <td>{{result.turismo}}</td>
-              <td>{{result.turismoTime}}</td>
-              <td>{{result.pickup}}</td>
-              <td>{{result.pickupTime}}</td>
-              <td>{{result.panel}}</td>
-              <td>{{result.panelTime}}</td>
-              <td>{{result.pickupAuxiliar}}</td>
-              <td>{{result.pickupAuxiliarTime}}</td>
-              <td>{{result.panelAuxiliar}}</td>
-              <td>{{result.panelAuxiliarTime}}</td>
-              <td>{{result.totalOrders}}</td>
-              <td>{{result.totalTime}}</td>
+              <td style="text-align:center">{{result.driver}}</td>
+              <td style="text-align:center">{{result.fecha}}</td>
+
+              <td style="text-align:center">{{result.moto}}</td>
+              <td style="text-align:center">{{result.motoTime}}</td>
+              <td style="text-align:center">{{result.motoOver20kms}}</td>
+
+              <td style="text-align:center">{{result.turismo}}</td>
+              <td style="text-align:center">{{result.turismoTime}}</td>
+              <td style="text-align:center">{{result.turismoOver20kms}}</td>
+
+              <td style="text-align:center">{{result.pickup}}</td>
+              <td style="text-align:center">{{result.pickupTime}}</td>
+              <td style="text-align:center">{{result.pickupOver20kms}}</td>
+
+              <td style="text-align:center">{{result.panel}}</td>
+              <td style="text-align:center">{{result.panelTime}}</td>
+              <td style="text-align:center">{{result.panelOver20kms}}</td>
+
+              <td style="text-align:center">{{result.pickupAuxiliar}}</td>
+              <td style="text-align:center">{{result.pickupAuxiliarTime}}</td>
+              <td style="text-align:center">{{result.pickupAuxiliarOver20kms}}</td>
+
+              <td style="text-align:center">{{result.panelAuxiliar}}</td>
+              <td style="text-align:center">{{result.panelAuxiliarTime}}</td>
+              <td style="text-align:center">{{result.panelAuxiliarOver20kms}}</td>
+
+              <td style="text-align:center">{{result.totalOrders}}</td>
+              <td style="text-align:center">{{result.totalTime}}</td>
+              <td style="text-align:center">{{result.totalOver20kms}}</td>
+              <td style="text-align:center">{{result.totalMoney}}</td>
             </tr>
           </tbody>
-          <!--
-                    <tfoot style="display: table-footer-group;">
-                    <tr>
-                      <th></th>
-                      <th>Total:</th>
-                      <th data-priority="1">
-                        {{totalOrders}}
-                      </th>
-                    </tr>
-                    </tfoot>-->
+
+          <tfoot style="display: table-footer-group;">
+            <tr>
+              <th style="text-align:center"></th>
+              <th style="text-align:center">Subtotal:</th>
+
+              <th style="text-align:center">
+                {{totals.motoOrders}}
+              </th>
+              <th style="text-align:center">
+                {{totals.motoTime}}
+              </th>
+              <th style="text-align:center">
+                {{totals.motoOver20kms}}
+              </th>
+              <th style="text-align:center">
+                {{totals.turismoOrders}}
+              </th>
+              <th style="text-align:center">
+                {{totals.turismoTime}}
+              </th>
+              <th style="text-align:center">
+                {{totals.turismoOver20kms}}
+              </th>
+              <th style="text-align:center">
+                {{totals.pickupOrders}}
+              </th>
+              <th style="text-align:center">
+                {{totals.pickupTime}}
+              </th>
+              <th style="text-align:center">
+                {{totals.pickupOver20kms}}
+              </th>
+              <th style="text-align:center">
+                {{totals.panelOrders}}
+              </th>
+              <th style="text-align:center">
+                {{totals.panelTime}}
+              </th>
+              <th style="text-align:center">
+                {{totals.panelOver20kms}}
+              </th>
+              <th style="text-align:center">
+                {{totals.pickupAuxiliarOrders}}
+              </th>
+              <th style="text-align:center">
+                {{totals.pickupAuxiliarTime}}
+              </th>
+              <th style="text-align:center">
+                {{totals.pickupAuxiliarOver20kms}}
+              </th>
+              <th style="text-align:center">
+                {{totals.panelAuxiliarOrders}}
+              </th>
+              <th style="text-align:center">
+                {{totals.panelAuxiliarTime}}
+              </th>
+              <th style="text-align:center">
+                {{totals.panelAuxiliarOver20kms}}
+              </th>
+              <th style="text-align:center">
+                {{totals.totalOrders}}
+              </th>
+              <th style="text-align:center">
+                {{totals.totalTime}}
+              </th>
+              <th style="text-align:center">
+                {{totals.totalOver20kms}}
+              </th>
+              <th style="text-align:center">
+                {{totals.totalMoney}}
+              </th>
+            </tr>
+          </tfoot>
 
         </table>
       </div>
-      
+
     </div> <!-- CONTAINER END -->
   </mat-card-content>
 </mat-card>

@@ -43,7 +43,6 @@
               "node_modules/datatables.net-buttons/js/buttons.flash.js",
               "node_modules/datatables.net-buttons/js/buttons.html5.js",
               "node_modules/datatables.net-buttons/js/buttons.print.js",
-              "node_modules/datatables.net-buttons/js/buttons.colVis.js",
               "node_modules/xlsx/xlsx.js"
             ]
           },
@@ -66,8 +65,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "4mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "7mb",
+                  "maximumError": "10mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -127,7 +126,6 @@
               "node_modules/datatables.net-buttons/js/buttons.flash.js",
               "node_modules/datatables.net-buttons/js/buttons.html5.js",
               "node_modules/datatables.net-buttons/js/buttons.print.js",
-              "node_modules/datatables.net-buttons/js/buttons.colVis.js",
               "node_modules/xlsx/xlsx.js"
             ]
           }

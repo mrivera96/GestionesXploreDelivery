@@ -1,15 +1,15 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {DataTableDirective} from "angular-datatables";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Subject} from "rxjs";
-import {Customer} from "../../../../models/customer";
-import {UsersService} from "../../../../services/users.service";
-import {DeliveriesService} from "../../../../services/deliveries.service";
-import {formatDate} from "@angular/common";
-import {OrdersByCategory} from "../../../../models/orders-by-category";
-import {DeliveryDetail} from "../../../../models/delivery-detail";
-import {Workbook} from 'exceljs';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from "@angular/animations";
+import { DataTableDirective } from "angular-datatables";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Subject } from "rxjs";
+import { Customer } from "../../../../models/customer";
+import { UsersService } from "../../../../services/users.service";
+import { DeliveriesService } from "../../../../services/deliveries.service";
+import { formatDate } from "@angular/common";
+import { OrdersByCategory } from "../../../../models/orders-by-category";
+import { DeliveryDetail } from "../../../../models/delivery-detail";
+import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
 
 @Component({
@@ -19,16 +19,16 @@ import * as fs from 'file-saver';
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
 })
 export class OrdersByCustomerComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective
-  @ViewChild('TABLE', {static: false})
+  @ViewChild('TABLE', { static: false })
   TABLE: ElementRef;
   loaders = {
     'loadingData': false,
@@ -206,23 +206,30 @@ export class OrdersByCustomerComponent implements OnInit {
     let worksheet = workbook.addWorksheet('Reporte Envíos');
     //Add Row and formatting
     let titleRow = worksheet.addRow([title]);
-    titleRow.font = {name: 'Arial', family: 4, size: 16, underline: 'double', bold: true}
+    titleRow.font = { name: 'Arial', family: 4, size: 16, underline: 'double', bold: true }
     worksheet.addRow([]);
     //Blank Row
     worksheet.addRow([]);
     let totalOrders = worksheet.addRow(['Envíos Totales : ' + this.totalCustomerOrders])
 
-    totalOrders.font = {name: 'Arial', family: 4, size: 12, bold: true}
+    totalOrders.font = { name: 'Arial', family: 4, size: 12, bold: true }
     worksheet.mergeCells('A1:D2');
     worksheet.addRow([]);
     let subTitleRow = worksheet.addRow(['Desde : ' + this.f.initDate.value + ' Hasta: ' + this.f.finDate.value])
     worksheet.mergeCells('A6:B6');
-    subTitleRow.font = {name: 'Arial', family: 4, size: 12, bold: true}
+    subTitleRow.font = { name: 'Arial', family: 4, size: 12, bold: true }
     //Add Header Row
     const catTitle = worksheet.addRow(['Envíos por categoría']);
-    catTitle.font = {name: 'Arial', family: 4, size: 12, bold: true}
+    catTitle.font = { name: 'Arial', family: 4, size: 12, bold: true }
     worksheet.addRow([]);
-    const ordersByCategoryHeader = ["N°", "Categoría", "Envíos Realizados", "Recargos","Cargos Extra", "Costos Totales"]
+    const ordersByCategoryHeader = [
+      "N°",
+      "Categoría",
+      "Envíos Realizados",
+      "Recargos",
+      "Cargos Extra",
+      "Costos Totales"
+    ]
     let ordersByCategoryheaderRow = worksheet.addRow(ordersByCategoryHeader);
 
     // Cell Style : Fill and Border
@@ -230,10 +237,10 @@ export class OrdersByCustomerComponent implements OnInit {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: {argb: 'D3D3D3'},
-        bgColor: {argb: 'D3D3D3'}
+        fgColor: { argb: 'D3D3D3' },
+        bgColor: { argb: 'D3D3D3' }
       }
-      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
     })
     // worksheet.addRows(data);
     // Add Data and Conditional Formatting
@@ -252,8 +259,8 @@ export class OrdersByCustomerComponent implements OnInit {
       row.getCell(6).numFmt = 'L#,##0.00'
     })
 
-    const ordersCategoriestotals = worksheet.addRow(['', 'Total:', this.ordersInRange, this.totalSurcharges,this.totalExtracharges, this.totalCosts]);
-    ordersCategoriestotals.font = {bold: true}
+    const ordersCategoriestotals = worksheet.addRow(['', 'Total:', this.ordersInRange, this.totalSurcharges, this.totalExtracharges, this.totalCosts]);
+    ordersCategoriestotals.font = { bold: true }
     ordersCategoriestotals.getCell(3).numFmt = '#,##0'
     ordersCategoriestotals.getCell(4).numFmt = 'L#,##0.00'
     ordersCategoriestotals.getCell(5).numFmt = 'L#,##0.00'
@@ -267,7 +274,7 @@ export class OrdersByCustomerComponent implements OnInit {
 
     //Add Header Row
     const rangeTitle = worksheet.addRow(['Envíos por fecha']);
-    rangeTitle.font = {name: 'Arial', family: 4, size: 12, bold: true}
+    rangeTitle.font = { name: 'Arial', family: 4, size: 12, bold: true }
     worksheet.addRow([]);
     const ordersByDateHeader = ["Cliente", "fecha", "Envíos Realizados"]
     let ordersByDateheaderRow = worksheet.addRow(ordersByDateHeader);
@@ -277,10 +284,10 @@ export class OrdersByCustomerComponent implements OnInit {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: {argb: 'D3D3D3'},
-        bgColor: {argb: 'D3D3D3'}
+        fgColor: { argb: 'D3D3D3' },
+        bgColor: { argb: 'D3D3D3' }
       }
-      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
     })
     // worksheet.addRows(data);
     // Add Data and Conditional Formatting
@@ -296,10 +303,10 @@ export class OrdersByCustomerComponent implements OnInit {
     })
     const ordersRange = worksheet.addRow(['', 'Total:', this.ordersInRange]);
     ordersRange.getCell(3).numFmt = '#,##0'
-    ordersRange.font = {bold: true}
+    ordersRange.font = { bold: true }
     worksheet.addRow([]);
     const detailTitle = worksheet.addRow(['Detalles de envíos']);
-    detailTitle.font = {name: 'Arial', family: 4, size: 12, bold: true}
+    detailTitle.font = { name: 'Arial', family: 4, size: 12, bold: true }
     worksheet.addRow([]);
     //Agregar los detalles de los envios
     const ordersHeader = [
@@ -312,6 +319,7 @@ export class OrdersByCustomerComponent implements OnInit {
       "Distancia",
       "Recargo",
       "Cargos Extra",
+      "Detalle Cargo Extra",
       "Costo",
       "Estado",
       "Observaciones",
@@ -324,29 +332,37 @@ export class OrdersByCustomerComponent implements OnInit {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: {argb: 'D3D3D3'},
-        bgColor: {argb: 'D3D3D3'}
+        fgColor: { argb: 'D3D3D3' },
+        bgColor: { argb: 'D3D3D3' }
       }
-      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
     })
 
     let detailsRow = []
     this.orders.forEach(d => {
-      let array = [d.idDetalle,
+      let orderEC = ''
+      d.extra_charges.forEach(value => {
+          orderEC = orderEC + ' ' + value.extracharge.nombre
+      })
+
+      let array = [
+        d.idDetalle,
         Number(d.idDelivery),
         d.nomDestinatario,
         d.numCel,
         d.direccion,
         d.nFactura,
         d.distancia,
-        Number(d.cargosExtra),
         Number(d.recargo),
+        Number(d.cargosExtra),
+        orderEC,
         Number(d.cTotal),
         d.estado.descEstado + ' Fecha: ' + d.fechaEntrega,
         d.observaciones,
-        d.conductor.nomUsuario
+        d.conductor?.nomUsuario
       ]
       detailsRow.push(array)
+
     })
 
     detailsRow.forEach(v => {
@@ -355,20 +371,24 @@ export class OrdersByCustomerComponent implements OnInit {
       row.getCell(2).numFmt = '#,##0'
       row.getCell(8).numFmt = 'L#,##0.00'
       row.getCell(9).numFmt = 'L#,##0.00'
-      row.getCell(10).numFmt = 'L#,##0.00'
       row.getCell(11).numFmt = 'L#,##0.00'
+      row.getCell(12).numFmt = 'L#,##0.00'
     })
 
     worksheet.getColumn(4).width = 30;
     worksheet.getColumn(5).width = 40;
+    worksheet.getColumn(6).width = 40;
+    worksheet.getColumn(9).width = 40;
+    worksheet.getColumn(10).width = 40;
 
     worksheet.getColumn(11).width = 40;
     worksheet.getColumn(12).width = 40;
     worksheet.getColumn(13).width = 40;
+    worksheet.getColumn(14).width = 40;
 
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, 'Reporte envíos (' + this.currenCustomer.nomEmpresa + ').xlsx');
     })
   }

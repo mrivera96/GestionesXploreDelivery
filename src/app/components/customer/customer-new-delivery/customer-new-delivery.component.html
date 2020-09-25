@@ -117,6 +117,9 @@
                       </mat-option>
                     </mat-autocomplete>
                     <mat-icon matPrefix>location_on</mat-icon>
+                    <div matSuffix *ngIf="searchingOrigin == true" class="spinner-border spinner-border-sm text-secondary" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
                     <mat-error *ngIf="newForm.get('deliveryHeader.dirRecogida')?.errors?.required">*Este campo es
                       obligatorio
                     </mat-error>
@@ -244,6 +247,9 @@
                       </mat-option>
                     </mat-autocomplete>
                     <mat-icon matPrefix>location_on</mat-icon>
+                    <div matSuffix *ngIf="searchingDest == true" class="spinner-border spinner-border-sm text-secondary" role="status">
+                      <span class="sr-only">Loading...</span>
+                    </div>
                     <mat-error *ngIf="newForm.get('order.direccion')?.errors?.required">*Este campo es obligatorio
                     </mat-error>
                     <mat-error *ngIf="newForm.get('order.direccion')?.errors?.isUrl">*Valor no válido</mat-error>
@@ -270,44 +276,26 @@
 
               </div>
 
-              <!--<div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
+              <div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
                 <div class="col">
-                  <p class="card-title"><strong>Opciones extra de envíos:</strong></p>
+                  <p class="card-title"><strong>Servicios Adicionales:</strong></p>
                   <hr>
                 </div>
               </div>
 
-              <div class="form-row" formGroupName="order" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
-                <mat-form-field appearance="outline" floatLabel="always" class="col">
-                  <mat-label>Cargo Extra</mat-label>
-                  <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -" >
-                    <mat-option *ngFor="let extracharge of selectedCategory.categoryExtraCharges"
-                                (click)="setSelectedExtraCharge(extracharge.extra_charge)"
-                                [value]="extracharge.idCargoExtra">
-                    <span *ngIf="extracharge.extra_charge.tipoCargo === 'F'">
-                      {{extracharge.extra_charge.nombre + ' '}}
-                      <span class="badge badge-primary">L.{{ extracharge.extra_charge.costo }}</span>
-                    </span>
-                      <span *ngIf="extracharge.extra_charge.tipoCargo === 'V'">
-                      {{extracharge.extra_charge.nombre + ' '}}
-                    </span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-
-                <mat-form-field appearance="outline" floatLabel="always" class="col" *ngIf="selectedExtraCharge?.options">
-                  <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
-                  <mat-select  formControlName="idOpcionExtra"
-                              placeholder="- Seleccione una opción -" class="col">
-                    <mat-option *ngFor="let option of selectedExtraCharge.options"
-                                value="{{option.costo}}" (click)="setSelectedExtraChargeOption(option)">
-                      {{option.descripcion  }}<span class="badge badge-primary">L.{{ '  ' + option.costo}}</span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>-->
-
+              <div class="row">
+                <div class="col" *ngFor="let extracharge of selectedCategory.categoryExtraCharges">
+                  <p class="card-title">{{extracharge.extra_charge.nombre}}</p>
+                  <div class="row" *ngFor="let option of extracharge.extra_charge.options">
+                    <div class="col ml-2" formGroupName="order">
+                      <mat-checkbox formControlName="extracharge"
+                        (change)="addExtraCharge($event.checked,extracharge.extra_charge.idCargoExtra,option)">
+                        {{option.descripcion + ' L.' + option.costo}}</mat-checkbox>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
             </div>
 
             <div class="col-md" *ngIf="!files.length">

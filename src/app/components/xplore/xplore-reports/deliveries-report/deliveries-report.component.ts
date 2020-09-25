@@ -1,17 +1,17 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {DataTableDirective} from "angular-datatables";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Subject} from "rxjs";
-import {OrdersByCategory} from "../../../../models/orders-by-category";
-import {DeliveryDetail} from "../../../../models/delivery-detail";
-import {DeliveriesService} from "../../../../services/deliveries.service";
-import {formatDate} from "@angular/common";
-import {Workbook} from 'exceljs';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { DataTableDirective } from "angular-datatables";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { Subject } from "rxjs";
+import { OrdersByCategory } from "../../../../models/orders-by-category";
+import { DeliveryDetail } from "../../../../models/delivery-detail";
+import { DeliveriesService } from "../../../../services/deliveries.service";
+import { formatDate } from "@angular/common";
+import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
-import {ActivatedRoute, Router} from "@angular/router";
-import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {animate, style, transition, trigger} from "@angular/animations";
+import { ActivatedRoute, Router } from "@angular/router";
+import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
+import { MatDialog } from "@angular/material/dialog";
+import { animate, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: 'app-deliveries-report',
@@ -20,17 +20,17 @@ import {animate, style, transition, trigger} from "@angular/animations";
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
 })
 export class DeliveriesReportComponent implements OnInit {
 
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   datatableElement: DataTableDirective
-  @ViewChild('TABLE', {static: false})
+  @ViewChild('TABLE', { static: false })
   TABLE: ElementRef;
   loaders = {
     'loadingData': false,
@@ -181,7 +181,7 @@ export class DeliveriesReportComponent implements OnInit {
     let worksheet = workbook.addWorksheet('Reporte Envíos');
     //Add Row and formatting
     let titleRow = worksheet.addRow([title]);
-    titleRow.font = {name: 'Arial', family: 4, size: 16, underline: 'double', bold: true}
+    titleRow.font = { name: 'Arial', family: 4, size: 16, underline: 'double', bold: true }
     worksheet.addRow([]);
     //Blank Row
     worksheet.addRow([]);
@@ -189,12 +189,19 @@ export class DeliveriesReportComponent implements OnInit {
     worksheet.addRow([]);
     let subTitleRow = worksheet.addRow(['Desde : ' + this.f.initDate.value + ' Hasta: ' + this.f.finDate.value])
     worksheet.mergeCells('A5:B5');
-    subTitleRow.font = {name: 'Arial', family: 4, size: 12, bold: true}
+    subTitleRow.font = { name: 'Arial', family: 4, size: 12, bold: true }
     //Add Header Row
     const catTitle = worksheet.addRow(['Envíos por categoría']);
-    catTitle.font = {name: 'Arial', family: 4, size: 12, bold: true}
+    catTitle.font = { name: 'Arial', family: 4, size: 12, bold: true }
     worksheet.addRow([]);
-    const ordersByCategoryHeader = ["N°", "Categoría", "Envíos Realizados", "Recargos", "Cargos Extra", "Costos Totales"]
+    const ordersByCategoryHeader = [
+      "N°",
+      "Categoría",
+      "Envíos Realizados",
+      "Recargos",
+      "Cargos Extra",
+      "Costos Totales"
+    ]
     let ordersByCategoryheaderRow = worksheet.addRow(ordersByCategoryHeader);
 
     // Cell Style : Fill and Border
@@ -202,10 +209,10 @@ export class DeliveriesReportComponent implements OnInit {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: {argb: 'D3D3D3'},
-        bgColor: {argb: 'D3D3D3'}
+        fgColor: { argb: 'D3D3D3' },
+        bgColor: { argb: 'D3D3D3' }
       }
-      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
     })
     // worksheet.addRows(data);
     // Add Data and Conditional Formatting
@@ -225,7 +232,7 @@ export class DeliveriesReportComponent implements OnInit {
     })
 
     const ordersCategoriestotals = worksheet.addRow(['', 'Total:', this.ordersInRange, this.totalSurcharges, this.totalExtracharges, this.totalCosts]);
-    ordersCategoriestotals.font = {bold: true}
+    ordersCategoriestotals.font = { bold: true }
     ordersCategoriestotals.getCell(3).numFmt = '#,##0'
     ordersCategoriestotals.getCell(4).numFmt = 'L#,##0.00'
     ordersCategoriestotals.getCell(5).numFmt = 'L#,##0.00'
@@ -241,7 +248,7 @@ export class DeliveriesReportComponent implements OnInit {
 
     //Add Header Row
     const rangeTitle = worksheet.addRow(['Envíos por fecha']);
-    rangeTitle.font = {name: 'Arial', family: 4, size: 12, bold: true}
+    rangeTitle.font = { name: 'Arial', family: 4, size: 12, bold: true }
     worksheet.addRow([]);
     const ordersByDateHeader = ["Cliente", "fecha", "Envíos Realizados"]
     let ordersByDateheaderRow = worksheet.addRow(ordersByDateHeader);
@@ -251,10 +258,10 @@ export class DeliveriesReportComponent implements OnInit {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: {argb: 'D3D3D3'},
-        bgColor: {argb: 'D3D3D3'}
+        fgColor: { argb: 'D3D3D3' },
+        bgColor: { argb: 'D3D3D3' }
       }
-      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
     })
     // worksheet.addRows(data);
     // Add Data and Conditional Formatting
@@ -270,7 +277,7 @@ export class DeliveriesReportComponent implements OnInit {
     })
     const ordersRange = worksheet.addRow(['', 'Total:', this.ordersInRange]);
     ordersRange.getCell(3).numFmt = '#,##0'
-    ordersRange.font = {bold: true}
+    ordersRange.font = { bold: true }
     worksheet.addRow([]);
 
 
@@ -283,7 +290,7 @@ export class DeliveriesReportComponent implements OnInit {
 
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, 'Reporte envíos (' + this.f.initDate.value + ' - ' + this.f.finDate.value + ').xlsx');
     })
   }

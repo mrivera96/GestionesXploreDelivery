@@ -53,15 +53,12 @@
         <tfoot>
         <tr>
           <th></th>
-          <th *ngIf="currUser.idPerfil ==='1'"></th>
           <th></th>
           <th></th>
           <th></th>
           <th></th>
           <th></th>
-          <!--<th></th>
           <th></th>
-          <th></th>-->
           <th></th>
           <th>
             <select class="form-control-sm" name="search-last-name">
@@ -69,17 +66,17 @@
               <option *ngFor="let state of states" [value]="state.descEstado">{{state.descEstado}}</option>
               <option value="Solicitud de Reservación">Solicitud de Reservación</option>
             </select>
-          </th>
+          </th>   
           <th></th>
-          <!--<th></th>-->
           <th></th>
+          <th></th>       
         </tr>
         </tfoot>
         <thead>
         <tr>
           <th>N° Reserva</th>
           <th>N° Envío</th>
-          <th data-priority="1" *ngIf="currUser.idPerfil ==='1'">Cliente</th>
+          <th>Cliente</th>
           <th>Fecha de Reserva</th>
           <th data-priority="1">Destinatario</th>
           <th data-priority="1">Celular del Destinatario</th>
@@ -90,8 +87,8 @@
           <th>Cargos Extra</th>-->
           <th data-priority="1">Costo Total</th>
           <th data-priority="1">Estado</th>
-          <!--<th>Observaciones</th>
-          <th>Conductor</th>-->
+          <!--<th>Observaciones</th>-->
+          <th>Conductor</th>
           <th>Fotografías</th>
           <th data-priority="1">Acción</th>
         </tr>
@@ -101,7 +98,7 @@
         <tr *ngFor=" let i = index;let order of orders;">
           <td>{{order.idDelivery}}</td>
           <td>{{order.idDetalle}}</td>
-          <td *ngIf="currUser.idPerfil ==='1'">{{order.delivery.nomCliente}}</td>
+          <td>{{order.delivery.nomCliente}}</td>
           <td>{{order.delivery.fechaReserva}}</td>
           <td>{{order.nomDestinatario}}</td>
           <td>{{order.numCel}}</td>
@@ -112,17 +109,16 @@
           <td>L. {{order.cargosExtra}} {{order?.extra_charge?.nombre || ''}}</td>-->
           <td>L. {{order.cTotal}}</td>
           <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">Fecha: {{order.fechaEntrega}}</p></td>
-          <!--<td>{{order.observaciones || 'N/A'}}</td>
+          <!--<td>{{order.observaciones || 'N/A'}}</td>-->
           <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
             <p *ngIf="!order.conductor">Aún no asignada</p>
-          </td>-->
+          </td>
           <td>
             <button mat-raised-button *ngIf="order.photography.length > 0" type="button"
                     (click)="openPhotosDialog(order.photography)">
               <mat-icon>photo_camera</mat-icon>
               <span>Ver Fotografías</span>
             </button>
-
             <p *ngIf="order.photography.length ==0">N/A</p>
           </td>
           <td>

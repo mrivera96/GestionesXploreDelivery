@@ -28,11 +28,10 @@
              class="display compact" style="width:100%">
         <thead>
         <tr>
-          <th data-priority="1">N°</th>
-          <th>Nombre de Empresa</th>
+          <th data-priority="1">Nombre de Empresa</th>
           <th>Nombre de Representante</th>
           <th>Número de Identificación</th>
-          <th>Número de Teléfono</th>
+          <th data-priority="1">Número de Teléfono</th>
           <th>email</th>
           <th data-priority="1">Acción</th>
         </tr>
@@ -40,7 +39,6 @@
         <tbody>
 
         <tr *ngFor="let customer of customers; let i = index">
-          <td class="id">{{i + 1}}</td>
           <td>{{customer.nomEmpresa}}</td>
           <td>{{customer.nomRepresentante}}</td>
           <td class="fId">{{customer.numIdentificacion}}</td>

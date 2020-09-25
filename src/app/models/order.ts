@@ -30,4 +30,5 @@ export interface Order {
   photography?: Photography[]
   extra_charges?: OrderExtraCharges[]
   time?: any
+  efectivoRecibido?: number
 }

@@ -28,7 +28,6 @@ import { Branch } from "../../../models/branch";
 import { Schedule } from "../../../models/schedule";
 import { CustomerRestrictionsDialogComponent } from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
 
-
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
   templateUrl: './customer-new-consolidated-delivery.component.html',
@@ -330,6 +329,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   calculateRatio() {
     if (this.newForm.get('deliveryHeader.dirRecogida').value != '') {
       this.prohibitedAddress = false
+      this.prohibitedAddressCentinel = false
       let ordersCount = this.orders.length + 1
       //
       this.calculateRate(ordersCount)
@@ -353,7 +353,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           error.subscribe(error => {
             this.prohibitedAddressMsg = error.statusText
             this.prohibitedAddress = true
-
+            this.prohibitedAddressCentinel = true
           })
         }
         distanceSubscription.unsubscribe()

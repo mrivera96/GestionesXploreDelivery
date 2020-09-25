@@ -1,50 +1,51 @@
+import { animate, style, transition, trigger } from '@angular/animations';
+import { formatDate } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { animate, style, transition, trigger } from "@angular/animations";
-import { Category } from "../../../models/category";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Subject } from "rxjs";
-import { DeliveriesService } from "../../../services/deliveries.service";
-import { HttpClient } from "@angular/common/http";
-import { formatDate } from "@angular/common";
-import { environment } from "../../../../environments/environment";
-import { Order } from "../../../models/order";
-import { Rate } from "../../../models/rate";
-import { Branch } from "../../../models/branch";
-import { CategoriesService } from "../../../services/categories.service";
-import { RatesService } from "../../../services/rates.service";
-import { BranchService } from "../../../services/branch.service";
-import { DataTableDirective } from "angular-datatables";
-import { Router } from "@angular/router";
-import { Surcharge } from "../../../models/surcharge";
-import { DateValidate } from "../../../helpers/date.validator";
-import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
-import { MatDialog } from "@angular/material/dialog";
-import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component";
-import { ConfirmDialogComponent } from "./confirm-dialog/confirm-dialog.component";
-import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator";
-import { Customer } from "../../../models/customer";
-import { AuthService } from "../../../services/auth.service";
-import { NoUrlValidator } from "../../../helpers/noUrl.validator";
-import { GoogleMap } from "@angular/google-maps";
-import { Schedule } from "../../../models/schedule";
-import { ExtraCharge } from "../../../models/extra-charge";
-import { ExtraChargeOption } from "../../../models/extra-charge-option";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GoogleMap } from '@angular/google-maps';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { BlankSpacesValidator } from 'src/app/helpers/blankSpaces.validator';
+import { DateValidate } from 'src/app/helpers/date.validator';
+import { NoUrlValidator } from 'src/app/helpers/noUrl.validator';
+import { Branch } from 'src/app/models/branch';
+import { Category } from 'src/app/models/category';
+import { Customer } from 'src/app/models/customer';
+import { ExtraCharge } from 'src/app/models/extra-charge';
 import { ExtraChargeCategory } from 'src/app/models/extra-charge-category';
+import { ExtraChargeOption } from 'src/app/models/extra-charge-option';
+import { Order } from 'src/app/models/order';
+import { Rate } from 'src/app/models/rate';
+import { Schedule } from 'src/app/models/schedule';
+import { Surcharge } from 'src/app/models/surcharge';
+import { AuthService } from 'src/app/services/auth.service';
+import { BranchService } from 'src/app/services/branch.service';
+import { CategoriesService } from 'src/app/services/categories.service';
+import { DeliveriesService } from 'src/app/services/deliveries.service';
+import { RatesService } from 'src/app/services/rates.service';
+import { environment } from 'src/environments/environment';
+import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
+import { SuccessModalComponent } from '../../shared/success-modal/success-modal.component';
+import { ConfirmDialogComponent } from '../customer-new-delivery/confirm-dialog/confirm-dialog.component';
 
 @Component({
-  selector: 'app-customer-new-delivery',
-  templateUrl: './customer-new-delivery.component.html',
-  styleUrls: ['./customer-new-delivery.component.css'],
+  selector: 'app-customer-new-routing-shipping',
+  templateUrl: './customer-new-routing-shipping.component.html',
+  styleUrls: ['./customer-new-routing-shipping.component.css'],
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 }))
+        style({opacity: 0}),
+        animate(1000, style({opacity: 1}))
       ])
     ])
   ]
 })
-export class CustomerNewDeliveryComponent implements OnInit {
+export class CustomerNewRoutingShippingComponent implements OnInit {
+
   locationOption
   myCurrentLocation
   dtOptions: any
@@ -96,7 +97,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   files: File[] = []
   gcordsOrigin = false
   gcordsDestination = false
-  @ViewChild(DataTableDirective, { static: false })
+  @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
   fileContentArray: String[] = []
   defaultBranch
@@ -104,11 +105,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
   selectedExtraCharge: ExtraCharge = null
   selectedExtraChargeOption: ExtraChargeOption = {}
   extraCharges: ExtraChargeCategory[] = []
-  currOrder: any = {
-    extras: [] = []
-  }
-  searchingOrigin = false
-  searchingDest = false
 
   constructor(
     private categoriesService: CategoriesService,
@@ -150,7 +146,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
         dirRecogida: ['', [Validators.required]],
         idCategoria: [1, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
-        coordsOrigen: ['']
+        coordsOrigen: [''],
+        distancia:[0]
       }, {
         validators: [
           DateValidate('fecha', 'hora'),
@@ -165,7 +162,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
         numCel: ['', [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
         direccion: ['', Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
-        extracharge: [null],
+        idCargoExtra: [null],
+        idOpcionExtra: [null],
       }, {
         validators: [
           BlankSpacesValidator('nFactura'),
@@ -321,24 +319,32 @@ export class CustomerNewDeliveryComponent implements OnInit {
     if (this.deliveryForm.get('order').valid) {
       this.loaders.loadingAdd = true
 
-      this.currOrder.nFactura = this.newForm.get('order.nFactura').value
-      this.currOrder.nomDestinatario = this.newForm.get('order.nomDestinatario').value
-      this.currOrder.numCel = this.newForm.get('order.numCel').value
-      this.currOrder.direccion = this.newForm.get('order.direccion').value
-      this.currOrder.instrucciones = this.newForm.get('order.instrucciones').value
-      this.currOrder.coordsDestino = ''
-      this.currOrder.distancia = ''
-      this.currOrder.tiempo = ''
-      this.currOrder.tarifaBase = 0
-      this.currOrder.recargo = 0
-      this.currOrder.cTotal = 0
-      this.currOrder.cargosExtra = 0
+      let currOrder = {
+        nFactura: this.newForm.get('order.nFactura').value,
+        nomDestinatario: this.newForm.get('order.nomDestinatario').value,
+        numCel: this.newForm.get('order.numCel').value,
+        direccion: this.newForm.get('order.direccion').value,
+        instrucciones: this.newForm.get('order.instrucciones').value,
+        coordsDestino: '',
+        distancia: '',
+        tiempo: '',
+        tarifaBase: 0,
+        recargo: 0,
+        cTotal: 0,
+        cargosExtra: 0,
+        idCargoExtra: null,
+        idDetalleOpcion: null,
+      }
 
       let ordersCount = this.orders.length + 1
       //
       this.calculateRate(ordersCount)
 
-      this.calculateDistance()
+      this.calculateDistance(currOrder)
+
+      this.befDistance = 0
+      this.befTime = 0
+      this.befCost = 0.00
     }
   }
 
@@ -380,9 +386,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
   calculatedistanceBefore() {
     this.directionsRenderer.setMap(null)
     if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
-      this.befDistance = 0
-      this.befTime = 0
-      this.befCost = 0
       this.loaders.loadingDistBef = true
       let ordersCount = this.orders.length + 1
       //
@@ -424,14 +427,16 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculateAndDisplayRoute(directionsService, directionsRenderer) {
+
     const dirRecogida = this.newForm.get('deliveryHeader.dirRecogida').value
     const dirEntrega = this.newForm.get('order.direccion').value
     const geocoder1 = new google.maps.Geocoder()
 
+
     const geocoder2 = new google.maps.Geocoder()
-    geocoder1.geocode({ 'address': dirRecogida }, results => {
+    geocoder1.geocode({'address': dirRecogida}, results => {
       const originLL = results[0].geometry.location
-      geocoder2.geocode({ 'address': dirEntrega }, results => {
+      geocoder2.geocode({'address': dirEntrega}, results => {
         const destLL = results[0].geometry.location
         directionsService.route({
           origin: originLL,  // Haight.
@@ -453,13 +458,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
   searchOrigin(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
-      this.searchingOrigin = true
       const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         lugar: lugar,
         function: 'searchPlace'
       }).subscribe(response => {
         this.placesOrigin = response
-        this.searchingOrigin = false
         placeSubscription.unsubscribe()
       })
     }
@@ -469,16 +472,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
   searchDestination(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
-      this.searchingDest = true
       const placeSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         lugar: lugar,
         function: 'searchPlace'
       }).subscribe(response => {
         this.placesDestination = response
-        this.searchingDest = false
         placeSubscription.unsubscribe()
       })
     }
+
   }
 
   calculateRate(ordersCount) {
@@ -494,13 +496,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   calculateOrderPayment(distance) {
+
     let orderPayment = {
       'baseRate': this.pago.baseRate,
       'surcharges': 0.00,
       'cargosExtra': 0.00,
       'total': 0.00
     }
-
     this.surcharges.forEach(value => {
       if (distance >= Number(value.kilomMinimo)
         && distance <= Number(value.kilomMaximo)
@@ -509,12 +511,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
       }
     })
 
-    if (this.currOrder.extras.length > 0) {
-      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
-      this.currOrder.extras.forEach(extra => {
-        orderPayment.cargosExtra = +orderPayment.cargosExtra + +extra.costo
-        orderPayment.total = +orderPayment.total + +extra.costo
-      })
+    if (this.selectedExtraCharge != null) {
+      if (this.selectedExtraCharge.options) {
+        orderPayment.cargosExtra = this.selectedExtraChargeOption.costo
+        orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraChargeOption.costo
+      }else{
+        orderPayment.cargosExtra = this.selectedExtraCharge.costo
+        orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraCharge.costo
+      }
 
     } else {
       orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
@@ -523,9 +527,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
     return orderPayment
   }
 
-  calculateDistance() {
+  calculateDistance(currOrder) {
     const salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value
-    const entrega = this.currOrder.direccion
+    const entrega = currOrder.direccion
     const tarifa = this.pago.baseRate
 
     if (this.orders.length == 0) {
@@ -544,31 +548,29 @@ export class CustomerNewDeliveryComponent implements OnInit {
       entrega: entrega,
       tarifa: tarifa
     }).subscribe((response) => {
-      this.currOrder.distancia = response.distancia
-      this.currOrder.tiempo = response.tiempo
+      currOrder.distancia = response.distancia
+      currOrder.tiempo = response.tiempo
       const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
-      this.currOrder.tarifaBase = calculatedPayment.baseRate
-      this.currOrder.recargo = calculatedPayment.surcharges
-      this.currOrder.cargosExtra = calculatedPayment.cargosExtra
-      this.currOrder.cTotal = calculatedPayment.total
+      currOrder.tarifaBase = calculatedPayment.baseRate
+      currOrder.recargo = calculatedPayment.surcharges
+      currOrder.cargosExtra = calculatedPayment.cargosExtra
+      currOrder.cTotal = calculatedPayment.total
+      currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra || null
+      currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion || null
 
       this.http.post<any>(`${environment.apiUrl}`, {
         function: 'getCoords',
         lugar: entrega,
       }).subscribe((response) => {
-        this.currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
+        currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
       })
 
       this.deliveryForm.get('order').reset()
-      this.orders.push(this.currOrder)
+      this.orders.push(currOrder)
       this.pagos.push(calculatedPayment)
       this.loaders.loadingAdd = false
-      this.currOrder = {
-        extras: [] = []
-      }
-      this.befDistance = 0
-      this.befTime = 0
-      this.befCost = 0
+      this.selectedExtraChargeOption = null
+      this.selectedExtraCharge = null
 
       if (this.orders.length > 1) {
         this.dtElement.dtInstance.then(
@@ -771,30 +773,31 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.fileContentArray.forEach(order => {
       let myOrder = order.split('|')
 
-      this.currOrder.nFactura = myOrder[0]
-      this.currOrder.nomDestinatario = myOrder[1]
-      this.currOrder.numCel = myOrder[2].trim()
-      this.currOrder.instrucciones = myOrder[3]
-      this.currOrder.direccion = myOrder[4]
-      this.currOrder.distancia = ''
-      this.currOrder.tarifaBase = 0
-      this.currOrder.recargo = 0
-      this.currOrder.cTotal = 0
-
+      let myDetail = {
+        nFactura: myOrder[0],
+        nomDestinatario: myOrder[1],
+        numCel: myOrder[2].trim(),
+        instrucciones: myOrder[3],
+        direccion: myOrder[4],
+        distancia: '',
+        tarifaBase: 0,
+        recargo: 0,
+        cTotal: 0
+      }
 
       let errs = 0
 
-      if (this.currOrder.nFactura.length > 250) {
+      if (myDetail.nFactura.length > 250) {
         errs++
-      } else if (this.currOrder.nomDestinatario.length > 150) {
+      } else if (myDetail.nomDestinatario.length > 150) {
         errs++
-      } else if (this.currOrder.numCel.length > 9) {
+      } else if (myDetail.numCel.length > 9) {
         errs++
-      } else if (this.currOrder.instrucciones.length > 150) {
+      } else if (myDetail.instrucciones.length > 150) {
         errs++
-      } else if (this.currOrder.direccion.length > 250) {
+      } else if (myDetail.direccion.length > 250) {
         errs++
-      } else if (this.currOrder.distancia.length > 10) {
+      } else if (myDetail.distancia.length > 10) {
         errs++
       }
 
@@ -809,7 +812,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       let ordersCount = this.orders.length + 1
       //
       this.calculateRate(ordersCount)
-      this.calculateDistance()
+      this.calculateDistance(myDetail)
 
     })
 
@@ -828,20 +831,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
-  addExtraCharge(checked, extracharge, option) {
-    const extraCharge = {
-      idCargoExtra: extracharge,
-      idDetalleOpcion: option.idDetalleOpcion,
-      costo: option.costo
-    }
-    if (checked == true) {
-      this.currOrder.extras.push(extraCharge)
-      this.befCost += +extraCharge.costo
-    } else {
-      const idx = this.currOrder.extras.indexOf(extraCharge)
-      this.currOrder.extras.splice(idx, 1)
-      this.befCost -= extraCharge.costo
-    }
+  setSelectedExtraCharge(extraCharge) {
+    this.selectedExtraCharge = extraCharge
   }
+
+  setSelectedExtraChargeOption(option) {
+    this.selectedExtraChargeOption = option
+  }
+
 
 }

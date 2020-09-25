@@ -30,6 +30,8 @@ import { CustomerDashboardComponent } from '../components/customer/customer-dash
 import { CustomerNewConsolidatedDeliveryComponent } from '../components/customer/customer-new-consolidated-delivery/customer-new-consolidated-delivery.component';
 import {CustomerRestrictionsDialogComponent} from "../components/customer/customer-restrictions-dialog/customer-restrictions-dialog.component";
 import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/customer/customer-new-consolidated-foreign-delivery/customer-new-consolidated-foreign-delivery.component";
+import { CustomerNewRoutingShippingComponent } from '../components/customer/customer-new-routing-shipping/customer-new-routing-shipping.component';
+import {MatMenuModule} from "@angular/material/menu";
 
 
 @NgModule({
@@ -55,6 +57,7 @@ import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/cus
     CustomerNewConsolidatedDeliveryComponent,
     CustomerRestrictionsDialogComponent,
     CustomerNewConsolidatedForeignDeliveryComponent,
+    CustomerNewRoutingShippingComponent,
   ],
     imports: [
         CommonModule,
@@ -66,7 +69,8 @@ import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/cus
         MatTabsModule,
         NgxDropzoneModule,
         MatSlideToggleModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatMenuModule
     ],
   entryComponents:[
     DeliveryConfirm,

@@ -48,7 +48,7 @@
 
 
             <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
-                    (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+              (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
               <mat-icon>search</mat-icon>
             </button>
           </div>
@@ -69,14 +69,16 @@
       <div class="row">
         <div class="col-12">
           <button class="float-right" [disabled]="consultResults.length == 0" mat-raised-button color="primary"
-                  (click)="generateExcel()">
+            (click)="generateExcel()">
             Exportar a Excel
           </button>
         </div>
       </div>
 
       <div class="row">
-        <div class="col"><h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2></div>
+        <div class="col">
+          <h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2>
+        </div>
       </div>
 
       <div class="row">
@@ -102,38 +104,38 @@
 
         <table datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
           <thead>
-          <tr>
-            <th>N°</th>
-            <th>Categoría</th>
-            <th>Envíos Realizados</th>
-            <th>Recargos</th>
-            <th>Cargos Extra</th>
-            <th>Costos Totales</th>
-          </tr>
+            <tr>
+              <th>N°</th>
+              <th>Categoría</th>
+              <th>Envíos Realizados</th>
+              <th>Recargos</th>
+              <th>Cargos Extra</th>
+              <th>Costos Totales</th>
+            </tr>
           </thead>
           <tbody>
 
-          <tr *ngFor="let res of ordersByCategory; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{res?.category}}</td>
-            <td>{{res?.orders}}</td>
-            <td>L. {{res?.totalSurcharges}}</td>
-            <td>L. {{res?.totalExtraCharges}}</td>
-            <td>L. {{res?.cTotal}}</td>
-          </tr>
+            <tr *ngFor="let res of ordersByCategory; let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{res?.category}}</td>
+              <td>{{res?.orders}}</td>
+              <td>L. {{res?.totalSurcharges}}</td>
+              <td>L. {{res?.totalExtraCharges}}</td>
+              <td>L. {{res?.cTotal}}</td>
+            </tr>
 
           </tbody>
           <tfoot style="display: table-footer-group;">
-          <tr>
-            <th></th>
-            <th>Total:</th>
-            <th data-priority="1">
-              {{ordersInRange}}
-            </th>
-            <th>L. {{ totalSurcharges }}</th>
-            <th>L. {{ totalExtracharges }}</th>
-            <th>L. {{ totalCosts }}</th>
-          </tr>
+            <tr>
+              <th></th>
+              <th>Total:</th>
+              <th data-priority="1">
+                {{ordersInRange}}
+              </th>
+              <th>L. {{ totalSurcharges }}</th>
+              <th>L. {{ totalExtracharges }}</th>
+              <th>L. {{ totalCosts }}</th>
+            </tr>
           </tfoot>
 
         </table>
@@ -153,31 +155,31 @@
         <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" class="display compact" style="width:100%">
           <thead>
 
-          <tr>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Envíos Realizados</th>
-          </tr>
+            <tr>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              <th>Envíos Realizados</th>
+            </tr>
 
           </thead>
           <tbody>
 
-          <tr *ngFor="let result of consultResults">
-            <td>{{result.customer}}</td>
-            <td>{{result.fecha}}</td>
-            <td>{{result.orders}}</td>
-          </tr>
+            <tr *ngFor="let result of consultResults">
+              <td>{{result.customer}}</td>
+              <td>{{result.fecha}}</td>
+              <td>{{result.orders}}</td>
+            </tr>
 
 
           </tbody>
           <tfoot style="display: table-footer-group;">
-          <tr>
-            <th></th>
-            <th>Total:</th>
-            <th data-priority="1">
-              {{ordersInRange}}
-            </th>
-          </tr>
+            <tr>
+              <th></th>
+              <th>Total:</th>
+              <th data-priority="1">
+                {{ordersInRange}}
+              </th>
+            </tr>
           </tfoot>
 
         </table>
@@ -192,45 +194,50 @@
 
 
       <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2"
-               class="display compact" style="width:100%">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2" class="display compact" style="width:100%">
           <thead>
-          <tr>
-            <th>N° Envío</th>
-            <th>N° Reserva</th>
-            <th data-priority="1">Destinatario</th>
-            <th data-priority="1">Celular del Destinatario</th>
-            <th>Dirección</th>
-            <th>Detalle</th>
-            <th>Distancia</th>
-            <th>Recargo</th>
-            <th>Cargos Extra</th>
-            <th>Costo</th>
-            <th>Estado</th>
-            <th>Observaciones</th>
-            <th>Conductor</th>
-          </tr>
+            <tr>
+              <th>N° Envío</th>
+              <th>N° Reserva</th>
+              <th data-priority="1">Destinatario</th>
+              <th data-priority="1">Celular del Destinatario</th>
+              <th>Dirección</th>
+              <th>Detalle</th>
+              <th>Distancia</th>
+              <th>Recargo</th>
+              <th>Cargos Extra</th>
+              <th>Detalle Cargo Extra</th>
+              <th>Costo</th>
+              <th>Estado</th>
+              <th>Observaciones</th>
+              <th>Conductor</th>
+            </tr>
           </thead>
           <tbody>
 
-          <tr *ngFor=" let i = index;let order of orders;">
-            <td>{{order.idDetalle}}</td>
-            <td>{{order.idDelivery}}</td>
-            <td>{{order.nomDestinatario}}</td>
-            <td>{{order.numCel}}</td>
-            <td>{{order.direccion}}</td>
-            <td>{{order.nFactura}}</td>
-            <td>{{order.distancia}}</td>
-            <td>L. {{order.recargo }}</td>
-            <td>L. {{order.cargosExtra }}</td>
-            <td>L. {{order.cTotal }}</td>
-            <td>{{order.estado.descEstado + ' Fecha: ' + order.fechaEntrega}}
-            </td>
-            <td>{{order.observaciones || 'N/A'}}</td>
-            <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
-              <p *ngIf="!order.conductor">Aún no asignada</p></td>
+            <tr *ngFor=" let i = index;let order of orders;">
+              <td>{{order.idDetalle}}</td>
+              <td>{{order.idDelivery}}</td>
+              <td>{{order.nomDestinatario}}</td>
+              <td>{{order.numCel}}</td>
+              <td>{{order.direccion}}</td>
+              <td>{{order.nFactura}}</td>
+              <td>{{order.distancia}}</td>
+              <td>L. {{order.recargo }}</td>
+              <td>L. {{order.cargosExtra }}</td>
+              <td>
+                <p *ngFor="let extraCharge of order.extra_charges">{{extraCharge.extracharge.nombre}}</p>
+              </td>
+              <td>L. {{order.cTotal }}</td>
+              <td>{{order.estado.descEstado + ' Fecha: ' + order.fechaEntrega}}
+              </td>
+              <td>{{order.observaciones || 'N/A'}}</td>
+              <td>
+                <p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
+                <p *ngIf="!order.conductor">Aún no asignada</p>
+              </td>
 
-          </tr>
+            </tr>
           </tbody>
         </table>
 

@@ -75,7 +75,6 @@ export class XploreCustomersComponent implements OnInit {
     }
     this.loadData()
 
-
   }
 
   loadData() {

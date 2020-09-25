@@ -36,4 +36,5 @@ export interface DeliveryDetail {
   tomarFoto?: boolean
   photography?: Photography[]
   extra_charges?: OrderExtraCharges[]
+  efectivoRecibido?: number
 }
