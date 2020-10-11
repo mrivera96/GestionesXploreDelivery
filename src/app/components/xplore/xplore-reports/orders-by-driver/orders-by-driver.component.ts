@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { formatDate } from "@angular/common";
 import { UsersService } from "../../../../services/users.service";
 import { User } from "../../../../models/user";
-import { ReportOrdersByDriver } from "../../../../models/report-orders-by-driver";
 import { DeliveriesService } from "../../../../services/deliveries.service";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { Subject } from "rxjs";
@@ -16,7 +15,8 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import { Cell, Columns, PdfMakeWrapper, Table, Txt } from 'pdfmake-wrapper'
-import * as html2pdf from 'html2pdf.js'
+import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: 'app-orders-by-driver',
@@ -52,6 +52,9 @@ export class OrdersByDriverComponent implements OnInit {
   ordersInRange: number = 0
   orders: Order[] = []
   totals: any = {
+    transTurismOrders: 0,
+    transTurismTime: 0,
+    transTurismOver20kms: 0,
     motoOrders: 0,
     motoTime: 0,
     motoOver20kms: 0,
@@ -70,16 +73,22 @@ export class OrdersByDriverComponent implements OnInit {
     panelAuxiliarOrders: 0,
     panelAuxiliarTime: 0,
     panelAuxiliarOver20kms: 0,
+    camion11Orders: 0,
+    camion11Time: 0,
+    camion11Over20kms: 0,
     totalOrders: 0,
     totalTime: 0,
     totalMoney: 0,
-    totalOver20kms: 0
+    totalOver20kms: 0,
+    totalAuxTime: 0,
+    tiempoTotal: 0
   }
 
   constructor(
     private formBuilder: FormBuilder,
     private usersService: UsersService,
-    private deliveriesService: DeliveriesService
+    private deliveriesService: DeliveriesService,
+    public dialog: MatDialog,
   ) {
   }
 
@@ -105,7 +114,7 @@ export class OrdersByDriverComponent implements OnInit {
 
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 50,
       serverSide: false,
       processing: true,
       info: true,
@@ -140,10 +149,45 @@ export class OrdersByDriverComponent implements OnInit {
     if (this.consultForm.valid) {
       this.loaders.loadingSubmit = true
       this.totalOrders = 0
+      this.totals = {
+        transTurismOrders: 0,
+        transTurismTime: 0,
+        transTurismOver20kms: 0,
+        motoOrders: 0,
+        motoTime: 0,
+        motoOver20kms: 0,
+        turismoOrders: 0,
+        turismoTime: 0,
+        turismoOver20kms: 0,
+        pickupOrders: 0,
+        pickupTime: 0,
+        pickupOver20kms: 0,
+        panelOrders: 0,
+        panelTime: 0,
+        panelOver20kms: 0,
+        pickupAuxiliarOrders: 0,
+        pickupAuxiliarTime: 0,
+        pickupAuxiliarOver20kms: 0,
+        panelAuxiliarOrders: 0,
+        panelAuxiliarTime: 0,
+        panelAuxiliarOver20kms: 0,
+        camion11Orders: 0,
+        camion11Time: 0,
+        camion11Over20kms: 0,
+        totalOrders: 0,
+        totalTime: 0,
+        totalMoney: 0,
+        totalOver20kms: 0,
+        totalAuxTime: 0,
+        tiempoTotal: 0
+      }
       this.deliveriesService.getOrdersByDriver(this.consultForm.value).subscribe(response => {
         this.consultResults = response.data
 
         this.consultResults.forEach(result => {
+          this.totals.transTurismOrders = this.totals.transTurismOrders + +result.transTurism
+          this.totals.transTurismTime = this.totals.transTurismTime + +result.transTurismTime
+          this.totals.transTurismOver20kms = this.totals.transTurismOver20kms + +result.transTurismOver20kms
           this.totals.motoOrders = this.totals.motoOrders + +result.moto
           this.totals.motoTime = this.totals.motoTime + +result.motoTime
           this.totals.motoOver20kms = this.totals.motoOver20kms + +result.motoOver20kms
@@ -166,6 +210,8 @@ export class OrdersByDriverComponent implements OnInit {
           this.totals.totalTime = this.totals.totalTime + +result.totalTime
           this.totals.totalMoney = this.totals.totalMoney + +result.totalMoney
           this.totals.totalOver20kms = this.totals.totalOver20kms + +result.totalOver20kms
+          this.totals.totalAuxTime = this.totals.totalAuxTime + +result.totalAuxTime
+          this.totals.tiempoTotal = this.totals.tiempoTotal + +result.tiempototal
         })
 
         if (this.datatableElement.dtInstance) {
@@ -179,6 +225,17 @@ export class OrdersByDriverComponent implements OnInit {
         }
 
         this.loaders.loadingSubmit = false
+      }, error => {
+        if(error.subscribe()){
+          error.subscribe(error => {
+            this.loaders.loadingSubmit = false
+            this.openErrorDialog(error.statusText)
+          })
+        }else{
+          this.loaders.loadingSubmit = false
+          this.openErrorDialog(error.statusText)
+        }
+       
       })
     }
   }
@@ -193,6 +250,15 @@ export class OrdersByDriverComponent implements OnInit {
       return this.drivers.filter(option => option.nomUsuario.toLowerCase().includes(filter));
     }
     return this.drivers
+  }
+
+  openErrorDialog(error: string): void {
+    const dialog = this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error
+      }
+    })
+
   }
 
   generateExcel() {
@@ -237,25 +303,25 @@ export class OrdersByDriverComponent implements OnInit {
     const categoriesHeader = [
       "",
       "",
-      "Moto",
+      "Transporte Turismo",
       "",
+      "Moto",
       "",
       "Turismo",
       "",
-      "",
       "Pick-Up",
-      "",
       "",
       "Panel",
       "",
-      "",
       "Pick-Up + Auxiliar",
-      "",
       "",
       "Panel + Auxiliar",
       "",
+      "Camión 11 pies",
       "",
       "Totales",
+      "",
+      "",
       "",
       "",
       ""
@@ -264,13 +330,15 @@ export class OrdersByDriverComponent implements OnInit {
     let categoriesheaderRow = worksheet.addRow(categoriesHeader);
 
     worksheet.mergeCells('A8:B8');
-    worksheet.mergeCells('C8:E8');
-    worksheet.mergeCells('F8:H8');
-    worksheet.mergeCells('I8:K8');
-    worksheet.mergeCells('L8:N8');
-    worksheet.mergeCells('O8:Q8');
-    worksheet.mergeCells('R8:T8');
-    worksheet.mergeCells('U8:X8');
+    worksheet.mergeCells('C8:D8');
+    worksheet.mergeCells('E8:F8');
+    worksheet.mergeCells('G8:H8');
+    worksheet.mergeCells('I8:J8');
+    worksheet.mergeCells('K8:L8');
+    worksheet.mergeCells('M8:N8');
+    worksheet.mergeCells('O8:P8');
+    worksheet.mergeCells('Q8:R8');
+    worksheet.mergeCells('S8:X8');
 
     categoriesheaderRow.eachCell((cell, number) => {
       cell.fill = {
@@ -290,26 +358,26 @@ export class OrdersByDriverComponent implements OnInit {
       "Fecha",
       "Entregas",
       "Tiempo",
-      "Tiempo > 20kms",
       "Entregas",
       "Tiempo",
-      "Tiempo > 20kms",
       "Entregas",
       "Tiempo",
-      "Tiempo > 20kms",
       "Entregas",
       "Tiempo",
-      "Tiempo > 20kms",
       "Entregas",
       "Tiempo",
-      "Tiempo > 20kms",
       "Entregas",
       "Tiempo",
+      "Entregas",
+      "Tiempo",
+      "Entregas",
+      "Tiempo",
+      "Entregas",
+      "Subtotal Tiempo",
       "Tiempo > 20kms",
-      "Entregas Realizadas",
-      "Tiempo de Entregas",
-      "Tiempo > 20kms",
-      "Efectivo Recibido",
+      "Tiempo Auxiliar",
+      "Tiempo Total",
+      "Efectivo",
     ]
     let ordersByDateheaderRow = worksheet.addRow(ordersByDateHeader);
 
@@ -331,27 +399,27 @@ export class OrdersByDriverComponent implements OnInit {
       let array = [
         d.driver,
         d.fecha,
+        d.transTurism,
+        d.transTurismTime,
         d.moto,
         d.motoTime,
-        d.motoOver20kms,
         d.turismo,
         d.turismoTime,
-        d.turismoOver20kms,
         d.pickup,
         d.pickupTime,
-        d.pickupOver20kms,
         d.panel,
         d.panelTime,
-        d.panelOver20kms,
         d.pickupAuxiliar,
         d.pickupAuxiliarTime,
-        d.pickupAuxiliarOver20kms,
         d.panelAuxiliar,
         d.panelAuxiliarTime,
-        d.panelAuxiliarOver20kms,
+        d.camion11,
+        d.camion11Time,
         d.totalOrders,
         d.totalTime,
         d.totalOver20kms,
+        d.totalAuxTime,
+        d.tiempototal,
         d.totalMoney
       ]
       array1Row.push(array)
@@ -364,27 +432,27 @@ export class OrdersByDriverComponent implements OnInit {
     let arrayFooterRow = [
       "",
       "Subtotal:",
+      this.totals.transTurismOrders,
+      this.totals.transTurismTime,
       this.totals.motoOrders,
       this.totals.motoTime,
-      this.totals.motoOver20kms,
       this.totals.turismoOrders,
       this.totals.turismoTime,
-      this.totals.turismoOver20kms,
       this.totals.pickupOrders,
       this.totals.pickupTime,
-      this.totals.pickupOver20kms,
       this.totals.panelOrders,
       this.totals.panelTime,
-      this.totals.panelOver20kms,
       this.totals.pickupAuxiliarOrders,
       this.totals.pickupAuxiliarTime,
-      this.totals.pickupAuxiliarOver20kms,
       this.totals.panelAuxiliarOrders,
       this.totals.panelAuxiliarTime,
-      this.totals.panelAuxiliarOver20kms,
+      this.totals.camion11Orders,
+      this.totals.camion11Time,
       this.totals.totalOrders,
       this.totals.totalTime,
       this.totals.totalOver20kms,
+      this.totals.totalAuxTime,
+      this.totals.tiempoTotal,
       this.totals.totalMoney
     ]
 
@@ -447,12 +515,6 @@ export class OrdersByDriverComponent implements OnInit {
       }
     })
 
-    if (currentDriver.nomUsuario) {
-      fname = 'Reporte envíos por conductor (' + currentDriver.nomUsuario + ').pdf'
-    } else {
-      fname = 'Reporte envíos por conductor (todos).pdf'
-    }
-
     const pdf = new PdfMakeWrapper()
 
     let title = ''
@@ -462,10 +524,8 @@ export class OrdersByDriverComponent implements OnInit {
       title = 'Reporte de envíos - Todos los conductores'
     }
 
-    pdf.pageSize('tabloid')
+    pdf.pageSize('A2')
     pdf.pageOrientation('landscape')
-
-  
 
     pdf.add(
       new Txt(title).bold().end
@@ -481,161 +541,161 @@ export class OrdersByDriverComponent implements OnInit {
     )
 
     const header = [
+      [],
+      [],
       [
-
+        new Cell(new Txt('Transporte Turismo').bold().end).colSpan(2).end,
       ],
+      [],
       [
-
+        new Cell(new Txt('Moto').bold().end).colSpan(2).end,
       ],
-      [
-        new Cell(new Txt('Moto').bold().end).colSpan(3).end,
-      ],
-      [
-
-      ],
-      [
-
-      ],
+      [],
       [
         new Txt('').bold().end,
-        new Cell(new Txt('Turismo').bold().end).colSpan(3).end,
+        new Cell(new Txt('Turismo').bold().end).colSpan(2).end,
       ],
-      [
-
-      ],
-      [
-
-      ],
+      [],
       [
         new Txt('').bold().end,
-        new Cell(new Txt('Pick-Up').bold().end).colSpan(3).end,
+        new Cell(new Txt('Pick-Up').bold().end).colSpan(2).end,
       ],
-      [
-
-      ],
-      [
-
-      ],
+      [],
       [
         new Txt('').bold().end,
-        new Cell(new Txt('Panel').bold().end).colSpan(3).end,
+        new Cell(new Txt('Panel').bold().end).colSpan(2).end,
       ],
-      [
-
-      ],
-      [
-
-      ],
+      [],
       [
         new Txt('').bold().end,
-        new Cell(new Txt('PickUp + Auxiliar').bold().end).colSpan(3).end,
+        new Cell(new Txt('PickUp + Auxiliar').bold().end).colSpan(2).end,
       ],
-      [
-
-      ],
-      [
-
-      ],
+      [],
       [
         new Txt('').bold().end,
-        new Cell(new Txt('Panel + Auxiliar').bold().end).colSpan(3).end,
+        new Cell(new Txt('Panel + Auxiliar').bold().end).colSpan(2).end,
       ],
-      [
-
-      ],
-      [
-
-      ],
+      [],
       [
         new Txt('').bold().end,
-        new Cell(new Txt('Totales').bold().end).colSpan(3).end,
+        new Cell(new Txt('Camión 11 pies').bold().end).colSpan(2).end,
       ],
+      [],
       [
-
+        new Txt('').bold().end,
+        new Cell(new Txt('Totales').bold().end).colSpan(6).end,
       ],
-      [
-
-      ],
+      [],
+      [],
+      [],
+      [],
+      [],
     ]
 
-    const subHeader = [
+    pdf.add(
+      new Columns(header).alignment("center").end
+    )
+
+    const ordersByDateHeader = [
       "Conductor",
       "Fecha",
       "Entregas",
       "Tiempo",
-      "Efectivo",
       "Entregas",
       "Tiempo",
-      "Efectivo",
       "Entregas",
       "Tiempo",
-      "Efectivo",
       "Entregas",
       "Tiempo",
-      "Efectivo",
       "Entregas",
       "Tiempo",
-      "Efectivo",
       "Entregas",
       "Tiempo",
+      "Entregas",
+      "Tiempo",
+      "Entregas",
+      "Tiempo",
+      "Entregas",
+      "Subtotal Tiempo",
+      "Tiempo > 20kms",
+      "Tiempo Auxiliar",
+      "Tiempo Total",
       "Efectivo",
-      "Entregas Realizadas",
-      "Tiempo de Entregas",
-      "Efectivo Recibido"
     ]
 
-    let body = [
-      
-    ]
+    pdf.add(
+      new Columns(ordersByDateHeader).alignment("center").bold().end
+    )
 
     let array1Row = []
     this.consultResults.forEach(d => {
       let array = [
         d.driver,
         d.fecha,
+        d.transTurism,
+        d.transTurismTime,
         d.moto,
         d.motoTime,
-        d.motoMoney,
         d.turismo,
         d.turismoTime,
-        d.turismoMoney,
         d.pickup,
         d.pickupTime,
-        d.pickupMoney,
         d.panel,
         d.panelTime,
-        d.panelMoney,
         d.pickupAuxiliar,
         d.pickupAuxiliarTime,
-        d.pickupAuxiliarMoney,
         d.panelAuxiliar,
         d.panelAuxiliarTime,
-        d.panelAuxiliarMoney,
+        d.camion11,
+        d.camion11Time,
         d.totalOrders,
         d.totalTime,
+        d.totalOver20kms,
+        d.totalAuxTime,
+        d.tiempototal,
         d.totalMoney
       ]
       array1Row.push(array)
     })
 
     array1Row.forEach(res => {
-      body.push(res)
+      pdf.add(
+        new Columns(res
+        ).alignment("center").end
+      )
     })
 
-    let fArray = []
-    fArray.push(body)
+    let arrayFooterRow = [
+      "",
+      "Subtotal:",
+      this.totals.transTurismOrders,
+      this.totals.transTurismTime,
+      this.totals.motoOrders,
+      this.totals.motoTime,
+      this.totals.turismoOrders,
+      this.totals.turismoTime,
+      this.totals.pickupOrders,
+      this.totals.pickupTime,
+      this.totals.panelOrders,
+      this.totals.panelTime,
+      this.totals.pickupAuxiliarOrders,
+      this.totals.pickupAuxiliarTime,
+      this.totals.panelAuxiliarOrders,
+      this.totals.panelAuxiliarTime,
+      this.totals.camion11Orders,
+      this.totals.camion11Time,
+      this.totals.totalOrders,
+      this.totals.totalTime,
+      this.totals.totalOver20kms,
+      this.totals.totalAuxTime,
+      this.totals.tiempoTotal,
+      this.totals.totalMoney
+    ]
 
     pdf.add(
-      new Table([
-        header,
-        subHeader,
-        fArray
-      ]
-      ).end
+      new Columns(arrayFooterRow).bold().alignment("center").end
     )
-  
 
-    console.log(array1Row)
     pdf.create().open()
 
 

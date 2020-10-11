@@ -16,6 +16,7 @@ export interface Order {
   tiempo?: string
   estado?: State
   conductor?: User
+  auxiliar?: User
   tarifaBase?: number
   recargo?: number
   cTotal?: number
@@ -23,6 +24,8 @@ export interface Order {
   fechaEntrega?: Date
   delivery?: Delivery
   idEstado?: number
+  idConductor?: number
+  idAuxiliar?: number
   observaciones?: string
   coordsDestino?: string
   cargosExtra?: number

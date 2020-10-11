@@ -2,7 +2,7 @@
 <h2 mat-dialog-title>
   <i class="fa fa-box"></i> Detalles de Envío N° {{currentOrder.idDetalle}}
 
-  <button mat-icon-button class="float-right" [matMenuTriggerFor]="menu" *ngIf="currentUser.idPerfil == 1">
+  <button mat-icon-button class="float-right" [matMenuTriggerFor]="menu" *ngIf="currentUser.idPerfil == 1 || currentUser.idPerfil == 9">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
@@ -11,11 +11,19 @@
       <mat-icon>tune</mat-icon>
       <span>Cambiar Estado</span>
     </button>
+
     <button *ngIf="currentOrder.estado.idEstado == 34" mat-menu-item
             (click)="showAssignDriverDialog(currentOrder)">
       <mat-icon>assignment_ind</mat-icon>
       <span>Asignar Conductor</span>
     </button>
+
+    <button *ngIf="!currentOrder.auxiliar" mat-menu-item
+            (click)="showAssignAuxiliarDialog(currentOrder)">
+      <mat-icon>support</mat-icon>
+      <span>Asignar Auxiliar</span>
+    </button>
+
     <button mat-menu-item (click)="showAddExtrachargeDialog(currentOrder)">
       <mat-icon>attach_money</mat-icon>
       <span>Agregar Cargo Extra</span>
@@ -126,6 +134,18 @@
       <strong>
         <p *ngIf="currentOrder.conductor">{{currentOrder.conductor.nomUsuario + ' - ' + currentOrder?.conductor?.numCelular}}</p>
         <p *ngIf="!currentOrder.conductor">Aún no asignada</p>
+      </strong>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md">
+      Auxiliar:
+    </div>
+    <div class="col-md">
+      <strong>
+        <p *ngIf="currentOrder.auxiliar">{{currentOrder.auxiliar.nomUsuario + ' - ' + currentOrder?.auxiliar?.numCelular}}</p>
+        <p *ngIf="!currentOrder.auxiliar">Sin Registro</p>
       </strong>
     </div>
 

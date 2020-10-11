@@ -9,6 +9,8 @@ import {Surcharge} from "../../../../models/surcharge";
 import {SurchargesService} from "../../../../services/surcharges.service";
 import {Category} from "../../../../models/category";
 import {CategoriesService} from "../../../../services/categories.service";
+import {RateType} from "../../../../models/rate-type";
+import {RatesService} from "../../../../services/rates.service";
 
 @Component({
   selector: 'app-edit-surcharge-dialog',
@@ -25,6 +27,7 @@ export class EditSurchargeDialogComponent implements OnInit {
   filteredCustomers: Customer[]
   currSurch: Surcharge
   categories: Category[] = []
+  deliveryTypes: RateType [] = []
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
@@ -32,6 +35,7 @@ export class EditSurchargeDialogComponent implements OnInit {
     private usersService: UsersService,
     private surchargesService: SurchargesService,
     private categoriesServices: CategoriesService,
+    private ratesService: RatesService,
     public dialogRef: MatDialogRef<EditSurchargeDialogComponent>
   ) {
     this.currSurch = data.surcharge
@@ -46,7 +50,8 @@ export class EditSurchargeDialogComponent implements OnInit {
         kilomMaximo: [this.currSurch.kilomMaximo, Validators.required],
         monto: [this.currSurch.monto, Validators.required],
         idCliente: [1, Validators.required],
-        idCategoria: [this.currSurch.idCategoria, Validators.required]
+        idCategoria: [this.currSurch.idCategoria, Validators.required],
+        idTipoEnvio: [this.currSurch.idTipoEnvio, Validators.required]
       }
     )
 
@@ -59,6 +64,11 @@ export class EditSurchargeDialogComponent implements OnInit {
     const categoriesSubscription = this.categoriesServices.getAllCategories().subscribe(response => {
       this.categories = response.data
       categoriesSubscription.unsubscribe()
+    })
+
+    const ratesSubscripion = this.ratesService.getRateTypes().subscribe(response => {
+      this.deliveryTypes = response.data
+      ratesSubscripion.unsubscribe()
     })
   }
 

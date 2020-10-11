@@ -64,6 +64,7 @@
           *Por favor ingrese un número válido
         </mat-error>
       </mat-form-field>
+
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>email:</mat-label>
         <input matInput id="email" type="email" formControlName="email" required maxlength="50"
@@ -76,9 +77,11 @@
           *Por favor ingrese un email válido
         </mat-error>
       </mat-form-field>
-
     </div>
 
+    <div class="form-row">
+      <mat-slide-toggle formControlName="enviarNotificaciones">Enviar Notificaciones</mat-slide-toggle>
+    </div>
   </form>
 
 

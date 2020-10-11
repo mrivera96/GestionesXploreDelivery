@@ -10,7 +10,11 @@ import {formatDate} from "@angular/common";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {Workbook} from 'exceljs';
 import * as fs from 'file-saver';
-
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import {Cell, Columns, PdfMakeWrapper, Table, Txt} from "pdfmake-wrapper";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.pdfMake.vfs
 @Component({
   selector: 'app-payments-report',
   templateUrl: './payments-report.component.html',
@@ -201,6 +205,61 @@ export class PaymentsReportComponent implements OnInit {
       }
     })
 
+  }
+
+  generatePDF() {
+    //Titulo del reporte
+    const title = 'Reporte de pagos'
+    const pdf = new PdfMakeWrapper()
+
+    pdf.pageSize('legal')
+    pdf.pageOrientation('landscape')
+
+    pdf.add(
+      new Txt(title).bold().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    pdf.add(
+      new Txt('Desde : ' + this.f.initDate.value + ' Hasta: ' + this.f.finDate.value).italics().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    const paymentsHeader = ["N°", "Fecha de Pago", "Monto", "Tipo de Pago", "Cliente", "Referencia", "Banco", "Número de Autorización"]
+    
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    let arrayRow = []
+    let index = 1
+    this.consultResults.forEach(d => {
+      let array = [index, d.fechaPago, 'L. ' + d.monto, d.payment_type.nomTipoPago, d.customer.nomEmpresa,
+        d.referencia || 'N/A', d.banco || 'N/A', d.numAutorizacion || 'N/A']
+      arrayRow.push(array)
+      index++
+    })
+    
+    pdf.add(
+      new Columns(
+          paymentsHeader
+      ).alignment('center').bold().end
+    )
+
+    arrayRow.forEach(v => {
+      pdf.add(
+        new Columns(v).alignment('center').end
+      )
+    })
+   
+    const paymentstotals = ['', 'Total:', 'L. ' + this.totalAmount, '', '', '', '', ''];
+    pdf.add(
+      new Columns(paymentstotals).alignment('center').bold().end
+    )
+
+    pdf.create().open()
   }
 
 }

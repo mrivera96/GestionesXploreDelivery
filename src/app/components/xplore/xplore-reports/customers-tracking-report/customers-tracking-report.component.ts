@@ -60,7 +60,8 @@ export class CustomersTrackingReportComponent implements OnInit {
       rowReorder: false,
       dom: 'Bfrtip',
       buttons: [
-         'excel'
+         'excel',
+         'pdf'
       ],
       order: [1, 'desc'],
       responsive: true,
@@ -108,5 +109,7 @@ export class CustomersTrackingReportComponent implements OnInit {
 
     }
   }
+
+ 
 
 }

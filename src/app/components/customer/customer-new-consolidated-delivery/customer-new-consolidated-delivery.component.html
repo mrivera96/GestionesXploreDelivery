@@ -52,8 +52,8 @@
                                       category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
                                       ? '#FF8C00': '#000'}" class="cat-rb">
                       <span class="fa d-block text-center" style="font-size: 24px"
-                            [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
-                         'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4}"></span>
+                      [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
+                      'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4, 'fa-truck': category.idCategoria == 8}"></span>
                       {{category.descCategoria}}
                     </mat-radio-button>
                   </mat-radio-group>

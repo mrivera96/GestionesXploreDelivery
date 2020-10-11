@@ -703,7 +703,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   }
 
   setSelectedCategory() {
-
     this.categories.forEach(category => {
       if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
         this.selectedCategory = category

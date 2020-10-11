@@ -7,6 +7,11 @@ import {UsersService} from "../../../../services/users.service";
 import {formatDate} from "@angular/common";
 import {Workbook} from 'exceljs';
 import * as fs from 'file-saver';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import {Cell, Columns, PdfMakeWrapper, Table, Txt} from "pdfmake-wrapper";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.pdfMake.vfs
 
 @Component({
   selector: 'app-customer-balance-report',
@@ -184,8 +189,73 @@ export class CustomersBalanceReportComponent implements OnInit {
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-      fs.saveAs(blob, 'Reporte Pagos (' + this.f.initDate.value + ' - ' + this.f.finDate.value + ').xlsx');
+      fs.saveAs(blob, 'Reporte Balances (' + this.f.initDate.value + ' - ' + this.f.finDate.value + ').xlsx');
     })
+  }
+
+  generatePDF() {
+    //Titulo del reporte
+    const title = 'Reporte Balance de Clientes'
+    const pdf = new PdfMakeWrapper()
+
+    pdf.pageSize('letter')
+    pdf.pageOrientation('landscape')
+
+    pdf.add(
+      new Txt(title).bold().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    pdf.add(
+      new Txt('Desde : ' + this.f.initDate.value + ' Hasta: ' + this.f.finDate.value).italics().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    const paymentsHeader = [
+      "N°",
+      "Cliente",
+      "Envíos",
+      "Pagos",
+      "Balance"
+    ]
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    let arrayRow = []
+    let index = 1
+    this.consultResults.forEach(d => {
+      let array = [
+        index,
+        d.customer.nomEmpresa,
+        d.orders,
+        'L. ' + d.payments,
+        'L. ' + d.balance
+       ]
+      arrayRow.push(array)
+      index++
+    })
+    
+    pdf.add(
+      new Columns(
+          paymentsHeader
+      ).alignment('center').bold().end
+    )
+
+    arrayRow.forEach(v => {
+      pdf.add(
+        new Columns(v).alignment('center').end
+      )
+    })
+   
+    const paymentstotals = ['', 'Total:', this.totalOrders, 'L. ' + this.totalPayments, 'L. ' + this.totalBalance]
+    pdf.add(
+      new Columns(paymentstotals).alignment('center').bold().end
+    )
+
+    pdf.create().open()
   }
 
 }

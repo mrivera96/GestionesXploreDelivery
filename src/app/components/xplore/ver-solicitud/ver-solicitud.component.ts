@@ -11,6 +11,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {ChangeStateDialogComponent} from "./change-state-dialog/change-state-dialog.component";
 import { XploreChangeHourDialogComponent } from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
 import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
+import {OrderDetailDialogComponent} from "../../shared/order-detail-dialog/order-detail-dialog.component";
+import {User} from "../../../models/user";
+import {AuthService} from "../../../services/auth.service";
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -37,11 +40,14 @@ export class VerSolicitudComponent implements OnInit {
   states: State[]
   dtOptions: any
   dtTrigger: Subject<any> = new Subject()
+  currUser: User = {}
 
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
+              private authService: AuthService,
               public dialog: MatDialog) {
     this.loaders.loadingData = true
+    this.currUser = this.authService.currentUserValue
   }
 
   ngOnInit(): void {
@@ -158,6 +164,27 @@ export class VerSolicitudComponent implements OnInit {
       }
     })
 
+  }
+
+  showDetailDialog(order){
+    const dialogRef = this.dialog.open(OrderDetailDialogComponent,
+      {
+        data: {
+          currentOrder: order,
+          currentUser: this.currUser
+        }
+      }
+    )
+
+    /*dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.datatableElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.ngOnInit()
+          })
+      }
+    })*/
   }
 
 }

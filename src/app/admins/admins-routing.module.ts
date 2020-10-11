@@ -26,6 +26,7 @@ import {CustomersReportComponent} from "../components/xplore/xplore-reports/cust
 import {CustomersBalanceReportComponent} from "../components/xplore/xplore-reports/customer-balance-report/customers-balance-report.component";
 import {CustomersTrackingReportComponent} from "../components/xplore/xplore-reports/customers-tracking-report/customers-tracking-report.component";
 import { XploreWorkLinesComponent } from '../components/xplore/xplore-work-lines/xplore-work-lines.component';
+import {ReportRequestsComponent} from "../components/xplore/xplore-reports/report-requests/report-requests.component";
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -38,6 +39,7 @@ const routes: Routes = [
   {path: 'parametrizar-rubros', component: XploreWorkLinesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-tarifas', component: XploreRatesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-recargos', component: XploreSurchargesComponent, canActivate: [XploreGuard]},
+  {path: 'parametrizar-envio-reportes', component: ReportRequestsComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-horarios', component: XploreScheduleComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-cargos-extras', component: ExtraChargesComponent, canActivate: [XploreGuard]},
   {path: 'clientes', component: XploreCustomersComponent, canActivate: [XploreGuard]},

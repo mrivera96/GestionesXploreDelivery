@@ -27,4 +27,6 @@ export interface Delivery {
   fechaNoFormatted?: string
   coordsOrigen?: string
   isConsolidada?: boolean
+  isRuteo?: boolean
+  distTotal?: number
 }

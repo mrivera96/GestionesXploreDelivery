@@ -52,11 +52,21 @@
     <div class="container-fluid">
 
       <div class="row mt-2">
-        <div class="col-12">
-          <button class="float-right" [disabled]="consultResults.length == 0" mat-raised-button color="primary"
-                  (click)="generateExcel()">
-            Exportar a Excel
+        <div class="col">
+          <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+            Menú de Opciones
+            <mat-icon>more_vert</mat-icon>
           </button>
+          <mat-menu #menu="matMenu">
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generatePDF()">
+              Exportar PDF
+            </button>
+
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generateExcel()">
+              Exportar a Excel
+            </button>
+
+          </mat-menu>
         </div>
       </div>
 

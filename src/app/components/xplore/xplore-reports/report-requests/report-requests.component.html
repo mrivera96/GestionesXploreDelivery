@@ -1,0 +1,67 @@
+<!--CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Parametrización de Envío de Reportes
+    </mat-card-title>
+
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="row" *ngIf="loaders.loadingData">
+      <div class="col text-center">
+        <img src="assets/img/loading.svg" width="5%" alt="loading">
+        <p>Cargando información...</p>
+      </div>
+    </div>
+
+    <!-- CONTAINER START -->
+
+    <div class="row justify-content-end">
+      <div class="col"><button mat-raised-button (click)="showAddDialog()" type="button" color="primary" class="float-right mb-2">
+          <i class="fa fa-plus"></i>
+          Agregar Registro
+        </button>
+      </div>
+
+    </div>
+    <!-- CONTAINER BODY START -->
+
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+             class="compact display" style="width:100%">
+        <thead>
+        <tr>
+          <th>N°</th>
+          <th>Cliente</th>
+          <th>Correo Electrónico</th>
+<!--          <th data-priority="1">Acción</th>-->
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let rRequest of reportRequests; let idx = index">
+          <td>{{idx + 1}}</td>
+          <td>{{rRequest.customer.nomEmpresa}}</td>
+          <td>{{rRequest.correo}}</td>
+          <!--<td>
+            <a (click)="showEditForm(category.idCategoria)" style="color: #0071A2">
+              <i class="fa fa-edit"></i> Editar
+            </a>
+          </td>-->
+
+        </tr>
+        </tbody>
+
+      </table>
+    </div>
+
+    <!-- CONTAINER END -->
+  </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->
+
+
+
+

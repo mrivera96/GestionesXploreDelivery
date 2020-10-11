@@ -771,30 +771,31 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.fileContentArray.forEach(order => {
       let myOrder = order.split('|')
 
-      this.currOrder.nFactura = myOrder[0]
-      this.currOrder.nomDestinatario = myOrder[1]
-      this.currOrder.numCel = myOrder[2].trim()
-      this.currOrder.instrucciones = myOrder[3]
-      this.currOrder.direccion = myOrder[4]
-      this.currOrder.distancia = ''
-      this.currOrder.tarifaBase = 0
-      this.currOrder.recargo = 0
-      this.currOrder.cTotal = 0
-
+      let myDetail = {
+        nFactura: myOrder[0],
+        nomDestinatario: myOrder[1],
+        numCel: myOrder[2].trim(),
+        instrucciones: myOrder[3],
+        direccion: myOrder[4],
+        distancia: '',
+        tarifaBase: 0,
+        recargo: 0,
+        cTotal: 0
+      }
 
       let errs = 0
 
-      if (this.currOrder.nFactura.length > 250) {
+      if (myDetail.nFactura.length > 250) {
         errs++
-      } else if (this.currOrder.nomDestinatario.length > 150) {
+      } else if (myDetail.nomDestinatario.length > 150) {
         errs++
-      } else if (this.currOrder.numCel.length > 9) {
+      } else if (myDetail.numCel.length > 9) {
         errs++
-      } else if (this.currOrder.instrucciones.length > 150) {
+      } else if (myDetail.instrucciones.length > 150) {
         errs++
-      } else if (this.currOrder.direccion.length > 250) {
+      } else if (myDetail.direccion.length > 250) {
         errs++
-      } else if (this.currOrder.distancia.length > 10) {
+      } else if (myDetail.distancia.length > 10) {
         errs++
       }
 
@@ -809,7 +810,106 @@ export class CustomerNewDeliveryComponent implements OnInit {
       let ordersCount = this.orders.length + 1
       //
       this.calculateRate(ordersCount)
-      this.calculateDistance()
+      this.calculateFileDistance(myDetail)
+
+    })
+
+  }
+
+  calculateFileDistance(currOrder) {
+    const salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value
+    const entrega = currOrder.direccion
+    const tarifa = this.pago.baseRate
+
+    if (this.orders.length == 0) {
+      const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCoords',
+        lugar: salida,
+      }).subscribe((response) => {
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
+        cordsSubscription.unsubscribe()
+      })
+    }
+
+    const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'calculateDistance',
+      salida: salida,
+      entrega: entrega,
+      tarifa: tarifa
+    }).subscribe((response) => {
+      currOrder.distancia = response.distancia
+      currOrder.tiempo = response.tiempo
+      const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
+      currOrder.tarifaBase = calculatedPayment.baseRate
+      currOrder.recargo = calculatedPayment.surcharges
+      currOrder.cargosExtra = calculatedPayment.cargosExtra
+      currOrder.cTotal = calculatedPayment.total
+
+      this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCoords',
+        lugar: entrega,
+      }).subscribe((response) => {
+        currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
+      })
+
+      this.deliveryForm.get('order').reset()
+      this.orders.push(currOrder)
+      this.pagos.push(calculatedPayment)
+      this.loaders.loadingAdd = false
+      this.selectedExtraChargeOption = {}
+      this.selectedExtraCharge = null
+
+      if (this.orders.length > 1) {
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.dtTrigger.next()
+          })
+      } else {
+        if (this.dtElement.dtInstance) {
+          this.dtElement.dtInstance.then(
+            (dtInstance: DataTables.Api) => {
+              dtInstance.destroy()
+              this.dtTrigger.next()
+            })
+        } else {
+          this.dtTrigger.next()
+        }
+
+      }
+
+      this.agregado = true
+      setTimeout(() => {
+        this.agregado = false;
+      }, 2000)
+
+      this.orders.forEach(value => {
+        if (value.tarifaBase != this.pago.baseRate) {
+          const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
+          let i = this.orders.indexOf(value)
+          value.tarifaBase = this.pago.baseRate
+          value.cargosExtra = nPay.cargosExtra
+          value.recargo = nPay.surcharges
+          value.cTotal = nPay.total
+          this.pagos[i].baseRate = nPay.baseRate
+          this.pago[i].cargosExtra = nPay.cargosExtra
+          this.pagos[i].surcharges = nPay.surcharges
+          this.pagos[i].total = nPay.total
+        }
+      })
+      cDistanceSubscription.unsubscribe()
+      this.calculatePayment()
+
+    }, error => {
+      error.subscribe(error => {
+        this.prohibitedDistanceMsg = error.statusText
+        this.prohibitedDistance = true
+        this.loaders.loadingAdd = false
+        cDistanceSubscription.unsubscribe()
+        setTimeout(() => {
+          this.prohibitedDistance = false;
+        }, 2000)
+      })
 
     })
 

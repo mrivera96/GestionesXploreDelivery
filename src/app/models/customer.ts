@@ -17,4 +17,5 @@ export interface Customer {
   subtotalShow?: string
   paidShow?: string
   balanceShow?: string
+  enviarNotificaciones?: boolean
 }

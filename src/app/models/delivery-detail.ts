@@ -19,7 +19,9 @@ export interface DeliveryDetail {
   fechaEntrega?: string
   nomRecibio?: string
   idConductor?: number
+  idAuxiliar?: number
   conductor?: User
+  auxiliar?: User
   tarifaBase?: number
   recargo?: number
   cTotal?: number

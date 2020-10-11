@@ -29,8 +29,8 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import { OrderDetailDialogComponent } from './components/shared/order-detail-dialog/order-detail-dialog.component';
 import {MatMenuModule} from "@angular/material/menu";
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
-import pdfFonts from "pdfmake/build/vfs_fonts"; // fonts provided for pdfmake
- 
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
 @NgModule({
@@ -42,6 +42,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
         PasswordRecoveryComponent,
         ViewPhotosDialogComponent,
         OrderDetailDialogComponent,
+
     ],
 
     imports: [

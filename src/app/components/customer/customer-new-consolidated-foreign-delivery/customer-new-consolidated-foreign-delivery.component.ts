@@ -281,7 +281,7 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
       this.currOrder.recargo = 0
       this.currOrder.cTotal = 0
       this.currOrder.cargosExtra = 0
-      
+
 
       let ordersCount = this.orders.length + 1
       //
@@ -482,7 +482,15 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
   }
 
   calculateRate(ordersCount) {
-    this.pago.baseRate = this.selectedRate.precio
+    this.rates.forEach(value => {
+      if (ordersCount >= value?.entregasMinimas
+        && ordersCount <= value?.entregasMaximas
+        && this.deliveryForm.get('deliveryHeader.idCategoria').value == value?.idCategoria) {
+        this.pago.baseRate = value.precio
+      } else if (ordersCount == 0) {
+        this.pago.baseRate = 0.00
+      }
+    })
   }
 
   calculateOrderPayment(distance) {
@@ -494,7 +502,7 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
       'total': 0.00
     }
 
-    if (distance > this.selectedRate?.consolidated_detail?.radioMaximoEntrega) {    
+    if (distance > this.selectedRate?.consolidated_detail?.radioMaximoEntrega) {
       this.surcharges.forEach(value => {
         if (distance >= Number(value.kilomMinimo)
           && distance <= Number(value.kilomMaximo)
@@ -510,7 +518,7 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
         orderPayment.cargosExtra = +orderPayment.cargosExtra + +extra.costo
         orderPayment.total = +orderPayment.total + +extra.costo
       })
-      
+
     } else {
       orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
     }
@@ -737,11 +745,11 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
   }
 
   setSelectedCategory() {
-
     this.categories.forEach(category => {
       if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
         this.selectedCategory = category
         this.surcharges = this.selectedCategory.surcharges
+        this.rates = this.selectedCategory.ratesToShow
       }
     })
 
@@ -961,9 +969,11 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
     }
     if (checked == true) {
       this.currOrder.extras.push(extraCharge)
+      this.befCost += +extraCharge.costo
     } else {
       const idx = this.currOrder.extras.indexOf(extraCharge)
       this.currOrder.extras.splice(idx, 1)
+      this.befCost -= extraCharge.costo
     }
   }
 

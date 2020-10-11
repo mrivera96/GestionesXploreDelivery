@@ -66,6 +66,9 @@ import { AddCustomerSurchargeDialogComponent } from '../components/xplore/xplore
 import { XploreWorkLinesComponent } from '../components/xplore/xplore-work-lines/xplore-work-lines.component';
 import { EditWorklineDialogComponent } from '../components/xplore/xplore-work-lines/edit-workline-dialog/edit-workline-dialog.component';
 import { NewWorklineDialogComponent } from '../components/xplore/xplore-work-lines/new-workline-dialog/new-workline-dialog.component';
+import {AssignAuxiliarComponent} from "../components/shared/assign-auxiliar/assign-auxiliar.component";
+import {ReportRequestsComponent} from "../components/xplore/xplore-reports/report-requests/report-requests.component";
+import {AddRequestsDialogComponent} from "../components/xplore/xplore-reports/report-requests/add-requests-dialog/add-requests-dialog.component";
 
 @NgModule({
   declarations: [
@@ -129,7 +132,9 @@ import { NewWorklineDialogComponent } from '../components/xplore/xplore-work-lin
     XploreWorkLinesComponent,
     EditWorklineDialogComponent,
     NewWorklineDialogComponent,
-
+    AssignAuxiliarComponent,
+    ReportRequestsComponent,
+    AddRequestsDialogComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,

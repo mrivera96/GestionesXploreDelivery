@@ -14,7 +14,7 @@
     <form [formGroup]="asignForm" *ngIf="!loaders.loadingData">
       <mat-form-field appearance="outline">
         <mat-label>Conductor:</mat-label>
-        <mat-select formControlName="idConductor">
+        <mat-select formControlName="idConductor" required>
           <mat-option [value]="null">-Seleccione un conductor-</mat-option>
           <mat-option *ngFor="let conductor of conductores" value="{{conductor.idUsuario}}">
             {{conductor?.nomUsuario}}

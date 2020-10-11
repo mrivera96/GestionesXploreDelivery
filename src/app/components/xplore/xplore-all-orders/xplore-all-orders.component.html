@@ -66,10 +66,9 @@
               <option *ngFor="let state of states" [value]="state.descEstado">{{state.descEstado}}</option>
               <option value="Solicitud de Reservación">Solicitud de Reservación</option>
             </select>
-          </th>   
+          </th>
           <th></th>
           <th></th>
-          <th></th>       
         </tr>
         </tfoot>
         <thead>
@@ -79,17 +78,16 @@
           <th>Cliente</th>
           <th>Fecha de Reserva</th>
           <th data-priority="1">Destinatario</th>
-          <th data-priority="1">Celular del Destinatario</th>
+          <th>Celular del Destinatario</th>
           <th>Dirección</th>
           <!--<th>Detalle</th>
           <th>Distancia</th>
           <th>Recargo</th>
           <th>Cargos Extra</th>-->
-          <th data-priority="1">Costo Total</th>
-          <th data-priority="1">Estado</th>
+          <th>Costo Total</th>
+          <th>Estado</th>
           <!--<th>Observaciones</th>-->
           <th>Conductor</th>
-          <th>Fotografías</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
@@ -114,18 +112,21 @@
             <p *ngIf="!order.conductor">Aún no asignada</p>
           </td>
           <td>
-            <button mat-raised-button *ngIf="order.photography.length > 0" type="button"
-                    (click)="openPhotosDialog(order.photography)">
-              <mat-icon>photo_camera</mat-icon>
-              <span>Ver Fotografías</span>
+            <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <p *ngIf="order.photography.length ==0">N/A</p>
-          </td>
-          <td>
-            <button mat-raised-button type="button" (click)="showDetailDialog(order)">
-              <mat-icon>visibility</mat-icon>
-              Ver Detalles
-            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item *ngIf="order.photography.length > 0" type="button"
+                      (click)="openPhotosDialog(order.photography)">
+                <mat-icon>photo_camera</mat-icon>
+                <span>Ver Fotografías</span>
+              </button>
+
+              <button mat-menu-item type="button" (click)="showDetailDialog(order)">
+                <mat-icon>visibility</mat-icon>
+                Ver Detalles
+              </button>
+            </mat-menu>
           </td>
           <!--
           <td *ngIf="currUser.idPerfil === '1'">

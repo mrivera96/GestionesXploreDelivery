@@ -206,6 +206,16 @@ export class DeliveriesService {
       })
   }
 
+  assigOrderAuxiliar(orderId, auxiliarId) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'assignOrderAuxiliar',
+        idDetalle: orderId,
+        idAuxiliar: auxiliarId,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
   addExtraChargeToOrder(form) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {

@@ -8,6 +8,8 @@ import {SurchargesService} from "../../../../services/surcharges.service";
 import {Customer} from "../../../../models/customer";
 import {Category} from "../../../../models/category";
 import {CategoriesService} from "../../../../services/categories.service";
+import {RateType} from "../../../../models/rate-type";
+import {RatesService} from "../../../../services/rates.service";
 
 @Component({
   selector: 'app-new-surcharge-dialog',
@@ -26,11 +28,13 @@ export class NewSurchargeDialogComponent implements OnInit {
   surchargeCategories: Category[] = []
   isGeneral: boolean = false
   surchargeCustomers: Customer[] = []
+  deliveryTypes: RateType [] = []
   constructor(
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
     private usersService: UsersService,
     private categoriesServices: CategoriesService,
+    private ratesService: RatesService,
     private surchargesService: SurchargesService,
     public dialogRef: MatDialogRef<NewSurchargeDialogComponent>
   ) { }
@@ -44,7 +48,8 @@ export class NewSurchargeDialogComponent implements OnInit {
         kilomMaximo: ['', Validators.required],
         monto: ['', Validators.required],
         idCliente: [null],
-        idCategoria:[null,Validators.required]
+        idCategoria:[null,Validators.required],
+        idTipoEnvio: [1, Validators.required]
       }
     )
 
@@ -57,6 +62,11 @@ export class NewSurchargeDialogComponent implements OnInit {
     const categoriesSubscription = this.categoriesServices.getAllCategories().subscribe(response => {
       this.categories = response.data
       categoriesSubscription.unsubscribe()
+    })
+
+    const ratesSubscripion = this.ratesService.getRateTypes().subscribe(response => {
+      this.deliveryTypes = response.data
+      ratesSubscripion.unsubscribe()
     })
   }
   get fNew() {

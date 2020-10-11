@@ -11,6 +11,13 @@ import { OrdersByCategory } from "../../../../models/orders-by-category";
 import { DeliveryDetail } from "../../../../models/delivery-detail";
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import {User} from "../../../../models/user";
+import {Cell, Columns, PdfMakeWrapper, Table, Txt} from "pdfmake-wrapper";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.pdfMake.vfs
+
 
 @Component({
   selector: 'app-orders-by-cutomer',
@@ -317,11 +324,12 @@ export class OrdersByCustomerComponent implements OnInit {
       "Dirección",
       "Detalle",
       "Distancia",
+      "Tarifa Base",
       "Recargo",
       "Cargos Extra",
-      "Detalle Cargo Extra",
       "Costo",
       "Estado",
+      "Detalle Cargo Extra",
       "Observaciones",
       "Conductor"
     ]
@@ -353,11 +361,12 @@ export class OrdersByCustomerComponent implements OnInit {
         d.direccion,
         d.nFactura,
         d.distancia,
+        Number(d.tarifaBase),
         Number(d.recargo),
         Number(d.cargosExtra),
-        orderEC,
         Number(d.cTotal),
         d.estado.descEstado + ' Fecha: ' + d.fechaEntrega,
+        orderEC,
         d.observaciones,
         d.conductor?.nomUsuario
       ]
@@ -378,6 +387,7 @@ export class OrdersByCustomerComponent implements OnInit {
     worksheet.getColumn(4).width = 30;
     worksheet.getColumn(5).width = 40;
     worksheet.getColumn(6).width = 40;
+    worksheet.getColumn(8).width = 40;
     worksheet.getColumn(9).width = 40;
     worksheet.getColumn(10).width = 40;
 
@@ -385,12 +395,195 @@ export class OrdersByCustomerComponent implements OnInit {
     worksheet.getColumn(12).width = 40;
     worksheet.getColumn(13).width = 40;
     worksheet.getColumn(14).width = 40;
+    worksheet.getColumn(15).width = 40;
 
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       fs.saveAs(blob, 'Reporte envíos (' + this.currenCustomer.nomEmpresa + ').xlsx');
     })
+  }
+
+  generatePDF() {
+    //Titulo del reporte
+    const title = 'Reporte de envíos - ' + this.currenCustomer.nomEmpresa;
+
+    const pdf = new PdfMakeWrapper()
+
+    pdf.pageSize('A1')
+    pdf.pageOrientation('landscape')
+
+    pdf.add(
+      new Txt(title).bold().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    pdf.add(
+      new Txt('Desde : ' + this.f.initDate.value + ' Hasta: ' + this.f.finDate.value).italics().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    //Tabla envios por categorias
+    pdf.add(
+      new Txt('Envíos por categorías').bold().end
+    )
+
+    const ordersByCategoryHeader = [
+      "N°",
+      "Categoría",
+      "Envíos Realizados",
+      "Recargos",
+      "Cargos Extra",
+      "Costos Totales"
+    ]
+
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    let arrayRow = []
+    let index = 1
+    this.ordersByCategory.forEach(d => {
+      let array = [index, d.category, d.orders, 'L. ' + d.totalSurcharges, 'L. ' + d.totalExtraCharges, 'L. ' + d.cTotal]
+      arrayRow.push(array)
+      index++
+    })
+
+    pdf.add(
+      new Columns(
+          ordersByCategoryHeader
+      ).bold().end
+    )
+    arrayRow.forEach(res => {
+      pdf.add(
+        new Columns(
+            res
+        ).end
+      )
+    })
+    const ordersCategoriestotals = ['', 'Total:', this.ordersInRange, 'L. ' + this.totalSurcharges, 'L. ' + this.totalExtracharges,  'L. ' + this.totalCosts]
+    pdf.add(
+      new Columns(ordersCategoriestotals).bold().end
+    )
+
+    //Tabla envios por fecha
+    pdf.add(
+      pdf.ln(2)
+    )
+    const rangeTitle = 'Envíos por Fecha'
+
+    pdf.add(
+      new Txt(rangeTitle).bold().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    const ordersByDateHeader = ["Cliente", "fecha", "Envíos Realizados"]
+
+    pdf.add(
+      new Columns(ordersByDateHeader).bold().end
+    )
+
+    let array1Row = []
+    this.consultResults.forEach(d => {
+      let array = [d.customer, d.fecha, d.orders]
+      array1Row.push(array)
+      index++
+    })
+
+    array1Row.forEach(res => {
+      pdf.add(
+        new Columns(
+          res
+        ).end
+      )
+    })
+
+    const ordersRange =['', 'Total:', this.ordersInRange]
+    pdf.add(
+      new Columns(
+        ordersRange
+      ).bold().end
+    )
+
+    //Tabla detalles de envios
+
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    const detailTitle = 'Detalles de Envíos'
+
+    pdf.add(
+      new Txt(detailTitle).bold().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    const ordersHeader = [
+      "N° Envío",
+      "N° Reserva",
+      "Destinatario",
+      "Celular del Destinatario",
+      "Dirección",
+      "Detalle",
+      "Distancia",
+      "Tarifa Base",
+      "Recargo",
+      "Cargos Extra",
+      "Costo",
+      "Estado",
+      "Detalle Cargo Extra",
+      "Observaciones",
+      "Conductor"
+    ]
+
+    pdf.add(
+      new Columns(
+        ordersHeader
+      ).bold().alignment('center').end
+    )
+
+    let detailsRow = []
+    this.orders.forEach(d => {
+      let orderEC = ''
+      d.extra_charges.forEach(value => {
+        orderEC = orderEC + ' ' + value.extracharge.nombre
+      })
+
+      let array = [
+        d.idDetalle,
+        Number(d.idDelivery),
+        d.nomDestinatario,
+        d.numCel,
+        d.direccion,
+        d.nFactura,
+        d.distancia,
+        'L. ' + Number(d.tarifaBase),
+        'L. ' + Number(d.recargo),
+        'L. ' + Number(d.cargosExtra),
+        'L. ' + Number(d.cTotal),
+        d.estado.descEstado + ' Fecha: ' + d.fechaEntrega,
+        orderEC || 'N/A',
+        d.observaciones || 'N/A',
+        d.conductor?.nomUsuario
+      ]
+      detailsRow.push(array)
+
+    })
+
+    detailsRow.forEach(res => {
+      pdf.add(
+        new Columns(res).alignment('center').end
+      )
+    })
+
+    pdf.create().open()
+
   }
 
 }

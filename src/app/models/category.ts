@@ -8,6 +8,6 @@ export interface Category {
   isActivo?: boolean
   descripcion?: string
   categoryExtraCharges?: ExtraChargeCategory[]
-  ratesToShow?: Rate
+  ratesToShow?: Rate[]
   surcharges?: Surcharge[]
 }

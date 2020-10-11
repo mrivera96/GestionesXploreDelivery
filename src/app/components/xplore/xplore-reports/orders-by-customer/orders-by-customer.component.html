@@ -48,7 +48,7 @@
 
 
             <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
-              (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+                    (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
               <mat-icon>search</mat-icon>
             </button>
           </div>
@@ -66,44 +66,53 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12">
-          <button class="float-right" [disabled]="consultResults.length == 0" mat-raised-button color="primary"
-            (click)="generateExcel()">
-            Exportar a Excel
+      <div class="row mt-2">
+        <div class="col">
+          <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+            Menú de Opciones
+            <mat-icon>more_vert</mat-icon>
           </button>
-        </div>
-      </div>
+          <mat-menu #menu="matMenu">
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generatePDF()">
+              Exportar PDF
+            </button>
 
-      <div class="row">
-        <div class="col">
-          <h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <p><strong>Envíos Totales: {{totalCustomerOrders}}</strong></p>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <h2>Envíos desde {{f.initDate.value}} hasta {{f.finDate.value}}</h2>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <h3>Envíos por categoría</h3>
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generateExcel()">
+              Exportar a Excel
+            </button>
+          </mat-menu>
         </div>
       </div>
 
 
-      <div class="table-responsive">
+        <div class="row">
+          <div class="col">
+            <h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2>
+          </div>
+        </div>
 
-        <table datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
-          <thead>
+        <div class="row">
+          <div class="col">
+            <p><strong>Envíos Totales: {{totalCustomerOrders}}</strong></p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <h2>Envíos desde {{f.initDate.value}} hasta {{f.finDate.value}}</h2>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <h3>Envíos por categoría</h3>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+
+          <table datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+            <thead>
             <tr>
               <th>N°</th>
               <th>Categoría</th>
@@ -112,8 +121,8 @@
               <th>Cargos Extra</th>
               <th>Costos Totales</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
 
             <tr *ngFor="let res of ordersByCategory; let i = index">
               <td>{{i + 1}}</td>
@@ -124,8 +133,8 @@
               <td>L. {{res?.cTotal}}</td>
             </tr>
 
-          </tbody>
-          <tfoot style="display: table-footer-group;">
+            </tbody>
+            <tfoot style="display: table-footer-group;">
             <tr>
               <th></th>
               <th>Total:</th>
@@ -136,24 +145,19 @@
               <th>L. {{ totalExtracharges }}</th>
               <th>L. {{ totalCosts }}</th>
             </tr>
-          </tfoot>
+            </tfoot>
 
-        </table>
-      </div>
-
-
-      <div class="row">
-        <div class="col">
-          <h3>Envíos por fecha</h3>
+          </table>
         </div>
-      </div>
+        <div class="row">
+          <div class="col">
+            <h3>Envíos por fecha</h3>
+          </div>
+        </div>
+        <div class="table-responsive">
 
-
-      <!-- CONTAINER BODY START -->
-      <div class="table-responsive">
-
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" class="display compact" style="width:100%">
-          <thead>
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" class="display compact" style="width:100%">
+            <thead>
 
             <tr>
               <th>Cliente</th>
@@ -161,8 +165,8 @@
               <th>Envíos Realizados</th>
             </tr>
 
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
 
             <tr *ngFor="let result of consultResults">
               <td>{{result.customer}}</td>
@@ -170,9 +174,8 @@
               <td>{{result.orders}}</td>
             </tr>
 
-
-          </tbody>
-          <tfoot style="display: table-footer-group;">
+            </tbody>
+            <tfoot style="display: table-footer-group;">
             <tr>
               <th></th>
               <th>Total:</th>
@@ -180,22 +183,20 @@
                 {{ordersInRange}}
               </th>
             </tr>
-          </tfoot>
+            </tfoot>
 
-        </table>
-      </div>
-
-
-      <div class="row">
-        <div class="col">
-          <h3>Detalles de envíos</h3>
+          </table>
         </div>
-      </div>
 
 
-      <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2" class="display compact" style="width:100%">
-          <thead>
+        <div class="row">
+          <div class="col">
+            <h3>Detalles de envíos</h3>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2" class="display compact" style="width:100%">
+            <thead>
             <tr>
               <th>N° Envío</th>
               <th>N° Reserva</th>
@@ -204,16 +205,17 @@
               <th>Dirección</th>
               <th>Detalle</th>
               <th>Distancia</th>
+              <th>Tarifa Base</th>
               <th>Recargo</th>
               <th>Cargos Extra</th>
-              <th>Detalle Cargo Extra</th>
               <th>Costo</th>
               <th>Estado</th>
+              <th>Detalle Cargo Extra</th>
               <th>Observaciones</th>
               <th>Conductor</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
 
             <tr *ngFor=" let i = index;let order of orders;">
               <td>{{order.idDetalle}}</td>
@@ -223,13 +225,14 @@
               <td>{{order.direccion}}</td>
               <td>{{order.nFactura}}</td>
               <td>{{order.distancia}}</td>
+              <td>L. {{order.tarifaBase }}</td>
               <td>L. {{order.recargo }}</td>
               <td>L. {{order.cargosExtra }}</td>
-              <td>
-                <p *ngFor="let extraCharge of order.extra_charges">{{extraCharge.extracharge.nombre}}</p>
-              </td>
               <td>L. {{order.cTotal }}</td>
               <td>{{order.estado.descEstado + ' Fecha: ' + order.fechaEntrega}}
+              </td>
+              <td>
+                <p *ngFor="let extraCharge of order.extra_charges">{{extraCharge.extracharge.nombre}}</p>
               </td>
               <td>{{order.observaciones || 'N/A'}}</td>
               <td>
@@ -238,10 +241,13 @@
               </td>
 
             </tr>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
 
-      </div>
+        </div>
+
+      <!-- CONTAINER BODY START -->
+
 
       <!-- CONTAINER END -->
     </div>

@@ -49,7 +49,8 @@ export class EditCustomerDialogComponent implements OnInit {
       email: [this.currCustomer.email, [
         Validators.required,
         Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"),
-        Validators.maxLength(50)]]
+        Validators.maxLength(50)]],
+      enviarNotificaciones:[+this.currCustomer.enviarNotificaciones, Validators.required]
     })
   }
   get f() {

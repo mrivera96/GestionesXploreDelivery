@@ -34,7 +34,8 @@ export class AddExtraChargeOptionDialogComponent implements OnInit {
   initialize() {
     this.exChrgOptForm = this.formBuilder.group({
       descripcion: ['', [Validators.required, Validators.maxLength(100)]],
-      costo:[1,[Validators.required, Validators.min(0)]]
+      costo:[1,[Validators.required, Validators.min(0.1)]],
+      tiempo:[1,[Validators.required, Validators.min(1)]]
     })
   }
 

@@ -155,6 +155,11 @@
           <mat-icon>business_center</mat-icon>
           Rubros
         </a>
+
+        <a [routerLink]="['admins/parametrizar-envio-reportes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>send</mat-icon>
+          Envío de Reportes
+        </a>
       </mat-nav-list>
     </mat-nav-list>
     <!-- ONLY XPLORE USER -->
@@ -190,13 +195,13 @@
       </a>
 
       <a *ngIf="currentUser.permiteConsolidada" (click)="sidenav.close()" [routerLink]="['customers/envio-consolidado']"
-        mat-list-item>
+         mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery (Carga Consolidada)
       </a>
 
       <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
-        [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
+         [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery Foráneo (Carga Consolidada)
       </a>

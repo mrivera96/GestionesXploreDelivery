@@ -1,19 +1,19 @@
-import {Component, OnInit, Inject} from '@angular/core';
-import {FormGroup, FormControl, Validators} from '@angular/forms';
-import {User} from 'src/app/models/user';
-import {DeliveriesService} from 'src/app/services/deliveries.service';
-import {UsersService} from 'src/app/services/users.service';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {SuccessModalComponent} from '../success-modal/success-modal.component';
-import {ErrorModalComponent} from '../error-modal/error-modal.component';
-import {Observable, Subject} from 'rxjs';
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {User} from "../../../models/user";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {UsersService} from "../../../services/users.service";
+import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import {Observable} from "rxjs";
+import {SuccessModalComponent} from "../success-modal/success-modal.component";
+import {ErrorModalComponent} from "../error-modal/error-modal.component";
 
 @Component({
-  selector: 'app-assign-driver',
-  templateUrl: './assign-driver.component.html',
-  styles: []
+  selector: 'app-assign-auxiliar',
+  templateUrl: './assign-auxiliar.component.html',
+  styleUrls: ['./assign-auxiliar.component.css']
 })
-export class AssignDriverComponent implements OnInit {
+export class AssignAuxiliarComponent implements OnInit {
   asignForm: FormGroup
   loaders = {
     'loadingData': false
@@ -32,7 +32,7 @@ export class AssignDriverComponent implements OnInit {
 
   ngOnInit(): void {
     this.asignForm = new FormGroup({
-      idConductor: new FormControl(null, [Validators.required]),
+      idAuxiliar: new FormControl(null, [Validators.required]),
     })
 
     const usersSubscription = this.usersService.getDrivers().subscribe(response => {
@@ -45,7 +45,7 @@ export class AssignDriverComponent implements OnInit {
     if (this.asignForm.valid) {
       this.loaders.loadingData = true
 
-      const deliveriesSubscription = this.deliveriesService.assigOrder(this.orderId, this.asignForm.get('idConductor').value).subscribe(response => {
+      const deliveriesSubscription = this.deliveriesService.assigOrderAuxiliar(this.orderId, this.asignForm.get('idAuxiliar').value).subscribe(response => {
         this.loaders.loadingData = false
         this.openSuccessDialog('Asignación de envío', response.data)
         deliveriesSubscription.unsubscribe()
@@ -67,16 +67,19 @@ export class AssignDriverComponent implements OnInit {
       }
     })
 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   location.reload(true)
-    // })
+    dialogRef.afterClosed().subscribe(result => {
+      this.dialog.closeAll()
+    })
   }
 
   openErrorDialog(error: string, reload: boolean): void {
-    this.dialog.open(ErrorModalComponent, {
+    const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
         msgError: error
       }
     })
+
+
   }
+
 }

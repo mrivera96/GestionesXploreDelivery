@@ -75,6 +75,18 @@
         <mat-icon matSuffix>list</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Tipo de envío:</mat-label>
+        <mat-select  formControlName="idTipoEnvio" placeholder="- Seleccione un tipo de envío -"
+                     required>
+          <mat-option *ngFor="let delType of deliveryTypes" value="{{delType.idTipoTarifa}}">
+            {{delType.descTipoTarifa}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>local_shipping</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
     </div>
 
   </form>

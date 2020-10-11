@@ -5,6 +5,7 @@ import {AssignDriverComponent} from "../assign-driver/assign-driver.component";
 import {AddOrderExtrachargeDialogComponent} from "../add-order-extracharge-dialog/add-order-extracharge-dialog.component";
 import {ChangeOrderStateDialogComponent} from "../change-order-state-dialog/change-order-state-dialog.component";
 import {User} from "../../../models/user";
+import {AssignAuxiliarComponent} from "../assign-auxiliar/assign-auxiliar.component";
 
 @Component({
   selector: 'app-order-detail-dialog',
@@ -40,8 +41,20 @@ export class OrderDetailDialogComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       location.reload()
     })
+  }
 
+  showAssignAuxiliarDialog(currOrder){
+    const dialogRef = this.dialog.open(AssignAuxiliarComponent,
+      {
+        data: {
+          order: currOrder.idDetalle
+        }
+      }
+    )
 
+    dialogRef.afterClosed().subscribe(result => {
+        location.reload()
+    })
   }
 
   showAddExtrachargeDialog(currOrder){
@@ -56,7 +69,6 @@ export class OrderDetailDialogComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       location.reload()
     })
-
 
   }
   showChangeStateDialog(currOrder) {

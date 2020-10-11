@@ -12,7 +12,12 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
 import { MatDialog } from "@angular/material/dialog";
 import { animate, style, transition, trigger } from "@angular/animations";
-
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import {User} from "../../../../models/user";
+import {Cell, Columns, PdfMakeWrapper, Table, Txt} from "pdfmake-wrapper";
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+pdfMake.vfs = pdfFonts.pdfMake.vfs
 @Component({
   selector: 'app-deliveries-report',
   templateUrl: './deliveries-report.component.html',
@@ -301,6 +306,114 @@ export class DeliveriesReportComponent implements OnInit {
         msgError: error
       }
     })
+
+  }
+
+  generatePDF() {
+    //Titulo del reporte
+    const title = 'Reporte de envíos'
+    const pdf = new PdfMakeWrapper()
+
+    pdf.pageSize('legal')
+    pdf.pageOrientation('landscape')
+
+    pdf.add(
+      new Txt(title).bold().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    pdf.add(
+      new Txt('Desde : ' + this.f.initDate.value + ' Hasta: ' + this.f.finDate.value).italics().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    //Tabla envios por categorias
+    pdf.add(
+      new Txt('Envíos por categorías').bold().end
+    )
+
+    const ordersByCategoryHeader = [
+      "N°",
+      "Categoría",
+      "Envíos Realizados",
+      "Recargos",
+      "Cargos Extra",
+      "Costos Totales"
+    ]
+
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    let arrayRow = []
+    let index = 1
+    this.ordersByCategory.forEach(d => {
+      let array = [index, d.category, d.orders, 'L. ' + d.totalSurcharges, 'L. ' + d.totalExtraCharges, 'L. ' + d.cTotal]
+      arrayRow.push(array)
+      index++
+    })
+
+    pdf.add(
+      new Columns(
+          ordersByCategoryHeader
+      ).alignment('center').bold().end
+    )
+    arrayRow.forEach(res => {
+      pdf.add(
+        new Columns(
+            res
+        ).alignment('center').end
+      )
+    })
+    const ordersCategoriestotals = ['', 'Total:', this.ordersInRange, 'L. ' + this.totalSurcharges, 'L. ' + this.totalExtracharges,  'L. ' + this.totalCosts]
+    pdf.add(
+      new Columns(ordersCategoriestotals).alignment('center').bold().end
+    )
+
+    //Tabla envios por fecha
+    pdf.add(
+      pdf.ln(2)
+    )
+    const rangeTitle = 'Envíos por Fecha'
+
+    pdf.add(
+      new Txt(rangeTitle).bold().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    const ordersByDateHeader = ["Cliente", "fecha", "Envíos Realizados"]
+
+    pdf.add(
+      new Columns(ordersByDateHeader).alignment('center').bold().end
+    )
+
+    let array1Row = []
+    this.consultResults.forEach(d => {
+      let array = [d.customer, d.fecha, d.orders]
+      array1Row.push(array)
+      index++
+    })
+
+    array1Row.forEach(res => {
+      pdf.add(
+        new Columns(
+          res
+        ).alignment('center').end
+      )
+    })
+
+    const ordersRange =['', 'Total:', this.ordersInRange]
+    pdf.add(
+      new Columns(
+        ordersRange
+      ).alignment('center').bold().end
+    )
+
+    pdf.create().open()
 
   }
 

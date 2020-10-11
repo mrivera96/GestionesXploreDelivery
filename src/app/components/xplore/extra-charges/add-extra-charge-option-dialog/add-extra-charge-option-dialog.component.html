@@ -19,11 +19,20 @@
         <mat-icon matSuffix>subtitles</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
+    </div>
 
-      <mat-form-field appearance="outline" floatLabel="always" class="col-12">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Costo:</mat-label>
-        <input type="number" matInput formControlName="costo" required min="0" placeholder="Costo">
+        <input type="number" matInput formControlName="costo" required min="0.1" placeholder="Costo">
         <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Tiempo:</mat-label>
+        <input type="number" matInput formControlName="tiempo" required min="1" placeholder="Tiempo(en minutos)">
+        <mat-icon matSuffix>schedule</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>
