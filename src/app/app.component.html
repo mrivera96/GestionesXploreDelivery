@@ -1,14 +1,27 @@
 <!-- NAVBAR START -->
-<mat-toolbar class="app-toolbar" color="primary">
+<mat-toolbar *ngIf="!currentUser" class="app-toolbar-alternative p-1" color="primary">
+  <mat-toolbar-row >
+    <a [routerLink]="['/']" class="mx-auto">
+      <img alt="image" height="70px"  src="assets/img/logo-delivery.png">
+    </a>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-toolbar *ngIf="currentUser" class="app-toolbar" color="primary">
   <mat-toolbar-row>
     <a mat-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
     </a>
     <a [routerLink]="['/']">
-      <img alt="image" height="50px" class="d-inline-block" src="assets/img/logo-delivery.png"></a>
-    <span class="menu-spacer"></span>
+      <img alt="image" height="50px" class="d-inline-block" src="assets/img/logo-delivery.png">
+    </a>
+  </mat-toolbar-row>
+
+  <mat-toolbar-row *ngIf="isMobile">
+    <img  src="assets/img/Web-1.jpg" width="100%" alt="cargando imagen...">
   </mat-toolbar-row>
 </mat-toolbar>
+
 <!-- NAVBAR END -->
 <!-- -->
 <mat-sidenav-container style="min-height: 100vh;">
@@ -200,11 +213,11 @@
         Agregar delivery (Carga Consolidada)
       </a>
 
-      <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
+      <!--<a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
          [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery Foráneo (Carga Consolidada)
-      </a>
+      </a>-->
 
       <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item>
         <mat-icon>add_road</mat-icon>
@@ -249,7 +262,7 @@
     </mat-nav-list>
     <!-- ONLY CUSTOMERS -->
   </mat-sidenav>
-  <mat-sidenav-content class="mt-5">
+  <mat-sidenav-content class="mt-3">
     <div class="mx-3">
       <router-outlet></router-outlet>
     </div>

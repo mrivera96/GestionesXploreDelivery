@@ -3,4 +3,5 @@ export interface ExtraChargeOption {
   idCargoExtra?: number
   descripcion?: string
   costo?: number
+  tiempo?: number
 }

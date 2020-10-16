@@ -5,6 +5,7 @@ import {ExtraChargesService} from "../../../../services/extra-charges.service";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {AddExtraChargeOptionDialogComponent} from "../add-extra-charge-option-dialog/add-extra-charge-option-dialog.component";
+import {EditExtraChargeOptionDialogComponent} from "../edit-extra-charge-option-dialog/edit-extra-charge-option-dialog.component";
 
 @Component({
   selector: 'app-extra-charges-options-dialog',
@@ -18,23 +19,28 @@ export class ExtraChargesOptionsDialogComponent implements OnInit {
 
   extraChargeOptions: ExtraChargeOption[]
   extraChargeId: number
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<any>,
     private extraChargesService: ExtraChargesService
-  ) { this.extraChargeId = this.data.extraChargeId }
+  ) {
+    this.extraChargeId = this.data.extraChargeId
+  }
 
   ngOnInit(): void {
     this.loadData()
   }
-  loadData(){
+
+  loadData() {
     this.loaders.loadingData = true
-    const extraChargesSubscription = this.extraChargesService.getExtraChargeOptions(this.extraChargeId).subscribe(response => {
-      this.extraChargeOptions = response.data
-      this.loaders.loadingData = false
-      extraChargesSubscription.unsubscribe()
-    })
+    const extraChargesSubscription = this.extraChargesService.getExtraChargeOptions(this.extraChargeId)
+      .subscribe(response => {
+        this.extraChargeOptions = response.data
+        this.loaders.loadingData = false
+        extraChargesSubscription.unsubscribe()
+      })
   }
 
   openErrorDialog(error: string): void {
@@ -73,7 +79,7 @@ export class ExtraChargesOptionsDialogComponent implements OnInit {
     })
   }
 
-  showAddDialog(){
+  showAddDialog() {
     const dialogRef = this.dialog.open(AddExtraChargeOptionDialogComponent, {
       data: {
         extraChargeId: this.extraChargeId,
@@ -81,7 +87,22 @@ export class ExtraChargesOptionsDialogComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
+      if (result) {
+        this.loadData()
+      }
+
+    })
+  }
+
+  editExtraChargeOption(option){
+    const dialogRef = this.dialog.open(EditExtraChargeOptionDialogComponent, {
+      data: {
+        option: option,
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
         this.loadData()
       }
 

@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
   loading = false
   submitted = false
   error = ''
-
+  isMobile: boolean = false
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -59,6 +59,10 @@ export class LoginComponent implements OnInit {
         BlankSpacesValidator('password')
       ]
     })
+    if (window.screen.width < 1000) {
+      this.isMobile = true;
+    }
+
 
   }
 

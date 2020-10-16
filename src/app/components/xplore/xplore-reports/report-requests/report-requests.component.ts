@@ -5,7 +5,6 @@ import {ReportRequest} from "../../../../models/report-request";
 import {ReportRequestsService} from "../../../../services/report-requests.service";
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
-import {NewCategoryDialogComponent} from "../../xplore-categories/new-category-dialog/new-category-dialog.component";
 import {AddRequestsDialogComponent} from "./add-requests-dialog/add-requests-dialog.component";
 
 @Component({

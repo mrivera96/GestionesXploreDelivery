@@ -21,9 +21,11 @@ export class ReportRequestsService {
     })
   }
 
-  createReportRequests() {
+  createReportRequests(form) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'createReportRequest',
+      idCliente: form.idCliente,
+      correo: form.correo,
       tkn: this.authService.currentUserValue.access_token
     })
   }

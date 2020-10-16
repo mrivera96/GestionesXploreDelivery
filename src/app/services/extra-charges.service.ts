@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {AuthService} from "./auth.service";
 import {environment} from "../../environments/environment";
@@ -11,9 +11,10 @@ export class ExtraChargesService {
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) { }
+  ) {
+  }
 
-  getExtraCharges(){
+  getExtraCharges() {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'getExtraCharges',
@@ -22,18 +23,18 @@ export class ExtraChargesService {
     )
   }
 
-  editExtraCharge(id, form){
+  editExtraCharge(id, form) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'updateExtraCharge',
-        ecId:id,
+        ecId: id,
         form,
         tkn: this.authService.currentUserValue.access_token
       }
     )
   }
 
-  createExtraCharge(form, categories){
+  createExtraCharge(form, categories) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'createExtraCharge',
@@ -44,7 +45,7 @@ export class ExtraChargesService {
     )
   }
 
-  getExtraChargeCategories(extraChargeId){
+  getExtraChargeCategories(extraChargeId) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getExtraChargeCategories',
       idCargoExtra: extraChargeId,
@@ -52,7 +53,7 @@ export class ExtraChargesService {
     })
   }
 
-  removeCategoryFromExtraCharge(extraChargeId, categoryId){
+  removeCategoryFromExtraCharge(extraChargeId, categoryId) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'removeCategoryFromExtraCharge',
       idCategoria: categoryId,
@@ -61,7 +62,7 @@ export class ExtraChargesService {
     })
   }
 
-  addCategoryToExtraCharge(extraChargeId, categoryId){
+  addCategoryToExtraCharge(extraChargeId, categoryId) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'addCategoryToExtraCharge',
       idCategoria: categoryId,
@@ -71,7 +72,7 @@ export class ExtraChargesService {
   }
 
 
-  getExtraChargeOptions(extraChargeId){
+  getExtraChargeOptions(extraChargeId) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getExtraChargeOptions',
       idCargoExtra: extraChargeId,
@@ -79,7 +80,7 @@ export class ExtraChargesService {
     })
   }
 
-  removeOptionFromExtraCharge(extraChargeId, optionId){
+  removeOptionFromExtraCharge(extraChargeId, optionId) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'removeOptionFromExtraCharge',
       optionId: optionId,
@@ -88,7 +89,7 @@ export class ExtraChargesService {
     })
   }
 
-  addOptionToExtraCharge(extraChargeId, form){
+  addOptionToExtraCharge(extraChargeId, form) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'addOptionToExtraCharge',
       form: form,
@@ -97,5 +98,16 @@ export class ExtraChargesService {
     })
   }
 
-
+  editExtraChargeOption(idCargoExtra, idOpcion, form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'editExtraChargeOption',
+        idCargoExtra: idCargoExtra,
+        idDetalleOpcion: idOpcion,
+        costo: form.costo,
+        tiempo: form.tiempo,
+        tkn: this.authService.currentUserValue.access_token
+      }
+    )
+  }
 }

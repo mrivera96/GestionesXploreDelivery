@@ -132,7 +132,7 @@
       <div class="row">
         <div class="col-sm">
           <strong>Tipo de delivery:</strong>
-          {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : 'Envío Normal'}}
+          {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : currentDelivery?.isRuteo == true ? 'Envío por Ruteo' : 'Envío Normal'}}
         </div>
       </div>
 

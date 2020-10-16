@@ -30,6 +30,7 @@
             <th scope="col">N°</th>
             <th scope="col">Descripción</th>
             <th scope="col">Costo</th>
+            <th scope="col">Tiempo</th>
             <th scope="col" data-priority="1">Acción</th>
           </tr>
 
@@ -40,12 +41,17 @@
             <td>{{i + 1}}</td>
             <td>{{option.descripcion}}</td>
             <td>L.{{option.costo}}</td>
+            <td>{{option.tiempo || 'N/A'}}</td>
             <td>
-              <button type="button" class="btn btn-sm btn-outline-danger"
-                      (click)="removeOptionFromExtraCharge(option.idDetalleOpcion)"><i
-                class="fa fa-trash-alt"></i>
-                Quitar
+              <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
               </button>
+              <mat-menu #menu="matMenu">
+                <button type="button" mat-menu-item (click)="editExtraChargeOption(option)">
+                  <mat-icon>create</mat-icon>
+                  Editar
+                </button>
+              </mat-menu>
             </td>
           </tr>
           </tbody>

@@ -111,6 +111,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
   searchingOrigin = false
   searchingDest = false
   finishFlag = false
+  avgDistance = 0
 
   constructor(
     private categoriesService: CategoriesService,
@@ -674,6 +675,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         returnDistance = Number(response.distancia.split(" ")[0])
         const totalDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value) + returnDistance
         const avgDistance = totalDistance / (this.orders.length + 1)
+        this.avgDistance = avgDistance
 
         let appSurcharge = 0.00
         this.surcharges.forEach(value => {
@@ -681,7 +683,13 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
             && avgDistance <= Number(value.kilomMaximo)
           ) {
             appSurcharge = Number(value.monto)
+
           }
+        })
+
+        this.orders.forEach(order => {
+          order.recargo = appSurcharge
+          order.cTotal = +order.tarifaBase + +order.recargo
         })
 
         this.pago.recargos = appSurcharge * this.orders.length
@@ -714,6 +722,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     this.pagos.splice(i, 1)
     this.calculateRate(this.orders.length)
     this.calculatePayment()
+    this.finishFlag = false
 
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       dtInstance.destroy();

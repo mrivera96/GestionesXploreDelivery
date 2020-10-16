@@ -14,7 +14,7 @@ import {Schedule} from "./models/schedule";
 export class AppComponent {
   title = 'Gestiones Xplore Delivery'
   currentUser: User
-
+  isMobile: boolean = false
   schedules: Schedule[]
 
   constructor(
@@ -40,6 +40,12 @@ export class AppComponent {
       scheduleSubscription.unsubscribe()
     })
 
+  }
+
+  ngOnInit(): void {
+    if (window.screen.width < 1000) {
+      this.isMobile = true;
+    }
   }
 
   logout() {

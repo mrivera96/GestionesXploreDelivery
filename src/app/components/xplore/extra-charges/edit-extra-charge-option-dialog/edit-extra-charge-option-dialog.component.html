@@ -1,0 +1,49 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">settings</mat-icon>
+  Editar Opción de Cargo Extra
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
+    <div class="col text-center">
+      <img src="assets/img/loading.svg" width="35%" alt="loading">
+      <p>Procesando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="exChrgOptForm" *ngIf="!loaders.loadingSubmit">
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Costo:</mat-label>
+        <input type="number" matInput formControlName="costo" required min="0.1" placeholder="Costo">
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Tiempo:</mat-label>
+        <input type="number" matInput formControlName="tiempo" required min="1" placeholder="Tiempo(en minutos)">
+        <mat-icon matSuffix>schedule</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" [disabled]="exChrgOptForm.invalid || loaders.loadingSubmit"
+          (click)="onFormSubmit()"
+          mat-raised-button color="primary">
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>
+    Cancelar
+  </button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+
+
