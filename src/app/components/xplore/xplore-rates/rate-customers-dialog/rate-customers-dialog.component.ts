@@ -24,6 +24,7 @@ export class RateCustomersDialogComponent implements OnInit {
     private ratesService: RatesService
   ) {
     this.rateId = this.data.rateId
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

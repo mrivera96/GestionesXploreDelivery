@@ -49,6 +49,7 @@ export class NewRateDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<any>,
     private http: HttpClient
   ) {
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

@@ -26,6 +26,7 @@ export class EditWorklineDialogComponent implements OnInit {
     public dialog: MatDialog
   ) {
     this.currWorkLine = this.data.workline
+    this.dialogRef.disableClose = true
    }
 
   ngOnInit(): void {

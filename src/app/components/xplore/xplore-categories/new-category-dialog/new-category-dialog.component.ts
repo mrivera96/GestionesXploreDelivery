@@ -19,7 +19,9 @@ export class NewCategoryDialogComponent implements OnInit {
     private categoriesService: CategoriesService,
     public dialogRef: MatDialogRef<NewCategoryDialogComponent>,
     public dialog: MatDialog
-  ) { }
+  ) {
+    this.dialogRef.disableClose = true
+  }
 
   ngOnInit(): void {
     this.newCatForm = new FormGroup(

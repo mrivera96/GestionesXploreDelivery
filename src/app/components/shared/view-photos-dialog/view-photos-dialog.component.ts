@@ -18,6 +18,7 @@ export class ViewPhotosDialogComponent implements OnInit {
     public dialog: MatDialog
   ) {
     this.photos = this.data.photos
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

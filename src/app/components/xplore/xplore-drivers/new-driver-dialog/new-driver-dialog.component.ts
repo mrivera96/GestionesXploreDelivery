@@ -26,7 +26,9 @@ export class NewDriverDialogComponent implements OnInit {
     private usersService: UsersService,
     private formBuilder: FormBuilder,
     private agenciesService: AgenciesService
-  ) { }
+  ) {
+    this.dialogRef.disableClose = true
+  }
 
   ngOnInit(): void {
     this.initialize()

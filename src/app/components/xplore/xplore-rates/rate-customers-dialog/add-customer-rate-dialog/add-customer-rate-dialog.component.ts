@@ -31,6 +31,7 @@ export class AddCustomerRateDialogComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.rateId = this.data.rateId
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

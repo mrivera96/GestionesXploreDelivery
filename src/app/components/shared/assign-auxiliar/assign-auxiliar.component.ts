@@ -3,7 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {User} from "../../../models/user";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {UsersService} from "../../../services/users.service";
-import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Observable} from "rxjs";
 import {SuccessModalComponent} from "../success-modal/success-modal.component";
 import {ErrorModalComponent} from "../error-modal/error-modal.component";
@@ -25,9 +25,11 @@ export class AssignAuxiliarComponent implements OnInit {
     private deliveriesService: DeliveriesService,
     private usersService: UsersService,
     public dialog: MatDialog,
+    public dialogRef: MatDialogRef<AssignAuxiliarComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.orderId = data.order
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

@@ -24,6 +24,7 @@ export class EditCategoryDialogComponent implements OnInit {
     public dialog: MatDialog
   ) {
     this.currCategory = this.data.category
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

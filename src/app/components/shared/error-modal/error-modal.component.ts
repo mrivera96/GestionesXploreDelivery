@@ -10,7 +10,9 @@ export class ErrorModalComponent implements OnInit {
 
   constructor(  public dialogRef: MatDialogRef<ErrorModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) { }
+  ) {
+    this.dialogRef.disableClose = true
+  }
 
   ngOnInit(): void {
   }

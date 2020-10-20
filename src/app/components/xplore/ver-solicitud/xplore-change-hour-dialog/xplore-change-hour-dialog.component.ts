@@ -31,6 +31,7 @@ export class XploreChangeHourDialogComponent implements OnInit {
     public dialog: MatDialog
   ) {
     this.currDelivery = this.data.delivery
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {
@@ -82,7 +83,7 @@ export class XploreChangeHourDialogComponent implements OnInit {
           this.openErrorDialog(error.statusText)
           deliveriesSubscription.unsubscribe()
         })
-        
+
       })
     }
   }

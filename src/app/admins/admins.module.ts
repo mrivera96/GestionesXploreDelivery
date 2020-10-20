@@ -69,6 +69,8 @@ import { NewWorklineDialogComponent } from '../components/xplore/xplore-work-lin
 import {AssignAuxiliarComponent} from "../components/shared/assign-auxiliar/assign-auxiliar.component";
 import {ReportRequestsComponent} from "../components/xplore/xplore-reports/report-requests/report-requests.component";
 import {AddRequestsDialogComponent} from "../components/xplore/xplore-reports/report-requests/add-requests-dialog/add-requests-dialog.component";
+import {EditExtraChargeOptionDialogComponent} from "../components/xplore/extra-charges/edit-extra-charge-option-dialog/edit-extra-charge-option-dialog.component";
+import {CustomerChooseComponent} from "../components/xplore/xplore-add-delivery/customer-choose/customer-choose.component";
 
 @NgModule({
   declarations: [
@@ -135,6 +137,8 @@ import {AddRequestsDialogComponent} from "../components/xplore/xplore-reports/re
     AssignAuxiliarComponent,
     ReportRequestsComponent,
     AddRequestsDialogComponent,
+    EditExtraChargeOptionDialogComponent,
+    CustomerChooseComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,

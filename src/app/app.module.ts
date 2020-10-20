@@ -30,7 +30,7 @@ import { OrderDetailDialogComponent } from './components/shared/order-detail-dia
 import {MatMenuModule} from "@angular/material/menu";
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { EditExtraChargeOptionDialogComponent } from './components/xplore/extra-charges/edit-extra-charge-option-dialog/edit-extra-charge-option-dialog.component';
+import { XploreAddDeliveryComponent } from './components/xplore/xplore-add-delivery/xplore-add-delivery.component';
 
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -43,8 +43,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
         PasswordRecoveryComponent,
         ViewPhotosDialogComponent,
         OrderDetailDialogComponent,
-        EditExtraChargeOptionDialogComponent,
-
+        XploreAddDeliveryComponent,
     ],
 
     imports: [

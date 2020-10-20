@@ -33,6 +33,7 @@ export class EditDialogComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.currBranch = data.branch
+    dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

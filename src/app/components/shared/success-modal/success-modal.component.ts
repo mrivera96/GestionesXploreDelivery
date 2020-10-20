@@ -11,7 +11,9 @@ export class SuccessModalComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<SuccessModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) { }
+  ) {
+    this.dialogRef.disableClose = true
+  }
 
   ngOnInit(): void {
   }

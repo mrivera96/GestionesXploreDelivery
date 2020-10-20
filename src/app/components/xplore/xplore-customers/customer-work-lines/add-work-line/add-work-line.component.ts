@@ -31,6 +31,7 @@ export class AddWorkLineComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.currentCustomer = this.data.customerId
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

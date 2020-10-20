@@ -34,6 +34,7 @@ export class AddPaymentDialogComponent implements OnInit {
     private paymentsService: PaymentsService,
     public dialog: MatDialog
   ) {
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

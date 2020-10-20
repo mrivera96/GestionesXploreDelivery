@@ -26,6 +26,7 @@ export class EditExtraChargeDialogComponent implements OnInit {
     private extraChargesService: ExtraChargesService
   ) {
     this.currEc = this.data.extraCharge
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

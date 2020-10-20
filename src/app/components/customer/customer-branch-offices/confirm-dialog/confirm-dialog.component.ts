@@ -21,6 +21,7 @@ export class ConfirmDialogComponent implements OnInit {
     private branchService: BranchService,
   ) {
     this.branchToDelete = data.branchToDelete
+    dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {
@@ -38,7 +39,7 @@ export class ConfirmDialogComponent implements OnInit {
           this.openErrorDialog(error.statusText)
           branchesSubscription.unsubscribe()
         })
-        
+
       })
   }
 

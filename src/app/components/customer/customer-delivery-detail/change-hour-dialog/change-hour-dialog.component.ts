@@ -32,6 +32,7 @@ export class ChangeHourDialogComponent implements OnInit {
     public dialog: MatDialog
   ) {
     this.currDelivery = this.data.delivery
+    dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

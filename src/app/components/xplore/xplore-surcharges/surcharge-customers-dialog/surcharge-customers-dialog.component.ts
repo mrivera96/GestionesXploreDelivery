@@ -24,6 +24,7 @@ export class SurchargeCustomersDialogComponent implements OnInit {
     private surchargeService: SurchargesService
   ) {
     this.surchargeId = this.data.surchargeId
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

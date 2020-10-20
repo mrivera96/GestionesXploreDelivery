@@ -27,6 +27,7 @@ export class ExtraChargesOptionsDialogComponent implements OnInit {
     private extraChargesService: ExtraChargesService
   ) {
     this.extraChargeId = this.data.extraChargeId
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

@@ -39,6 +39,7 @@ export class EditSurchargeDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<EditSurchargeDialogComponent>
   ) {
     this.currSurch = data.surcharge
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {
@@ -51,7 +52,7 @@ export class EditSurchargeDialogComponent implements OnInit {
         monto: [this.currSurch.monto, Validators.required],
         idCliente: [1, Validators.required],
         idCategoria: [this.currSurch.idCategoria, Validators.required],
-        idTipoEnvio: [this.currSurch.idTipoEnvio, Validators.required]
+        idTipoEnvio: [1, Validators.required]
       }
     )
 

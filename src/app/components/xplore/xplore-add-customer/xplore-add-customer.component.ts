@@ -34,6 +34,7 @@ export class XploreAddCustomerComponent implements OnInit {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<XploreAddCustomerComponent>
   ) {
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

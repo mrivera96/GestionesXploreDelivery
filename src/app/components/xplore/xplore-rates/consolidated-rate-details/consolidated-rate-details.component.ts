@@ -39,7 +39,7 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
     this.currRateDetail = this.data.RateDetail
     this.rateType = this.data.rateType
     this.assignedSchedules = data.RateSchedules
-
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

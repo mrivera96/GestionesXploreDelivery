@@ -27,6 +27,7 @@ export class EditScheduleDialogComponent implements OnInit {
     private schedulesService: SchedulesService
   ) {
     this.currentSchedule = data.schedule
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

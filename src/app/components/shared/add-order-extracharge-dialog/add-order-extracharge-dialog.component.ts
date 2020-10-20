@@ -35,6 +35,7 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
     private extrachargeService: ExtraChargesService
   ) {
     this.currentOrder = this.data.order
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

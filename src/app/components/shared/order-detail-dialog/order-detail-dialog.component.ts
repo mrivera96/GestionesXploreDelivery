@@ -24,6 +24,7 @@ export class OrderDetailDialogComponent implements OnInit {
   ) {
     this.currentOrder = this.data.currentOrder
     this.currentUser = this.data.currentUser
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

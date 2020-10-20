@@ -26,6 +26,7 @@ export class ChangeStateDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog
   ) {
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

@@ -3,7 +3,7 @@ import {FormGroup, FormControl, Validators} from '@angular/forms';
 import {User} from 'src/app/models/user';
 import {DeliveriesService} from 'src/app/services/deliveries.service';
 import {UsersService} from 'src/app/services/users.service';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {SuccessModalComponent} from '../success-modal/success-modal.component';
 import {ErrorModalComponent} from '../error-modal/error-modal.component';
 import {Observable, Subject} from 'rxjs';
@@ -26,8 +26,10 @@ export class AssignDriverComponent implements OnInit {
     private usersService: UsersService,
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any,
+    public dialogRef: MatDialogRef<AssignDriverComponent>
   ) {
     this.orderId = data.order
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {

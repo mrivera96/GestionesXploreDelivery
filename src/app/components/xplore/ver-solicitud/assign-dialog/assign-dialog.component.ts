@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {DeliveriesService} from "../../../../services/deliveries.service";
-import {MAT_DIALOG_DATA, MatDialog} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {User} from "../../../../models/user";
 import {UsersService} from "../../../../services/users.service";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
@@ -23,9 +23,11 @@ export class AssignDialogComponent implements OnInit {
     private deliveriesService: DeliveriesService,
     private usersService: UsersService,
     public dialog: MatDialog,
+    public dialogRef: MatDialogRef<AssignDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.deliveryId = data.deliveryId
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

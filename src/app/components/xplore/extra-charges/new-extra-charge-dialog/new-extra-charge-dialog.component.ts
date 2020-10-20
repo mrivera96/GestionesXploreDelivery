@@ -28,6 +28,7 @@ export class NewExtraChargeDialogComponent implements OnInit {
     private categoriesService: CategoriesService,
     private extraChargesService: ExtraChargesService
   ) {
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

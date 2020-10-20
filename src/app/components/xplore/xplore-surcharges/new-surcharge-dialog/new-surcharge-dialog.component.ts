@@ -37,7 +37,9 @@ export class NewSurchargeDialogComponent implements OnInit {
     private ratesService: RatesService,
     private surchargesService: SurchargesService,
     public dialogRef: MatDialogRef<NewSurchargeDialogComponent>
-  ) { }
+  ) {
+    this.dialogRef.disableClose = true
+  }
 
   ngOnInit(): void {
 

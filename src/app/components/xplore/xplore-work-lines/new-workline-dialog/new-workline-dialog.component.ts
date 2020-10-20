@@ -21,7 +21,9 @@ export class NewWorklineDialogComponent implements OnInit {
     private worklinesService: WorkLinesService,
     public dialogRef: MatDialogRef<NewWorklineDialogComponent>,
     public dialog: MatDialog
-  ) { }
+  ) {
+    this.dialogRef.disableClose = true
+  }
 
   ngOnInit(): void {
     this.newWLForm = new FormGroup(

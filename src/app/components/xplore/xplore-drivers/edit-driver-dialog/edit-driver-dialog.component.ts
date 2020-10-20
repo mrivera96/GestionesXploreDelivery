@@ -41,6 +41,7 @@ export class EditDriverDialogComponent implements OnInit {
     private agenciesService: AgenciesService
   ) {
     this.currDriver = data.driver
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

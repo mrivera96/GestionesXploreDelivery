@@ -35,6 +35,7 @@ export class EditRateDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<any>
   ) {
     this.currRate = data.rate
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

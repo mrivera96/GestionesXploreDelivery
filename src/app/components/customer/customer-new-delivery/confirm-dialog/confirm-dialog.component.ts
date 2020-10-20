@@ -11,7 +11,9 @@ export class ConfirmDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
     public dialog: MatDialog,
-  ) { }
+  ) {
+    this.dialogRef.disableClose = true;
+  }
 
   ngOnInit(): void {
   }

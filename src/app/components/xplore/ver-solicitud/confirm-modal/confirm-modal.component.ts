@@ -17,7 +17,9 @@ export class ConfirmModalComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
     private deliveriesService: DeliveriesService,
-  ) { }
+  ) {
+    this.dialogRef.disableClose = true
+  }
 
   ngOnInit(): void {
   }

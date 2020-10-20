@@ -27,6 +27,7 @@ export class EditCustomerDialogComponent implements OnInit {
     private usersService: UsersService
   ) {
     this.currCustomer = data.customer
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

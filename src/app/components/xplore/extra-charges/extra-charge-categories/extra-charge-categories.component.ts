@@ -25,8 +25,9 @@ export class ExtraChargeCategoriesComponent implements OnInit {
     public dialogRef: MatDialogRef<any>,
     private extraChargesService: ExtraChargesService
 
-  ) { 
+  ) {
     this.extraChargeId = this.data.extraChargeId
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

@@ -25,7 +25,10 @@ export class AddExtraChargeOptionDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<any>,
     private formBuilder: FormBuilder,
     private extraChargesServices: ExtraChargesService,
-  ) {  this.extraChargeId = this.data.extraChargeId }
+  ) {
+    this.extraChargeId = this.data.extraChargeId
+    this.dialogRef.disableClose = true
+  }
 
   ngOnInit(): void {
     this.initialize()

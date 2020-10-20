@@ -29,6 +29,7 @@ export class AddCategoryExtraChargeDailogComponent implements OnInit {
     private categoriesService: CategoriesService
   ) {
     this.extraChargeId = this.data.extraChargeId
+    this.dialogRef.disableClose = true
    }
 
   ngOnInit(): void {

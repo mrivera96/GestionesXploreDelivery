@@ -28,6 +28,7 @@ export class ChangeOrderStateDialogComponent implements OnInit {
     private deliveriesService: DeliveriesService
   ) {
     this.currentOrder = data.order
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

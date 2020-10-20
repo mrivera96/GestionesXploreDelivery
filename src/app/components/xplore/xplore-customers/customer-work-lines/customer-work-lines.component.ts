@@ -29,6 +29,7 @@ export class CustomerWorkLinesComponent implements OnInit {
     private workLinesService: WorkLinesService,
   ) {
     this.currentCustomer = this.data.customer
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

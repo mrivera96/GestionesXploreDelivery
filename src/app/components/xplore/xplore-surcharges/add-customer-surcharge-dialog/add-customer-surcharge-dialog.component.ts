@@ -33,6 +33,7 @@ export class AddCustomerSurchargeDialogComponent implements OnInit {
     private formBuilder: FormBuilder
   ) {
     this.surchargeId = this.data.surchargeId
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {
