@@ -337,6 +337,9 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       let ordersCount = this.orders.length + 1
       //
       this.calculateRate(ordersCount)
+      if(this.finishFlag == true){
+        this.finishFlag = false
+      }
 
       this.calculateDistance()
     }

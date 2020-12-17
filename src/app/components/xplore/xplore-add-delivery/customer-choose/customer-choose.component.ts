@@ -3,6 +3,7 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {Customer} from "../../../../models/customer";
 import {UsersService} from "../../../../services/users.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-customer-choose',
@@ -29,13 +30,16 @@ export class CustomerChooseComponent implements OnInit {
     'loadingData': false,
     'loadingSubmit': false
   }
-  selectedCustomer = 0
-  selectedDeliveryType = 0
+  selectedCustomer = null
+  selectedDeliveryType = null
   customers: Customer[] = []
   filteredCustomers: Customer[] = []
   constructor(
     private usersService: UsersService,
+    public dialog: MatDialog,
+    public dialogRef: MatDialogRef<CustomerChooseComponent>,
   ) {
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {

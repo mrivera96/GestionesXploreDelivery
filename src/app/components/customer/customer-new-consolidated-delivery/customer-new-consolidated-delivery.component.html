@@ -2,8 +2,7 @@
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title>
-      <p *ngIf="!loaders.loadingSubmit">Ingresa los datos del Delivery en el siguiente formulario</p>
-      <p *ngIf="loaders.loadingSubmit">Espera mientras procesamos tu solicitud, no cierres esta ventana.</p>
+      Delivery Consolidado
     </mat-card-title>
   </mat-card-header>
 
@@ -22,6 +21,8 @@
     <!--DELIVERY FORM BLOCK START-->
     <div class="row" *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
       <div class="col">
+        <p *ngIf="!loaders.loadingSubmit">Ingresa los datos del Delivery en el siguiente formulario</p>
+        <p *ngIf="loaders.loadingSubmit">Espera mientras procesamos tu solicitud, no cierres esta ventana.</p>
         <!--FORM START-->
         <form [formGroup]="deliveryForm" role="form" (ngSubmit)="onFormSubmit()">
           <!--DELIVERY HEADER GROUP START-->

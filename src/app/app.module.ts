@@ -31,6 +31,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { XploreAddDeliveryComponent } from './components/xplore/xplore-add-delivery/xplore-add-delivery.component';
+import { RegularDeliveryComponent } from './components/xplore/xplore-add-delivery/regular-delivery/regular-delivery.component';
 
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -44,6 +45,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
         ViewPhotosDialogComponent,
         OrderDetailDialogComponent,
         XploreAddDeliveryComponent,
+        RegularDeliveryComponent,
     ],
 
     imports: [

@@ -2,8 +2,7 @@
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title>
-      <p *ngIf="!loaders.loadingSubmit">Ingresa los datos del Delivery en el siguiente formulario</p>
-      <p *ngIf="loaders.loadingSubmit">Espera mientras procesamos tu solicitud, no cierres esta ventana.</p>
+      Delivery Consolidado Foráneo
     </mat-card-title>
   </mat-card-header>
 
@@ -22,6 +21,8 @@
     <!--DELIVERY FORM BLOCK START-->
     <div class="row" *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
       <div class="col">
+        <p *ngIf="!loaders.loadingSubmit">Ingresa los datos del Delivery en el siguiente formulario</p>
+        <p *ngIf="loaders.loadingSubmit">Espera mientras procesamos tu solicitud, no cierres esta ventana.</p>
         <!--FORM START-->
         <form [formGroup]="deliveryForm" role="form" (ngSubmit)="onFormSubmit()">
           <!--DELIVERY HEADER GROUP START-->
@@ -44,7 +45,7 @@
                         [ngStyle]="{'color': category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
                                               ? '#FF8C00': '#000'}" class="cat-rb">
                         <span class="fa d-block text-center" style="font-size: 120px;"
-                        [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
+                          [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
                         'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4, 'fa-truck': category.idCategoria == 8}"></span>
                         <span class="text-center">
                           {{category.descCategoria}}
@@ -60,9 +61,10 @@
             <mat-tab label="Opción Ruta" [disabled]="!selectedCategory.idCategoria" (click)="selectedIndex = 1">
               <div class="container-fluid pt-3 pb-2">
                 <div class="col" formGroupName="deliveryHeader">
-                  <mat-radio-group  aria-label="Select an option" formControlName="idTarifa" >
-                    <mat-radio-button class="col" value="{{rate.idTarifaDelivery}}" id="{{rate.idTarifaDelivery}}" [disabled]="orders.length > 0"
-                      *ngFor="let rate of selectedCategory.ratesToShow" (change)="setSelectedRate(rate)" >
+                  <mat-radio-group aria-label="Select an option" formControlName="idTarifa">
+                    <mat-radio-button class="col" value="{{rate.idTarifaDelivery}}" id="{{rate.idTarifaDelivery}}"
+                      [disabled]="orders.length > 0" *ngFor="let rate of selectedCategory.ratesToShow"
+                      (change)="setSelectedRate(rate)">
                       {{rate.descTarifa}}
                     </mat-radio-button>
                   </mat-radio-group>
@@ -71,7 +73,8 @@
 
             </mat-tab>
 
-            <mat-tab label="Detalles de Recogida" [disabled]="!selectedRate.idTarifaDelivery" (click)="selectedIndex = 2">
+            <mat-tab label="Detalles de Recogida" [disabled]="!selectedRate.idTarifaDelivery"
+              (click)="selectedIndex = 2">
               <div class="container-fluid pt-3">
                 <div class="form-row" formGroupName="deliveryHeader">
                   <mat-form-field appearance="outline" floatLabel="always" class="col">
@@ -138,7 +141,8 @@
                         </mat-option>
                       </mat-autocomplete>
                       <mat-icon matPrefix>location_on</mat-icon>
-                      <div matSuffix *ngIf="searchingOrigin == true" class="spinner-border spinner-border-sm text-secondary" role="status">
+                      <div matSuffix *ngIf="searchingOrigin == true"
+                        class="spinner-border spinner-border-sm text-secondary" role="status">
                         <span class="sr-only">Loading...</span>
                       </div>
                       <mat-error *ngIf="newForm.get('deliveryHeader.dirRecogida')?.errors?.required">*Este campo es
@@ -261,7 +265,8 @@
                         </mat-option>
                       </mat-autocomplete>
                       <mat-icon matPrefix>location_on</mat-icon>
-                      <div matSuffix *ngIf="searchingDest == true" class="spinner-border spinner-border-sm text-secondary" role="status">
+                      <div matSuffix *ngIf="searchingDest == true"
+                        class="spinner-border spinner-border-sm text-secondary" role="status">
                         <span class="sr-only">Loading...</span>
                       </div>
                       <mat-error *ngIf="newForm.get('order.direccion')?.errors?.required">*Este campo es obligatorio
@@ -295,7 +300,8 @@
               </div>
             </mat-tab>
 
-            <mat-tab label="Servicios Adicionales" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0" (click)="selectedIndex = 4">
+            <mat-tab label="Servicios Adicionales" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0"
+              (click)="selectedIndex = 4">
               <div class="container-fluid pt-3">
                 <div class="col" *ngFor="let extracharge of selectedCategory.categoryExtraCharges">
                   <h3>{{extracharge.extra_charge.nombre}}</h3>
@@ -377,9 +383,9 @@
           <br>
           <div class="form-row">
             <div class="col-md-6" *ngIf="!files.length">
-              <button mat-raised-button type="button" (click)="onOrderAdd()" color="primary" [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid ||
-                      loaders.loadingAdd || prohibitedAddress || loaders.loadingDistBef || prohibitedFinalAddressCentinel"
-                class="float-left">
+              <button mat-raised-button type="button" (click)="onOrderAdd()" color="primary"
+                [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid ||
+                      loaders.loadingAdd || prohibitedAddress || loaders.loadingDistBef || prohibitedFinalAddressCentinel" class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                 entrega
               </button>

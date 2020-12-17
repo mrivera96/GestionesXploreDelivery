@@ -1,8 +1,8 @@
 <!-- NAVBAR START -->
 <mat-toolbar *ngIf="!currentUser" class="app-toolbar-alternative p-1" color="primary">
-  <mat-toolbar-row >
+  <mat-toolbar-row>
     <a [routerLink]="['/']" class="mx-auto">
-      <img alt="image" height="70px"  src="assets/img/logo-delivery.png">
+      <img alt="image" height="70px" src="assets/img/logo-delivery.png">
     </a>
   </mat-toolbar-row>
 </mat-toolbar>
@@ -39,10 +39,10 @@
         </a>
       </mat-nav-list>
 
-      <!--<a (click)="sidenav.close()" [routerLink]="['admins/nuevo-delivery/seleccion-cliente']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['admins/nuevo-delivery']" mat-list-item>
         <mat-icon>add</mat-icon>
         Nuevo Delivery
-      </a>-->
+      </a>
 
       <a (click)="sidenav.close()" [routerLink]="['admins/reservas-pendientes']" mat-list-item>
         <mat-icon>update</mat-icon>
@@ -210,13 +210,13 @@
       </a>
 
       <a *ngIf="currentUser.permiteConsolidada" (click)="sidenav.close()" [routerLink]="['customers/envio-consolidado']"
-         mat-list-item>
+        mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery (Carga Consolidada)
       </a>
 
-      <!--<a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
-         [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
+      <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
+        [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery Foráneo (Carga Consolidada)
       </a>
@@ -224,7 +224,7 @@
       <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item>
         <mat-icon>add_road</mat-icon>
         +Delivery en Ruta
-      </a>-->
+      </a>
 
       <a (click)="sidenav.close()" [routerLink]="['customers/envios-hoy']" mat-list-item>
         <mat-icon>today</mat-icon>
@@ -264,9 +264,9 @@
     </mat-nav-list>
     <!-- ONLY CUSTOMERS -->
   </mat-sidenav>
-  <mat-sidenav-content [ngClass]="{'mt-3': currentUser, 'mt-0': !currentUser}" >
+  <mat-sidenav-content [ngClass]="{'mt-3': currentUser, 'mt-0': !currentUser}">
     <div class="row text-center" *ngIf="isMobile && !currentUser">
-      <img  src="assets/img/Web-1.jpg" width="100%" alt="cargando imagen...">
+      <img width="100%" src="assets/img/Web-1_resized.jpg" alt="cargando imagen...">
     </div>
     <br *ngIf="!currentUser">
     <br *ngIf="!currentUser">
