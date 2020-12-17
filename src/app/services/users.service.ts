@@ -99,4 +99,45 @@ export class UsersService {
     })
   }
 
+  checkCustomerAvalability(){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'checkAvalability',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  checkCustomerDelTypes(customerId){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'checkCustomerDelTypes',
+      customerId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  getDriverCategories(driverId){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'getDriverCategories',
+      idConductor: driverId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  assignDriverCategory(driverId, categoryId){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'assignDriverCategory',
+      idConductor: driverId,
+      idCategoria: categoryId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  removeDriverCategory(driverId, categoryId){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'removeDriverCategory',
+      idConductor: driverId,
+      idCategoria: categoryId,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
 }

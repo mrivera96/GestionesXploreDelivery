@@ -6,5 +6,5 @@ export interface Agency {
   idCiudad?: number
   codAgencia?: string
   dirAgencia?: string
-  ciudad?: City
+  city?: any
 }

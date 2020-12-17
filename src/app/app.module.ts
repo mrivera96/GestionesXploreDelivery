@@ -32,6 +32,15 @@ import { PdfMakeWrapper } from 'pdfmake-wrapper';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { XploreAddDeliveryComponent } from './components/xplore/xplore-add-delivery/xplore-add-delivery.component';
 import { RegularDeliveryComponent } from './components/xplore/xplore-add-delivery/regular-delivery/regular-delivery.component';
+import {MatRadioModule} from "@angular/material/radio";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {GoogleMapsModule} from "@angular/google-maps";
+import { ConsolidatedDeliveryComponent } from './components/xplore/xplore-add-delivery/consolidated-delivery/consolidated-delivery.component';
+import {NgxDropzoneModule} from "ngx-dropzone";
+import { LockedUserDialogComponent } from './components/shared/locked-user-dialog/locked-user-dialog.component';
+import { ConfirmCancelDialogComponent } from './components/customer/customer-delivery-detail/confirm-cancel-dialog/confirm-cancel-dialog.component';
+import { DriverCategoriesComponent } from './components/xplore/xplore-drivers/driver-categories/driver-categories.component';
+import { AddCategoryComponent } from './components/xplore/xplore-drivers/add-category/add-category.component';
 
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -46,6 +55,11 @@ PdfMakeWrapper.setFonts(pdfFonts);
         OrderDetailDialogComponent,
         XploreAddDeliveryComponent,
         RegularDeliveryComponent,
+        ConsolidatedDeliveryComponent,
+        LockedUserDialogComponent,
+        ConfirmCancelDialogComponent,
+        DriverCategoriesComponent,
+        AddCategoryComponent,
     ],
 
     imports: [
@@ -70,6 +84,10 @@ PdfMakeWrapper.setFonts(pdfFonts);
         SharedModule,
         MatAutocompleteModule,
         MatMenuModule,
+        MatRadioModule,
+        MatTooltipModule,
+        GoogleMapsModule,
+        NgxDropzoneModule,
     ],
 
     entryComponents: [

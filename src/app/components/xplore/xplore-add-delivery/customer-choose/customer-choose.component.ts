@@ -1,8 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {Customer} from "../../../../models/customer";
-import {UsersService} from "../../../../services/users.service";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import { Component, OnInit } from '@angular/core';
+import { animate, style, transition, trigger } from "@angular/animations";
+import { Customer } from "../../../../models/customer";
+import { UsersService } from "../../../../services/users.service";
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -12,8 +11,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
@@ -21,10 +20,8 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 export class CustomerChooseComponent implements OnInit {
   deliveryType: number = 0
   deliveryTypes = [
-    {id:0,desc:'Normal'},
-    {id:1,desc:'Carga Consolidada'},
-    {id:2,desc:'Consolidada Foránea'},
-    {id:3,desc:'Ruteo'}
+    { id: 1, desc: 'Normal' },
+    // { id: 3, desc: 'Ruteo' }
   ]
   loaders = {
     'loadingData': false,
@@ -47,11 +44,11 @@ export class CustomerChooseComponent implements OnInit {
     this.loadData()
   }
 
-  initialize(){
+  initialize() {
 
   }
 
-  loadData(){
+  loadData() {
     this.loaders.loadingData = true
     const usersSubsc = this.usersService
       .getCustomers()
@@ -64,19 +61,43 @@ export class CustomerChooseComponent implements OnInit {
   }
 
   onKey(value) {
-    this.filteredCustomers = this.search(value) ;
+    this.filteredCustomers = this.search(value);
   }
 
   search(value: string) {
     let filter = value.toLowerCase();
-    if(filter != ""){
-      return  this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
+    if (filter != "") {
+      return this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
     }
     return this.customers
   }
 
-  validateCustomer(form){
-    this.loaders.loadingSubmit = true
+  validateCustomer(form) {
+    const customer = this.customers.find(x => x.idCliente == +form.selectedCustomer)
+
+    const deliveryType = +form.selectedDeliveryType
+    const result = { customer: customer, delType: deliveryType }
+
+    this.dialogRef.close(result)
+  }
+
+  checkDelTypes(customerId) {
+    this.deliveryTypes = [
+      { id: 1, desc: 'Normal' },
+      // { id: 3, desc: 'Ruteo' }
+    ]
+    const usrSubs = this.usersService
+      .checkCustomerDelTypes(customerId)
+      .subscribe(response => {
+        if(response.data.consolidated == true){
+          this.deliveryTypes.push({id: 2, desc: 'Carga Consolidada'})
+        }
+
+        /* if(response.data.foreign == true){
+          this.deliveryTypes.push({id: 4, desc: 'Carga Consolidada Foránea'})
+        } */
+        usrSubs.unsubscribe()
+      })
   }
 
 }

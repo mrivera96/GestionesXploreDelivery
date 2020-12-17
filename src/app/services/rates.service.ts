@@ -47,9 +47,10 @@ export class RatesService {
 
   }
 
-  getCustomerRates() {
+  getCustomerRates(idCustomer = null) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getMyRates',
+      idCustomer,
       tkn: this.authService.currentUserValue.access_token
     })
   }

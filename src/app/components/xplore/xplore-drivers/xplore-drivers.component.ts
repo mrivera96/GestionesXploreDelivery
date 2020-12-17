@@ -1,15 +1,15 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {User} from "../../../models/user";
-import {UsersService} from "../../../services/users.service";
-import {Subject} from "rxjs";
-import {MatDialog} from "@angular/material/dialog";
-import {EditDriverDialogComponent} from "./edit-driver-dialog/edit-driver-dialog.component";
-import {DataTableDirective} from "angular-datatables";
-import {NewDriverDialogComponent} from "./new-driver-dialog/new-driver-dialog.component";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {Agency} from "../../../models/agency";
-import {AgenciesService} from "../../../services/agencies.service";
-import {City} from "../../../models/city";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { User } from "../../../models/user";
+import { UsersService } from "../../../services/users.service";
+import { Subject } from "rxjs";
+import { MatDialog } from "@angular/material/dialog";
+import { EditDriverDialogComponent } from "./edit-driver-dialog/edit-driver-dialog.component";
+import { DataTableDirective } from "angular-datatables";
+import { NewDriverDialogComponent } from "./new-driver-dialog/new-driver-dialog.component";
+import { animate, style, transition, trigger } from "@angular/animations";
+import { AgenciesService } from "../../../services/agencies.service";
+import { City } from "../../../models/city";
+import { DriverCategoriesComponent } from './driver-categories/driver-categories.component';
 
 @Component({
   selector: 'app-xplore-drivers',
@@ -18,14 +18,14 @@ import {City} from "../../../models/city";
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
 })
 export class XploreDriversComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
+  @ViewChild(DataTableDirective, { static: false }) dtElement: DataTableDirective
   dtOptions: any
   dtTrigger: Subject<any> = new Subject<any>()
   loaders = {
@@ -34,7 +34,7 @@ export class XploreDriversComponent implements OnInit {
   drivers: User[]
   cities: City[]
   constructor(
-    private agenciesService:AgenciesService,
+    private agenciesService: AgenciesService,
     private usersService: UsersService,
     public dialog: MatDialog
   ) { }
@@ -44,7 +44,7 @@ export class XploreDriversComponent implements OnInit {
     this.loadData()
   }
 
-  initialize(){
+  initialize() {
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -72,9 +72,9 @@ export class XploreDriversComponent implements OnInit {
     }
   }
 
-  loadData(){
+  loadData() {
     this.loaders.loadingData = true
-    this.agenciesService.getCities().subscribe( response => {
+    this.agenciesService.getCities().subscribe(response => {
       this.cities = response.data
     })
     this.usersService.getDrivers().subscribe(response => {
@@ -112,7 +112,7 @@ export class XploreDriversComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result){
+      if (result) {
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
@@ -123,11 +123,11 @@ export class XploreDriversComponent implements OnInit {
 
   }
 
-  showNewCustForm(){
+  showNewCustForm() {
     const dialogRef = this.dialog.open(NewDriverDialogComponent)
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result){
+      if (result) {
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
             dtInstance.destroy()
@@ -137,5 +137,23 @@ export class XploreDriversComponent implements OnInit {
     })
   }
 
+  showCategoriesDialog(driverId) {
+    const dialogRef = this.dialog.open(DriverCategoriesComponent, {
+      data: {
+        driver: driverId
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      /*if (result){
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }*/
+      dialogRef.close()
+    })
+  }
 
 }

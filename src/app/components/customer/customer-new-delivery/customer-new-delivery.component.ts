@@ -30,6 +30,8 @@ import { Schedule } from "../../../models/schedule";
 import { ExtraCharge } from "../../../models/extra-charge";
 import { ExtraChargeOption } from "../../../models/extra-charge-option";
 import { ExtraChargeCategory } from 'src/app/models/extra-charge-category';
+import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -120,6 +122,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private authService: AuthService,
+    private userService: UsersService
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
@@ -135,6 +138,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       'hh:mm a', 'en')
 
     this.initialize()
+    //this.checkCustomer()
     this.loadData()
   }
 
@@ -166,6 +170,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         direccion: ['', Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
         extracharge: [null],
+        montoCobertura: ['']
       }, {
         validators: [
           BlankSpacesValidator('nFactura'),
@@ -596,14 +601,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       this.orders.forEach(value => {
         if (value.tarifaBase != this.pago.baseRate) {
+          console.log('different')
           const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
           let i = this.orders.indexOf(value)
           value.tarifaBase = this.pago.baseRate
           value.cargosExtra = nPay.cargosExtra
           value.recargo = nPay.surcharges
           value.cTotal = nPay.total
-          this.pagos[i].baseRate = nPay.baseRate
-          this.pago[i].cargosExtra = nPay.cargosExtra
+          this.pagos[i].baseRate = nPay.baseRate          
+          this.pagos[i].cargosExtra = nPay.cargosExtra             
           this.pagos[i].surcharges = nPay.surcharges
           this.pagos[i].total = nPay.total
         }
@@ -942,6 +948,47 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.currOrder.extras.splice(idx, 1)
       this.befCost -= extraCharge.costo
     }
+  }
+
+  addCare(excharge) {
+    if (this.newForm.get('order.montoCobertura').value !== '') {
+      const extraCharge = {
+        idCargoExtra: excharge.idCargoExtra,
+        idDetalleOpcion: null,
+        costo: +excharge.costo,
+        montoCobertura: +this.newForm.get('order.montoCobertura').value
+      }
+      this.currOrder.extras.push(extraCharge)
+      this.befCost += +extraCharge.costo
+    } else {
+      const idx = this.currOrder.extras.indexOf(excharge)
+      this.currOrder.extras.splice(idx, 1)
+      this.befCost -= excharge.costo
+    }
+
+  }
+
+  checkCustomer() {
+    this.loaders.loadingData = true
+    const usrsSubs = this.userService
+      .checkCustomerAvalability()
+      .subscribe(response => {
+        if (response.data == false) {
+          this.openLockedUserDialog()
+        } else {
+
+          this.loadData()
+        }
+        usrsSubs.unsubscribe()
+      })
+  }
+
+  openLockedUserDialog() {
+    const dialogRef = this.dialog.open(LockedUserDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.router.navigate(['customers/dashboard'])
+    })
   }
 
 }

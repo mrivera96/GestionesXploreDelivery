@@ -110,4 +110,14 @@ export class ExtraChargesService {
       }
     )
   }
+
+  getFilteredExtraCharges(idCategoria){
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'getCategoryExtraCharges',
+        idCategoria,
+        tkn: this.authService.currentUserValue.access_token
+      }
+    )
+  }
 }

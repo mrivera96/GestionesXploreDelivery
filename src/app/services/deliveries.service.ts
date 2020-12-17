@@ -73,6 +73,14 @@ export class DeliveriesService {
     })
   }
 
+  cancelDelivery(id) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'cancelDelivery',
+      id: id,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
   assignDelivery(id, form) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
@@ -141,12 +149,13 @@ export class DeliveriesService {
     })
   }
 
-  newCustomerDelivery(deliveryForm, orders, pago) {
+  newCustomerDelivery(deliveryForm, orders, pago, idCustomer = null) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       'function': 'insertCustomerDelivery',
       deliveryForm,
       orders,
       'pago': pago,
+      idCustomer,
       tkn: this.authService.currentUserValue.access_token
     });
   }

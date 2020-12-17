@@ -8,4 +8,5 @@ export interface OrderExtraCharges {
   idDetalleOpcion?: number
   extracharge?: ExtraCharge
   option?: ExtraChargeOption
+  montoCobertura?: number
 }

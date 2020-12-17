@@ -1,14 +1,14 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {ExtraChargesService} from "../../../services/extra-charges.service";
-import {ExtraCharge} from "../../../models/extra-charge";
-import {ExtraChargeOption} from "../../../models/extra-charge-option";
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { DeliveriesService } from "../../../services/deliveries.service";
+import { ExtraChargesService } from "../../../services/extra-charges.service";
+import { ExtraCharge } from "../../../models/extra-charge";
+import { ExtraChargeOption } from "../../../models/extra-charge-option";
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { SuccessModalComponent } from '../success-modal/success-modal.component';
 import { Order } from 'src/app/models/order';
-import {OrderExtraCharges} from "../../../models/order-extra-charges";
+import { OrderExtraCharges } from "../../../models/order-extra-charges";
 
 @Component({
   selector: 'app-add-order-extracharge-dialog',
@@ -54,17 +54,19 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    const extrachargeSubscription = this.extrachargeService.getExtraCharges().subscribe(response => {
-      this.extraCharges = response.data
-      this.loaders.loadingData = false
-      extrachargeSubscription.unsubscribe()
-    }, error => {
-      extrachargeSubscription.unsubscribe()
-    })
+    const extrachargeSubscription = this.extrachargeService
+      .getFilteredExtraCharges(this.currentOrder.delivery.idCategoria)
+      .subscribe(response => {
+        this.extraCharges = response.data
+        this.loaders.loadingData = false
+        extrachargeSubscription.unsubscribe()
+      }, error => {
+        extrachargeSubscription.unsubscribe()
+      })
   }
 
-  onFormSubmit(){
-    if(this.extraChargeForm.valid){
+  onFormSubmit() {
+    if (this.extraChargeForm.valid) {
       this.loaders.loadingSubmit = true
       const ecSubscription = this.deliveriesService.addExtraChargeToOrder(this.extraChargeForm.value).subscribe(response => {
         this.openSuccessDialog('Operación Realizada Correctamente', response.message)
@@ -83,10 +85,10 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
 
   setSelectedExtraCharge(extraCharge) {
     this.selectedExtraCharge = extraCharge
-    if(this.selectedExtraCharge.tipoCargo == 'F'){
+    if (this.selectedExtraCharge.tipoCargo == 'F') {
       this.extraChargeForm.controls.idOpcionExtra.setValidators([Validators.required])
       this.extraChargeForm.controls.montoCargoVariable.setValidators(null)
-    }else{
+    } else {
       this.extraChargeForm.controls.idOpcionExtra.setValidators(null)
       this.extraChargeForm.controls.montoCargoVariable.setValidators([Validators.required])
     }
@@ -118,7 +120,7 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
     })
   }
 
-  removeExtraCharge(extraCharge: OrderExtraCharges){
+  removeExtraCharge(extraCharge: OrderExtraCharges) {
     this.loaders.loadingSubmit = true
     const extrachargeSubscription = this.deliveriesService
       .removeExtraChargeFromOrder(this.currentOrder.idDetalle, extraCharge.id)
@@ -126,7 +128,7 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
         this.openSuccessDialog('Operación Realizada Correctamente', response.message)
         this.loaders.loadingSubmit = false
         extrachargeSubscription.unsubscribe()
-      },error => {
+      }, error => {
         error.subscribe(error => {
           this.openErrorDialog(error.statusText)
           this.loaders.loadingSubmit = false

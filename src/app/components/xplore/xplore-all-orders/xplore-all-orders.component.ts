@@ -1,19 +1,19 @@
-import {Component, Input, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {Order} from "../../../models/order";
-import {Subject} from "rxjs";
-import {DataTableDirective} from "angular-datatables";
-import {User} from "../../../models/user";
-import {State} from "../../../models/state";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {AuthService} from "../../../services/auth.service";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
-import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
-import {OrderDetailDialogComponent} from "../../shared/order-detail-dialog/order-detail-dialog.component";
-import {MatDialog} from "@angular/material/dialog";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {formatDate} from "@angular/common";
-import {ActivatedRoute, Router} from "@angular/router";
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from "@angular/animations";
+import { Order } from "../../../models/order";
+import { Subject } from "rxjs";
+import { DataTableDirective } from "angular-datatables";
+import { User } from "../../../models/user";
+import { State } from "../../../models/state";
+import { DeliveriesService } from "../../../services/deliveries.service";
+import { AuthService } from "../../../services/auth.service";
+import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
+import { ViewPhotosDialogComponent } from "../../shared/view-photos-dialog/view-photos-dialog.component";
+import { OrderDetailDialogComponent } from "../../shared/order-detail-dialog/order-detail-dialog.component";
+import { MatDialog } from "@angular/material/dialog";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { formatDate } from "@angular/common";
+import { ActivatedRoute, Router } from "@angular/router";
 declare var $: any
 @Component({
   selector: 'app-xplore-all-orders',
@@ -22,8 +22,8 @@ declare var $: any
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
@@ -95,21 +95,22 @@ export class XploreAllOrdersComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
-    const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
-      this.states = response.data.xploreDeliveryEntregas
-      deliveriesSubscription.unsubscribe()
-    })
+
 
     this.activatedRoute.paramMap.subscribe(params => {
-      if(params.get("initDate") && params.get("finDate") ){
+      if (params.get("initDate") && params.get("finDate")) {
         this.initDate = true
         this.consultForm.get('initDate').setValue(params.get("initDate"))
         this.consultForm.get('finDate').setValue(params.get("finDate"))
       }
     })
 
-    if(this.initDate == true){
+    if (this.initDate == true) {
+      this.loaders.loadingData = true
+      const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
+        this.states = response.data.xploreDeliveryEntregas
+        deliveriesSubscription.unsubscribe()
+      })
       const serviceSubscription = this.deliveriesService.getFilteredOrders(this.consultForm.value).subscribe(response => {
         this.orders = response.data
         this.orders.forEach(order => {
@@ -139,8 +140,8 @@ export class XploreAllOrdersComponent implements OnInit {
         this.openErrorDialog(this.msgError, true)
         serviceSubscription.unsubscribe()
       })
-    }else{
-      const serviceSubscription = this.deliveriesService.getAllOrders().subscribe(response => {
+    } else {
+      /* const serviceSubscription = this.deliveriesService.getAllOrders().subscribe(response => {
         this.orders = response.data
         this.orders.forEach(order => {
           order.delivery.fechaReserva = formatDate(new Date(order.delivery.fechaReserva), 'yyyy-MM-dd', 'en')
@@ -167,7 +168,7 @@ export class XploreAllOrdersComponent implements OnInit {
         this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
         this.openErrorDialog(this.msgError, true)
         serviceSubscription.unsubscribe()
-      })
+      }) */
     }
 
 
@@ -203,7 +204,7 @@ export class XploreAllOrdersComponent implements OnInit {
 
   }
 
-  showDetailDialog(order){
+  showDetailDialog(order) {
     const dialogRef = this.dialog.open(OrderDetailDialogComponent,
       {
         data: {
@@ -227,7 +228,7 @@ export class XploreAllOrdersComponent implements OnInit {
   onConsultFormSubmit() {
 
     if (this.consultForm.valid) {
-      this.route.navigate(['/admins/envios-todos',this.consultForm.get('initDate').value,
+      this.route.navigate(['/admins/envios-todos', this.consultForm.get('initDate').value,
         this.consultForm.get('finDate').value])
     }
   }

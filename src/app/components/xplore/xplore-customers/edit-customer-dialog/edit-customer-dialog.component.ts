@@ -1,10 +1,10 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {Customer} from "../../../../models/customer";
-import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
-import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
-import {UsersService} from "../../../../services/users.service";
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { Customer } from "../../../../models/customer";
+import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
+import { SuccessModalComponent } from "../../../shared/success-modal/success-modal.component";
+import { UsersService } from "../../../../services/users.service";
 
 @Component({
   selector: 'app-edit-customer-dialog',
@@ -47,11 +47,15 @@ export class EditCustomerDialogComponent implements OnInit {
         Validators.required,
         Validators.minLength(9),
         Validators.maxLength(9)]],
+      montoGracia: [this.currCustomer.montoGracia, [
+        Validators.required,
+        Validators.minLength(1),
+      ]],
       email: [this.currCustomer.email, [
         Validators.required,
         Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"),
         Validators.maxLength(50)]],
-      enviarNotificaciones:[+this.currCustomer.enviarNotificaciones, Validators.required]
+      enviarNotificaciones: [+this.currCustomer.enviarNotificaciones, Validators.required]
     })
   }
   get f() {
@@ -75,7 +79,7 @@ export class EditCustomerDialogComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-       this.dialogRef.close(true)
+      this.dialogRef.close(true)
     })
   }
 

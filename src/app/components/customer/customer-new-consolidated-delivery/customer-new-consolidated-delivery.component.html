@@ -1,6 +1,17 @@
 <!--CARD START -->
 <mat-card @fade>
+  <div class="alert alert-danger" role="alert">
+    <div class="row">
+      <div class="col-12">
+        <mat-icon matSuffix>info</mat-icon>
+        Estimado cliente, comunicamos que estamos experimentando una alta demanda de las categoría Pick,
+        Panel y Camión. Agradecemos de antemano su comprensión ante cualquier atraso o inconveniente.
+      </div>
+    </div>
+  </div>
+
   <mat-card-header>
+
     <mat-card-title>
       Delivery Consolidado
     </mat-card-title>
@@ -44,17 +55,14 @@
                 <div class="col">
                   <br>
                   <mat-radio-group (change)="calculatedistanceBefore();setSelectedCategory()"
-                                   formControlName="idCategoria"
-                                   [disabled]="orders.length > 0">
+                    formControlName="idCategoria" [disabled]="orders.length > 0">
                     <mat-radio-button [id]="category?.idCategoria" [value]="category.idCategoria" disableRipple="true"
-                                      *ngFor="let category of categories; let  i = index"
-                                      [matTooltip]="category.descripcion"
-                                      [ngStyle]="{'color':
+                      *ngFor="let category of categories; let  i = index" [ngStyle]="{'color':
                                       category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
                                       ? '#FF8C00': '#000'}" class="cat-rb">
                       <span class="fa d-block text-center" style="font-size: 24px"
-                      [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
-                      'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4, 'fa-truck': category.idCategoria == 8}"></span>
+                        [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
+                      'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4, 'fa-truck': category.idCategoria == 8, 'fas fa-heart': category.idCategoria == 9}"></span>
                       {{category.descCategoria}}
                     </mat-radio-button>
                   </mat-radio-group>
@@ -62,11 +70,21 @@
 
               </div>
 
+              <div class="row" *ngIf="selectedCategory.idCategoria">
+                <div class="col">
+                  <p class="text-danger">Categoría {{selectedCategory.descCategoria}}: {{selectedCategory.descripcion}}</p>
+                </div>
+              </div>
+
 
               <div class="row">
-                <div class="col">
+                <div class="col-12">
                   <p class="card-title"><strong>Detalles de Recogida:</strong></p>
                   <hr>
+                </div>
+                <div class="col-12">
+                  <p class="text-danger">Si requieres servicio fuera de nuestros horarios hábiles, favor comunícate al <a
+                      href="tel:94397234">+504 9439-7234</a></p>
                 </div>
               </div>
               <div class="form-row" formGroupName="deliveryHeader">
@@ -74,7 +92,7 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
                   <mat-label>Fecha de recogida:</mat-label>
                   <mat-select required formControlName="fecha" placeholder="- Selecciona una fecha -"
-                              [disabled]="orders.length > 0">
+                    [disabled]="orders.length > 0">
                     <mat-option *ngFor="let date of datesToShow" value="{{date.date}}" (click)="setDate(date)">
                       {{date.label}}
                     </mat-option>
@@ -88,7 +106,7 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
                   <mat-label>Hora de recogida:</mat-label>
                   <mat-select required formControlName="hora" placeholder="- Selecciona una hora -"
-                              [disabled]="orders.length > 0">
+                    [disabled]="orders.length > 0">
                     <mat-option *ngFor="let hour of hoursToShow" value="{{hour.hour}}">
                       {{hour.label}}
                     </mat-option>
@@ -104,7 +122,7 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
                   <mat-label>Punto de recogida:</mat-label>
                   <mat-select id="prevDirRecogida" [(ngModel)]="locationOption" required [disabled]="orders.length > 0"
-                              [ngModelOptions]="{standalone: true}" placeholder="- Seleccione una opción -">
+                    [ngModelOptions]="{standalone: true}" placeholder="- Seleccione una opción -">
                     <mat-option [value]="1" (click)="setCurrentLocationOrigin();checkInsructions()">Ubicación Actual
                     </mat-option>
                     <mat-option [value]="2" (click)="clearLocationField();checkInsructions()">Ingresar Ubicación
@@ -124,11 +142,11 @@
                   <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>Direccion de recogida:</mat-label>
                     <input matInput (input)="searchOrigin($event)" autocomplete="nope" [matAutocomplete]="autoOrg"
-                           id="inputdirRecogida" required formControlName="dirRecogida" [readonly]="orders.length > 0"
-                           placeholder="¿Dónde recogeremos tu pedido?">
+                      id="inputdirRecogida" required formControlName="dirRecogida" [readonly]="orders.length > 0"
+                      placeholder="¿Dónde recogeremos tu pedido?">
                     <mat-autocomplete #autoOrg="matAutocomplete">
                       <mat-option *ngFor="let s of placesOrigin" [value]="s.text"
-                                  (click)="calculatedistanceBefore();calculateRatio()">
+                        (click)="calculatedistanceBefore();calculateRatio()">
                         {{ s.text }}
                       </mat-option>
                     </mat-autocomplete>
@@ -156,9 +174,9 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6" *ngIf="locationOption == 3">
                   <mat-label>Punto de recogida:</mat-label>
                   <mat-select id="dirRecogida" required formControlName="dirRecogida" [disabled]="orders.length > 0"
-                              placeholder="- Seleccione un punto de recogida -">
+                    placeholder="- Seleccione un punto de recogida -">
                     <mat-option *ngFor="let branch of myBranchOffices" value="{{branch?.direccion}}"
-                                (click)="calculatedistanceBefore();calculateRatio();checkInsructions()">
+                      (click)="calculatedistanceBefore();calculateRatio();checkInsructions()">
                       {{branch.nomSucursal}}
                     </mat-option>
                   </mat-select>
@@ -169,14 +187,13 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Instrucciones de Recogida:</mat-label>
                   <textarea matInput id="instGenerales" formControlName="instrucciones" class="form-control"
-                            maxlength="150" placeholder="¿Necesitamos instrucciones para la recogida de tus envíos?">
+                    maxlength="150" placeholder="¿Necesitamos instrucciones para la recogida de tus envíos?">
                 </textarea>
                   <mat-icon matPrefix>assignment</mat-icon>
                   <mat-error>*Excede la longitud máxima permitida</mat-error>
                 </mat-form-field>
 
                 <input type="text" formControlName="coordsOrigen" hidden>
-
 
               </div>
 
@@ -197,8 +214,8 @@
               <div class="form-row" formGroupName="order" *ngIf="!files.length">
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Detalle de envío:</mat-label>
-                  <input matInput type="text" formControlName="nFactura" id="nFactura" required
-                         maxlength="250" placeholder="¿Qué deseas enviar?">
+                  <input matInput type="text" formControlName="nFactura" id="nFactura" required maxlength="250"
+                    placeholder="¿Qué deseas enviar?">
                   <mat-icon matPrefix>receipt</mat-icon>
                   <mat-error *ngIf="newForm.get('order.nFactura').errors?.required">
                     *Este campo es obligatorio
@@ -211,8 +228,8 @@
 
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Nombre del destinatario:</mat-label>
-                  <input matInput type="text" formControlName="nomDestinatario" id="nomDestinatario"
-                         required maxlength="150" placeholder="¿Quién recibirá el pedido?">
+                  <input matInput type="text" formControlName="nomDestinatario" id="nomDestinatario" required
+                    maxlength="150" placeholder="¿Quién recibirá el pedido?">
                   <mat-icon matPrefix>person</mat-icon>
                   <mat-error *ngIf="newForm.get('order.nomDestinatario').errors?.required">
                     *Este campo es obligatorio
@@ -227,11 +244,9 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Número celular del destinatario:</mat-label>
                   <input matInput type="tel" id="numCel" formControlName="numCel" required minlength="9"
-                         autocomplete="off"
-                         maxlength="9" appPhoneMask placeholder="Ej. 9999-9999(Guión Automático)">
+                    autocomplete="off" maxlength="9" appPhoneMask placeholder="Ej. 9999-9999(Guión Automático)">
                   <mat-icon matPrefix>phone</mat-icon>
-                  <mat-error
-                    *ngIf="newForm.get('order.numCel').errors?.minlength ||
+                  <mat-error *ngIf="newForm.get('order.numCel').errors?.minlength ||
                     newForm.get('order.numCel').errors?.maxlength">
                     *Por favor ingresa un número válido
                   </mat-error>
@@ -243,8 +258,8 @@
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Instrucciones de Entrega:</mat-label>
                   <textarea matInput id="instEspecificas" formControlName="instrucciones" maxlength="150"
-                            class="form-control"
-                            placeholder="¿Necesitamos instrucciones para la entrega de éste envío?"></textarea>
+                    class="form-control"
+                    placeholder="¿Necesitamos instrucciones para la entrega de éste envío?"></textarea>
                   <mat-icon matPrefix>assignment</mat-icon>
                   <mat-error>*Excede la longitud máxima permitida</mat-error>
                 </mat-form-field>
@@ -253,12 +268,11 @@
                   <mat-form-field appearance="outline" floatLabel="always">
                     <mat-label>Punto de entrega:</mat-label>
                     <input type="text" (input)="searchDestination($event)" autocomplete="off"
-                           [matAutocomplete]="autoDest"
-                           matInput formControlName="direccion" id="direccion" required
-                           placeholder="¿Dónde entregaremos tu pedido?">
+                      [matAutocomplete]="autoDest" matInput formControlName="direccion" id="direccion" required
+                      placeholder="¿Dónde entregaremos tu pedido?">
                     <mat-autocomplete #autoDest="matAutocomplete">
                       <mat-option *ngFor="let s of placesDestination" [value]="s.text"
-                                  (click)="calculatedistanceBefore()">
+                        (click)="calculatedistanceBefore()">
                         {{ s.text }}
                       </mat-option>
                     </mat-autocomplete>
@@ -288,45 +302,6 @@
 
               </div>
 
-              <!--<div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
-                <div class="col">
-                  <p class="card-title"><strong>Opciones extra de envíos:</strong></p>
-                  <hr>
-                </div>
-              </div>
-
-              <div class="form-row" formGroupName="order" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
-                <mat-form-field appearance="outline" floatLabel="always" class="col">
-                  <mat-label>Cargo Extra</mat-label>
-                  <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -">
-                    <mat-option *ngFor="let extracharge of selectedCategory.categoryExtraCharges"
-                                (click)="setSelectedExtraCharge(extracharge.extra_charge)"
-                                [value]="extracharge.idCargoExtra">
-                    <span *ngIf="extracharge.extra_charge.tipoCargo === 'F'">
-                      {{extracharge.extra_charge.nombre}}
-                      <span class="badge badge-primary">L.{{ extracharge.extra_charge.costo | number: '.2'}}</span>
-                    </span>
-                      <span *ngIf="extracharge.extra_charge.tipoCargo === 'V'">
-                      {{extracharge.extra_charge.nombre}}
-                    </span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-
-                <mat-form-field appearance="outline" floatLabel="always" class="col"
-                                *ngIf="selectedExtraCharge?.options?.length > 0">
-                  <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
-                  <mat-select formControlName="idOpcionExtra"
-                              placeholder="- Seleccione una opción -" class="col">
-                    <mat-option *ngFor="let option of selectedExtraCharge.options"
-                                value="{{option.costo}}" (click)="setSelectedExtraChargeOption(option)">
-                      {{option.descripcion  }}<span
-                      class="badge badge-primary">L.{{ '  ' + option.costo | number: '.2'}}</span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>-->
             </div>
 
             <div class="col-md" *ngIf="!files.length">
@@ -346,10 +321,9 @@
 
           <br>
 
-          <div class="row">
+          <!-- <div class="row">
             <div class="col">
-              <ngx-dropzone [accept]="'text/*'" [expandable]="true" (change)="onSelect($event)"
-                            [multiple]="false">
+              <ngx-dropzone [accept]="'text/*'" [expandable]="true" (change)="onSelect($event)" [multiple]="false">
                 <ngx-dropzone-label> Arrastrar archivo de entregas aquí (*Opcional)</ngx-dropzone-label>
                 <ngx-dropzone-preview *ngFor="let f of files" [removable]="true" (removed)="onFileRemove(f)">
                   <ngx-dropzone-label>{{f?.name}}({{f?.type}})</ngx-dropzone-label>
@@ -359,15 +333,14 @@
               <small><a href="./assets/helpers/archivo_prueba.txt" target="_blank">Archivo de muestra</a></small>
             </div>
           </div>
-          <br>
+          <br> -->
           <div class="form-row text-center">
 
             <div class="col">
               <span>
                 <i class="fa fa-dollar-sign"></i>
                 Costo:
-                <span *ngIf="loaders.loadingDistBef"
-                      class="spinner-border spinner-border-sm mr-1 ">
+                <span *ngIf="loaders.loadingDistBef" class="spinner-border spinner-border-sm mr-1 ">
                 </span> L. {{befCost}}
               </span>
             </div>
@@ -375,20 +348,16 @@
           <br>
           <div class="form-row">
             <div class="col-md-6" *ngIf="!files.length">
-              <button mat-raised-button type="button" (click)="onOrderAdd()" color="primary"
-                      [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid ||
-                      loaders.loadingAdd || prohibitedAddressCentinel || loaders.loadingDistBef"
-                      class="float-left">
+              <button mat-raised-button type="button" (click)="onOrderAdd()" color="primary" [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid ||
+                      loaders.loadingAdd || prohibitedAddressCentinel || loaders.loadingDistBef" class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                 entrega
               </button>
             </div>
 
             <div class="col-md-6" *ngIf="files.length">
-              <button mat-raised-button type="button" (click)="onFileOrdersAdd()" color="primary"
-                      [disabled]="deliveryForm.get('deliveryHeader').invalid ||
-                                  loaders.loadingAdd"
-                      class="float-left">
+              <button mat-raised-button type="button" (click)="onFileOrdersAdd()" color="primary" [disabled]="deliveryForm.get('deliveryHeader').invalid ||
+                                  loaders.loadingAdd" class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                 entregas
               </button>
@@ -416,36 +385,36 @@
       <!--ORDERS TABLE START-->
       <div class="col">
         <div class="table-responsive">
-          <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-                 class="display compact" style="width:100%">
+          <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact"
+            style="width:100%">
             <thead>
-            <tr>
-              <th scope="col">N°</th>
-              <th scope="col">Detalle de Envío</th>
-              <th scope="col">Nombre del Destinatario</th>
-              <th scope="col">Número Celular del Destinatario</th>
-              <th scope="col">Instrucciones</th>
-              <th scope="col">Dirección del Destinatario</th>
-              <th scope="col" data-priority="1">Acción</th>
-            </tr>
+              <tr>
+                <th scope="col">N°</th>
+                <th scope="col">Detalle de Envío</th>
+                <th scope="col">Nombre del Destinatario</th>
+                <th scope="col">Número Celular del Destinatario</th>
+                <th scope="col">Instrucciones</th>
+                <th scope="col">Dirección del Destinatario</th>
+                <th scope="col" data-priority="1">Acción</th>
+              </tr>
 
             </thead>
 
             <tbody>
-            <tr *ngFor="let order of orders; let i = index">
-              <td>{{i + 1}}</td>
-              <td>{{order.nFactura}}</td>
-              <td>{{order.nomDestinatario}}</td>
-              <td>{{order.numCel}}</td>
-              <td>{{order.instrucciones}}</td>
-              <td>{{order.direccion}}</td>
-              <td>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(order)"><i
-                  class="fa fa-trash-alt"></i>
-                  Quitar
-                </button>
-              </td>
-            </tr>
+              <tr *ngFor="let order of orders; let i = index">
+                <td>{{i + 1}}</td>
+                <td>{{order.nFactura}}</td>
+                <td>{{order.nomDestinatario}}</td>
+                <td>{{order.numCel}}</td>
+                <td>{{order.instrucciones}}</td>
+                <td>{{order.direccion}}</td>
+                <td>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(order)"><i
+                      class="fa fa-trash-alt"></i>
+                    Quitar
+                  </button>
+                </td>
+              </tr>
             </tbody>
 
           </table>
@@ -476,6 +445,15 @@
 
       </div>
 
+      <div class="col-12">
+        <p>Programar un servicio te permite seleccionar una ventana de 30 minutos para conectar con un conductor. </p>
+        <p>Al comienzo de la ventana (30mins antes de la hora solicitada), nuestro sistema mostrará tu solicitud a los conductores disponibles.</p>
+        <p>NOTAS:</p>
+        <p>- Programar un servicio por adelantado no garantiza que serás conectado con un Conductor o que el mismo llegará a la hora solicitada.</p>
+        <p>- En el caso que no seas conectado con un Conductor, al final de tu ventana de conexión (30mins después de la hora solicitada) tendrás
+            la opción de cancelar tu servicio sin cargo adicional.</p>
+      </div>
+
     </div>
     <!--CARD BLOCK PAYMENT OPTION end-->
 
@@ -484,12 +462,11 @@
 
   <mat-card-actions *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
     <button mat-raised-button type="button" *ngIf="paymentMethod == 1 && orders.length>0"
-            [disabled]="this.orders.length == 0 || !deliveryForm.get('deliveryHeader').valid"
-            color="primary" (click)="openConfirmDialog()">
+      [disabled]="this.orders.length == 0 || !deliveryForm.get('deliveryHeader').valid" color="primary"
+      (click)="openConfirmDialog()">
       Registrar Reservación
     </button>
-    <button type="button" *ngIf="paymentMethod == 2 && orders.length>0"
-            disabled class="btn btn-sm btn-outline-primary">
+    <button type="button" *ngIf="paymentMethod == 2 && orders.length>0" disabled class="btn btn-sm btn-outline-primary">
       Registrar Reservación
     </button>
   </mat-card-actions>

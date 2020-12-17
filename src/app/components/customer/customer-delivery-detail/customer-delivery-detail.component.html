@@ -14,10 +14,16 @@
       </button>
       <mat-menu #menu="matMenu">
         <button type="button" mat-menu-item *ngIf="allowHourChange &&
-        currentDelivery.idEstado != 39 && currentDelivery.isConsolidada == false"
-                [disabled]="!allowHourChange" (click)="openChangeHourDialog()">
+        currentDelivery.idEstado != 39 && currentDelivery.isConsolidada == false" [disabled]="!allowHourChange"
+          (click)="openChangeHourDialog()">
           Cambiar Hora de Recogida
         </button>
+
+        <!-- <button type="button" mat-menu-item *ngIf="allowCancel &&
+        currentDelivery.idEstado == 34" [disabled]="!allowCancel"
+          (click)="openCancelDialog()">
+          Cancelar Solicitud
+        </button> -->
       </mat-menu>
     </div>
   </mat-card-header>
@@ -55,8 +61,8 @@
       <div class="row">
         <div class="col-sm">
           <strong>Dirección de recogida:</strong>
-          <a
-            href="https://www.google.com/maps?q={{currentDelivery?.dirRecogida}}"> {{currentDelivery?.dirRecogida}} </a>
+          <a href="https://www.google.com/maps?q={{currentDelivery?.dirRecogida}}"> {{currentDelivery?.dirRecogida}}
+          </a>
         </div>
 
         <div class="col-sm">
@@ -135,42 +141,42 @@
       <div class="table-responsive">
         <table class="display compact" datatable [dtOptions]="dddtOptions" style="width: 100%">
           <thead>
-          <tr>
-            <th>Detalle de entrega</th>
-            <th>Nombre de destinatario</th>
-            <th>Número de teléfono</th>
-            <th>Dirección de entrega</th>
-            <th>Instrucciones de entrega</th>
-            <th>Distancia</th>
-            <th>Recargo</th>
-            <th>Cargos Extra</th>
-            <th>Costo</th>
-            <th>Fotografías</th>
-          </tr>
+            <tr>
+              <th>Detalle de entrega</th>
+              <th>Nombre de destinatario</th>
+              <th>Número de teléfono</th>
+              <th>Dirección de entrega</th>
+              <th>Instrucciones de entrega</th>
+              <th>Distancia</th>
+              <th>Recargo</th>
+              <th>Cargos Extra</th>
+              <th>Costo</th>
+              <th>Fotografías</th>
+            </tr>
 
           </thead>
 
           <tbody>
-          <tr *ngFor="let detail of currentDeliveryDetail; let i = index">
-            <td>{{detail.nFactura}}</td>
-            <td>{{detail.nomDestinatario}}</td>
-            <td>{{detail.numCel}}</td>
-            <td>
-              <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
-            </td>
-            <td>{{detail?.instrucciones}}</td>
-            <td>{{detail.distancia}}</td>
-            <td>L. {{detail.recargo}}</td>
-            <td>L. {{detail.cargosExtra }}</td>
-            <td>L. {{detail.cTotal}}</td>
-            <td>
-              <button *ngIf="detail.photography.length > 0" button type="button" mat-raised-button color="primary"
-                      (click)="openPhotosDialog(detail.photography)">
-                Ver Fotografías
-              </button>
-              <span *ngIf="detail.photography.length == 0">N/A</span>
-            </td>
-          </tr>
+            <tr *ngFor="let detail of currentDeliveryDetail; let i = index">
+              <td>{{detail.nFactura}}</td>
+              <td>{{detail.nomDestinatario}}</td>
+              <td>{{detail.numCel}}</td>
+              <td>
+                <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
+              </td>
+              <td>{{detail?.instrucciones}}</td>
+              <td>{{detail.distancia}}</td>
+              <td>L. {{detail.recargo}}</td>
+              <td>L. {{detail.cargosExtra }}</td>
+              <td>L. {{detail.cTotal}}</td>
+              <td>
+                <button *ngIf="detail.photography.length > 0" button type="button" mat-raised-button color="primary"
+                  (click)="openPhotosDialog(detail.photography)">
+                  Ver Fotografías
+                </button>
+                <span *ngIf="detail.photography.length == 0">N/A</span>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -179,5 +185,3 @@
   <!-- CARD BODY END -->
 </mat-card>
 <!-- CARD END -->
-
-

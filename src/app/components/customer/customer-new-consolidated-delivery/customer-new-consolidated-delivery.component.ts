@@ -27,6 +27,8 @@ import { BranchService } from "../../../services/branch.service";
 import { Branch } from "../../../models/branch";
 import { Schedule } from "../../../models/schedule";
 import { CustomerRestrictionsDialogComponent } from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
+import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
@@ -114,12 +116,15 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     public dialog: MatDialog,
     private authService: AuthService,
     private branchService: BranchService,
+    private userService: UsersService
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
 
   ngOnInit(): void {
+    
     this.initialize()
+    //this.checkCustomer()
     this.loadData()
   }
 
@@ -563,7 +568,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           value.recargo = nPay.surcharges
           value.cTotal = nPay.total
           this.pagos[i].baseRate = nPay.baseRate
-          this.pago[i].cargosExtra = nPay.cargosExtra
+          this.pagos[i].cargosExtra = nPay.cargosExtra
           this.pagos[i].surcharges = nPay.surcharges
           this.pagos[i].total = nPay.total
         }
@@ -881,6 +886,29 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       dialogRef.close()
+    })
+  }
+
+  checkCustomer() {
+    this.loaders.loadingData = true
+    const usrsSubs = this.userService
+      .checkCustomerAvalability()
+      .subscribe(response => {
+        if (response.data == false) {
+          this.openLockedUserDialog()
+        } else {
+          
+          this.loadData()
+        }
+        usrsSubs.unsubscribe()
+      })
+  }
+
+  openLockedUserDialog() {
+    const dialogRef = this.dialog.open(LockedUserDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.router.navigate(['customers/dashboard'])
     })
   }
 

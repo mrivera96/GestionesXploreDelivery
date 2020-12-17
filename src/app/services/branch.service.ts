@@ -13,9 +13,12 @@ export class BranchService {
     private authService: AuthService
   ) { }
 
-  getBranchOffices(){
+  getBranchOffices(idCustomer = null){
     return this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'getCustomerBranchOffices', tkn: this.authService.currentUserValue.access_token})
+      function: 'getCustomerBranchOffices',
+      idCustomer,
+      tkn: this.authService.currentUserValue.access_token
+    })
   }
 
   newBranch(form){

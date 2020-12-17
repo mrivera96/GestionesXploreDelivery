@@ -149,6 +149,19 @@
       </strong>
     </div>
 
+    <div class="col-md" *ngIf="currentOrder?.extra_charges.length > 0">
+      Servicios Adicionales:
+    </div>
+    <div class="col-md" *ngIf="currentOrder?.extra_charges.length > 0">
+      <p *ngFor="let extraCharge of currentOrder.extra_charges">
+        <strong>
+          {{extraCharge.extracharge.nombre}}
+        </strong>
+        <!-- <span class="badge badge-primary" *ngIf="extraCharge.idCargoExtra == 5">{{extraCharge.montoCobertura}}</span> -->
+        
+      </p>
+    </div>
+
   </div>
 
   <!--

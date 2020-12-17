@@ -77,6 +77,21 @@
     </div>
 
     <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Monto de gracia:</mat-label>
+        <input matInput id="montoGracia" type="number" formControlName="montoGracia" autocomplete="nope"
+               required placeholder="Ej. 5" minlength="1">
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error *ngIf="f.montoGracia.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.montoGracia.errors?.minlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
       <mat-slide-toggle formControlName="enviarNotificaciones">Enviar Notificaciones</mat-slide-toggle>
     </div>
 

@@ -117,7 +117,7 @@
 
               <th style="text-align:center; background-color: #e0e0e0" colspan="2">Camión 11 pies</th>
 
-              <th style="text-align:center; " colspan="6">Totales</th>
+              <th style="text-align:center; " colspan="7">Totales</th>
 
             </tr>
 
@@ -149,10 +149,11 @@
               <th style="text-align:center; width: 5%;background-color: #e0e0e0">Entregas</th>
               <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo</th>
 
+              <th style="text-align:center; width: 5%;">Tiempo Auxiliar</th>
               <th style="text-align:center; width: 5%;">Entregas</th>
               <th style="text-align:center; width: 5%;">Subtotal Tiempo</th>
               <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
-              <th style="text-align:center; width: 5%;">Tiempo Auxiliar</th>
+              <th style="text-align:center; width: 5%;">Tiempo Extra</th>
               <th style="text-align:center; width: 5%;">Tiempo Total</th>
               <th style="text-align:center; width: 5%;">Efectivo</th>
             </tr>
@@ -188,10 +189,11 @@
               <td style="text-align:center">{{result.camion11}}</td>
               <td style="text-align:center">{{result.camion11Time}}</td>
 
+              <td style="text-align:center">{{result.totalAuxTime}}</td>
               <td style="text-align:center">{{result.totalOrders}}</td>
               <td style="text-align:center">{{result.totalTime}}</td>
               <td style="text-align:center">{{result.totalOver20kms}}</td>
-              <td style="text-align:center">{{result.totalAuxTime}}</td>
+              <td style="text-align:center">{{result.totalExtraTime}}</td>
               <td style="text-align:center">{{ result.tiempototal}}</td>
               <td style="text-align:center">{{result.totalMoney}}</td>
             </tr>
@@ -251,6 +253,9 @@
                 {{totals.camion11Time}}
               </th>
               <th style="text-align:center">
+                {{totals.totalAuxTime}}
+              </th>
+              <th style="text-align:center">
                 {{totals.totalOrders}}
               </th>
               <th style="text-align:center">
@@ -260,7 +265,7 @@
                 {{totals.totalOver20kms}}
               </th>
               <th style="text-align:center">
-                {{totals.totalAuxTime}}
+                {{totals.totalExtraTime}}
               </th>
               <th style="text-align:center">
                 {{totals.tiempoTotal}}

@@ -26,7 +26,6 @@
     <div class="table-responsive">
       <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
              class="display compact" style="width:100%">
-
         <tfoot>
         <tr>
           <th></th>
@@ -61,9 +60,20 @@
           <td>{{driver.numCelular || 'Sin registro' }}</td>
           <td>{{driver.state}}</td>
           <td>
-            <a (click)="showEditForm(driver.idUsuario)" style="color: #0071A2">
-              <i class="fa fa-edit"></i> Editar
-            </a>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button (click)="showEditForm(driver.idUsuario)" mat-menu-item>
+                <mat-icon>create</mat-icon>
+                <span>Editar</span> 
+              </button>
+
+              <!-- <button (click)="showCategoriesDialog(driver.idUsuario)" mat-menu-item>
+              <mat-icon>list</mat-icon>
+              <span>Ver Categorías</span>
+              </button>     -->
+            </mat-menu>            
           </td>
         </tr>
         </tbody>

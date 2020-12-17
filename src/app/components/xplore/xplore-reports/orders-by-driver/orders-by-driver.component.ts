@@ -81,6 +81,7 @@ export class OrdersByDriverComponent implements OnInit {
     totalMoney: 0,
     totalOver20kms: 0,
     totalAuxTime: 0,
+    totalExtraTime: 0,
     tiempoTotal: 0
   }
 
@@ -179,6 +180,7 @@ export class OrdersByDriverComponent implements OnInit {
         totalMoney: 0,
         totalOver20kms: 0,
         totalAuxTime: 0,
+        totalExtraTime: 0,
         tiempoTotal: 0
       }
       this.deliveriesService.getOrdersByDriver(this.consultForm.value).subscribe(response => {
@@ -206,11 +208,14 @@ export class OrdersByDriverComponent implements OnInit {
           this.totals.panelAuxiliarOrders = this.totals.panelAuxiliarOrders + +result.panelAuxiliar
           this.totals.panelAuxiliarTime = this.totals.panelAuxiliarTime + +result.panelAuxiliarTime
           this.totals.panelAuxiliarOver20kms = this.totals.panelAuxiliarOver20kms + +result.panelAuxiliarOver20kms
+          this.totals.camion11Orders = this.totals.camion11Orders + +result.camion11
+          this.totals.camion11Time = this.totals.camion11Time + +result.camion11Time
           this.totals.totalOrders = this.totals.totalOrders + +result.totalOrders
           this.totals.totalTime = this.totals.totalTime + +result.totalTime
           this.totals.totalMoney = this.totals.totalMoney + +result.totalMoney
           this.totals.totalOver20kms = this.totals.totalOver20kms + +result.totalOver20kms
           this.totals.totalAuxTime = this.totals.totalAuxTime + +result.totalAuxTime
+          this.totals.totalExtraTime = this.totals.totalExtraTime + +result.totalExtraTime
           this.totals.tiempoTotal = this.totals.tiempoTotal + +result.tiempototal
         })
 
@@ -324,6 +329,7 @@ export class OrdersByDriverComponent implements OnInit {
       "",
       "",
       "",
+      "",
       ""
     ]
 
@@ -338,7 +344,7 @@ export class OrdersByDriverComponent implements OnInit {
     worksheet.mergeCells('M8:N8');
     worksheet.mergeCells('O8:P8');
     worksheet.mergeCells('Q8:R8');
-    worksheet.mergeCells('S8:X8');
+    worksheet.mergeCells('S8:Y8');
 
     categoriesheaderRow.eachCell((cell, number) => {
       cell.fill = {
@@ -372,10 +378,11 @@ export class OrdersByDriverComponent implements OnInit {
       "Tiempo",
       "Entregas",
       "Tiempo",
+      "Tiempo Auxiliar",
       "Entregas",
       "Subtotal Tiempo",
       "Tiempo > 20kms",
-      "Tiempo Auxiliar",
+      "Tiempo Extra",
       "Tiempo Total",
       "Efectivo",
     ]
@@ -415,10 +422,11 @@ export class OrdersByDriverComponent implements OnInit {
         d.panelAuxiliarTime,
         d.camion11,
         d.camion11Time,
+        d.totalAuxTime,
         d.totalOrders,
         d.totalTime,
         d.totalOver20kms,
-        d.totalAuxTime,
+        d.totalExtraTime,
         d.tiempototal,
         d.totalMoney
       ]
@@ -448,10 +456,11 @@ export class OrdersByDriverComponent implements OnInit {
       this.totals.panelAuxiliarTime,
       this.totals.camion11Orders,
       this.totals.camion11Time,
+      this.totals.totalAuxTime,
       this.totals.totalOrders,
       this.totals.totalTime,
       this.totals.totalOver20kms,
-      this.totals.totalAuxTime,
+      this.totals.totalExtraTime,
       this.totals.tiempoTotal,
       this.totals.totalMoney
     ]
@@ -483,6 +492,7 @@ export class OrdersByDriverComponent implements OnInit {
     worksheet.getColumn(23).width = 20;
     worksheet.getColumn(24).width = 20;
     worksheet.getColumn(25).width = 20;
+    worksheet.getColumn(26).width = 20;
 
 
     //Generate Excel File with given name
@@ -507,7 +517,6 @@ export class OrdersByDriverComponent implements OnInit {
 
   generatePDF() {
     let currentDriver: User = {}
-    let fname = ''
 
     this.drivers.forEach(driver => {
       if (driver.idUsuario == this.f.driverId.value) {
@@ -590,6 +599,7 @@ export class OrdersByDriverComponent implements OnInit {
       [],
       [],
       [],
+      [],
     ]
 
     pdf.add(
@@ -615,10 +625,11 @@ export class OrdersByDriverComponent implements OnInit {
       "Tiempo",
       "Entregas",
       "Tiempo",
+      "Tiempo Auxiliar",
       "Entregas",
       "Subtotal Tiempo",
       "Tiempo > 20kms",
-      "Tiempo Auxiliar",
+      "Tiempo Extra",
       "Tiempo Total",
       "Efectivo",
     ]
@@ -648,10 +659,11 @@ export class OrdersByDriverComponent implements OnInit {
         d.panelAuxiliarTime,
         d.camion11,
         d.camion11Time,
+        d.totalAuxTime,
         d.totalOrders,
         d.totalTime,
         d.totalOver20kms,
-        d.totalAuxTime,
+        d.totalExtraTime,
         d.tiempototal,
         d.totalMoney
       ]
@@ -684,10 +696,11 @@ export class OrdersByDriverComponent implements OnInit {
       this.totals.panelAuxiliarTime,
       this.totals.camion11Orders,
       this.totals.camion11Time,
+      this.totals.totalAuxTime,
       this.totals.totalOrders,
       this.totals.totalTime,
       this.totals.totalOver20kms,
-      this.totals.totalAuxTime,
+      this.totals.totalExtraTime,
       this.totals.tiempoTotal,
       this.totals.totalMoney
     ]
@@ -697,8 +710,6 @@ export class OrdersByDriverComponent implements OnInit {
     )
 
     pdf.create().open()
-
-
   }
 
 }

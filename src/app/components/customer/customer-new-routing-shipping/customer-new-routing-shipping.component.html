@@ -58,6 +58,11 @@
                   <p class="card-title"><strong>Detalles de Recogida:</strong></p>
                   <hr>
                 </div>
+
+                <div class="col-12">
+                  <p class="text-danger">Si requieres servicio fuera de nuestros horarios hábiles, favor comunícate al
+                    <a href="tel:94397234">+504 9439-7234</a></p>
+                </div>
               </div>
               <div class="form-row" formGroupName="deliveryHeader">
 
@@ -272,43 +277,7 @@
 
               </div>
 
-              <!--<div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
-                <div class="col">
-                  <p class="card-title"><strong>Opciones extra de envíos:</strong></p>
-                  <hr>
-                </div>
-              </div>
-
-              <div class="form-row" formGroupName="order" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
-                <mat-form-field appearance="outline" floatLabel="always" class="col">
-                  <mat-label>Cargo Extra</mat-label>
-                  <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -" >
-                    <mat-option *ngFor="let extracharge of selectedCategory.categoryExtraCharges"
-                                (click)="setSelectedExtraCharge(extracharge.extra_charge)"
-                                [value]="extracharge.idCargoExtra">
-                    <span *ngIf="extracharge.extra_charge.tipoCargo === 'F'">
-                      {{extracharge.extra_charge.nombre + ' '}}
-                      <span class="badge badge-primary">L.{{ extracharge.extra_charge.costo }}</span>
-                    </span>
-                      <span *ngIf="extracharge.extra_charge.tipoCargo === 'V'">
-                      {{extracharge.extra_charge.nombre + ' '}}
-                    </span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-
-                <mat-form-field appearance="outline" floatLabel="always" class="col" *ngIf="selectedExtraCharge?.options">
-                  <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
-                  <mat-select  formControlName="idOpcionExtra"
-                              placeholder="- Seleccione una opción -" class="col">
-                    <mat-option *ngFor="let option of selectedExtraCharge.options"
-                                value="{{option.costo}}" (click)="setSelectedExtraChargeOption(option)">
-                      {{option.descripcion  }}<span class="badge badge-primary">L.{{ '  ' + option.costo}}</span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>-->
+            
 
             </div>
 
@@ -495,7 +464,15 @@
             <span *ngIf="loaders.loadingCalculating" class="spinner-border spinner-border-sm mr-1 "></span>
           </span>
         </mat-checkbox>
+      </div>
 
+      <div class="col-12">
+        <p>Programar un servicio te permite seleccionar una ventana de 30 minutos para conectar con un conductor. </p>
+        <p>Al comienzo de la ventana (30mins antes de la hora solicitada), nuestro sistema mostrará tu solicitud a los conductores disponibles.</p>
+        <p>NOTAS:</p>
+        <p>- Programar un servicio por adelantado no garantiza que serás conectado con un Conductor o que el mismo llegará a la hora solicitada.</p>
+        <p>- En el caso que no seas conectado con un Conductor, al final de tu ventana de conexión (30mins después de la hora solicitada) tendrás
+            la opción de cancelar tu servicio sin cargo adicional.</p>
       </div>
     </div>
     <!--CARD BLOCK PAYMENT OPTION end-->

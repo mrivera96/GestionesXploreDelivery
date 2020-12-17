@@ -27,6 +27,8 @@ import { SuccessModalComponent } from "../../shared/success-modal/success-modal.
 import { ConfirmDialogComponent } from "../customer-new-delivery/confirm-dialog/confirm-dialog.component";
 import { CustomerRestrictionsDialogComponent } from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
 import { animate, style, transition, trigger } from "@angular/animations";
+import { UsersService } from 'src/app/services/users.service';
+import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component';
 
 @Component({
   selector: 'app-customer-new-consolidated-foreign-delivery',
@@ -122,14 +124,14 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
     public dialog: MatDialog,
     private authService: AuthService,
     private branchService: BranchService,
+    private userService: UsersService
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
 
   ngOnInit(): void {
     this.initialize()
-
-    this.loadData()
+    this.checkCustomer()
   }
 
   initialize() {
@@ -975,6 +977,29 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
       this.currOrder.extras.splice(idx, 1)
       this.befCost -= extraCharge.costo
     }
+  }
+
+  checkCustomer() {
+    this.loaders.loadingData = true
+    const usrsSubs = this.userService
+      .checkCustomerAvalability()
+      .subscribe(response => {
+        if (response.data == false) {
+          this.openLockedUserDialog()
+        } else {
+          
+          this.loadData()
+        }
+        usrsSubs.unsubscribe()
+      })
+  }
+
+  openLockedUserDialog() {
+    const dialogRef = this.dialog.open(LockedUserDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.router.navigate(['customers/dashboard'])
+    })
   }
 
 }

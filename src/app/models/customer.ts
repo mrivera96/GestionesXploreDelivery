@@ -11,6 +11,7 @@ export interface Customer {
   isActivo?: boolean
   subtotal?: number
   paid?: number
+  montoGracia?: number
   balance?: number
   payments?: Payment[]
   deliveries?: Delivery[]

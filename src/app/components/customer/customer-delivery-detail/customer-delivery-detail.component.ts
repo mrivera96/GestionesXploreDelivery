@@ -10,6 +10,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {ChangeHourDialogComponent} from "./change-hour-dialog/change-hour-dialog.component";
 import {DataTableDirective} from "angular-datatables";
 import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
+import { ConfirmCancelDialogComponent } from './confirm-cancel-dialog/confirm-cancel-dialog.component';
+import { SuccessModalComponent } from '../../shared/success-modal/success-modal.component';
 @Component({
   selector: 'app-customer-delivery-detail',
   templateUrl: './customer-delivery-detail.component.html',
@@ -34,6 +36,7 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
   dddtTrigger: Subject<any>
   errorMSg: string
   allowHourChange: boolean = false
+  allowCancel: boolean = false
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
   hasPhotos: boolean = false
@@ -109,8 +112,12 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
       const registered_date = ((new Date(response.data.fechaNoFormatted).getTime()) / 1000) /60
       const new_date = ((new Date().getTime() / 1000) / 60)
       const diff = registered_date - new_date
+      const diffReverse = new_date - registered_date
       if(diff >= 30){
         this.allowHourChange = true
+      }
+      if(diffReverse >= 30){
+        this.allowCancel = true
       }
 
       deliveriesSubscription.unsubscribe()
@@ -144,6 +151,19 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
 
   }
 
+  openSuccessDialog(succsTitle: string, succssMsg: string) {
+    const dialogRef = this.dialog.open(SuccessModalComponent, {
+      data: {
+        succsTitle: succsTitle,
+        succsMsg: succssMsg
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.reloadData()
+    })
+  }
+
   openChangeHourDialog(){
     const dialogRef = this.dialog.open(ChangeHourDialogComponent,{
       data:{
@@ -157,6 +177,27 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
       }
     })
 
+  }
+
+  openCancelDialog(){
+    const dialogRef = this.dialog.open(ConfirmCancelDialogComponent)
+
+    dialogRef.afterClosed().subscribe( result => {
+      if(result){
+        this.loaders.loadingData = true
+        const cancelSubs = this.deliveriesService.cancelDelivery(this.currentDelivery.idDelivery)
+        .subscribe(response => {
+          this.loaders.loadingData = false
+          this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+          cancelSubs.unsubscribe()
+        }, error => {
+          error.subscribe(error => {
+            this.openErrorDialog(error.statusText, true)
+          })
+        }
+        )
+      }
+    })
   }
 
   openPhotosDialog(photos){

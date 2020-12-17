@@ -2,7 +2,6 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {CustomerWorkLines} from "../../../../models/customer-work-lines";
 import {UsersService} from "../../../../services/users.service";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {AddCustomerRateDialogComponent} from "../../xplore-rates/rate-customers-dialog/add-customer-rate-dialog/add-customer-rate-dialog.component";
 import {AddWorkLineComponent} from "./add-work-line/add-work-line.component";
 import {WorkLinesService} from "../../../../services/work-lines.service";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
@@ -25,7 +24,7 @@ export class CustomerWorkLinesComponent implements OnInit {
     private usersService: UsersService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<CustomerWorkLinesComponent>,
     private workLinesService: WorkLinesService,
   ) {
     this.currentCustomer = this.data.customer

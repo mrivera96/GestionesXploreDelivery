@@ -1,1 +1,2 @@
-<p>xplore-add-delivery works!</p>
+<app-regular-delivery [currCustomer]="customer" *ngIf="delType == 1"></app-regular-delivery>
+<app-consolidated-delivery [currCustomer]="customer" *ngIf="delType == 2"></app-consolidated-delivery>

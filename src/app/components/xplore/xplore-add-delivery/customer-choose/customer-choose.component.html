@@ -15,7 +15,7 @@
     <mat-form-field appearance="outline" floatLabel="always">
       <mat-label>Cliente:</mat-label>
       <mat-select [(ngModel)]="selectedCustomer" name="selectedCustomer" required
-        placeholder="- Seleccione un cliente -">
+        placeholder="- Seleccione un cliente -" (ngModelChange)="checkDelTypes(selectedCustomer)" >
         <mat-form-field>
           <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)">
           <mat-icon [inline]="true" matPrefix>search</mat-icon>
@@ -37,7 +37,7 @@
           {{delType.desc}}
         </mat-option>
       </mat-select>
-      <mat-icon matSuffix>account_circle</mat-icon>
+      <mat-icon matSuffix>dashboard</mat-icon>
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
 

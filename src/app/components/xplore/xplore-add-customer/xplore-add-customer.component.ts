@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {UsersService} from "../../../services/users.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import { Component, OnInit } from '@angular/core';
+import { animate, style, transition, trigger } from "@angular/animations";
+import { UsersService } from "../../../services/users.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component";
+import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 
 @Component({
   selector: 'app-xplore-add-customer',
@@ -13,8 +13,8 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
@@ -53,11 +53,15 @@ export class XploreAddCustomerComponent implements OnInit {
         Validators.required,
         Validators.minLength(9),
         Validators.maxLength(9)]],
+      montoGracia: [100, [
+        Validators.required,
+        Validators.minLength(1),
+      ]],
       email: ['', [
         Validators.required,
         Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"),
         Validators.maxLength(50)]],
-      enviarNotificaciones:[true, Validators.required]
+      enviarNotificaciones: [true, Validators.required]
     })
   }
 

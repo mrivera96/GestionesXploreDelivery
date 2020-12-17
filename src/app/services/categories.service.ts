@@ -24,9 +24,10 @@ export class CategoriesService {
     })
   }
 
-  getCustomerCategories(){
+  getCustomerCategories(idCustomer = null){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'getMyCategories',
+      idCustomer,
       tkn: this.authService.currentUserValue.access_token
     })
   }
