@@ -138,8 +138,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       'hh:mm a', 'en')
 
     this.initialize()
-    //this.checkCustomer()
-    this.loadData()
+    this.checkCustomer()
   }
 
   initialize() {

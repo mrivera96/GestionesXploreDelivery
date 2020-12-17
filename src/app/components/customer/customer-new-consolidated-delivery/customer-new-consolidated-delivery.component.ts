@@ -124,8 +124,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   ngOnInit(): void {
     
     this.initialize()
-    //this.checkCustomer()
-    this.loadData()
+    this.checkCustomer()
   }
 
   initialize() {

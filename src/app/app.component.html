@@ -39,10 +39,10 @@
         </a>
       </mat-nav-list>
 
-      <!-- <a (click)="sidenav.close()" [routerLink]="['admins/nuevo-delivery']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['admins/nuevo-delivery']" mat-list-item>
         <mat-icon>add</mat-icon>
         Nuevo Delivery
-      </a> -->
+      </a>
 
       <a (click)="sidenav.close()" [routerLink]="['admins/reservas-pendientes']" mat-list-item>
         <mat-icon>update</mat-icon>
@@ -215,7 +215,7 @@
         Agregar delivery (Carga Consolidada)
       </a>
 
-      <!-- <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
+      <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
         [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
         <mat-icon>add</mat-icon>
         Agregar delivery Foráneo (Carga Consolidada)
@@ -224,7 +224,7 @@
       <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item>
         <mat-icon>add_road</mat-icon>
         +Delivery en Ruta
-      </a> -->
+      </a>
 
       <a (click)="sidenav.close()" [routerLink]="['customers/envios-hoy']" mat-list-item>
         <mat-icon>today</mat-icon>
