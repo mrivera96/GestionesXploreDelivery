@@ -41,6 +41,10 @@ import { LockedUserDialogComponent } from './components/shared/locked-user-dialo
 import { ConfirmCancelDialogComponent } from './components/customer/customer-delivery-detail/confirm-cancel-dialog/confirm-cancel-dialog.component';
 import { DriverCategoriesComponent } from './components/xplore/xplore-drivers/driver-categories/driver-categories.component';
 import { AddCategoryComponent } from './components/xplore/xplore-drivers/add-category/add-category.component';
+import { CustomerLabelsComponent } from './components/customer/customer-labels/customer-labels.component';
+import { AddLabelComponent } from './components/customer/customer-labels/add-label/add-label.component';
+import { EditLabelComponent } from './components/customer/customer-labels/edit-label/edit-label.component';
+import { ConfirmDeleteComponent } from './components/customer/customer-labels/confirm-delete/confirm-delete.component';
 
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -58,8 +62,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
         ConsolidatedDeliveryComponent,
         LockedUserDialogComponent,
         ConfirmCancelDialogComponent,
-        DriverCategoriesComponent,
-        AddCategoryComponent,
+        ConfirmDeleteComponent,
     ],
 
     imports: [

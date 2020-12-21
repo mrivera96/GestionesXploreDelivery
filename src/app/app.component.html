@@ -256,6 +256,11 @@
         Mis Direcciones
       </a>
 
+      <a [routerLink]="['customers/etiquetas']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>label</mat-icon>
+        Mis Etiquetas
+      </a>
+
       <a [routerLink]="['customers/reporte-envios']" (click)="sidenav.close()" mat-list-item>
         <mat-icon>analytics</mat-icon>
         Reporte de Envíos

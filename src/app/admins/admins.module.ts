@@ -71,6 +71,8 @@ import {ReportRequestsComponent} from "../components/xplore/xplore-reports/repor
 import {AddRequestsDialogComponent} from "../components/xplore/xplore-reports/report-requests/add-requests-dialog/add-requests-dialog.component";
 import {EditExtraChargeOptionDialogComponent} from "../components/xplore/extra-charges/edit-extra-charge-option-dialog/edit-extra-charge-option-dialog.component";
 import {CustomerChooseComponent} from "../components/xplore/xplore-add-delivery/customer-choose/customer-choose.component";
+import { DriverCategoriesComponent } from '../components/xplore/xplore-drivers/driver-categories/driver-categories.component';
+import { AddCategoryComponent } from '../components/xplore/xplore-drivers/add-category/add-category.component';
 
 @NgModule({
   declarations: [
@@ -139,6 +141,8 @@ import {CustomerChooseComponent} from "../components/xplore/xplore-add-delivery/
     AddRequestsDialogComponent,
     EditExtraChargeOptionDialogComponent,
     CustomerChooseComponent,
+    DriverCategoriesComponent,
+    AddCategoryComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,

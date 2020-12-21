@@ -32,6 +32,9 @@ import {CustomerRestrictionsDialogComponent} from "../components/customer/custom
 import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/customer/customer-new-consolidated-foreign-delivery/customer-new-consolidated-foreign-delivery.component";
 import { CustomerNewRoutingShippingComponent } from '../components/customer/customer-new-routing-shipping/customer-new-routing-shipping.component';
 import {MatMenuModule} from "@angular/material/menu";
+import { CustomerLabelsComponent } from '../components/customer/customer-labels/customer-labels.component';
+import { AddLabelComponent } from '../components/customer/customer-labels/add-label/add-label.component';
+import { EditLabelComponent } from '../components/customer/customer-labels/edit-label/edit-label.component';
 
 
 @NgModule({
@@ -58,6 +61,9 @@ import {MatMenuModule} from "@angular/material/menu";
     CustomerRestrictionsDialogComponent,
     CustomerNewConsolidatedForeignDeliveryComponent,
     CustomerNewRoutingShippingComponent,
+    CustomerLabelsComponent,
+    AddLabelComponent,
+    EditLabelComponent,
   ],
     imports: [
         CommonModule,

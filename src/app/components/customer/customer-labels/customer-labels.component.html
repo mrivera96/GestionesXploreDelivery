@@ -1,0 +1,71 @@
+<!--CARD START -->
+<mat-card @fade>
+    <mat-card-header>
+      <mat-card-title>Mis Etiquetas</mat-card-title>
+    </mat-card-header>
+    <!-- CARD BODY START -->
+    <mat-card-content>
+  
+      <div class="row" *ngIf="loaders.loadingData">
+        <div class="col text-center">
+          <img src="assets/img/loading.svg" width="5%" alt="loading">
+          <p>Cargando información...</p>
+        </div>
+      </div>
+  
+      <div class="row justify-content-end">
+        <div class="col">
+          <button mat-raised-button (click)="showNewForm()" type="button" color="primary" class="float-right mb-2">
+            <i class="fa fa-plus"></i>
+            Agregar Etiqueta
+          </button>
+        </div>
+      </div>
+      <!-- DATATABLE START -->
+  
+      <div class="table-responsive">
+        <table id="dTable" datatable [dtOptions]="bdtOptions" [dtTrigger]="bdtTrigger"
+               class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th data-priority="1">N°</th>
+            <th data-priority="1">Descripción de la etiqueta</th>
+            <th data-priority="1">Editar</th>
+            <th data-priority="1">Eliminar</th>
+          </tr>
+          </thead>
+          <tbody>
+  
+          <tr *ngFor="let label of myLabels; let i = index" style="cursor: pointer">         
+            <td>{{i + 1}}</td>
+            <td>{{label.descEtiqueta}}</td>
+            
+            <td>
+              <a (click)="showEditForm(label.idEtiqueta)" style="color: #0071A2">
+                <i class="fa fa-edit"></i> Editar
+              </a>
+            </td>
+            <td>
+              <a (click)="showConfirmDelete(label.idEtiqueta)" style="color: #0071A2">
+                <i class="fa fa-trash"></i> Eliminar
+              </a>
+            </td>
+          </tr>
+          </tbody>
+  
+        </table>
+        <!-- DATATABLE END -->
+      </div>
+  
+    </mat-card-content>
+    <!--CARD BODY END -->
+  
+  </mat-card>
+  <!-- CARD END -->
+  
+  
+  
+  
+  
+  
+  

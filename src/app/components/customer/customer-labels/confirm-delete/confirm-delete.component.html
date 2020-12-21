@@ -1,0 +1,19 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-warning">
+    <i class="fa fa-warning"></i> Eliminar Etiqueta
+  </h2>
+  <mat-dialog-content>
+    <p>{{data.confMsg}}</p>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions>
+    <button mat-raised-button (click)="deleteLabel()" color="warn">
+      Confirmar
+    </button>
+    <button mat-raised-button mat-dialog-close cdkFocusInitial>
+      Cancelar
+    </button>
+  
+  </mat-dialog-actions>
+  <!-- MODAL END -->
+  

@@ -17,6 +17,7 @@ import { CustomerDashboardComponent } from '../components/customer/customer-dash
 import {CustomerNewConsolidatedDeliveryComponent} from "../components/customer/customer-new-consolidated-delivery/customer-new-consolidated-delivery.component";
 import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/customer/customer-new-consolidated-foreign-delivery/customer-new-consolidated-foreign-delivery.component";
 import { CustomerNewRoutingShippingComponent } from '../components/customer/customer-new-routing-shipping/customer-new-routing-shipping.component';
+import { CustomerLabelsComponent } from '../components/customer/customer-labels/customer-labels.component';
 
 const routes: Routes = [
   //RUTAS PARA CLIENTES
@@ -36,7 +37,7 @@ const routes: Routes = [
   {path: 'envio-consolidado', component: CustomerNewConsolidatedDeliveryComponent, canActivate: [CustomerGuard]},
   {path: 'envio-consolidado-foraneo', component: CustomerNewConsolidatedForeignDeliveryComponent, canActivate: [CustomerGuard]},
   {path: 'envio-ruteo', component: CustomerNewRoutingShippingComponent, canActivate: [CustomerGuard]},
-
+  {path: 'etiquetas', component: CustomerLabelsComponent, canActivate: [CustomerGuard]},
 ];
 
 @NgModule({
