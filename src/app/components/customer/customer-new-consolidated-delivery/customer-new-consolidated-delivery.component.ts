@@ -106,6 +106,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   hoursToShow: Array<any> = []
   files: File[] = []
   fileContentArray: String[] = []
+  demandMSG: string = ''
 
   constructor(
     private categoriesService: CategoriesService,
@@ -201,6 +202,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.loaders.loadingData = true
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.consolidatedCategories
+      this.demandMSG = response.demand
       categoriesSubscription.unsubscribe()
       this.loaders.loadingData = false
       this.setSelectedCategory()
@@ -907,7 +909,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     const dialogRef = this.dialog.open(LockedUserDialogComponent)
 
     dialogRef.afterClosed().subscribe(result => {
-      this.router.navigate(['customers/dashboard'])
+      dialogRef.close()
     })
   }
 

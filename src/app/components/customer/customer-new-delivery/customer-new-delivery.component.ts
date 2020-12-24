@@ -111,6 +111,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
   searchingOrigin = false
   searchingDest = false
+  demandMSG: string = ''
 
   constructor(
     private categoriesService: CategoriesService,
@@ -243,6 +244,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.loaders.loadingData = true
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.data
+      this.demandMSG = response.demand
       this.setSelectedCategory()
       this.loaders.loadingData = false
       categoriesSubscription.unsubscribe()
