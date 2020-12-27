@@ -115,6 +115,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
   finishFlag = false
   avgDistance = 0
   lockedUser = false
+  demandMSG: string = ''
 
   constructor(
     private categoriesService: CategoriesService,
@@ -248,6 +249,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     this.loaders.loadingData = true
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.routingCategories
+      this.demandMSG = response.demand
       this.setSelectedCategory()
       this.loaders.loadingData = false
       categoriesSubscription.unsubscribe()
@@ -1065,20 +1067,23 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       .checkCustomerAvalability()
       .subscribe(response => {
         if (response.data == false) {
-          this.openLockedUserDialog()
+          this.openLockedUserDialog(response.balance)
         } else {
-
           this.loadData()
         }
         usrsSubs.unsubscribe()
       })
   }
 
-  openLockedUserDialog() {
-    const dialogRef = this.dialog.open(LockedUserDialogComponent)
+  openLockedUserDialog(balance) {
+    const dialogRef = this.dialog.open(LockedUserDialogComponent,{
+      data:{
+        balance: balance
+      }
+    })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.router.navigate(['customers/dashboard'])
+      this.loadData()
     })
   }
 

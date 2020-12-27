@@ -975,20 +975,23 @@ export class CustomerNewDeliveryComponent implements OnInit {
       .checkCustomerAvalability()
       .subscribe(response => {
         if (response.data == false) {
-          this.openLockedUserDialog()
+          this.openLockedUserDialog(response.balance)
         } else {
-
           this.loadData()
         }
         usrsSubs.unsubscribe()
       })
   }
 
-  openLockedUserDialog() {
-    const dialogRef = this.dialog.open(LockedUserDialogComponent)
+  openLockedUserDialog(balance) {
+    const dialogRef = this.dialog.open(LockedUserDialogComponent,{
+      data:{
+        balance: balance
+      }
+    })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.router.navigate(['customers/dashboard'])
+      this.loadData()
     })
   }
 
