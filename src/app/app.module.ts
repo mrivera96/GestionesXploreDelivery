@@ -39,11 +39,6 @@ import { ConsolidatedDeliveryComponent } from './components/xplore/xplore-add-de
 import {NgxDropzoneModule} from "ngx-dropzone";
 import { LockedUserDialogComponent } from './components/shared/locked-user-dialog/locked-user-dialog.component';
 import { ConfirmCancelDialogComponent } from './components/customer/customer-delivery-detail/confirm-cancel-dialog/confirm-cancel-dialog.component';
-import { DriverCategoriesComponent } from './components/xplore/xplore-drivers/driver-categories/driver-categories.component';
-import { AddCategoryComponent } from './components/xplore/xplore-drivers/add-category/add-category.component';
-import { CustomerLabelsComponent } from './components/customer/customer-labels/customer-labels.component';
-import { AddLabelComponent } from './components/customer/customer-labels/add-label/add-label.component';
-import { EditLabelComponent } from './components/customer/customer-labels/edit-label/edit-label.component';
 import { ConfirmDeleteComponent } from './components/customer/customer-labels/confirm-delete/confirm-delete.component';
 
 // Set the fonts to use

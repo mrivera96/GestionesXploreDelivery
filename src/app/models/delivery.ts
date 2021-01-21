@@ -29,4 +29,5 @@ export interface Delivery {
   isConsolidada?: boolean
   isRuteo?: boolean
   distTotal?: number
+  regAdmin?: boolean
 }

@@ -29,6 +29,8 @@ import { Schedule } from "../../../models/schedule";
 import { CustomerRestrictionsDialogComponent } from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
 import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component';
 import { UsersService } from 'src/app/services/users.service';
+import { LabelsService } from 'src/app/services/labels.service';
+import { Label } from 'src/app/models/label';
 
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
@@ -107,6 +109,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   files: File[] = []
   fileContentArray: String[] = []
   demandMSG: string = ''
+  myLabels: Label[] = []
 
   constructor(
     private categoriesService: CategoriesService,
@@ -117,13 +120,13 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     public dialog: MatDialog,
     private authService: AuthService,
     private branchService: BranchService,
-    private userService: UsersService
+    private userService: UsersService,
+    private labelsService: LabelsService
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
 
-  ngOnInit(): void {
-    
+  ngOnInit(): void { 
     this.initialize()
     this.checkCustomer()
   }
@@ -144,7 +147,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         coordsOrigen: [''],
         fecha: ['', Validators.required],
         hora: ['', Validators.required],
-        idTarifa: [null]
+        idTarifa: [null],
+        idEtiqueta:[null]
       }, {
         validators: [
           BlankSpacesValidator('dirRecogida'),
@@ -255,6 +259,13 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
       })
       branchSubscription.unsubscribe()
+    })
+
+    const lblSubscription = this.labelsService
+    .getMyLabels()
+    .subscribe(response => {
+      this.myLabels = response.data
+      lblSubscription.unsubscribe()
     })
 
   }

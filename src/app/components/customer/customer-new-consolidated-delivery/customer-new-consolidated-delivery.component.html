@@ -1,13 +1,13 @@
 <!--CARD START -->
 <mat-card @fade>
-  <div class="alert alert-danger" role="alert">
+  <!-- <div class="alert alert-danger" role="alert">
     <div class="row">
       <div class="col-12">
         <mat-icon matSuffix>info</mat-icon>
         {{demandMSG}}
       </div>
     </div>
-  </div>
+  </div> -->
 
   <mat-card-header>
 
@@ -194,6 +194,19 @@
 
                 <input type="text" formControlName="coordsOrigen" hidden>
 
+              </div>
+
+              <div *ngIf="myLabels.length > 0" class="form-row" formGroupName="deliveryHeader">
+                <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+                  <mat-label>Agregar Etiqueta:</mat-label>
+                  <mat-select id="idEtiqueta" formControlName="idEtiqueta" [disabled]="orders.length > 0"
+                    placeholder="- Seleccione una etiqueta -">
+                    <mat-option *ngFor="let label of myLabels" value="{{label.idEtiqueta}}">
+                      {{label.descEtiqueta}}
+                    </mat-option>
+                  </mat-select>
+                  <mat-icon matPrefix>label</mat-icon>
+                </mat-form-field>
               </div>
 
               <div *ngIf="prohibitedAddress" class="alert alert-danger" role="alert">

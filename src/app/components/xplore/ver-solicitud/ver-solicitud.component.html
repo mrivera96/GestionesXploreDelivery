@@ -119,21 +119,28 @@
 
       <div class="row">
         <div class="col-sm">
+          <strong>Tipo de delivery:</strong>
+          {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : currentDelivery?.isRuteo == true ? 'Envío por Ruteo' : 'Envío Normal'}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Registrada por:</strong>
+          {{currentDelivery?.regAdmin == true ? 'Admin':'Cliente'}}
+        </div>
+        
+        <div class="col-sm">
           <strong>Estado Actual:</strong>
           {{currentDelivery?.estado.descEstado}}
         </div>
+        
+      </div>
 
+      <div class="row">
         <div class="col-sm" *ngIf="currentDelivery?.idEstado == 37">
           <strong>Asignada a:</strong>
           {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
         </div>
-      </div>
-
-      <div class="row">
-        <div class="col-sm">
-          <strong>Tipo de delivery:</strong>
-          {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : currentDelivery?.isRuteo == true ? 'Envío por Ruteo' : 'Envío Normal'}}
-        </div>
+        
       </div>
 
       <hr>

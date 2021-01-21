@@ -32,6 +32,8 @@ import { ExtraChargeOption } from "../../../models/extra-charge-option";
 import { ExtraChargeCategory } from 'src/app/models/extra-charge-category';
 import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component';
 import { UsersService } from 'src/app/services/users.service';
+import { LabelsService } from 'src/app/services/labels.service';
+import { Label } from 'src/app/models/label';
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -112,6 +114,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   searchingOrigin = false
   searchingDest = false
   demandMSG: string = ''
+  myLabels: Label[] = []
 
   constructor(
     private categoriesService: CategoriesService,
@@ -123,7 +126,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
     private router: Router,
     public dialog: MatDialog,
     private authService: AuthService,
-    private userService: UsersService
+    private userService: UsersService,
+    private labelsService: LabelsService
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
@@ -154,7 +158,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
         dirRecogida: ['', [Validators.required]],
         idCategoria: [1, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
-        coordsOrigen: ['']
+        coordsOrigen: [''],
+        idEtiqueta:[null]
       }, {
         validators: [
           DateValidate('fecha', 'hora'),
@@ -242,18 +247,20 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
-      this.categories = response.data
-      this.demandMSG = response.demand
-      this.setSelectedCategory()
-      this.loaders.loadingData = false
-      categoriesSubscription.unsubscribe()
-    }, error => {
-      this.loaders.loadingData = false
-      this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-      this.openErrorDialog(this.errorMsg, true)
-      categoriesSubscription.unsubscribe()
-    })
+    const categoriesSubscription = this.categoriesService
+      .getCustomerCategories()
+      .subscribe(response => {
+        this.categories = response.data
+        this.demandMSG = response.demand
+        this.setSelectedCategory()
+        this.loaders.loadingData = false
+        categoriesSubscription.unsubscribe()
+      }, error => {
+        this.loaders.loadingData = false
+        this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
+        this.openErrorDialog(this.errorMsg, true)
+        categoriesSubscription.unsubscribe()
+      })
 
     const ratesSubscription = this.ratesService.getCustomerRates().subscribe(response => {
       this.rates = response.data
@@ -272,6 +279,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       })
       branchSubscription.unsubscribe()
+    })
+
+    const lblSubscription = this.labelsService
+    .getMyLabels()
+    .subscribe(response => {
+      this.myLabels = response.data
+      lblSubscription.unsubscribe()
     })
 
   }
@@ -609,8 +623,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
           value.cargosExtra = nPay.cargosExtra
           value.recargo = nPay.surcharges
           value.cTotal = nPay.total
-          this.pagos[i].baseRate = nPay.baseRate          
-          this.pagos[i].cargosExtra = nPay.cargosExtra             
+          this.pagos[i].baseRate = nPay.baseRate
+          this.pagos[i].cargosExtra = nPay.cargosExtra
           this.pagos[i].surcharges = nPay.surcharges
           this.pagos[i].total = nPay.total
         }
@@ -984,8 +998,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   openLockedUserDialog(balance) {
-    const dialogRef = this.dialog.open(LockedUserDialogComponent,{
-      data:{
+    const dialogRef = this.dialog.open(LockedUserDialogComponent, {
+      data: {
         balance: balance
       }
     })
