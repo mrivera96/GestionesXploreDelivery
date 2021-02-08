@@ -116,6 +116,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   demandMSG: string = ''
   myLabels: Label[] = []
 
+
   constructor(
     private categoriesService: CategoriesService,
     private formBuilder: FormBuilder,
@@ -553,10 +554,17 @@ export class CustomerNewDeliveryComponent implements OnInit {
         function: 'getCoords',
         lugar: salida,
       }).subscribe((response) => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ',' + response[0].lng)
         cordsSubscription.unsubscribe()
       })
     }
+
+    this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getCoords',
+      lugar: entrega,
+    }).subscribe((response) => {
+      this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
+    })
 
     const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
       function: 'calculateDistance',
@@ -571,13 +579,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.currOrder.recargo = calculatedPayment.surcharges
       this.currOrder.cargosExtra = calculatedPayment.cargosExtra
       this.currOrder.cTotal = calculatedPayment.total
-
-      this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: entrega,
-      }).subscribe((response) => {
-        this.currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
-      })
 
       this.deliveryForm.get('order').reset()
       this.orders.push(this.currOrder)
@@ -608,6 +609,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
         }
 
       }
+
+      console.log(this.orders)
 
       this.agregado = true
       setTimeout(() => {
@@ -847,7 +850,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         function: 'getCoords',
         lugar: salida,
       }).subscribe((response) => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ',' + response[0].lng)
         cordsSubscription.unsubscribe()
       })
     }
@@ -870,7 +873,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         function: 'getCoords',
         lugar: entrega,
       }).subscribe((response) => {
-        currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
+        currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
       })
 
       this.deliveryForm.get('order').reset()

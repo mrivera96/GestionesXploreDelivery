@@ -110,7 +110,6 @@ export class LoginComponent implements OnInit {
       }
     });
 
-
     dialogRef.afterClosed().subscribe(result => {
       this.dialog.closeAll()
     })

@@ -53,7 +53,7 @@
                       [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
                                        'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4, 'fa-truck': category.idCategoria == 8, 'fas fa-heart': category.idCategoria == 9}"></span>
                     <span class="d-block text-center">{{category.descCategoria}} </span>
-                    <!-- <small class="d-block text-center">{{category.descripcion}}</small> -->
+
                   </mat-radio-button>
 
                 </mat-radio-group>
@@ -298,7 +298,9 @@
                   </mat-checkbox>
                 </div>
 
-
+              </div>
+              <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
+                {{prohibitedDistanceMsg}}
               </div>
 
               <div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
@@ -322,7 +324,7 @@
                    <div class="row" *ngIf="extracharge.idCargoExtra == 5" formGroupName="order">
                     <input matInput (change)="addCare(extracharge.extra_charge)" formControlName="montoCobertura"
                       type="number" placeholder="Monto de Seguro">
-                  </div> 
+                  </div>
                 </div>
               </div>
 
@@ -383,7 +385,7 @@
           <div class="form-row">
             <div class="col-md-6" *ngIf="!files.length">
               <button mat-raised-button type="button" (click)="onOrderAdd()" color="primary" [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid ||
-                      loaders.loadingAdd" class="float-left">
+                      loaders.loadingAdd || !selectedCategory?.idCategoria" class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                 entrega
               </button>
@@ -402,9 +404,7 @@
             Se agregó correctamente
           </div>
 
-          <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
-            {{prohibitedDistanceMsg}}
-          </div>
+
           <!--ORDER ADD FORM END-->
         </form>
         <!-- FORM END -->

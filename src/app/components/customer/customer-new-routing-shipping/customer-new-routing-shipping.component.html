@@ -282,10 +282,7 @@
                   </mat-checkbox>
                 </div>
 
-
               </div>
-
-            
 
             </div>
 
@@ -345,7 +342,7 @@
           <div class="form-row">
             <div class="col-md-6" *ngIf="!files.length">
               <button mat-raised-button type="button" (click)="onOrderAdd()" color="primary" [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid ||
-                        loaders.loadingAdd" class="float-left">
+                        loaders.loadingAdd || !selectedCategory?.idCategoria" class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                 entrega
               </button>
@@ -429,6 +426,13 @@
     <!--CARD BLOCK ORDER TABLE END-->
 
     <div class="row" *ngIf="paymentMethod == 1 && orders.length>0 && finishFlag == false">
+      <div class="col">
+        <button mat-raised-button type="button" color="primary"
+          [disabled]="this.orders.length == 0 || !deliveryForm.get('deliveryHeader').valid " (click)="optimizeRoutes()">
+          Optimizar Ruta
+        </button>
+      </div>
+
       <div class="col">
         <button mat-raised-button type="button" color="primary"
           [disabled]="this.orders.length == 0 || !deliveryForm.get('deliveryHeader').valid " (click)="finishAdding()">

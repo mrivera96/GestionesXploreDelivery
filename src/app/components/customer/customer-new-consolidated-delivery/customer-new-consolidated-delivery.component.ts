@@ -126,7 +126,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.currCustomer = this.authService.currentUserValue
   }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.initialize()
     this.checkCustomer()
   }
@@ -565,6 +565,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         }
 
       }
+
+      console.log(this.orders)
 
       this.agregado = true
       setTimeout(() => {

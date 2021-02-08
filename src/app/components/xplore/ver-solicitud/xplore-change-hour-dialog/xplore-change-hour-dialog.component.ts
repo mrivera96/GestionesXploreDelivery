@@ -23,6 +23,7 @@ export class XploreChangeHourDialogComponent implements OnInit {
   todaySchedule: Schedule
   hInit
   hFin
+  fDate
   constructor(
     private formBuilder: FormBuilder,
     private deliveriesService: DeliveriesService,
@@ -49,8 +50,8 @@ export class XploreChangeHourDialogComponent implements OnInit {
   initialize() {
     this.changeForm = this.formBuilder.group({
       idDelivery: [this.currDelivery.idDelivery],
-      fecha: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'yyyy-MM-dd', 'en'), Validators.required],
-      hora: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'HH:mm', 'en'), Validators.required]
+      fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
+      hora: [formatDate(new Date().setHours(new Date().getHours(), new Date().getMinutes() + 5), 'HH:mm', 'en'), Validators.required]
     })
   }
 

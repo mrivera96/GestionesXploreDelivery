@@ -252,4 +252,12 @@ export class DeliveriesService {
         tkn: this.authService.currentUserValue.access_token
       })
   }
+
+  optimizeRoute(routes) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'optimizeRoutes',
+        routes:routes
+      })
+  }
 }
