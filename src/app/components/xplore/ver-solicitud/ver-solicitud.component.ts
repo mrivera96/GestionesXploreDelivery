@@ -65,7 +65,6 @@ export class VerSolicitudComponent implements OnInit {
       serverSide: false,
       processing: true,
       info: true,
-      order: [2, 'desc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',

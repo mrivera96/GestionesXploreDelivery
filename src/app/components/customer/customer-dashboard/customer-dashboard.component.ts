@@ -5,6 +5,11 @@ import { Order } from 'src/app/models/order';
 import { DataTableDirective } from 'angular-datatables';
 import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
 import { formatDate } from '@angular/common';
+import {LockedUserDialogComponent} from '../../shared/locked-user-dialog/locked-user-dialog.component';
+import {AuthService} from '../../../services/auth.service';
+import {MatDialog} from '@angular/material/dialog';
+import {UsersService} from '../../../services/users.service';
+import {Customer} from '../../../models/customer';
 
 @Component({
   selector: 'app-customer-dashboard',
@@ -35,12 +40,23 @@ export class CustomerDashboardComponent implements OnInit {
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
   dialog: any;
+  currentCustomer: Customer = {}
+  customerBalance: number
+  lockedUser = false
+
   constructor(
-    private deliveriesService: DeliveriesService
-  ) { }
+    private deliveriesService: DeliveriesService,
+    public matDialog: MatDialog,
+    private authService: AuthService,
+    private userService: UsersService
+
+  ) {
+    this.currentCustomer = authService.currentUserValue.cliente
+  }
 
   ngOnInit(): void {
     this.initialize()
+    this.checkCustomer()
     this.loadData()
   }
 
@@ -97,7 +113,6 @@ export class CustomerDashboardComponent implements OnInit {
       }
     })
 
-
   }
 
   openErrorDialog(error: string, reload: boolean): void {
@@ -115,5 +130,19 @@ export class CustomerDashboardComponent implements OnInit {
     }
 
   }
+
+  checkCustomer() {
+    this.loaders.loadingData = true
+    const usrsSubs = this.userService
+      .checkCustomerAvalability()
+      .subscribe(response => {
+        if (response.data == false) {
+          this.lockedUser = true
+        }
+        usrsSubs.unsubscribe()
+      })
+  }
+
+
 
 }

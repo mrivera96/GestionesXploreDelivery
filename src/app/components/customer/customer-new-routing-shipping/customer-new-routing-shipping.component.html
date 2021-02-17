@@ -55,7 +55,7 @@
                       <span class="fa d-block text-center" style="font-size: 24px"
                         [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
                         'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4, 'fa-truck': category.idCategoria == 8}"></span>
-                      {{category.descCategoria}}
+                      <span class="d-block text-center">{{category.descCategoria}} </span>
                     </mat-radio-button>
                   </mat-radio-group>
                 </div>
@@ -428,8 +428,8 @@
     <div class="row" *ngIf="paymentMethod == 1 && orders.length>0 && finishFlag == false">
       <div class="col">
         <button mat-raised-button type="button" color="primary"
-          [disabled]="this.orders.length == 0 || !deliveryForm.get('deliveryHeader').valid " (click)="optimizeRoutes()">
-          Optimizar Ruta
+          [disabled]="this.orders.length == 0 || !deliveryForm.get('deliveryHeader').valid || loaders.loadingOptimizing " (click)="optimizeRoutes()">
+          <span *ngIf="loaders.loadingOptimizing" class="spinner-border spinner-border-sm mr-1 "></span>Optimizar Ruta
         </button>
       </div>
 

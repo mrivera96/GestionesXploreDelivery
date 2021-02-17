@@ -185,6 +185,15 @@ export class DeliveriesService {
       })
   }
 
+  getConsolidatedOrdersByDriver(form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'reportConsolidatedOrdersByDriver',
+        form,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
+
   getOrdersByCustomer(form) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {

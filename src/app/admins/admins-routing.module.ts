@@ -29,6 +29,7 @@ import { XploreWorkLinesComponent } from '../components/xplore/xplore-work-lines
 import {ReportRequestsComponent} from "../components/xplore/xplore-reports/report-requests/report-requests.component";
 import {CustomerChooseComponent} from "../components/xplore/xplore-add-delivery/customer-choose/customer-choose.component";
 import { XploreAddDeliveryComponent } from '../components/xplore/xplore-add-delivery/xplore-add-delivery.component';
+import { OrdersByDriverConsolidatedComponent } from '../components/xplore/xplore-reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component';
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -52,6 +53,7 @@ const routes: Routes = [
   {path: 'reservas-pendientes', component: PendingDeliveriesComponent, canActivate: [XploreGuard]},
   {path: 'conductores', component: XploreDriversComponent, canActivate: [XploreGuard]},
   {path: 'reportes/envios-conductores', component: OrdersByDriverComponent, canActivate: [XploreGuard]},
+  {path: 'reportes/consolidados-conductores', component: OrdersByDriverConsolidatedComponent, canActivate: [XploreGuard]},
   {path: 'reportes/envios', component: DeliveriesReportComponent, canActivate: [XploreGuard]},
   {path: 'reportes/pagos', component: PaymentsReportComponent, canActivate: [XploreGuard]},
   {path: 'reportes/clientes', component: CustomersReportComponent, canActivate: [XploreGuard]},

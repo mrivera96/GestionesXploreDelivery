@@ -986,30 +986,30 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
+  openLockedUserDialog(balance) {
+    const dialogRef = this.dialog.open(LockedUserDialogComponent, {
+      data: {
+        balance: balance,
+        customer: this.currCustomer
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.router.navigate(['/customers/dashboard'])
+    })
+  }
+
   checkCustomer() {
-    this.loaders.loadingData = true
     const usrsSubs = this.userService
       .checkCustomerAvalability()
       .subscribe(response => {
         if (response.data == false) {
           this.openLockedUserDialog(response.balance)
-        } else {
-          this.loadData()
+        }else{
+          this.loadData
         }
         usrsSubs.unsubscribe()
       })
-  }
-
-  openLockedUserDialog(balance) {
-    const dialogRef = this.dialog.open(LockedUserDialogComponent, {
-      data: {
-        balance: balance
-      }
-    })
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.loadData()
-    })
   }
 
 }

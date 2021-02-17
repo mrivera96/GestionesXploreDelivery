@@ -71,7 +71,6 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
       serverSide: false,
       processing: true,
       info: true,
-      order: [1, 'asc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',

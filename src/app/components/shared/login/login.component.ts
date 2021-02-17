@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
       if (this.authService.currentUserValue.idPerfil === "1" || this.authService.currentUserValue.idPerfil === "9") {
         this.router.navigate(['/admins/reservas-hoy'])
       } else if (this.authService.currentUserValue.idPerfil === "8") {
-        this.router.navigate(['/customers/inicio'])
+        this.router.navigate(['/customers/dashboard'])
       }
     }
   }

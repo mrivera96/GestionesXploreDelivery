@@ -69,6 +69,7 @@
           </th>
           <th></th>
           <th></th>
+          <th></th>
         </tr>
         </tfoot>
         <thead>
@@ -88,6 +89,7 @@
           <th>Estado</th>
           <!--<th>Observaciones</th>-->
           <th>Conductor</th>
+          <th>Efectivo</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
@@ -111,6 +113,7 @@
           <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
             <p *ngIf="!order.conductor">Aún no asignada</p>
           </td>
+          <td>L. {{order.efectivoRecibido}}</td>
           <td>
             <button class="float-right" mat-button [matMenuTriggerFor]="menu">
               <mat-icon>more_vert</mat-icon>

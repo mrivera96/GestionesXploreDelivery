@@ -73,6 +73,7 @@ import {EditExtraChargeOptionDialogComponent} from "../components/xplore/extra-c
 import {CustomerChooseComponent} from "../components/xplore/xplore-add-delivery/customer-choose/customer-choose.component";
 import { DriverCategoriesComponent } from '../components/xplore/xplore-drivers/driver-categories/driver-categories.component';
 import { AddCategoryComponent } from '../components/xplore/xplore-drivers/add-category/add-category.component';
+import { OrdersByDriverConsolidatedComponent } from '../components/xplore/xplore-reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component';
 
 @NgModule({
   declarations: [
@@ -143,6 +144,7 @@ import { AddCategoryComponent } from '../components/xplore/xplore-drivers/add-ca
     CustomerChooseComponent,
     DriverCategoriesComponent,
     AddCategoryComponent,
+    OrdersByDriverConsolidatedComponent
   ],
   entryComponents:[
     ConfirmModalComponent,

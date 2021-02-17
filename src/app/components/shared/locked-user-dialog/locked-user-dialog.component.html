@@ -1,21 +1,22 @@
 <!-- MODAL START -->
 <h2 mat-dialog-title class="text-danger">
-    ¡Atención!
+  ¡Atención!
+  <button mat-button class="close-icon float-right" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
 </h2>
 <mat-dialog-content>
-    <p>
-        Te notificamos que tu cuenta posee un saldo pendiente mayor al permitido. Favor contáctanos al <a href="tel:94397234">9439-7234</a>  para
-        realizar tu pago o incrementar el monto de tolerancia para evitar la suspensión nuestros servicios. 
-    </p>
-    <p>
-        Saldo Pendiente: L. {{balance}}
-    </p>
+  <p>
+    Hola <strong>{{customer.nomRepresentante}}</strong>, informamos que tienes un balance abierto de <strong>L. {{balance}}</strong>.
+    Te solicitamos poner tu cuenta al día o solicitar una ampliación de tu crédito para continuar gozando de nuestro servicio.
+  </p>
+
 </mat-dialog-content>
 
 <mat-dialog-actions>
-    <button mat-raised-button color="primary" mat-dialog-close=true>
-        Aceptar
-    </button>
+  <button mat-raised-button color="primary" mat-dialog-close=true>
+    Aceptar
+  </button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->
