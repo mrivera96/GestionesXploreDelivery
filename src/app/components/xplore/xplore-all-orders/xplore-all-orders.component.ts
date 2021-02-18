@@ -96,7 +96,6 @@ export class XploreAllOrdersComponent implements OnInit {
 
   loadData() {
 
-
     this.activatedRoute.paramMap.subscribe(params => {
       if (params.get("initDate") && params.get("finDate")) {
         this.initDate = true
@@ -140,35 +139,6 @@ export class XploreAllOrdersComponent implements OnInit {
         this.openErrorDialog(this.msgError, true)
         serviceSubscription.unsubscribe()
       })
-    } else {
-      /* const serviceSubscription = this.deliveriesService.getAllOrders().subscribe(response => {
-        this.orders = response.data
-        this.orders.forEach(order => {
-          order.delivery.fechaReserva = formatDate(new Date(order.delivery.fechaReserva), 'yyyy-MM-dd', 'en')
-        })
-        this.dtTrigger.next()
-        this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.columns().every(function () {
-            const that = this;
-            $('select', this.footer()).on('change', function () {
-              if (that.search() !== this['value']) {
-                that
-                  .search(this['value'])
-                  .draw();
-              }
-            })
-          })
-        })
-        this.loaders.loadingData = false
-
-        serviceSubscription.unsubscribe()
-
-      }, error => {
-        this.loaders.loadingData = false
-        this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-        this.openErrorDialog(this.msgError, true)
-        serviceSubscription.unsubscribe()
-      }) */
     }
 
 

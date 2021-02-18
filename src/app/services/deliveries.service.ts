@@ -43,6 +43,14 @@ export class DeliveriesService {
     })
   }
 
+  getFilteredDeliveries(form) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getFilteredDeliveries',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
   getTodayOrders() {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getTodayOrders',

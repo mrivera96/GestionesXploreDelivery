@@ -2,7 +2,7 @@
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title>
-      Reportes Envíos Consolidados por Conductor
+      Reportes Envíos por Conductor Consolidado
     </mat-card-title>
 
   </mat-card-header>
@@ -66,9 +66,9 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generatePDF()">
+            <!-- <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generatePDF()">
               Exportar PDF
-            </button>
+            </button> -->
 
             <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generateExcel()">
               Exportar a Excel
@@ -96,11 +96,10 @@
 
       <!-- CONTAINER BODY START datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" -->
       <div class="table-responsive" id="printTable">
-        <table class="display compact" style="width:100%">
+        <table class="table table-striped" style="width:100%">
           <thead>
           <tr>
-            <th></th>
-            <th style="text-align:center;" colspan="2" *ngFor="let date of dates; ">{{date}}</th>
+            <th style="text-align:center;width: 5%;" colspan="2" *ngFor="let date of dates; ">{{date}}</th>
 
             <!--            <th style="text-align:center;" colspan="2">Transporte Turismo</th>-->
 
@@ -123,34 +122,13 @@
           </tr>
 
           <tr>
-            <th style="text-align:center">Conductor</th>
-
-            <th style="text-align:center; width: 5%; ">Cantidad</th>
-            <th style="text-align:center; width: 5%; ">Tiempo</th>
-
-            <th style="text-align:center; width: 5%; ">Cantidad</th>
-            <th style="text-align:center; width: 5%; ">Tiempo</th>
-
-            <th style="text-align:center; width: 5%; ">Cantidad</th>
-            <th style="text-align:center; width: 5%; ">Tiempo</th>
-
-            <th style="text-align:center; width: 5%; ">Cantidad</th>
-            <th style="text-align:center; width: 5%; ">Tiempo</th>
-
-            <th style="text-align:center; width: 5%; ">Cantidad</th>
-            <th style="text-align:center; width: 5%; ">Tiempo</th>
-
-            <th style="text-align:center; width: 5%; ">Cantidad</th>
-            <th style="text-align:center; width: 5%; ">Tiempo</th>
-
-            <th style="text-align:center; width: 5%; ">Cantidad</th>
-            <th style="text-align:center; width: 5%; ">Tiempo</th>
+            <th *ngFor="let header of headers" style="text-align:center; width: 5%;">{{header}}</th>
 
             <th style="text-align:center; width: 5%;">Total Envíos</th>
             <th style="text-align:center; width: 5%;">Total Tiempo</th>
             <th style="text-align:center; width: 5%;">Efectivo Recibido</th>
 
-            
+
             <!--&lt;!&ndash;            <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>&ndash;&gt;-->
             <!--&lt;!&ndash;            <th style="text-align:center; width: 5%;">Tiempo Extra</th>&ndash;&gt;-->
             <!--&lt;!&ndash;            <th style="text-align:center; width: 5%;">Tiempo Total</th>&ndash;&gt;-->
@@ -162,8 +140,9 @@
 
           <tr *ngFor="let result of consultResults;">
             <td style="text-align:center">{{result.driver}}</td>
+            <td style="text-align:center"></td>
             <td style="text-align:center">{{result?.orders[0]?.totalOrders || 0}}</td>
-            <td style="text-align:center">{{result?.orders[0]?.tiempototal || 0}}</td> 
+            <td style="text-align:center">{{result?.orders[0]?.tiempototal || 0}}</td>
             <td style="text-align:center">{{result?.orders[1]?.totalOrders || 0}}</td>
             <td style="text-align:center">{{result?.orders[1]?.tiempototal || 0}}</td>
             <td style="text-align:center">{{result?.orders[2]?.totalOrders || 0}}</td>
@@ -174,10 +153,10 @@
             <td style="text-align:center">{{result?.orders[4]?.tiempototal || 0}}</td>
             <td style="text-align:center">{{result?.orders[5]?.totalOrders || 0}}</td>
             <td style="text-align:center">{{result?.orders[5]?.tiempototal || 0}}</td>
-            <td style="text-align:center">{{result?.orders[6]?.totalOrders || 0}}</td>
-            <td style="text-align:center">{{result?.orders[6]?.tiempototal || 0}}</td>
+            <td style="text-align:center" *ngIf="result?.orders[6]">{{result?.orders[6]?.totalOrders || 0}}</td>
+            <td style="text-align:center" *ngIf="result?.orders[6]">{{result?.orders[6]?.tiempototal || 0}}</td>
 
-            
+
             <td style="text-align:center">{{result?.totalOrders}}</td>
             <td style="text-align:center">{{result?.totalTime}}</td>
             <td style="text-align:center">{{result?.totalMoney}}</td>

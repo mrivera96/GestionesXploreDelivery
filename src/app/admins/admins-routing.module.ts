@@ -37,6 +37,7 @@ const routes: Routes = [
   {path: 'reservas-hoy', component: HomeComponent, canActivate: [XploreGuard]},
   {path: 'ver-reserva/:id', component: VerSolicitudComponent, canActivate: [XploreGuard]},
   {path: 'reservas-todas', component: VerTodasReservasComponent, canActivate: [XploreGuard]},
+  {path: 'reservas-todas/:initDate/:finDate', component: VerTodasReservasComponent, canActivate: [XploreGuard]},
   {path: 'reservas-maniana', component: ReservasManianaComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-categorias', component: XploreCategoriesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-rubros', component: XploreWorkLinesComponent, canActivate: [XploreGuard]},

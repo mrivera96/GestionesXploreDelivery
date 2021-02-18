@@ -58,6 +58,7 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     totalMoney: 0,
   }
   dates: any[] = []
+  headers: any[] = []
 
   constructor(
     private formBuilder: FormBuilder,
@@ -124,6 +125,7 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     if (this.consultForm.valid) {
       this.loaders.loadingSubmit = true
       this.dates = []
+      this.headers = []
       this.consultResults = []
       this.totalOrders = 0
       this.totals = {
@@ -131,17 +133,18 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
         totalTime: 0,
         totalMoney: 0,
       }
-      const initDate = new Date(this.consultForm.get('initDate').value.split('-'))
-    
-      this.dates.push(this.consultForm.get('initDate').value)
-      this.dates[1] = formatDate(new Date().setDate(initDate.getDate() + 1), 'yyyy-MM-dd', 'en') 
-      this.dates[2] = formatDate(new Date().setDate(initDate.getDate() + 2), 'yyyy-MM-dd', 'en') 
-      this.dates[3] = formatDate(new Date().setDate(initDate.getDate() + 3), 'yyyy-MM-dd', 'en') 
-      this.dates[4] = formatDate(new Date().setDate(initDate.getDate() + 4), 'yyyy-MM-dd', 'en') 
-      this.dates[5] = formatDate(new Date().setDate(initDate.getDate() + 5), 'yyyy-MM-dd', 'en') 
-      this.dates.push(this.consultForm.get('finDate').value)
+
       this.deliveriesService.getConsolidatedOrdersByDriver(this.consultForm.value).subscribe(response => {
         this.consultResults = response.data
+        this.dates = response.dates
+        this.headers.push("Conductor")
+        this.headers.push("")
+        const datesLength = this.dates.length - 1
+
+        for (let idx = 0; idx < datesLength; idx++) {
+          this.headers.push("Cantidad")
+          this.headers.push("Tiempo")
+        }
 
         this.consultResults.forEach(result => {
           result.totalOrders = 0
@@ -150,7 +153,7 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
           result.orders.forEach(objct => {
             result.totalOrders = result.totalOrders + +objct.totalOrders
             result.totalMoney = result.totalMoney + +objct.totalMoney
-            result.totalTime = result.totalTime + +objct.tiempototal  
+            result.totalTime = result.totalTime + +objct.tiempototal
           })
 
         })
@@ -203,7 +206,7 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
   }
 
   generateExcel() {
-    /*let currentDriver: User = {}
+    let currentDriver: User = {}
 
     this.drivers.forEach(driver => {
       if (driver.idUsuario == this.f.driverId.value) {
@@ -214,15 +217,15 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     //Excel Title, Header, Data
     let title = ''
     if (currentDriver.nomUsuario) {
-      title = 'Reporte de envíos - ' + currentDriver.nomUsuario
+      title = 'Reporte de envíos consolidados - ' + currentDriver.nomUsuario
     } else {
-      title = 'Reporte de envíos - Todos los conductores'
+      title = 'Reporte de envíos consolidados - Todos los conductores'
     }
 
 
     //Create workbook and worksheet
     let workbook = new Workbook();
-    let worksheet = workbook.addWorksheet('Reporte Envíos');
+    let worksheet = workbook.addWorksheet('Reporte Envíos Consolidados');
     //Add Row and formatting
     let titleRow = worksheet.addRow([title]);
     titleRow.font = { name: 'Arial', family: 4, size: 16, underline: 'double', bold: true }
@@ -241,48 +244,24 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     const rangeTitle = worksheet.addRow(['Envíos por fecha']);
     rangeTitle.font = { name: 'Arial', family: 4, size: 12, bold: true }
     worksheet.addRow([]);
-    const categoriesHeader = [
-      "",
-      "",
-      "Transporte Turismo",
-      "",
-      "Moto",
-      "",
-      "Turismo",
-      "",
-      "Pick-Up",
-      "",
-      "Panel",
-      "",
-      "Pick-Up + Auxiliar",
-      "",
-      "Panel + Auxiliar",
-      "",
-      "Camión 11 pies",
-      "",
-      "Totales",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
-    ]
 
-    let categoriesheaderRow = worksheet.addRow(categoriesHeader);
+    const datesHeader = []
+    datesHeader[0] = this.dates[0]
+    datesHeader[1] = this.dates[1]
+    datesHeader[2] = ""
+    datesHeader[3] = this.dates[2]
+    datesHeader[4] = ""
+    datesHeader[5] = this.dates[3]
+    datesHeader[6] = ""
+    datesHeader[7] = this.dates[4]
+    datesHeader[8] = ""
+    datesHeader[9] = this.dates[5]
+    datesHeader[10] = ""
+    datesHeader[11] = this.dates[6] || ""
 
-    worksheet.mergeCells('A8:B8');
-    worksheet.mergeCells('C8:D8');
-    worksheet.mergeCells('E8:F8');
-    worksheet.mergeCells('G8:H8');
-    worksheet.mergeCells('I8:J8');
-    worksheet.mergeCells('K8:L8');
-    worksheet.mergeCells('M8:N8');
-    worksheet.mergeCells('O8:P8');
-    worksheet.mergeCells('Q8:R8');
-    worksheet.mergeCells('S8:Y8');
 
-    categoriesheaderRow.eachCell((cell, number) => {
+    let firstheaderRow = worksheet.addRow(datesHeader)
+    firstheaderRow.eachCell((cell, number) => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
@@ -295,34 +274,37 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
       }
     })
 
-    const ordersByDateHeader = [
+    worksheet.mergeCells('B8:C8');
+    worksheet.mergeCells('D8:E8');
+    worksheet.mergeCells('F8:G8');
+    worksheet.mergeCells('H8:I8');
+    worksheet.mergeCells('J8:K8');
+    worksheet.mergeCells('L8:M8');
+    worksheet.mergeCells('N8:O8');
+    worksheet.mergeCells('P8:R8');
+
+    const headers = [
       "Conductor",
-      "Fecha",
-      "Entregas",
+      "Cantidad",
       "Tiempo",
-      "Entregas",
+      "Cantidad",
       "Tiempo",
-      "Entregas",
+      "Cantidad",
       "Tiempo",
-      "Entregas",
+      "Cantidad",
       "Tiempo",
-      "Entregas",
+      "Cantidad",
       "Tiempo",
-      "Entregas",
+      "Cantidad",
       "Tiempo",
-      "Entregas",
+      "Cantidad",
       "Tiempo",
-      "Entregas",
-      "Tiempo",
-      "Tiempo Auxiliar",
-      "Entregas",
-      "Subtotal Tiempo",
-      "Tiempo > 20kms",
-      "Tiempo Extra",
-      "Tiempo Total",
-      "Efectivo",
+      "Total Envíos",
+      "Total Tiempo",
+      "Efectivo Recibido",
     ]
-    let ordersByDateheaderRow = worksheet.addRow(ordersByDateHeader);
+
+    let ordersByDateheaderRow = worksheet.addRow(headers);
 
     // Cell Style : Fill and Border
     ordersByDateheaderRow.eachCell((cell, number) => {
@@ -341,29 +323,22 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     this.consultResults.forEach(d => {
       let array = [
         d.driver,
-        d.fecha,
-        d.transTurism,
-        d.transTurismTime,
-        d.moto,
-        d.motoTime,
-        d.turismo,
-        d.turismoTime,
-        d.pickup,
-        d.pickupTime,
-        d.panel,
-        d.panelTime,
-        d.pickupAuxiliar,
-        d.pickupAuxiliarTime,
-        d.panelAuxiliar,
-        d.panelAuxiliarTime,
-        d.camion11,
-        d.camion11Time,
-        d.totalAuxTime,
+        d.orders[0]?.totalOrders || 0,
+        d.orders[0]?.tiempototal || 0,
+        d.orders[1]?.totalOrders || 0,
+        d.orders[1]?.tiempototal || 0,
+        d.orders[2]?.totalOrders || 0,
+        d.orders[2]?.tiempototal || 0,
+        d.orders[3]?.totalOrders || 0,
+        d.orders[3]?.tiempototal || 0,
+        d.orders[4]?.totalOrders || 0,
+        d.orders[4]?.tiempototal || 0,
+        d.orders[5]?.totalOrders || 0,
+        d.orders[5]?.tiempototal || 0,
+        d.orders[6]?.totalOrders || 0,
+        d.orders[6]?.tiempototal || 0,
         d.totalOrders,
         d.totalTime,
-        d.totalOver20kms,
-        d.totalExtraTime,
-        d.tiempototal,
         d.totalMoney
       ]
       array1Row.push(array)
@@ -373,35 +348,6 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
       worksheet.addRow(v);
     })
 
-    let arrayFooterRow = [
-      "",
-      "Subtotal:",
-      this.totals.transTurismOrders,
-      this.totals.transTurismTime,
-      this.totals.motoOrders,
-      this.totals.motoTime,
-      this.totals.turismoOrders,
-      this.totals.turismoTime,
-      this.totals.pickupOrders,
-      this.totals.pickupTime,
-      this.totals.panelOrders,
-      this.totals.panelTime,
-      this.totals.pickupAuxiliarOrders,
-      this.totals.pickupAuxiliarTime,
-      this.totals.panelAuxiliarOrders,
-      this.totals.panelAuxiliarTime,
-      this.totals.camion11Orders,
-      this.totals.camion11Time,
-      this.totals.totalAuxTime,
-      this.totals.totalOrders,
-      this.totals.totalTime,
-      this.totals.totalOver20kms,
-      this.totals.totalExtraTime,
-      this.totals.tiempoTotal,
-      this.totals.totalMoney
-    ]
-
-    worksheet.addRow(arrayFooterRow);
 
     worksheet.getColumn(1).width = 40;
     worksheet.getColumn(2).width = 20;
@@ -435,11 +381,11 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     workbook.xlsx.writeBuffer().then((data) => {
       let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       if (currentDriver.nomUsuario) {
-        fs.saveAs(blob, 'Reporte envíos por conductor (' + currentDriver.nomUsuario + ').xlsx');
+        fs.saveAs(blob, 'Reporte envíos por conductor consolidado (' + currentDriver.nomUsuario + ').xlsx');
       } else {
-        fs.saveAs(blob, 'Reporte envíos por conductor (todos).xlsx');
+        fs.saveAs(blob, 'Reporte envíos por conductor consolidado (todos).xlsx');
       }
-    })*/
+    })
   }
 
   printReport() {
