@@ -1081,8 +1081,38 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     this.selectedExtraCharge = extraCharge
   }
 
-  setSelectedExtraChargeOption(option) {
-    this.selectedExtraChargeOption = option
+  addExtraCharge(checked, extracharge, option) {
+    const extraCharge = {
+      idCargoExtra: extracharge,
+      idDetalleOpcion: option.idDetalleOpcion,
+      costo: option.costo
+    }
+    if (checked == true) {
+      this.currOrder.extras.push(extraCharge)
+      this.befCost += +extraCharge.costo
+    } else {
+      const idx = this.currOrder.extras.indexOf(extraCharge)
+      this.currOrder.extras.splice(idx, 1)
+      this.befCost -= extraCharge.costo
+    }
+  }
+
+  addCare(excharge) {
+    if (this.newForm.get('order.montoCobertura').value !== '') {
+      const extraCharge = {
+        idCargoExtra: excharge.idCargoExtra,
+        idDetalleOpcion: null,
+        costo: +excharge.costo,
+        montoCobertura: +this.newForm.get('order.montoCobertura').value
+      }
+      this.currOrder.extras.push(extraCharge)
+      this.befCost += +extraCharge.costo
+    } else {
+      const idx = this.currOrder.extras.indexOf(excharge)
+      this.currOrder.extras.splice(idx, 1)
+      this.befCost -= excharge.costo
+    }
+
   }
 
   checkCustomer() {

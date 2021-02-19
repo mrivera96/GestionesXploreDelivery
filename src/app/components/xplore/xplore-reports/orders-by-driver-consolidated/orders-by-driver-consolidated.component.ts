@@ -42,7 +42,7 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
   consultForm: FormGroup
   drivers: User[]
   filteredDrivers: User[]
-  consultResults: ConsolidatedReportResult[] = []
+  consultResults:any[] = []
   dtOptions: any
   dtTrigger: Subject<any>
   totalOrders: number
@@ -127,46 +127,17 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
       this.dates = []
       this.headers = []
       this.consultResults = []
-      this.totalOrders = 0
-      this.totals = {
-        totalOrders: 0,
-        totalTime: 0,
-        totalMoney: 0,
-      }
 
       this.deliveriesService.getConsolidatedOrdersByDriver(this.consultForm.value).subscribe(response => {
         this.consultResults = response.data
         this.dates = response.dates
         this.headers.push("Conductor")
-        this.headers.push("")
-        const datesLength = this.dates.length - 1
+        const datesLength = this.dates.length
 
         for (let idx = 0; idx < datesLength; idx++) {
           this.headers.push("Cantidad")
           this.headers.push("Tiempo")
         }
-
-        this.consultResults.forEach(result => {
-          result.totalOrders = 0
-          result.totalTime = 0
-          result.totalMoney = 0
-          result.orders.forEach(objct => {
-            result.totalOrders = result.totalOrders + +objct.totalOrders
-            result.totalMoney = result.totalMoney + +objct.totalMoney
-            result.totalTime = result.totalTime + +objct.tiempototal
-          })
-
-        })
-
-        /*if (this.datatableElement.dtInstance) {
-          this.datatableElement.dtInstance.then(
-            (dtInstance: DataTables.Api) => {
-              dtInstance.destroy()
-              this.dtTrigger.next()
-            })
-        } else {
-          this.dtTrigger.next()
-        }*/
 
         this.loaders.loadingSubmit = false
       }, error => {
@@ -246,18 +217,13 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     worksheet.addRow([]);
 
     const datesHeader = []
-    datesHeader[0] = this.dates[0]
-    datesHeader[1] = this.dates[1]
-    datesHeader[2] = ""
-    datesHeader[3] = this.dates[2]
-    datesHeader[4] = ""
-    datesHeader[5] = this.dates[3]
-    datesHeader[6] = ""
-    datesHeader[7] = this.dates[4]
-    datesHeader[8] = ""
-    datesHeader[9] = this.dates[5]
-    datesHeader[10] = ""
-    datesHeader[11] = this.dates[6] || ""
+
+    datesHeader[0] = ""
+    this.dates.forEach(date=>{
+      datesHeader.push(date)
+      datesHeader.push("")
+    })
+
 
 
     let firstheaderRow = worksheet.addRow(datesHeader)
@@ -285,24 +251,16 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
 
     const headers = [
       "Conductor",
-      "Cantidad",
-      "Tiempo",
-      "Cantidad",
-      "Tiempo",
-      "Cantidad",
-      "Tiempo",
-      "Cantidad",
-      "Tiempo",
-      "Cantidad",
-      "Tiempo",
-      "Cantidad",
-      "Tiempo",
-      "Cantidad",
-      "Tiempo",
-      "Total Envíos",
-      "Total Tiempo",
-      "Efectivo Recibido",
     ]
+    const datesLength = this.dates.length
+    for (let idx = 0; idx < datesLength; idx++) {
+      headers.push("Cantidad")
+      headers.push("Tiempo")
+    }
+
+    headers.push("Total Envíos")
+    headers.push("Total Tiempo")
+    headers.push("Efectivo Recibido")
 
     let ordersByDateheaderRow = worksheet.addRow(headers);
 
@@ -321,27 +279,7 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     let array1Row = []
 
     this.consultResults.forEach(d => {
-      let array = [
-        d.driver,
-        d.orders[0]?.totalOrders || 0,
-        d.orders[0]?.tiempototal || 0,
-        d.orders[1]?.totalOrders || 0,
-        d.orders[1]?.tiempototal || 0,
-        d.orders[2]?.totalOrders || 0,
-        d.orders[2]?.tiempototal || 0,
-        d.orders[3]?.totalOrders || 0,
-        d.orders[3]?.tiempototal || 0,
-        d.orders[4]?.totalOrders || 0,
-        d.orders[4]?.tiempototal || 0,
-        d.orders[5]?.totalOrders || 0,
-        d.orders[5]?.tiempototal || 0,
-        d.orders[6]?.totalOrders || 0,
-        d.orders[6]?.tiempototal || 0,
-        d.totalOrders,
-        d.totalTime,
-        d.totalMoney
-      ]
-      array1Row.push(array)
+      array1Row.push(d)
     })
 
     array1Row.forEach(v => {

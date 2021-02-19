@@ -99,26 +99,8 @@
         <table class="table table-striped" style="width:100%">
           <thead>
           <tr>
+            <th></th>
             <th style="text-align:center;width: 5%;" colspan="2" *ngFor="let date of dates; ">{{date}}</th>
-
-            <!--            <th style="text-align:center;" colspan="2">Transporte Turismo</th>-->
-
-            <!--            <th style="text-align:center; background-color: #e0e0e0" colspan="2">Moto</th>-->
-
-            <!--            <th style="text-align:center;" colspan="2">Turismo</th>-->
-
-            <!--            <th style="text-align:center; background-color: #e0e0e0" colspan="2">Pick-Up</th>-->
-
-            <!--            <th style="text-align:center;" colspan="2">Panel</th>-->
-
-            <!--            <th style="text-align:center; background-color: #e0e0e0" colspan="2">Pick-Up + Auxiliar</th>-->
-
-            <!--            <th style="text-align:center;" colspan="2">Total Envios</th>-->
-
-            <!--            <th style="text-align:center; background-color: #e0e0e0" colspan="2">Total Tiempo </th>-->
-
-            <!--            <th style="text-align:center; " colspan="2">Efectivo Recibido</th>-->
-
           </tr>
 
           <tr>
@@ -127,43 +109,14 @@
             <th style="text-align:center; width: 5%;">Total Envíos</th>
             <th style="text-align:center; width: 5%;">Total Tiempo</th>
             <th style="text-align:center; width: 5%;">Efectivo Recibido</th>
-
-
-            <!--&lt;!&ndash;            <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>&ndash;&gt;-->
-            <!--&lt;!&ndash;            <th style="text-align:center; width: 5%;">Tiempo Extra</th>&ndash;&gt;-->
-            <!--&lt;!&ndash;            <th style="text-align:center; width: 5%;">Tiempo Total</th>&ndash;&gt;-->
-            <!--&lt;!&ndash;            <th style="text-align:center; width: 5%;">Efectivo</th>&ndash;&gt;-->
           </tr>
 
           </thead>
           <tbody>
 
-          <tr *ngFor="let result of consultResults;">
-            <td style="text-align:center">{{result.driver}}</td>
-            <td style="text-align:center"></td>
-            <td style="text-align:center">{{result?.orders[0]?.totalOrders || 0}}</td>
-            <td style="text-align:center">{{result?.orders[0]?.tiempototal || 0}}</td>
-            <td style="text-align:center">{{result?.orders[1]?.totalOrders || 0}}</td>
-            <td style="text-align:center">{{result?.orders[1]?.tiempototal || 0}}</td>
-            <td style="text-align:center">{{result?.orders[2]?.totalOrders || 0}}</td>
-            <td style="text-align:center">{{result?.orders[2]?.tiempototal || 0}}</td>
-            <td style="text-align:center">{{result?.orders[3]?.totalOrders || 0}}</td>
-            <td style="text-align:center">{{result?.orders[3]?.tiempototal || 0}}</td>
-            <td style="text-align:center">{{result?.orders[4]?.totalOrders || 0}}</td>
-            <td style="text-align:center">{{result?.orders[4]?.tiempototal || 0}}</td>
-            <td style="text-align:center">{{result?.orders[5]?.totalOrders || 0}}</td>
-            <td style="text-align:center">{{result?.orders[5]?.tiempototal || 0}}</td>
-            <td style="text-align:center" *ngIf="result?.orders[6]">{{result?.orders[6]?.totalOrders || 0}}</td>
-            <td style="text-align:center" *ngIf="result?.orders[6]">{{result?.orders[6]?.tiempototal || 0}}</td>
+          <tr *ngFor="let result of consultResults; let idx = index">
+            <td style="text-align:center" *ngFor="let row of result">{{row}}</td>
 
-
-            <td style="text-align:center">{{result?.totalOrders}}</td>
-            <td style="text-align:center">{{result?.totalTime}}</td>
-            <td style="text-align:center">{{result?.totalMoney}}</td>
-            <!--            <td style="text-align:center">{{result.totalOver20kms}}</td>-->
-            <!--            <td style="text-align:center">{{result.totalExtraTime}}</td>-->
-            <!--            <td style="text-align:center">{{ result.tiempototal}}</td>-->
-            <!--            <td style="text-align:center">{{result.totalMoney}}</td>-->
           </tr>
           </tbody>
 
@@ -171,73 +124,6 @@
           <!--          <tr>-->
           <!--            <th style="text-align:center"></th>-->
           <!--            <th style="text-align:center">Subtotal:</th>-->
-
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.transTurismOrders}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.transTurismTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.motoOrders}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.motoTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.turismoOrders}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.turismoTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.pickupOrders}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.pickupTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.panelOrders}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.panelTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.pickupAuxiliarOrders}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.pickupAuxiliarTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.panelAuxiliarOrders}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.panelAuxiliarTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.camion11Orders}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.camion11Time}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.totalAuxTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--            <th style="text-align:center">-->
-          <!--              {{totals.totalOrders}}-->
-          <!--            </th>-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.totalTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.totalOver20kms}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.totalExtraTime}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
-          <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
-          <!--&lt;!&ndash;              {{totals.tiempoTotal}}&ndash;&gt;-->
-          <!--&lt;!&ndash;            </th>&ndash;&gt;-->
           <!--&lt;!&ndash;            <th style="text-align:center">&ndash;&gt;-->
           <!--&lt;!&ndash;              {{totals.totalMoney}}&ndash;&gt;-->
           <!--&lt;!&ndash;            </th>&ndash;&gt;-->

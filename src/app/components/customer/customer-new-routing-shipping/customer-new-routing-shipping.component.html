@@ -364,6 +364,31 @@
           <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
             {{prohibitedDistanceMsg}}
           </div>
+
+          <div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
+            <div class="col">
+              <p class="card-title"><strong>Servicios Adicionales:</strong></p>
+              <hr>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col" *ngFor="let extracharge of selectedCategory.categoryExtraCharges">
+              <p class="card-title">{{extracharge.extra_charge.nombre}}</p>
+              <div class="row" *ngFor="let option of extracharge.extra_charge.options">
+                <div class="col ml-2" formGroupName="order">
+                  <mat-checkbox formControlName="extracharge"
+                                (change)="addExtraCharge($event.checked,extracharge.extra_charge.idCargoExtra,option)">
+                    {{option.descripcion + ' L.' + option.costo}}</mat-checkbox>
+                </div>
+              </div>
+
+              <div class="row" *ngIf="extracharge.idCargoExtra == 5" formGroupName="order">
+                <input matInput (change)="addCare(extracharge.extra_charge)" formControlName="montoCobertura"
+                       type="number" placeholder="Monto de Seguro">
+              </div>
+            </div>
+          </div>
           <!--ORDER ADD FORM END-->
         </form>
         <!-- FORM END -->
