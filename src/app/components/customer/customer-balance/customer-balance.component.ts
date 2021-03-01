@@ -5,8 +5,10 @@ import {User} from "../../../models/user";
 import {Payment} from "../../../models/payment";
 import {Subject} from "rxjs";
 import {Order} from "../../../models/order";
-import { UsersService } from 'src/app/services/users.service';
-import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
+import {UsersService} from 'src/app/services/users.service';
+import {ErrorModalComponent} from '../../shared/error-modal/error-modal.component';
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-customer-balance',
@@ -38,12 +40,12 @@ export class CustomerBalanceComponent implements OnInit {
   totalSurcharges: number = 0.00
   totalCTotal: number = 0.00
   totalExtraCharges: number = 0.00
-  dialog: any;
   totalPaid: number = 0.00
 
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
+    public dialog: MatDialog
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
@@ -53,7 +55,8 @@ export class CustomerBalanceComponent implements OnInit {
     this.loadData()
   }
 
-  initialize(){
+  //INICIALIZACIÓN DE VARIABLES
+  initialize() {
     this.myPayments = new Array<Payment>()
     this.myFinishedOrders = new Array<Order>()
     this.paid = 0.00
@@ -64,7 +67,7 @@ export class CustomerBalanceComponent implements OnInit {
       processing: true,
       info: true,
       autoWidth: true,
-      order:[0,'asc'],
+      order: [0, 'asc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -84,34 +87,33 @@ export class CustomerBalanceComponent implements OnInit {
     }
   }
 
-  loadData(){
-    this.loaders.loadingData = true
-    const balanceSubscription = this.usersService.getCustomerBalance(this.currCustomer.idCliente).subscribe(response => {
-      this.myPayments = response.payments
-      this.paid = response.paid
-      this.balance = response.balance
-      this.subtotal = response.subtotal
-      this.totalCTotal = response.footCTotal
-      this.totalSurcharges = response.footSurcharges
-      this.totalExtraCharges = response.footExtraCharges
-      this.totalPaid = response.footMonto
-      this.myFinishedOrders = response.finishedOrders
-      this.loaders.loadingData = false
-      this.dtTrigger1.next()
-      this.dtTrigger.next()
-      balanceSubscription.unsubscribe()
-    },error => {
-      if(error.subscribe()){
-        error.subscribe(error => {
-          this.openErrorDialog(error.statusText, true)
-        })
-      }
-    })
+  //COMUNICACIÓN CON LA API PARA CARGAR LOS DATOS NECESARIOS
+  loadData() {
+    this.openLoader()
+    const balanceSubscription = this.usersService
+      .getCustomerBalance(this.currCustomer.idCliente)
+      .subscribe(response => {
+        this.myPayments = response.payments
+        this.paid = response.paid
+        this.balance = response.balance
+        this.subtotal = response.subtotal
+        this.totalCTotal = response.footCTotal
+        this.totalSurcharges = response.footSurcharges
+        this.totalExtraCharges = response.footExtraCharges
+        this.totalPaid = response.footMonto
+        this.myFinishedOrders = response.finishedOrders
+        this.dialog.closeAll()
+        this.dtTrigger1.next()
+        this.dtTrigger.next()
+        balanceSubscription.unsubscribe()
+      }, error => {
+        if (error.subscribe()) {
+          error.subscribe(error => {
+            this.openErrorDialog(error.statusText, true)
+          })
+        }
+      })
 
-  }
-
-  setLoading(event) {
-    this.loaders.loadingData = event
   }
 
   openErrorDialog(error: string, reload: boolean): void {
@@ -121,13 +123,17 @@ export class CustomerBalanceComponent implements OnInit {
       }
     })
 
-    if(reload){
+    if (reload) {
       dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
+        this.dialog.closeAll()
         this.ngOnInit
       })
     }
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

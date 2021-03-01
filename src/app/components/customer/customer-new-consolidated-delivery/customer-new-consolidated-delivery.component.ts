@@ -1,36 +1,37 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { GoogleMap } from "@angular/google-maps";
-import { Customer } from "../../../models/customer";
-import { Category } from "../../../models/category";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Order } from "../../../models/order";
-import { Rate } from "../../../models/rate";
-import { Surcharge } from "../../../models/surcharge";
-import { Subject } from "rxjs";
-import { DataTableDirective } from "angular-datatables";
-import { ExtraCharge } from "../../../models/extra-charge";
-import { ExtraChargeOption } from "../../../models/extra-charge-option";
-import { CategoriesService } from "../../../services/categories.service";
-import { DeliveriesService } from "../../../services/deliveries.service";
-import { HttpClient } from "@angular/common/http";
-import { Router } from "@angular/router";
-import { MatDialog } from "@angular/material/dialog";
-import { AuthService } from "../../../services/auth.service";
-import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator";
-import { NoUrlValidator } from "../../../helpers/noUrl.validator";
-import { environment } from "../../../../environments/environment";
-import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
-import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component";
-import { ConfirmDialogComponent } from "../customer-new-delivery/confirm-dialog/confirm-dialog.component";
-import { animate, style, transition, trigger } from "@angular/animations";
-import { BranchService } from "../../../services/branch.service";
-import { Branch } from "../../../models/branch";
-import { Schedule } from "../../../models/schedule";
-import { CustomerRestrictionsDialogComponent } from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
-import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component';
-import { UsersService } from 'src/app/services/users.service';
-import { LabelsService } from 'src/app/services/labels.service';
-import { Label } from 'src/app/models/label';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {GoogleMap} from "@angular/google-maps";
+import {Customer} from "../../../models/customer";
+import {Category} from "../../../models/category";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Order} from "../../../models/order";
+import {Rate} from "../../../models/rate";
+import {Surcharge} from "../../../models/surcharge";
+import {Subject} from "rxjs";
+import {DataTableDirective} from "angular-datatables";
+import {ExtraCharge} from "../../../models/extra-charge";
+import {ExtraChargeOption} from "../../../models/extra-charge-option";
+import {CategoriesService} from "../../../services/categories.service";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material/dialog";
+import {AuthService} from "../../../services/auth.service";
+import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
+import {NoUrlValidator} from "../../../helpers/noUrl.validator";
+import {environment} from "../../../../environments/environment";
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
+import {ConfirmDialogComponent} from "../customer-new-delivery/confirm-dialog/confirm-dialog.component";
+import {animate, style, transition, trigger} from "@angular/animations";
+import {BranchService} from "../../../services/branch.service";
+import {Branch} from "../../../models/branch";
+import {Schedule} from "../../../models/schedule";
+import {CustomerRestrictionsDialogComponent} from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
+import {LockedUserDialogComponent} from '../../shared/locked-user-dialog/locked-user-dialog.component';
+import {UsersService} from 'src/app/services/users.service';
+import {LabelsService} from 'src/app/services/labels.service';
+import {Label} from 'src/app/models/label';
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
 
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
@@ -39,8 +40,8 @@ import { Label } from 'src/app/models/label';
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 }))
+        style({opacity: 0}),
+        animate(1000, style({opacity: 1}))
       ])
     ])
   ]
@@ -81,7 +82,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   prohibitedDistance = false
   prohibitedDistanceMsg = ''
   paymentMethod: number = 1
-  @ViewChild(DataTableDirective, { static: false })
+  @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
   selectedCategory: Category = {}
   selectedExtraCharge: ExtraCharge = null
@@ -131,6 +132,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.checkCustomer()
   }
 
+  //INICIALIZACIÓN DE VARIABLES
   initialize() {
     this.directionsRenderer = new google.maps.DirectionsRenderer
     this.directionsService = new google.maps.DirectionsService
@@ -138,17 +140,17 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.locationOption = 1
     this.deliveryForm = this.formBuilder.group({
       deliveryHeader: this.formBuilder.group({
-        dirRecogida: ['', [Validators.required]],
+        dirRecogida: [{value: '', disabled: false}, [Validators.required]],
         idCategoria: [{
           value: 1,
           disabled: false,
         }, Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
-        fecha: ['', Validators.required],
-        hora: ['', Validators.required],
+        fecha: [{value: '', disabled: false}, Validators.required],
+        hora: [{value: '', disabled: false}, Validators.required],
         idTarifa: [null],
-        idEtiqueta:[null]
+        idEtiqueta: [null]
       }, {
         validators: [
           BlankSpacesValidator('dirRecogida'),
@@ -202,13 +204,13 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   }
 
+  //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
   loadData() {
-    this.loaders.loadingData = true
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.consolidatedCategories
       this.demandMSG = response.demand
       categoriesSubscription.unsubscribe()
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.setSelectedCategory()
 
       if (navigator.geolocation) {
@@ -243,11 +245,10 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         alert('El GPS está desactivado')
       }
     }, error => {
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
       this.openErrorDialog(this.errorMsg, true)
       categoriesSubscription.unsubscribe()
-      this.loaders.loadingData = false
     })
 
     const branchSubscription = this.branchService.getBranchOffices().subscribe(response => {
@@ -262,11 +263,11 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     })
 
     const lblSubscription = this.labelsService
-    .getMyLabels()
-    .subscribe(response => {
-      this.myLabels = response.data
-      lblSubscription.unsubscribe()
-    })
+      .getMyLabels()
+      .subscribe(response => {
+        this.myLabels = response.data
+        lblSubscription.unsubscribe()
+      })
 
   }
 
@@ -276,7 +277,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   onOrderAdd() {
     if (this.deliveryForm.get('order').valid) {
-      this.loaders.loadingAdd = true
+      this.openLoader()
 
       let currOrder = {
         nFactura: this.newForm.get('order.nFactura').value,
@@ -286,7 +287,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         instrucciones: this.newForm.get('order.instrucciones').value,
         coordsDestino: '',
         distancia: '',
-        tiempo:'',
+        tiempo: '',
         tarifaBase: 0,
         recargo: 0,
         cTotal: 0,
@@ -295,9 +296,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         idDetalleOpcion: null,
       }
 
-      let ordersCount = this.orders.length + 1
       //
-      this.calculateRate(ordersCount)
+      this.calculateRate()
 
       this.calculateDistance(currOrder)
 
@@ -307,15 +307,20 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     }
   }
 
+  //COMUNICACIÓN CON LA API PARA REGISTRAR EL DELIVERY
   onFormSubmit() {
+    this.newForm.get('deliveryHeader.idCategoria').enable()
+    this.newForm.get('deliveryHeader.dirRecogida').enable()
+    this.newForm.get('deliveryHeader.fecha').enable()
+    this.newForm.get('deliveryHeader.hora').enable()
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
       this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate.idTarifaDelivery)
 
-      this.loaders.loadingSubmit = true
+      this.openLoader()
       const deliveriesSubscription = this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
         .subscribe(response => {
-          this.loaders.loadingSubmit = false
+          this.dialog.closeAll()
           this.exitMsg = response.message
           this.nDeliveryResponse = response.nDelivery
           this.openSuccessDialog('Operación Realizada Correctamente', this.exitMsg = response.message, this.nDeliveryResponse)
@@ -323,13 +328,13 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
-              this.loaders.loadingSubmit = false
+              this.dialog.closeAll()
               this.errorMsg = error.statusText
               this.openErrorDialog(this.errorMsg, false)
               deliveriesSubscription.unsubscribe()
             })
           } else {
-            this.loaders.loadingSubmit = false
+            this.dialog.closeAll()
             this.errorMsg = 'Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.'
             this.openErrorDialog(this.errorMsg, false)
             deliveriesSubscription.unsubscribe()
@@ -343,13 +348,13 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   }
 
+  //CALCULA EL RADIO DE LA DIRECCIÓN DE RECOGIDA
   calculateRatio() {
     if (this.newForm.get('deliveryHeader.dirRecogida').value != '') {
       this.prohibitedAddress = false
       this.prohibitedAddressCentinel = false
-      let ordersCount = this.orders.length + 1
       //
-      this.calculateRate(ordersCount)
+      this.calculateRate()
 
       const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         function: 'calculateDistance',
@@ -379,13 +384,14 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     }
   }
 
+  //CALCULA LA DISTANCIA PARA LA PREVISUALIZACIÓN
   calculatedistanceBefore() {
     this.directionsRenderer.setMap(null)
     if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
       this.loaders.loadingDistBef = true
       let ordersCount = this.orders.length + 1
       //
-      this.calculateRate(ordersCount)
+      this.calculateRate()
 
       const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         function: 'calculateDistance',
@@ -398,6 +404,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
         this.befTime = response.tiempo
         this.befCost = calculatedPayment.total
+        this.placesOrigin = []
         this.placesDestination = []
 
         this.directionsRenderer.setMap(this.googleMap._googleMap)
@@ -421,6 +428,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   }
 
+  //CALCULA Y TRAZA LA RUTA EN EL MAPA
   calculateAndDisplayRoute(directionsService, directionsRenderer) {
 
     const dirRecogida = this.newForm.get('deliveryHeader.dirRecogida').value
@@ -428,9 +436,9 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     const geocoder1 = new google.maps.Geocoder()
 
     const geocoder2 = new google.maps.Geocoder()
-    geocoder1.geocode({ 'address': dirRecogida }, results => {
+    geocoder1.geocode({'address': dirRecogida}, results => {
       const originLL = results[0].geometry.location
-      geocoder2.geocode({ 'address': dirEntrega }, results => {
+      geocoder2.geocode({'address': dirEntrega}, results => {
         const destLL = results[0].geometry.location
         directionsService.route({
           origin: originLL,  // Haight.
@@ -449,6 +457,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     })
   }
 
+  //EVENTO ONINPUT DEL CAMPO DE DIRECCIÓN DE DESTINO
   searchDestination(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
@@ -463,10 +472,12 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   }
 
-  calculateRate(ordersCount) {
+  //SELECCIONA LA TARIFA SEGÚN EL NÚMERO DE ENVÍOS AGREGADOS AL MOMENTO
+  calculateRate() {
     this.pago.baseRate = this.selectedRate.precio
   }
 
+  //CALCULA EL PAGO DEL ENVÍO SEGÚN LA DISTANCIA
   calculateOrderPayment(distance) {
 
     let orderPayment = {
@@ -490,7 +501,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       if (this.selectedExtraCharge.options) {
         orderPayment.cargosExtra = this.selectedExtraChargeOption.costo
         orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraChargeOption.costo
-      }else{
+      } else {
         orderPayment.cargosExtra = this.selectedExtraCharge.costo
         orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges + +this.selectedExtraCharge.costo
       }
@@ -502,6 +513,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     return orderPayment
   }
 
+  //CÁLCULO DE LA DISTANCIA PARA AGREGAR EL ENVÍO
   calculateDistance(currOrder, reloadTable?) {
     const salida = this.selectedRate.consolidated_detail.dirRecogida
     const entrega = currOrder.direccion
@@ -543,7 +555,10 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       this.deliveryForm.get('order').reset()
       this.orders.push(currOrder)
       this.pagos.push(calculatedPayment)
-      this.loaders.loadingAdd = false
+      this.newForm.get('deliveryHeader.idCategoria').disable()
+      this.newForm.get('deliveryHeader.dirRecogida').disable()
+      this.newForm.get('deliveryHeader.fecha').disable()
+      this.newForm.get('deliveryHeader.hora').disable()
       this.selectedExtraChargeOption = {}
       this.selectedExtraCharge = null
 
@@ -566,7 +581,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
       }
 
-      console.log(this.orders)
 
       this.agregado = true
       setTimeout(() => {
@@ -582,7 +596,9 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           value.recargo = nPay.surcharges
           value.cTotal = nPay.total
           this.pagos[i].baseRate = nPay.baseRate
-          this.pagos[i].cargosExtra = nPay.cargosExtra
+          if(this.pagos[i]?.cargosExtra){
+            this.pagos[i].cargosExtra = nPay.cargosExtra
+          }
           this.pagos[i].surcharges = nPay.surcharges
           this.pagos[i].total = nPay.total
         }
@@ -605,6 +621,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   }
 
+  //CALCULA EL PAGO TOTAL
   calculatePayment() {
     this.pago.recargos = this.pagos.reduce(function (a, b) {
       return +a + +b['surcharges']
@@ -618,13 +635,16 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       return +a + +b['total']
     }, 0)
 
+    this.dialog.closeAll()
+
   }
 
+  //ELIMINA UN ENVÍO
   removeFromArray(item) {
     let i = this.orders.indexOf(item)
     this.orders.splice(i, 1)
     this.pagos.splice(i, 1)
-    this.calculateRate(this.orders.length)
+    this.calculateRate()
     this.calculatePayment()
 
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -638,6 +658,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     location.reload()
   }
 
+  //ESTABLECE LA UBICACIÓN ACTUAL PARA EL PUNTO DESTINO
   setCurrentLocationDest(checked) {
     if (!checked) {
       if (navigator) {
@@ -658,12 +679,14 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   }
 
+  //ESTABLECE LAS COORDENADAS PARA EL PUNTO DESTINO
   setCordsDestination() {
     this.deliveryForm.get('order.direccion').setValue(this.destinationCords.nativeElement.value)
     this.gcordsDestination = false
     this.calculatedistanceBefore()
   }
 
+  //REDIRIGE A LOS DETALLES DE LA RESERVA AL GUARDARLA
   showNewDeliveryDetail(id) {
     this.router.navigate(['customers/ver-reserva', id])
   }
@@ -721,6 +744,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     })
   }
 
+  //ESTABLECE LA CATEGORÍA A EMPLEAR
   setSelectedCategory() {
     this.categories.forEach(category => {
       if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
@@ -827,6 +851,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     })
   }
 
+  /*
   onSelect(event) {
     if (this.files.length === 0) {
       this.files.push(...event.addedFiles)
@@ -893,7 +918,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   onFileRemove(event) {
     this.files.splice(this.files.indexOf(event), 1)
-  }
+  }*/
 
   openRestrictionsDialog() {
     const dialogRef = this.dialog.open(CustomerRestrictionsDialogComponent)
@@ -903,12 +928,14 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     })
   }
 
+  //VERIFICA SI EL CLIENTE TIENE SALDO PENDIENTE
   checkCustomer() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const usrsSubs = this.userService
       .checkCustomerAvalability()
       .subscribe(response => {
         if (response.data == false) {
+          this.dialog.closeAll()
           this.openLockedUserDialog(response.balance)
         } else {
           this.loadData()
@@ -918,15 +945,20 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   }
 
   openLockedUserDialog(balance) {
-    const dialogRef = this.dialog.open(LockedUserDialogComponent,{
-      data:{
-        balance: balance
+    const dialogRef = this.dialog.open(LockedUserDialogComponent, {
+      data: {
+        balance: balance,
+        customer: this.currCustomer
       }
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.loadData()
+      this.router.navigate(['/customers/dashboard'])
     })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

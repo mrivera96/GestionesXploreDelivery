@@ -1,23 +1,20 @@
-<!-- CARD START -->
+<!-- INICIO ALERTA POR SALDO PENDIENTE -->
 <div *ngIf="lockedUser" class="alert alert-danger" role="alert">
   Hola <strong>{{currentCustomer.nomRepresentante}}</strong>, informamos que tienes un balance abierto de <strong>L. {{actualBalance}}</strong> .
   Te solicitamos poner tu cuenta al día o solicitar una ampliación de tu crédito para continuar gozando de nuestro servicio.
   Para más información, favor contactarnos al <a href="tel:94397234">+504 9439-7234</a>.
 </div>
+<!-- FIN ALERTA POR SALDO PENDIENTE -->
 
 <mat-card-title class="mb-3">
 <h1 style="font-size: 35px;"><strong> Dashboard</strong></h1>
 </mat-card-title>
 
-<div class="row" *ngIf="loaders.loadingData">
-<div class="col text-center">
-  <img src="assets/img/loading.svg" width="35%" alt="loading">
-  <p>Cargando información...</p>
-</div>
-</div>
-
-<div class="container-fluid" *ngIf="!loaders.loadingData">
+<!-- INICIO CONTAINER -->
+<div class="container-fluid">
+  <!-- INICIO FILA -->
 <div class="row">
+  <!-- INICIO COLUMNA -->
   <div class="col-md">
     <div class="row mb-3 mx-auto">
       <mat-card class="col">
@@ -65,9 +62,10 @@
         </mat-card-content>
       </mat-card>
     </div>
-
   </div>
+  <!-- FIN COLUMNA -->
 
+  <!-- INICIO COLUMNA -->
   <div class="col-md mb-3">
     <mat-card>
       <mat-card-header>
@@ -90,7 +88,7 @@
       </mat-card-header>
       <mat-card-content>
         <div class="table-responsive">
-          <table datatable [dtOptions]="dtOptions" class="display compact" style="width:100%">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
             <thead>
               <tr>
                 <th>N° envío</th>
@@ -111,7 +109,9 @@
       </mat-card-content>
     </mat-card>
   </div>
+  <!-- FIN COLUMNA -->
 
+  <!-- INICIO COLUMNA -->
   <div class="col-md ">
     <mat-card>
       <mat-card-header>
@@ -134,7 +134,7 @@
       </mat-card-header>
       <mat-card-content>
         <div class="table-responsive">
-          <table datatable [dtOptions]="dtOptions" class="display compact" style="width:100%">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
             <thead>
               <tr>
                 <th>N° envío</th>
@@ -158,6 +158,9 @@
       </mat-card-content>
     </mat-card>
   </div>
+  <!-- FIN COLUMNA -->
 </div>
+  <!-- FIN FILA -->
 
 </div>
+<!-- FIN CONTAINER -->

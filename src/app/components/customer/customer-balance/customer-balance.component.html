@@ -12,27 +12,18 @@
       <mat-tab label="Envíos Realizados">
         <div class="container-fluid pt-0 pb-0 mt-0 mb-0">
 
-          <div class="row" *ngIf="loaders.loadingData">
-            <div class="col text-center">
-              <img src="assets/img/loading.svg" width="5%" alt="loading">
-              <p>Cargando información...</p>
-            </div>
-          </div>
-
-          <mat-card class="shadow mb-3 text-center text-white" style="background-color: #0277bd"
-                    *ngIf="!loaders.loadingData">
+          <mat-card class="shadow mb-3 text-center text-white" style="background-color: #0277bd">
             <mat-card-content>
               <h2>{{currCustomer.cliente.nomEmpresa}} </h2>
               <h2>Sub-Total: L. {{subtotal}} </h2>
 
             </mat-card-content>
           </mat-card>
-          <!-- DATATABLE START -->
+          <!-- INICIO DATATABLE -->
           <div class="row">
             <div class="col">
               <h3>Historial de Envíos</h3>
             </div>
-
           </div>
           <hr>
           <div class="table-responsive">
@@ -90,7 +81,7 @@
             </table>
 
           </div>
-          <!-- DATATABLE END -->
+          <!-- FIN DATATABLE -->
         </div>
       </mat-tab>
 
@@ -112,7 +103,7 @@
               <h2>Balance: L. {{balance}} </h2>
             </mat-card-content>
           </mat-card>
-          <!-- DATATABLE START -->
+          <!-- INICIO DATATABLE -->
           <div class="row">
             <div class="col">
               <h3>Historial de Pagos</h3>
@@ -130,7 +121,6 @@
                 <th>Tipo de Pago</th>
                 <th>Referencia</th>
                 <th>Banco</th>
-                <!-- <th data-priority="1">Acción</th> -->
               </tr>
               </thead>
               <tbody>
@@ -158,10 +148,8 @@
 
             </table>
           </div>
-          <!-- DATATABLE END -->
+          <!-- FIN DATATABLE -->
         </div>
-
-
       </mat-tab>
     </mat-tab-group>
 

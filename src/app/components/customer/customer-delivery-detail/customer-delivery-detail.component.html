@@ -1,4 +1,4 @@
-<!-- CARD START -->
+<!-- INICIO CARD -->
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title-group>
@@ -28,16 +28,10 @@
     </div>
   </mat-card-header>
 
-  <!-- CARD BODY START -->
+  <!-- INICIO CARD BODY -->
   <mat-card-content>
-    <div class="row" *ngIf="loaders.loadingData">
-      <div class="col text-center">
-        <img src="assets/img/loading.svg" width="35%" alt="loading">
-        <p>Cargando información...</p>
-      </div>
-    </div>
 
-    <div class="container-fluid" *ngIf="!loaders.loadingData">
+    <div class="container-fluid" >
       <div class="card-title">
         <h4>Datos Generales</h4>
       </div>
@@ -116,16 +110,13 @@
       <div class="row">
         <div class="col-sm">
           <strong>Estado Actual:</strong>
-          {{currentDelivery?.estado.descEstado}}
+          {{currentDelivery?.estado?.descEstado}}
         </div>
 
-        <div class="col-sm" *ngIf="currentDelivery.idEstado == 37">
+        <div class="col-sm" *ngIf="currentDelivery?.idEstado == 37">
           <strong>Asignada a:</strong>
-          {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
+          {{currentDelivery?.detalle[0]?.conductor?.nomUsuario}}
         </div>
-
-    
-
 
       </div>
 
@@ -141,7 +132,7 @@
       </div>
 
       <div class="table-responsive">
-        <table class="display compact" datatable [dtOptions]="dddtOptions" style="width: 100%">
+        <table class="display compact" datatable [dtOptions]="dddtOptions" [dtTrigger]="dddtTrigger" style="width: 100%">
           <thead>
             <tr>
               <th>Detalle de entrega</th>
@@ -184,6 +175,6 @@
       </div>
     </div>
   </mat-card-content>
-  <!-- CARD BODY END -->
+  <!-- FIN CARD BODY -->
 </mat-card>
-<!-- CARD END -->
+<!-- FIN CARD -->

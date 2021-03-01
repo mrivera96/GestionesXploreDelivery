@@ -1,24 +1,16 @@
-<!--CARD START -->
+<!-- INICIO CARD-->
 <mat-card @fade >
   <mat-card-header>
     <mat-card-title>Todos mis envíos</mat-card-title>
   </mat-card-header>
-  <!-- CARD BODY START -->
+  <!-- INICIO CARD BODY -->
   <mat-card-content>
-    <div class="row" *ngIf="loaders.loadingData">
-      <div class="col text-center">
-        <img src="assets/img/loading.svg" width="5%" alt="loading">
-        <p>Cargando información...</p>
-      </div>
-    </div>
-
-    <!-- DATATABLE START -->
+    <!-- INICIO DATATABLE -->
     <app-orders-data-table [orders]="'customer-todos'" (loadingData)="setLoading($event)"></app-orders-data-table>
-    <!-- DATATABLE END -->
+    <!-- FIN DATATABLE -->
   </mat-card-content>
-  <!--CARD BODY END -->
-
+  <!-- FIN CARD BODY -->
 </mat-card>
-<!-- CARD END -->
+<!-- FIN CARD -->
 
 

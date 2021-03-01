@@ -1,9 +1,9 @@
-<!--CARD START -->
+<!-- INICIO CARD-->
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title>Mis Direcciones</mat-card-title>
   </mat-card-header>
-  <!-- CARD BODY START -->
+  <!-- INICIO CARD BODY -->
   <mat-card-content>
 
     <div class="row" *ngIf="loaders.loadingData">
@@ -21,7 +21,7 @@
         </button>
       </div>
     </div>
-    <!-- DATATABLE START -->
+    <!-- INICIO DATATABLE -->
 
     <div class="table-responsive">
       <table id="dTable" datatable [dtOptions]="bdtOptions" [dtTrigger]="bdtTrigger"
@@ -61,14 +61,14 @@
         </tbody>
 
       </table>
-      <!-- DATATABLE END -->
+      <!-- FIN DATATABLE -->
     </div>
 
   </mat-card-content>
-  <!--CARD BODY END -->
+  <!-- FIN CARD BODY -->
 
 </mat-card>
-<!-- CARD END -->
+<!-- FIN CARD -->
 
 
 

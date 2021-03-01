@@ -34,4 +34,5 @@ export interface Order {
   extra_charges?: OrderExtraCharges[]
   time?: any
   efectivoRecibido?: number
+  order?: number
 }

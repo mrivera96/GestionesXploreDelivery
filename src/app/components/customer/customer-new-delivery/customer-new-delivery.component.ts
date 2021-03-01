@@ -34,6 +34,7 @@ import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locke
 import { UsersService } from 'src/app/services/users.service';
 import { LabelsService } from 'src/app/services/labels.service';
 import { Label } from 'src/app/models/label';
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -106,7 +107,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
   defaultBranch
   selectedCategory: Category = {}
   selectedExtraCharge: ExtraCharge = null
-  selectedExtraChargeOption: ExtraChargeOption = {}
   extraCharges: ExtraChargeCategory[] = []
   currOrder: any = {
     extras: [] = []
@@ -115,7 +115,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
   searchingDest = false
   demandMSG: string = ''
   myLabels: Label[] = []
-
 
   constructor(
     private categoriesService: CategoriesService,
@@ -147,6 +146,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.checkCustomer()
   }
 
+  //INICIALIZACIÓN DE VARIABLES
+
   initialize() {
     this.directionsRenderer = new google.maps.DirectionsRenderer
     this.directionsService = new google.maps.DirectionsService
@@ -156,8 +157,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
       deliveryHeader: this.formBuilder.group({
         fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
         hora: [formatDate(new Date().setHours(new Date().getHours(), new Date().getMinutes() + 5), 'HH:mm', 'en'), Validators.required],
-        dirRecogida: ['', [Validators.required]],
-        idCategoria: [1, [Validators.required]],
+        dirRecogida: [{value:'', disabled: false}, [Validators.required]],
+        idCategoria: [{value:1, disabled: false}, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
         idEtiqueta:[null]
@@ -187,6 +188,38 @@ export class CustomerNewDeliveryComponent implements OnInit {
       })
     })
 
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      serverSide: false,
+      processing: true,
+      info: true,
+      rowReorder: false,
+      order: [0, 'asc'],
+      responsive: true,
+      language: {
+        emptyTable: 'No hay datos para mostrar en esta tabla',
+        zeroRecords: 'No hay coincidencias',
+        lengthMenu: 'Mostrar _MENU_ elementos',
+        search: 'Buscar:',
+        info: 'De _START_ a _END_ de _TOTAL_ elementos',
+        infoEmpty: 'De 0 a 0 de 0 elementos',
+        infoFiltered: '(filtrados de _MAX_ elementos totales)',
+        paginate: {
+          first: 'Prim.',
+          last: 'Últ.',
+          next: 'Sig.',
+          previous: 'Ant.'
+        },
+      },
+    }
+
+    this.getCurrentLocation()
+
+  }
+
+  //OBTENER UBICACIÓN ACTUAL
+  getCurrentLocation(){
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.myCurrentLocation = {
@@ -217,47 +250,20 @@ export class CustomerNewDeliveryComponent implements OnInit {
     } else {
       alert('El GPS está desactivado')
     }
-
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      serverSide: false,
-      processing: true,
-      info: true,
-      rowReorder: false,
-      order: [0, 'asc'],
-      responsive: true,
-      language: {
-        emptyTable: 'No hay datos para mostrar en esta tabla',
-        zeroRecords: 'No hay coincidencias',
-        lengthMenu: 'Mostrar _MENU_ elementos',
-        search: 'Buscar:',
-        info: 'De _START_ a _END_ de _TOTAL_ elementos',
-        infoEmpty: 'De 0 a 0 de 0 elementos',
-        infoFiltered: '(filtrados de _MAX_ elementos totales)',
-        paginate: {
-          first: 'Prim.',
-          last: 'Últ.',
-          next: 'Sig.',
-          previous: 'Ant.'
-        },
-      },
-    }
-
   }
 
+  //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
   loadData() {
-    this.loaders.loadingData = true
     const categoriesSubscription = this.categoriesService
       .getCustomerCategories()
       .subscribe(response => {
         this.categories = response.data
         this.demandMSG = response.demand
         this.setSelectedCategory()
-        this.loaders.loadingData = false
+        this.dialog.closeAll()
         categoriesSubscription.unsubscribe()
       }, error => {
-        this.loaders.loadingData = false
+        this.dialog.closeAll()
         this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
         this.openErrorDialog(this.errorMsg, true)
         categoriesSubscription.unsubscribe()
@@ -277,7 +283,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
           this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(bOffice.direccion)
           this.checkInsructions()
         }
-
       })
       branchSubscription.unsubscribe()
     })
@@ -291,6 +296,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
+  //VERIFICA SI EL CLIENTE TIENE INSTRUCCIONES REGISTRADAS
   checkInsructions() {
     this.myBranchOffices.forEach(bOffice => {
       if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
@@ -305,6 +311,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.newForm.get('deliveryHeader.dirRecogida').setValue('')
   }
 
+  //ESTABLECE LA UBICACIÓN ACTUAL COMO PUNTO DE RECOGIDA
   setCurrentLocationOrigin() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
@@ -338,9 +345,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
     return this.deliveryForm
   }
 
+  //MÉTODO QUE EJECUTA LA ADICIÓN DE UN NUEVO ENVÍO
   onOrderAdd() {
     if (this.deliveryForm.get('order').valid) {
-      this.loaders.loadingAdd = true
+      this.openLoader()
 
       this.currOrder.nFactura = this.newForm.get('order.nFactura').value
       this.currOrder.nomDestinatario = this.newForm.get('order.nomDestinatario').value
@@ -363,14 +371,19 @@ export class CustomerNewDeliveryComponent implements OnInit {
     }
   }
 
+  //COMUNICACIÓN CON LA API PARA REGISTRAR EL DELIVERY
   onFormSubmit() {
+    this.newForm.get('deliveryHeader.idCategoria').enable()
+    this.newForm.get('deliveryHeader.dirRecogida').enable()
+    this.newForm.get('deliveryHeader.fecha').enable()
+
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
 
-      this.loaders.loadingSubmit = true
+      this.openLoader()
       const deliveriesSubscription = this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
         .subscribe(response => {
-          this.loaders.loadingSubmit = false
+          this.dialog.closeAll()
           this.exitMsg = response.message
           this.nDeliveryResponse = response.nDelivery
           this.openSuccessDialog('Operación Realizada Correctamente', this.exitMsg = response.message, this.nDeliveryResponse)
@@ -378,13 +391,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
-              this.loaders.loadingSubmit = false
+              this.dialog.closeAll()
               this.errorMsg = error.statusText
               this.openErrorDialog(this.errorMsg, false)
               deliveriesSubscription.unsubscribe()
             })
           } else {
-            this.loaders.loadingSubmit = false
+            this.dialog.closeAll()
             this.errorMsg = 'Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.'
             this.openErrorDialog(this.errorMsg, false)
             deliveriesSubscription.unsubscribe()
@@ -398,6 +411,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
+  //CALCULA LA DISTANCIA PARA LA PREVISUALIZACIÓN
   calculatedistanceBefore() {
     this.directionsRenderer.setMap(null)
     if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
@@ -444,6 +458,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
+  //CALCULA Y TRAZA LA RUTA EN EL MAPA
   calculateAndDisplayRoute(directionsService, directionsRenderer) {
     const dirRecogida = this.newForm.get('deliveryHeader.dirRecogida').value
     const dirEntrega = this.newForm.get('order.direccion').value
@@ -471,6 +486,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
+  //EVENTO ONINPUT DEL CAMPO DE DIRECCIÓN DE RECOGIDA
   searchOrigin(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
@@ -484,9 +500,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
         placeSubscription.unsubscribe()
       })
     }
-
   }
 
+  //EVENTO ONINPUT DEL CAMPO DE DIRECCIÓN DE DESTINO
   searchDestination(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
@@ -502,6 +518,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     }
   }
 
+  //SELECCIONA LA TARIFA SEGÚN EL NÚMERO DE ENVÍOS AGREGADOS AL MOMENTO
   calculateRate(ordersCount) {
     this.rates.forEach(value => {
       if (ordersCount >= value?.entregasMinimas
@@ -514,6 +531,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
+  //CALCULA EL PAGO DEL ENVÍO SEGÚN LA DISTANCIA
   calculateOrderPayment(distance) {
     let orderPayment = {
       'baseRate': this.pago.baseRate,
@@ -544,6 +562,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     return orderPayment
   }
 
+  //CÁLCULO DE LA DISTANCIA PARA AGREGAR EL ENVÍO
   calculateDistance() {
     const salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value
     const entrega = this.currOrder.direccion
@@ -583,7 +602,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.deliveryForm.get('order').reset()
       this.orders.push(this.currOrder)
       this.pagos.push(calculatedPayment)
-      this.loaders.loadingAdd = false
+      this.newForm.get('deliveryHeader.idCategoria').disable()
+      this.newForm.get('deliveryHeader.dirRecogida').disable()
+      this.newForm.get('deliveryHeader.fecha').disable()
       this.currOrder = {
         extras: [] = []
       }
@@ -610,8 +631,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       }
 
-      console.log(this.orders)
-
       this.agregado = true
       setTimeout(() => {
         this.agregado = false;
@@ -619,7 +638,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
       this.orders.forEach(value => {
         if (value.tarifaBase != this.pago.baseRate) {
-          console.log('different')
           const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
           let i = this.orders.indexOf(value)
           value.tarifaBase = this.pago.baseRate
@@ -627,7 +645,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
           value.recargo = nPay.surcharges
           value.cTotal = nPay.total
           this.pagos[i].baseRate = nPay.baseRate
-          this.pagos[i].cargosExtra = nPay.cargosExtra
+          if(this.pagos[i]?.cargosExtra){
+            this.pagos[i].cargosExtra = nPay.cargosExtra
+          }
           this.pagos[i].surcharges = nPay.surcharges
           this.pagos[i].total = nPay.total
         }
@@ -650,6 +670,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
+  //CALCULA EL PAGO TOTAL
   calculatePayment() {
     this.pago.recargos = this.pagos.reduce(function (a, b) {
       return +a + +b['surcharges']
@@ -663,8 +684,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
       return +a + +b['total']
     }, 0)
 
+    this.dialog.closeAll()
   }
 
+  //ELIMINA UN ENVÍO
   removeFromArray(item) {
     let i = this.orders.indexOf(item)
     this.orders.splice(i, 1)
@@ -683,6 +706,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     location.reload()
   }
 
+  //ESTABLECE LA UBICACIÓN ACTUAL PARA EL PUNTO DESTINO
   setCurrentLocationDest(checked) {
     if (!checked) {
       if (navigator) {
@@ -703,6 +727,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   }
 
+  //ESTABLECE LAS COORDENADAS PARA EL PUNTO DE RECOGIDA
   setCordsOrigin() {
     this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.originCords.nativeElement.value)
     this.gcordsOrigin = false
@@ -710,15 +735,16 @@ export class CustomerNewDeliveryComponent implements OnInit {
     if (this.deliveryForm.get('order.direccion').value != '') {
       this.calculatedistanceBefore()
     }
-
   }
 
+  //ESTABLECE LAS COORDENADAS PARA EL PUNTO DESTINO
   setCordsDestination() {
     this.deliveryForm.get('order.direccion').setValue(this.destinationCords.nativeElement.value)
     this.gcordsDestination = false
     this.calculatedistanceBefore()
   }
 
+  //REDIRIGE A LOS DETALLES DE LA RESERVA AL GUARDARLA
   showNewDeliveryDetail(id) {
     this.router.navigate(['customers/ver-reserva', id])
   }
@@ -776,7 +802,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
-  onSelect(event) {
+  /*onSelect(event) {
     if (this.files.length === 0) {
       this.files.push(...event.addedFiles)
       let fileReader = new FileReader();
@@ -941,8 +967,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   onFileRemove(event) {
     this.files.splice(this.files.indexOf(event), 1)
-  }
+  }*/
 
+  //ESTABLECE LA CATEGORÍA A EMPLEAR
   setSelectedCategory() {
     this.categories.forEach(category => {
       if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
@@ -952,6 +979,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
+  //AÑADE UN CARGO EXTRA
   addExtraCharge(checked, extracharge, option) {
     const extraCharge = {
       idCargoExtra: extracharge,
@@ -968,6 +996,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     }
   }
 
+  //AÑADE MONTO DE COBERTURA
   addCare(excharge) {
     if (this.newForm.get('order.montoCobertura').value !== '') {
       const extraCharge = {
@@ -999,17 +1028,24 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
+  //VERIFICA SI EL CLIENTE TIENE SALDO PENDIENTE
   checkCustomer() {
+    this.openLoader()
     const usrsSubs = this.userService
       .checkCustomerAvalability()
       .subscribe(response => {
         if (response.data == false) {
+          this.dialog.closeAll()
           this.openLockedUserDialog(response.balance)
         }else{
-          this.loadData
+          this.loadData()
         }
         usrsSubs.unsubscribe()
       })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

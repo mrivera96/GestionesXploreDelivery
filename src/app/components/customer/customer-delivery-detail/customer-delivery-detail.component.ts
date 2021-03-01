@@ -12,6 +12,7 @@ import {DataTableDirective} from "angular-datatables";
 import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
 import { ConfirmCancelDialogComponent } from './confirm-cancel-dialog/confirm-cancel-dialog.component';
 import { SuccessModalComponent } from '../../shared/success-modal/success-modal.component';
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
 @Component({
   selector: 'app-customer-delivery-detail',
   templateUrl: './customer-delivery-detail.component.html',
@@ -25,8 +26,8 @@ import { SuccessModalComponent } from '../../shared/success-modal/success-modal.
     ])
   ]
 })
-export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
-  currentDelivery: Delivery
+export class CustomerDeliveryDetailComponent implements OnInit {
+  currentDelivery: Delivery = {}
   currentDeliveryDetail: DeliveryDetail[]
   deliveryId: number
   loaders = {
@@ -59,10 +60,7 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
 
   }
 
-  ngAfterViewInit() {
-
-  }
-
+  //INICIALIZACIÓN DE VARIABLES
   initialize() {
     this.allowHourChange = false
     this.dddtOptions =  {
@@ -71,6 +69,7 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
       serverSide: false,
       processing: true,
       info: true,
+      order:[],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -91,12 +90,13 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
     this.dddtTrigger = new Subject()
   }
 
+  //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const deliveriesSubscription = this.deliveriesService.getById(this.deliveryId).subscribe(response => {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
-      this.loaders.loadingData = false
+      this.dddtTrigger.next()
 
       let photos = 0
       this.currentDeliveryDetail.forEach(detail => {
@@ -118,11 +118,12 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
       if(diffReverse >= 30){
         this.allowCancel = true
       }
+      this.dialog.closeAll()
 
       deliveriesSubscription.unsubscribe()
 
     }, error => {
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.errorMSg = 'Lo sentimos, ha ocurrido un error al cargar la información. Por favor intente de nuevo.'
       this.openErrorDialog(this.errorMSg, true)
       deliveriesSubscription.unsubscribe()
@@ -143,7 +144,6 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
 
     if(reload){
       dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
         this.reloadData()
       })
     }
@@ -183,14 +183,15 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
 
     dialogRef.afterClosed().subscribe( result => {
       if(result){
-        this.loaders.loadingData = true
+        this.openLoader()
         const cancelSubs = this.deliveriesService.cancelDelivery(this.currentDelivery.idDelivery)
         .subscribe(response => {
-          this.loaders.loadingData = false
+          this.dialog.closeAll()
           this.openSuccessDialog('Operación Realizada Correctamente', response.message)
           cancelSubs.unsubscribe()
         }, error => {
           error.subscribe(error => {
+            this.dialog.closeAll()
             this.openErrorDialog(error.statusText, true)
           })
         }
@@ -200,13 +201,17 @@ export class CustomerDeliveryDetailComponent implements OnInit, AfterViewInit {
   }
 
   openPhotosDialog(photos){
-    
+
     const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
       data:{
         photos: photos
       }
     })
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

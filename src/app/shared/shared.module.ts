@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {OrdersDataTableComponent} from "../components/shared/orders-data-table/orders-data-table.component";
 import {DataTablesModule} from "angular-datatables";
 import {MatFormFieldModule} from "@angular/material/form-field";
@@ -16,6 +16,7 @@ import {SuccessModalComponent} from "../components/shared/success-modal/success-
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {RouterModule} from "@angular/router";
 import {MatMenuModule} from "@angular/material/menu";
+import {LoadingDialogComponent} from "../components/shared/loading-dialog/loading-dialog.component";
 
 
 @NgModule({
@@ -23,27 +24,28 @@ import {MatMenuModule} from "@angular/material/menu";
     OrdersDataTableComponent,
     PhoneMaskDirective,
     SuccessModalComponent,
+    LoadingDialogComponent
+  ],
+  imports: [
+    CommonModule,
+    DataTablesModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    FormsModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    RouterModule,
+    MatMenuModule,
+
 
   ],
-    imports: [
-        CommonModule,
-        DataTablesModule,
-        MatFormFieldModule,
-        MatIconModule,
-        MatDialogModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        FormsModule,
-        MatSelectModule,
-        MatCheckboxModule,
-        MatInputModule,
-        MatButtonModule,
-        MatProgressSpinnerModule,
-        RouterModule,
-        MatMenuModule
-
-    ],
-  exports:[
+  exports: [
     OrdersDataTableComponent,
     DataTablesModule,
     MatFormFieldModule,
@@ -57,7 +59,9 @@ import {MatMenuModule} from "@angular/material/menu";
     MatInputModule,
     MatButtonModule,
     PhoneMaskDirective,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    LoadingDialogComponent
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+}

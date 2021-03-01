@@ -54,6 +54,7 @@ export class EditDialogComponent implements OnInit {
     )
   }
 
+  //COMUNICACIÓN CON LA API PARA BUSCAR UN LUGAR
   searchAddress(event) {
     let lugar = event.target.value
     if (lugar.trim().length >= 5) {
@@ -63,13 +64,13 @@ export class EditDialogComponent implements OnInit {
           placesSubscription.unsubscribe()
         })
     }
-
   }
 
   get f() {
     return this.edBranchForm.controls
   }
 
+  //OBTENER LA UBICACIÓN ACTUAL
   setCurrentLocation(checked) {
     if (!checked) {
       if (navigator.geolocation) {
@@ -89,6 +90,7 @@ export class EditDialogComponent implements OnInit {
 
   }
 
+  //COMUNICACIÓN CON LA API PARA RALIZAR LA MODIFICACIÓN
   submitEditBranch() {
     if (this.edBranchForm.valid) {
       this.loaders.loadingSubmit = true

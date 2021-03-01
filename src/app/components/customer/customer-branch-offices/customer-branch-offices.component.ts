@@ -76,6 +76,7 @@ export class CustomerBranchOfficesComponent implements OnInit {
     this.loadData()
   }
 
+  //COMUNICACIÓN CON LA API PARA CARGAR LOS DATOS NECESARIOS
   loadData() {
     this.loaders.loadingData = true
     const branchesSubscription = this.branchService.getBranchOffices().subscribe(response => {
@@ -86,6 +87,7 @@ export class CustomerBranchOfficesComponent implements OnInit {
     })
   }
 
+  //MOSTRAR EL FORMULARIO DE EDICIÓN
   showEditForm(id) {
     let currBranch: Branch = {}
     this.myBranchOffices.forEach(value => {
@@ -118,6 +120,7 @@ export class CustomerBranchOfficesComponent implements OnInit {
     location.reload(true)
   }
 
+  //MOSTRAR CONFIRMACIÓN DE ELIMINACIÓN
   showConfirmDelete(id) {
     let currBranch: Branch = {}
 
@@ -130,8 +133,14 @@ export class CustomerBranchOfficesComponent implements OnInit {
     this.confMsg = '¿Estás seguro de eliminar la dirección ' + currBranch.nomSucursal + '?'
     this.openConfirmDialog(id, this.confMsg)
   }
-  showNewForm(){
-    const dialogRef = this.dialog.open(CustomerNewBranchComponent)
+
+  openConfirmDialog(id, msg) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        branchToDelete: id,
+        confMsg: msg
+      }
+    })
 
     dialogRef.afterClosed().subscribe(result =>{
       if(result){
@@ -144,13 +153,9 @@ export class CustomerBranchOfficesComponent implements OnInit {
     })
   }
 
-  openConfirmDialog(id, msg) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        branchToDelete: id,
-        confMsg: msg
-      }
-    })
+  //MOSTRAR FORMULARIO PARA AGREGAR REGISTRO
+  showNewForm(){
+    const dialogRef = this.dialog.open(CustomerNewBranchComponent)
 
     dialogRef.afterClosed().subscribe(result =>{
       if(result){

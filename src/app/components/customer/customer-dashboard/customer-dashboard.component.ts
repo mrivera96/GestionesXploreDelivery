@@ -1,15 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { trigger, transition, style, animate } from '@angular/animations';
-import { DeliveriesService } from 'src/app/services/deliveries.service';
-import { Order } from 'src/app/models/order';
-import { DataTableDirective } from 'angular-datatables';
-import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
-import { formatDate } from '@angular/common';
-import {LockedUserDialogComponent} from '../../shared/locked-user-dialog/locked-user-dialog.component';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {trigger, transition, style, animate} from '@angular/animations';
+import {DeliveriesService} from 'src/app/services/deliveries.service';
+import {Order} from 'src/app/models/order';
+import {DataTableDirective} from 'angular-datatables';
+import {ErrorModalComponent} from '../../shared/error-modal/error-modal.component';
+import {formatDate} from '@angular/common';
 import {AuthService} from '../../../services/auth.service';
 import {MatDialog} from '@angular/material/dialog';
 import {UsersService} from '../../../services/users.service';
 import {Customer} from '../../../models/customer';
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import {Subject} from "rxjs";
 
 @Component({
   selector: 'app-customer-dashboard',
@@ -39,29 +40,29 @@ export class CustomerDashboardComponent implements OnInit {
   dtOptions: DataTables.Settings
   @ViewChild(DataTableDirective, {static: false})
   datatableElement: DataTableDirective
-  dialog: any;
   currentCustomer: Customer = {}
   customerBalance: number
   lockedUser = false
+  dtTrigger: Subject<any>
 
   constructor(
     private deliveriesService: DeliveriesService,
     public matDialog: MatDialog,
     private authService: AuthService,
     private userService: UsersService
-
   ) {
     this.currentCustomer = authService.currentUserValue.cliente
   }
 
   ngOnInit(): void {
-    this.initialize()
     this.checkCustomer()
     this.loadData()
+    this.initialize()
   }
 
-  initialize(){
-    this.dtOptions =  {
+  initialize() {
+    this.dtTrigger = new Subject<any>()
+    this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
       serverSide: false,
@@ -88,8 +89,9 @@ export class CustomerDashboardComponent implements OnInit {
     }
   }
 
-  loadData(){
-    this.loaders.loadingData = true
+  //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
+  loadData() {
+    this.openLoader()
     const dashboardDataSubscription = this.deliveriesService.getCustomerDashboardData().subscribe(response => {
       this.finishedOrders = response.finishedOrdersCount
       this.actualBalance = response.actualBalance
@@ -101,14 +103,16 @@ export class CustomerDashboardComponent implements OnInit {
         order.delivery.fechaReserva = formatDate(new Date(order.delivery.fechaReserva), 'yyyy-MM-dd HH:mm', 'en')
       })
 
-      this. loaders.loadingData = false
+      this.matDialog.closeAll()
+      this.dtTrigger.next()
       dashboardDataSubscription.unsubscribe()
-    },error => {
-      if(error.subscribe()){
+    }, error => {
+      this.matDialog.closeAll()
+      if (error.subscribe()) {
         error.subscribe(error => {
           this.openErrorDialog(error.statusText, true)
         })
-      }else{
+      } else {
         this.openErrorDialog(error, true)
       }
     })
@@ -116,13 +120,13 @@ export class CustomerDashboardComponent implements OnInit {
   }
 
   openErrorDialog(error: string, reload: boolean): void {
-    const dialog = this.dialog.open(ErrorModalComponent, {
+    const dialog = this.matDialog.open(ErrorModalComponent, {
       data: {
         msgError: error
       }
     })
 
-    if(reload){
+    if (reload) {
       dialog.afterClosed().subscribe(result => {
         this.loaders.loadingData = true
         this.ngOnInit
@@ -132,7 +136,6 @@ export class CustomerDashboardComponent implements OnInit {
   }
 
   checkCustomer() {
-    this.loaders.loadingData = true
     const usrsSubs = this.userService
       .checkCustomerAvalability()
       .subscribe(response => {
@@ -143,6 +146,8 @@ export class CustomerDashboardComponent implements OnInit {
       })
   }
 
-
+  openLoader() {
+    this.matDialog.open(LoadingDialogComponent)
+  }
 
 }

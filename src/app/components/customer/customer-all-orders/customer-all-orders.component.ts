@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-customer-all-orders',
@@ -21,16 +23,19 @@ export class CustomerAllOrdersComponent implements OnInit {
   }
 
   constructor(
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-    this.loaders.loadingData = true
+    this.openLoader()
   }
 
   setLoading(event) {
-    this.loaders.loadingData = event
+    this.dialog.closeAll()
   }
 
-
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
+  }
 
 }

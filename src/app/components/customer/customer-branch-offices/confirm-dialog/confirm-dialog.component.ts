@@ -27,6 +27,7 @@ export class ConfirmDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  //COMUNICACIÓN CON LA API PARA ELIMINAR EL REGISTRO
   deleteBranch() {
     const branchesSubscription = this.branchService.deleteBranch(this.branchToDelete).subscribe(response => {
         this.loaders.loadingSubmit = false
