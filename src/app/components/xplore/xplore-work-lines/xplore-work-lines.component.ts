@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { WorkLine } from 'src/app/models/work-line';
 import { WorkLinesService } from 'src/app/services/work-lines.service';
 import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 import { EditWorklineDialogComponent } from './edit-workline-dialog/edit-workline-dialog.component';
 import { NewWorklineDialogComponent } from './new-workline-dialog/new-workline-dialog.component';
 
@@ -76,11 +77,11 @@ export class XploreWorkLinesComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const worklineSubscription = this.worklinesService.getAllWorkLines()
       .subscribe(response => {
         this.workLines = response.data
-        this.loaders.loadingData = false
+        this.dialog.closeAll()
         this.dtTrigger.next()
         worklineSubscription.unsubscribe()
       })
@@ -143,6 +144,10 @@ export class XploreWorkLinesComponent implements OnInit {
       })
     }
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 

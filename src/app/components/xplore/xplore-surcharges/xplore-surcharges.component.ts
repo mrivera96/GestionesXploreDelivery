@@ -10,6 +10,7 @@ import {NewSurchargeDialogComponent} from "./new-surcharge-dialog/new-surcharge-
 import {DataTableDirective} from "angular-datatables";
 import {RateCustomersDialogComponent} from "../xplore-rates/rate-customers-dialog/rate-customers-dialog.component";
 import {SurchargeCustomersDialogComponent} from "./surcharge-customers-dialog/surcharge-customers-dialog.component";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-surcharges',
@@ -75,13 +76,13 @@ export class XploreSurchargesComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     this.surchargesService.getSurcharges().subscribe(response => {
       this.surcharges = response.data
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.dtTrigger.next()
     }, error => {
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.openErrorDialog("Lo sentimos, ha ocurrido un error al cargar los datos de recargos. Al dar clic en Aceptar, volveremos a intentarlo", true)
     })
 
@@ -146,6 +147,10 @@ export class XploreSurchargesComponent implements OnInit {
         surchargeId: id
       }
     })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

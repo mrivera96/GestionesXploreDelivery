@@ -6,6 +6,7 @@ import {SchedulesService} from "../../../services/schedules.service";
 import {Schedule} from "../../../models/schedule";
 import {MatDialog} from "@angular/material/dialog";
 import {EditScheduleDialogComponent} from "./edit-schedule-dialog/edit-schedule-dialog.component";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-schedule',
@@ -71,11 +72,11 @@ export class XploreScheduleComponent implements OnInit {
   }
 
   loadData(){
-    this.loaders.loadingData = true
+    this.openLoader()
     this.schedulesService.getSchedule().subscribe(response => {
       this.schedules = response.data
       this.dtTrigger.next()
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
     })
   }
 
@@ -95,5 +96,9 @@ export class XploreScheduleComponent implements OnInit {
           })
       }
     })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 }

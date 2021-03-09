@@ -10,6 +10,7 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import { AgenciesService } from "../../../services/agencies.service";
 import { City } from "../../../models/city";
 import { DriverCategoriesComponent } from './driver-categories/driver-categories.component';
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-drivers',
@@ -73,13 +74,13 @@ export class XploreDriversComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     this.agenciesService.getCities().subscribe(response => {
       this.cities = response.data
     })
     this.usersService.getDrivers().subscribe(response => {
       this.drivers = response.data
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.dtTrigger.next()
 
       this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -154,6 +155,10 @@ export class XploreDriversComponent implements OnInit {
       }*/
       dialogRef.close()
     })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

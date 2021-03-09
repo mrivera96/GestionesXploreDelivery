@@ -11,6 +11,7 @@ import {Delivery} from "../../../models/delivery";
 import {Payment} from "../../../models/payment";
 import { Router } from '@angular/router';
 import {CustomerWorkLinesComponent} from "./customer-work-lines/customer-work-lines.component";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-customers',
@@ -78,12 +79,12 @@ export class XploreCustomersComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
 
     const usersSubscription = this.usersService.getCustomers().subscribe(response => {
       this.customers = response.data
 
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.dtTrigger.next()
       this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
 
@@ -161,6 +162,10 @@ export class XploreCustomersComponent implements OnInit {
           })
       }
     })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

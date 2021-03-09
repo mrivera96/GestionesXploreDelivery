@@ -5,6 +5,8 @@ import {Order} from "../../../models/order";
 import {ActivatedRoute} from "@angular/router";
 import {UsersService} from "../../../services/users.service";
 import {Customer} from "../../../models/customer";
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 
 @Component({
@@ -37,7 +39,8 @@ export class XploreCustomerBalanceComponent implements OnInit {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private usersService: UsersService
+    private usersService: UsersService,
+    public dialog: MatDialog
   ) {
     this.activatedRoute.paramMap.subscribe(params => {
       this.customerId = Number(params.get("id"));
@@ -82,7 +85,7 @@ export class XploreCustomerBalanceComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const balanceSubscription = this.usersService.getCustomerBalance(this.customerId).subscribe(response => {
       this.myPayments = response.payments
       this.paid = response.paid
@@ -95,10 +98,14 @@ export class XploreCustomerBalanceComponent implements OnInit {
       this.dtTrigger.next()
       this.dtTrigger1.next()
      
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       balanceSubscription.unsubscribe
     })
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

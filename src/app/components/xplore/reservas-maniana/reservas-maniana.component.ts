@@ -3,6 +3,8 @@ import {Delivery} from "../../../models/delivery";
 import {Subject} from "rxjs";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {animate, style, transition, trigger} from "@angular/animations";
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-reservas-maniana',
@@ -24,14 +26,20 @@ export class ReservasManianaComponent implements OnInit {
     loadingData: false
   }
 
-  constructor() { }
+  constructor(
+    public dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
-    this.loaders.loadingData = true
+    this.openLoader()
   }
 
   setLoading(event) {
-    this.loaders.loadingData = event
+    this.dialog.closeAll()
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

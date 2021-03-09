@@ -5,12 +5,7 @@
   </mat-card-header>
   <!-- CARD BODY START -->
   <mat-card-content>
-    <div class="row" *ngIf="loaders.loadingData">
-      <div class="col text-center">
-        <img src="assets/img/loading.svg" width="5%" alt="loading">
-        <p>Cargando información...</p>
-      </div>
-    </div>
+
     <!-- DATATABLE START -->
     <app-customer-datatable [deliveries]="1" (loadingData)="setLoading($event)"></app-customer-datatable>
     <!-- DATATABLE END -->

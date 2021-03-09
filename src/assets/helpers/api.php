@@ -2261,18 +2261,20 @@ if (isset($_GET['function'])) {
         $output = curl_exec($handle);
         curl_close($handle);
     } else if ($_POST['function'] == 'optimizeRoutes') {
-        $handle = curl_init();
-        $routes = curl_escape($handle, $_POST['routes'] );
 
-        $url = "http://190.4.56.14/GoogleApi/routes.php?routes=".$routes;
+              $handle = curl_init();
+                     $routes = curl_escape($handle, $_POST['routes'] );
 
-        // Set the url
-        curl_setopt($handle, CURLOPT_URL, $url);
+                     $url = "http://190.4.56.14/GoogleApi/routes.php?routes=".$routes;
 
-        //curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
-        /* set return type json */
+                     // Set the url
+                     curl_setopt($handle, CURLOPT_URL, $url);
 
-        $output = curl_exec($handle);
-        curl_close($handle);
+                     //curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+                     /* set return type json */
+
+                     $output = curl_exec($handle);
+                     curl_close($handle);
+
          }
 }

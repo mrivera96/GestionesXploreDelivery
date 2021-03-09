@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
-import {Subject} from "rxjs";
-import {AuthService} from "../../../services/auth.service";
-import {DeliveriesService} from "../../../services/deliveries.service";
 import {Delivery} from "../../../models/delivery";
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 declare var $: any
 
 @Component({
@@ -21,12 +20,10 @@ declare var $: any
 })
 export class HomeCustomerComponent implements OnInit {
 
-  loaders = {
-    'loadingData': false
-  }
   msgError = ''
 
   constructor(
+    private dialog: MatDialog,
   ) {
 
   }
@@ -34,11 +31,15 @@ export class HomeCustomerComponent implements OnInit {
   deliveries: Delivery[]
 
   ngOnInit(): void {
-    this.loaders.loadingData = true
+    this.openLoader()
   }
 
   setLoading(event) {
-    this.loaders.loadingData = event
+    this.dialog.closeAll()
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

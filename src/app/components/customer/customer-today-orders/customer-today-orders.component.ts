@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
-import {Subject} from "rxjs";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import { Order } from "../../../models/order";
-declare var $: any
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 @Component({
   selector: 'app-customer-today-orders',
   templateUrl: './customer-today-orders.component.html',
@@ -24,15 +22,19 @@ export class CustomerTodayOrdersComponent implements OnInit {
 
 
   constructor(
-    private deliveriesService: DeliveriesService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
-    this.loaders.loadingData = true
+    this.openLoader()
   }
 
 
   setLoading(event) {
-    this.loaders.loadingData = event
+    this.dialog.closeAll()
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 }

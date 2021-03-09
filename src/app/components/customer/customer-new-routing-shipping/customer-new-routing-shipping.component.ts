@@ -399,49 +399,66 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   //CALCULA LA DISTANCIA PARA PREVISUALIZACIÓN
   calculatedistanceBefore() {
-    this.directionsRenderer.setMap(null);
-    if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
-      this.loaders.loadingDistBef = true;
-      let ordersCount = this.orders.length + 1;
-      //
-      this.calculateRate(ordersCount);
+    if(this.selectedCategory.idCategoria){
+      this.directionsRenderer.setMap(null);
+      if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
+        this.loaders.loadingDistBef = true;
+        let ordersCount = this.orders.length + 1;
+        //
+        this.calculateRate(ordersCount);
 
-      const distSubs = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'calculateDistance',
-        salida: this.deliveryForm.get('order.direccion').value,
-        entrega: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
-        tarifa: this.pago.baseRate
-      }).subscribe((response) => {
-
-        const finalDistance = Number(response.distancia.split(' ')[0]);
-        let salida = '';
-        const entrega = this.newForm.get('order.direccion').value;
-        let tarifa = this.pago.baseRate;
-
-        if (this.orders.length > 0) {
-          salida = this.orders[this.orders.length - 1].direccion;
-        } else {
-          salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value;
-        }
-
-        const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        const distSubs = this.http.post<any>(`${environment.apiUrl}`, {
           function: 'calculateDistance',
-          salida: salida,
-          entrega: entrega,
-          tarifa: tarifa
+          salida: this.deliveryForm.get('order.direccion').value,
+          entrega: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
+          tarifa: this.pago.baseRate
         }).subscribe((response) => {
-          this.loaders.loadingDistBef = false;
-          this.befDistance = response.distancia;
 
-          const calculatedPayment = this.calculateOrderPayment();
-          this.befTime = response.tiempo;
-          this.befCost = calculatedPayment.total;
-          this.placesOrigin = [];
-          this.placesDestination = [];
+          const finalDistance = Number(response.distancia.split(' ')[0]);
+          let salida = '';
+          const entrega = this.newForm.get('order.direccion').value;
+          let tarifa = this.pago.baseRate;
 
-          this.directionsRenderer.setMap(this.googleMap._googleMap);
-          this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer);
-          distanceSubscription.unsubscribe();
+          if (this.orders.length > 0) {
+            salida = this.orders[this.orders.length - 1].direccion;
+          } else {
+            salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value;
+          }
+
+          const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+            function: 'calculateDistance',
+            salida: salida,
+            entrega: entrega,
+            tarifa: tarifa
+          }).subscribe((response) => {
+            this.loaders.loadingDistBef = false;
+            this.befDistance = response.distancia;
+
+            const calculatedPayment = this.calculateOrderPayment();
+            this.befTime = response.tiempo;
+            this.befCost = calculatedPayment.total;
+            this.placesOrigin = [];
+            this.placesDestination = [];
+
+            this.directionsRenderer.setMap(this.googleMap._googleMap);
+            this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer);
+            distanceSubscription.unsubscribe();
+          }, error => {
+            if (error.subscribe()) {
+              error.subscribe(error => {
+                this.prohibitedDistanceMsg = error.statusText;
+                this.prohibitedDistance = true;
+                this.loaders.loadingDistBef = false;
+                setTimeout(() => {
+                  this.prohibitedDistance = false;
+                }, 2000);
+              });
+            }
+            distanceSubscription.unsubscribe();
+
+          });
+
+          distSubs.unsubscribe();
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
@@ -453,25 +470,10 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
               }, 2000);
             });
           }
-          distanceSubscription.unsubscribe();
 
         });
 
-        distSubs.unsubscribe();
-      }, error => {
-        if (error.subscribe()) {
-          error.subscribe(error => {
-            this.prohibitedDistanceMsg = error.statusText;
-            this.prohibitedDistance = true;
-            this.loaders.loadingDistBef = false;
-            setTimeout(() => {
-              this.prohibitedDistance = false;
-            }, 2000);
-          });
-        }
-
-      });
-
+      }
     }
 
   }
@@ -1197,7 +1199,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       orderArray = orderArray + JSON.stringify(orderObject)  + ','
     })
     orderArray = orderArray + JSON.stringify(originAddress)  + ']'
-    this.loaders.loadingOptimizing = true
+    //this.loaders.loadingOptimizing = true
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
       .subscribe(response => {
         const optimizedRouteOrder: any[] = response.route

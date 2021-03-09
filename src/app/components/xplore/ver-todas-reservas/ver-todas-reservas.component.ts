@@ -8,6 +8,8 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DataTableDirective} from "angular-datatables";
 import {State} from "../../../models/state";
 import {formatDate} from "@angular/common";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-ver-todas-reservas',
@@ -43,9 +45,9 @@ export class VerTodasReservasComponent implements OnInit {
     private deliveriesService: DeliveriesService,
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
+    public dialog: MatDialog
   ) {
   }
-
 
   ngOnInit(): void {
     this.initialize()
@@ -62,14 +64,14 @@ export class VerTodasReservasComponent implements OnInit {
     })
 
     if (this.initDate == true) {
-      this.loaders.loadingData = true
+      this.openLoader()
       const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
         this.states = response.data.xploreDelivery
         deliveriesSubscription.unsubscribe()
       })
       const serviceSubscription = this.deliveriesService.getFilteredDeliveries(this.consultForm.value)
         .subscribe(response => {
-          this.loaders.loadingData = false
+          this.dialog.closeAll()
           this.deliveries = response.data
           this.deliveries.forEach(delivery => {
             delivery.entregas = delivery.detalle.length
@@ -135,5 +137,9 @@ export class VerTodasReservasComponent implements OnInit {
       this.router.navigate(['/admins/reservas-todas', this.consultForm.get('initDate').value,
         this.consultForm.get('finDate').value])
     }
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 }

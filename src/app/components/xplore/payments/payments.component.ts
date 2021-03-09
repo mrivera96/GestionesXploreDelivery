@@ -6,6 +6,7 @@ import {DataTableDirective} from "angular-datatables";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {MatDialog} from "@angular/material/dialog";
 import {AddPaymentDialogComponent} from "./add-payment-dialog/add-payment-dialog.component";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-payments',
@@ -69,10 +70,10 @@ export class PaymentsComponent implements OnInit {
   }
 
   loadData(){
-    this.loaders.loadingData = true
+    this.openLoader()
     const paymentsSubscription = this.paymentsService.getPayments().subscribe(response => {
       this.payments = response.data
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.dtTrigger.next()
       paymentsSubscription.unsubscribe()
     })
@@ -95,6 +96,10 @@ export class PaymentsComponent implements OnInit {
 
   showEditForm(id){
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

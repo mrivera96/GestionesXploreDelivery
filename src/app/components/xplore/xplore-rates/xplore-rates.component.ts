@@ -15,6 +15,7 @@ import {NewRateDialogComponent} from "./new-rate-dialog/new-rate-dialog.componen
 import {DataTableDirective} from "angular-datatables";
 import {RateCustomersDialogComponent} from "./rate-customers-dialog/rate-customers-dialog.component";
 import {ConsolidatedRateDetailsComponent} from "./consolidated-rate-details/consolidated-rate-details.component";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 
 @Component({
@@ -88,10 +89,10 @@ export class XploreRatesComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const ratesSubscription = this.ratesService.getRates().subscribe(response => {
       this.rates = response.data
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.dtTrigger.next()
       ratesSubscription.unsubscribe()
     })
@@ -194,6 +195,10 @@ export class XploreRatesComponent implements OnInit {
       }
 
     })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

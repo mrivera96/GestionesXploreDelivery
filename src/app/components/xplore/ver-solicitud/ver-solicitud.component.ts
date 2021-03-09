@@ -14,6 +14,7 @@ import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-ph
 import {OrderDetailDialogComponent} from "../../shared/order-detail-dialog/order-detail-dialog.component";
 import {User} from "../../../models/user";
 import {AuthService} from "../../../services/auth.service";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -86,11 +87,12 @@ export class VerSolicitudComponent implements OnInit {
   }
 
   loadData() {
+    this.openLoader()
     const deliveriesSubscription = this.deliveriesService.getById(this.deliveryId).subscribe(response => {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
       this.dtTrigger.next()
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
 
       const state = response.data.idEstado
 
@@ -100,7 +102,7 @@ export class VerSolicitudComponent implements OnInit {
       deliveriesSubscription.unsubscribe()
 
     }, error => {
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.openErrorDialog("Lo sentimos, ha ocurrido un error al cargar los datos de esta reservación. Al dar clic en Aceptar, volveremos a intentarlo", true)
       deliveriesSubscription.unsubscribe()
     })
@@ -184,6 +186,10 @@ export class VerSolicitudComponent implements OnInit {
           })
       }
     })*/
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

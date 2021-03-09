@@ -5,6 +5,8 @@ import {Subject} from "rxjs";
 import {animate, style, transition, trigger} from "@angular/animations";
 import {DataTableDirective} from "angular-datatables";
 import {Router} from "@angular/router";
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-pending-deliveries',
@@ -35,7 +37,8 @@ export class PendingDeliveriesComponent implements OnInit {
 
   constructor(
     private deliveriesService: DeliveriesService,
-    private router: Router
+    private router: Router,
+    public dialog: MatDialog
   ) {
   }
 
@@ -103,7 +106,7 @@ export class PendingDeliveriesComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const deliveriesSubscription = this.deliveriesService.getPending().subscribe(response => {
       response.data.forEach(value => {
         if (value.isConsolidada == 0) {
@@ -115,7 +118,7 @@ export class PendingDeliveriesComponent implements OnInit {
       this.dtTrigger.next()
       this.dtTrigger1.next()
 
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
 
       deliveriesSubscription.unsubscribe()
 
@@ -124,6 +127,10 @@ export class PendingDeliveriesComponent implements OnInit {
 
   ngOnDestroy() {
     clearInterval(this.interval);
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 

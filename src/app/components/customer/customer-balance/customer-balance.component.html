@@ -88,15 +88,8 @@
       <mat-tab label="Envíos Pagados">
         <div class="container-fluid pt-0 pb-0 mt-0 mb-0">
 
-          <div class="row" *ngIf="loaders.loadingData">
-            <div class="col text-center">
-              <img src="assets/img/loading.svg" width="5%" alt="loading">
-              <p>Cargando información...</p>
-            </div>
-          </div>
 
-          <mat-card class="shadow mb-3  text-white text-center" style="background-color: #0277bd"
-                    *ngIf="!loaders.loadingData">
+          <mat-card class="shadow mb-3  text-white text-center" style="background-color: #0277bd">
             <mat-card-content>
               <h2>Sub-Total: L. {{subtotal}} </h2>
               <h2>Pago Realizado: L. {{paid}} </h2>
