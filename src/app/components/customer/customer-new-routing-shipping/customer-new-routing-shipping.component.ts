@@ -581,23 +581,33 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   //CALCULA LA DISTANCIA PARA AGREGAR EL ENVÍO
   calculateDistance() {
-    let salida = '';
-    let entrega = '';
-    const tarifa = this.pago.baseRate;
+    let salida = ''
+    let entrega = ''
+    const tarifa = this.pago.baseRate
+
     if (this.orders.length > 0) {
-      salida = this.orders[this.orders.length - 1].direccion;
-      entrega = this.currOrder.direccion;
+      salida = this.orders[this.orders.length - 1].direccion
+      entrega = this.currOrder.direccion
     } else {
-      salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value;
-      entrega = this.currOrder.direccion;
+      salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value
+      entrega = this.currOrder.direccion
 
       const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         function: 'getCoords',
         lugar: salida,
       }).subscribe((response) => {
         this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ',' + response[0].lng);
-        cordsSubscription.unsubscribe();
-      });
+        cordsSubscription.unsubscribe()
+      }, error => {
+        const cordsSubscription1 = this.http.post<any>(`${environment.apiUrl}`, {
+          function: 'getCoords',
+          lugar: salida,
+        }).subscribe((response) => {
+          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ',' + response[0].lng);
+          cordsSubscription1.unsubscribe()
+          cordsSubscription.unsubscribe()
+        })
+      })
     }
 
     const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
@@ -605,98 +615,108 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       lugar: entrega,
     }).subscribe((response) => {
       this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
-      const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'calculateDistance',
-        salida: salida,
-        entrega: entrega,
-        tarifa: tarifa
-      }).subscribe(response => {
+      cordsSubscription.unsubscribe()
+    }, error => {
+      const cordsSubscription1 = this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCoords',
+        lugar: entrega,
+      }).subscribe((response) => {
+        this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
+        cordsSubscription1.unsubscribe()
+        cordsSubscription.unsubscribe();
+      });
+    })
 
-        this.currOrder.distancia = response.distancia
-        this.currOrder.tiempo = response.tiempo
-        const calculatedPayment = this.calculateOrderPayment()
-        this.currOrder.tarifaBase = calculatedPayment.baseRate
-        this.currOrder.recargo = calculatedPayment.surcharges
-        this.currOrder.cargosExtra = calculatedPayment.cargosExtra
-        this.currOrder.cTotal = calculatedPayment.total
+    const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'calculateDistance',
+      salida: salida,
+      entrega: entrega,
+      tarifa: tarifa
+    }).subscribe(response => {
 
-        this.deliveryForm.get('order').reset()
-        this.orders.push(this.currOrder)
-        this.pagos.push(calculatedPayment)
-        this.newForm.get('deliveryHeader.idCategoria').disable()
-        this.newForm.get('deliveryHeader.dirRecogida').disable()
-        this.newForm.get('deliveryHeader.fecha').disable()
-        const cumulativeDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value)
-        const currentDistance = Number(this.currOrder.distancia.split(" ")[0])
-        const nDistance = cumulativeDistance + currentDistance
-        this.deliveryForm.get('deliveryHeader.distancia').setValue(nDistance)
+      this.currOrder.distancia = response.distancia
+      this.currOrder.tiempo = response.tiempo
+      const calculatedPayment = this.calculateOrderPayment()
+      this.currOrder.tarifaBase = calculatedPayment.baseRate
+      this.currOrder.recargo = calculatedPayment.surcharges
+      this.currOrder.cargosExtra = calculatedPayment.cargosExtra
+      this.currOrder.cTotal = calculatedPayment.total
 
-        this.currOrder = {
-          extras: [] = []
-        }
-        this.befDistance = 0
-        this.befTime = 0
-        this.befCost = 0
+      this.deliveryForm.get('order').reset()
+      this.orders.push(this.currOrder)
+      this.pagos.push(calculatedPayment)
+      this.newForm.get('deliveryHeader.idCategoria').disable()
+      this.newForm.get('deliveryHeader.dirRecogida').disable()
+      this.newForm.get('deliveryHeader.fecha').disable()
+      const cumulativeDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value)
+      const currentDistance = Number(this.currOrder.distancia.split(" ")[0])
+      const nDistance = cumulativeDistance + currentDistance
+      this.deliveryForm.get('deliveryHeader.distancia').setValue(nDistance)
 
-        if (this.orders.length > 1) {
+      this.currOrder = {
+        extras: [] = []
+      }
+      this.befDistance = 0
+      this.befTime = 0
+      this.befCost = 0
+
+      if (this.orders.length > 1) {
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.dtTrigger.next()
+          })
+      } else {
+        if (this.dtElement.dtInstance) {
           this.dtElement.dtInstance.then(
             (dtInstance: DataTables.Api) => {
               dtInstance.destroy()
               this.dtTrigger.next()
             })
         } else {
-          if (this.dtElement.dtInstance) {
-            this.dtElement.dtInstance.then(
-              (dtInstance: DataTables.Api) => {
-                dtInstance.destroy()
-                this.dtTrigger.next()
-              })
-          } else {
-            this.dtTrigger.next()
-          }
-
+          this.dtTrigger.next()
         }
 
-        this.agregado = true
-        setTimeout(() => {
-          this.agregado = false;
-        }, 2000)
+      }
 
-        this.orders.forEach(value => {
-          if (value.tarifaBase != this.pago.baseRate) {
-            const nPay = this.calculateOrderPayment()
-            let i = this.orders.indexOf(value)
-            value.tarifaBase = this.pago.baseRate
-            value.cargosExtra = nPay.cargosExtra
-            value.recargo = nPay.surcharges
-            value.cTotal = nPay.total
-            this.pagos[i].baseRate = nPay.baseRate
-            if (this.pago[i]?.cargosExtra) {
-              this.pago[i].cargosExtra = nPay.cargosExtra
-            }
+      this.agregado = true
+      setTimeout(() => {
+        this.agregado = false;
+      }, 2000)
 
-            this.pagos[i].surcharges = nPay.surcharges
-            this.pagos[i].total = nPay.total
+      this.orders.forEach(value => {
+        if (value.tarifaBase != this.pago.baseRate) {
+          const nPay = this.calculateOrderPayment()
+          let i = this.orders.indexOf(value)
+          value.tarifaBase = this.pago.baseRate
+          value.cargosExtra = nPay.cargosExtra
+          value.recargo = nPay.surcharges
+          value.cTotal = nPay.total
+          this.pagos[i].baseRate = nPay.baseRate
+          if (this.pago[i]?.cargosExtra) {
+            this.pago[i].cargosExtra = nPay.cargosExtra
           }
-        })
 
-        cDistanceSubscription.unsubscribe()
-        this.calculatePayment()
-
-      }, error => {
-
-        error.subscribe(error => {
-          this.prohibitedDistanceMsg = error.statusText
-          this.prohibitedDistance = true
-          this.loaders.loadingAdd = false
-          cDistanceSubscription.unsubscribe()
-          setTimeout(() => {
-            this.prohibitedDistance = false;
-          }, 2000)
-        })
-
+          this.pagos[i].surcharges = nPay.surcharges
+          this.pagos[i].total = nPay.total
+        }
       })
-      cordsSubscription.unsubscribe()
+
+      cDistanceSubscription.unsubscribe()
+      this.calculatePayment()
+
+    }, error => {
+
+      error.subscribe(error => {
+        this.prohibitedDistanceMsg = error.statusText
+        this.prohibitedDistance = true
+        this.dialog.closeAll()
+        cDistanceSubscription.unsubscribe()
+        setTimeout(() => {
+          this.prohibitedDistance = false;
+        }, 2000)
+      })
+
     })
 
   }
@@ -1161,24 +1181,24 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   //COMUNICACIÓN CON LA API RUTEADOR PARA EL REORDENADO DEL ARRAY DE ENVÍOS
   optimizeRoutes() {
-    let orderArray = []
+    let orderArray = '['
     const originAddress = {
       address: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
       lat: this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[0],
       lng: this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[1]
     }
-    orderArray.push(originAddress)
+    orderArray = orderArray + JSON.stringify(originAddress)  + ','
     this.orders.forEach(order => {
       const orderObject = {
         address: order.direccion,
         lat: order.coordsDestino.split(',')[0],
         lng: order.coordsDestino.split(',')[1]
       }
-      orderArray.push(orderObject)
+      orderArray = orderArray + JSON.stringify(orderObject)  + ','
     })
-    orderArray.push(originAddress)
+    orderArray = orderArray + JSON.stringify(originAddress)  + ']'
     this.loaders.loadingOptimizing = true
-    const optSubscription = this.deliveriesService.optimizeRoute(orderArray)
+    const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
       .subscribe(response => {
         const optimizedRouteOrder: any[] = response.route
         let totalDistance = 0
