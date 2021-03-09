@@ -10,6 +10,7 @@ import {EditExtraChargeDialogComponent} from "./edit-extra-charge-dialog/edit-ex
 import {NewExtraChargeDialogComponent} from "./new-extra-charge-dialog/new-extra-charge-dialog.component";
 import { ExtraChargeCategoriesComponent } from './extra-charge-categories/extra-charge-categories.component';
 import {ExtraChargesOptionsDialogComponent} from "./extra-charges-options-dialog/extra-charges-options-dialog.component";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-extra-charges',
@@ -76,10 +77,10 @@ export class ExtraChargesComponent implements OnInit {
   }
 
   loadData(){
-    this.loaders.loadingData = true
+    this.openLoader()
     const extraChargesSubscription = this.extraChargesService.getExtraCharges().subscribe(response => {
       this.extraCharges = response.data
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.dtTrigger.next()
       extraChargesSubscription.unsubscribe()
     })
@@ -153,6 +154,10 @@ export class ExtraChargesComponent implements OnInit {
         extraChargeId: id
       }
     })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

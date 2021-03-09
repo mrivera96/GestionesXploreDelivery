@@ -8,6 +8,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {EditCategoryDialogComponent} from "./edit-category-dialog/edit-category-dialog.component";
 import {NewCategoryDialogComponent} from "./new-category-dialog/new-category-dialog.component";
 import {DataTableDirective} from "angular-datatables";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-categories',
@@ -76,10 +77,10 @@ export class XploreCategoriesComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const categoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
       this.categories = response.data
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.dtTrigger.next()
       categoriesSubscription.unsubscribe()
     })
@@ -142,6 +143,10 @@ export class XploreCategoriesComponent implements OnInit {
       })
     }
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

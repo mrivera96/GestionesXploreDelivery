@@ -6,6 +6,7 @@ import {ReportRequestsService} from "../../../../services/report-requests.servic
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
 import {AddRequestsDialogComponent} from "./add-requests-dialog/add-requests-dialog.component";
+import {LoadingDialogComponent} from "../../../shared/loading-dialog/loading-dialog.component";
 
 @Component({
   selector: 'app-report-requests',
@@ -73,10 +74,10 @@ export class ReportRequestsComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const rRequestSubscription = this.reportRequestsService.getReportRequests().subscribe(response => {
       this.reportRequests = response.data
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.dtTrigger.next()
       rRequestSubscription.unsubscribe()
     })
@@ -94,6 +95,10 @@ export class ReportRequestsComponent implements OnInit {
           })
       }
     })
+  }
+
+  openLoader(){
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

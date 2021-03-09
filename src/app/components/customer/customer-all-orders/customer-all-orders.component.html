@@ -6,7 +6,126 @@
   <!-- INICIO CARD BODY -->
   <mat-card-content>
     <!-- INICIO DATATABLE -->
-    <app-orders-data-table [orders]="'customer-todos'" (loadingData)="setLoading($event)"></app-orders-data-table>
+    <div class="row">
+      <div class="col">
+        <form [formGroup]="consultForm">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Inicial:</mat-label>
+              <input matInput type="date" formControlName="initDate" required>
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Final:</mat-label>
+              <input matInput type="date" formControlName="finDate" required>
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <div class="form-row">
+            <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
+                    (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+              <mat-icon>search</mat-icon>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <hr>
+
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+             class="display compact" style="width:100%">
+        <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9'"></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <!--<th></th>
+          <th></th>
+          <th></th>
+          <th></th>-->
+          <th>
+            <select class="form-control-sm" name="search-last-name">
+              <option value="">- Filtrar por Estado -</option>
+              <option *ngFor="let state of states" [value]="state.descEstado">{{state.descEstado}}</option>
+              <option value="Solicitud de Reservación">Solicitud de Reservación</option>
+            </select>
+          </th>
+          <th></th>
+          <!--<th></th>-->
+          <th></th>
+        </tr>
+        </tfoot>
+        <thead>
+        <tr>
+          <th>N° Reserva</th>
+          <th>N° Envío</th>
+          <th *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9'">Cliente</th>
+          <th data-priority="1">Destinatario</th>
+          <th >Celular del Destinatario</th>
+          <th>Dirección</th>
+          <!--<th>Detalle</th>
+          <th>Distancia</th>
+          <th>Recargo</th>
+          <th>Cargos Extra</th>-->
+          <th>Costo Total</th>
+          <th>Estado</th>
+          <!--<th>Observaciones</th>-->
+          <th>Conductor</th>
+          <th data-priority="1">Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor=" let i = index;let order of orders;">
+          <td>{{order.idDelivery}}</td>
+          <td>{{order.idDetalle}}</td>
+          <td *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9'">{{order.delivery.nomCliente}}</td>
+          <td>{{order.nomDestinatario}}</td>
+          <td>{{order.numCel}}</td>
+          <td>{{order.direccion}}</td>
+          <!--<td>{{order.nFactura}}</td>
+          <td>{{order.distancia}}</td>
+          <td>L. {{order.recargo}}</td>
+          <td>L. {{order.cargosExtra}} {{order?.extra_charge?.nombre || ''}}</td>-->
+          <td>L. {{order.cTotal}}</td>
+          <td>{{order.estado.descEstado}} <p *ngIf="order.estado.idEstado == 44">Fecha: {{order.fechaEntrega}}</p></td>
+          <!--<td>{{order.observaciones || 'N/A'}}</td>-->
+          <td><p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
+            <p *ngIf="!order.conductor">Aún no asignada</p>
+          </td>
+          <td>
+            <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item *ngIf="order.photography.length > 0" type="button"
+                      (click)="openPhotosDialog(order.photography)">
+                <mat-icon>photo_camera</mat-icon>
+                <span>Ver Fotografías</span>
+              </button>
+
+              <button mat-menu-item type="button" (click)="showDetailDialog(order)">
+                <mat-icon>visibility</mat-icon>
+                Ver Detalles
+              </button>
+            </mat-menu>
+          </td>
+
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
     <!-- FIN DATATABLE -->
   </mat-card-content>
   <!-- FIN CARD BODY -->

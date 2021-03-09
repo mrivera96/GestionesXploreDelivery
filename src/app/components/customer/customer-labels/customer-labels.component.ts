@@ -11,6 +11,7 @@ import { ConfirmDialogComponent } from '../customer-branch-offices/confirm-dialo
 import { AddLabelComponent } from './add-label/add-label.component';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
 import { EditLabelComponent } from './edit-label/edit-label.component';
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
 
 @Component({
   selector: 'app-customer-labels',
@@ -73,17 +74,17 @@ export class CustomerLabelsComponent implements OnInit {
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const lblSubsc = this.labelsService.getMyLabels()
       .subscribe(response => {
         this.myLabels = response.data
-        this.loaders.loadingData = false
+        this.dialog.closeAll()
         this.bdtTrigger.next()
         lblSubsc.unsubscribe()
       }, error => {
         error.subscribe(error => {
+          this.dialog.closeAll()
           this.openErrorDialog(error.statusText, true)
-          this.loaders.loadingData = false
         })
       })
   }
@@ -180,6 +181,10 @@ export class CustomerLabelsComponent implements OnInit {
       })
     }
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

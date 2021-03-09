@@ -11,6 +11,7 @@ import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component"
 import {EditDialogComponent} from "./edit-dialog/edit-dialog.component";
 import {CustomerNewBranchComponent} from "../customer-new-branch/customer-new-branch.component";
 import {DataTableDirective} from "angular-datatables";
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
 
 @Component({
   selector: 'app-customer-branch-offices',
@@ -78,10 +79,10 @@ export class CustomerBranchOfficesComponent implements OnInit {
 
   //COMUNICACIÓN CON LA API PARA CARGAR LOS DATOS NECESARIOS
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const branchesSubscription = this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
-      this.loaders.loadingData = false
+      this.dialog.closeAll()
       this.bdtTrigger.next()
       branchesSubscription.unsubscribe()
     })
@@ -182,6 +183,10 @@ export class CustomerBranchOfficesComponent implements OnInit {
       })
     }
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

@@ -8,12 +8,6 @@
   </mat-card-header>
 
   <mat-card-content>
-    <div class="row" *ngIf="loaders.loadingData">
-      <div class="col text-center">
-        <img src="assets/img/loading.svg" width="5%" alt="loading">
-        <p>Cargando información...</p>
-      </div>
-    </div>
     <!-- DATATABLE START -->
     <app-orders-data-table [orders]="'xplore-hoy'" (loadingData)="setLoading($event)" ></app-orders-data-table>
     <!-- DATATABLE END -->

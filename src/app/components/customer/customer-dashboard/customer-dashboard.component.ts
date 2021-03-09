@@ -6,7 +6,7 @@ import {DataTableDirective} from 'angular-datatables';
 import {ErrorModalComponent} from '../../shared/error-modal/error-modal.component';
 import {formatDate} from '@angular/common';
 import {AuthService} from '../../../services/auth.service';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog} from "@angular/material/dialog";
 import {UsersService} from '../../../services/users.service';
 import {Customer} from '../../../models/customer';
 import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";

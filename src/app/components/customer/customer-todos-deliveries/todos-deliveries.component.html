@@ -5,14 +5,90 @@
   </mat-card-header>
   <!-- CARD BODY START -->
   <mat-card-content>
-    <div class="row" *ngIf="loaders.loadingData">
-      <div class="col text-center">
-        <img src="assets/img/loading.svg" width="5%" alt="loading">
-        <p>Cargando información...</p>
+
+    <div class="row">
+      <div class="col">
+        <form [formGroup]="consultForm">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Inicial:</mat-label>
+              <input matInput type="date" formControlName="initDate" required>
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Final:</mat-label>
+              <input matInput type="date" formControlName="finDate" required>
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <div class="form-row">
+            <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
+                    (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+              <mat-icon>search</mat-icon>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
+    <hr>
     <!-- DATATABLE START -->
-    <app-customer-datatable [deliveries]="2" (loadingData)="setLoading($event)" ></app-customer-datatable>
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+             class="display compact" style="width:100%">
+        <tfoot>
+        <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th>
+            <select class="form-control-sm" name="search-last-name">
+              <option value="">- Filtrar por Estado -</option>
+              <option *ngFor="let state of states" [value]="state.descEstado">{{state.descEstado}}</option>
+            </select>
+          </th>
+          <th></th>
+        </tr>
+        </tfoot>
+        <thead>
+        <tr>
+          <th data-priority="1">N°</th>
+          <th data-order="2020-06-01 16:30" data-priority="1">Fecha y hora de recogida</th>
+          <th>Dirección de recogida</th>
+          <th>Entregas</th>
+          <th>Categoría</th>
+          <th data-priority="1">Total</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let delivery of deliveries">
+          <td class="id">{{delivery.idDelivery}}</td>
+          <td>{{delivery.fechaReserva }}</td>
+          <td class="fId">{{delivery.dirRecogida}}</td>
+          <td>{{delivery.entregas}}</td>
+          <td>{{delivery.category.descCategoria}}</td>
+          <td>L. {{delivery.total}}</td>
+          <td>{{delivery.estado.descEstado}}</td>
+          <td>
+            <a [routerLink]="['/customers/ver-reserva', delivery.idDelivery]" style="color: #0071A2">
+              <i class="fa fa-eye"></i> Ver Detalle
+            </a>
+          </td>
+
+        </tr>
+        </tbody>
+      </table>
+    </div>
     <!-- DATATABLE END -->
   </mat-card-content>
   <!--CARD BODY END -->

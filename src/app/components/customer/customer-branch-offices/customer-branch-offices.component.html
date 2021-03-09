@@ -1,17 +1,11 @@
 <!-- INICIO CARD-->
+<script src="../customer-labels/customer-labels.component.ts"></script>
 <mat-card @fade>
   <mat-card-header>
     <mat-card-title>Mis Direcciones</mat-card-title>
   </mat-card-header>
   <!-- INICIO CARD BODY -->
   <mat-card-content>
-
-    <div class="row" *ngIf="loaders.loadingData">
-      <div class="col text-center">
-        <img src="assets/img/loading.svg" width="5%" alt="loading">
-        <p>Cargando información...</p>
-      </div>
-    </div>
 
     <div class="row justify-content-end">
       <div class="col">

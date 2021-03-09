@@ -14,6 +14,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { formatDate } from "@angular/common";
 import { ActivatedRoute, Router } from "@angular/router";
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 declare var $: any
 @Component({
   selector: 'app-xplore-all-orders',
@@ -105,7 +106,7 @@ export class XploreAllOrdersComponent implements OnInit {
     })
 
     if (this.initDate == true) {
-      this.loaders.loadingData = true
+      this.openLoader()
       const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
         this.states = response.data.xploreDeliveryEntregas
         deliveriesSubscription.unsubscribe()
@@ -129,12 +130,12 @@ export class XploreAllOrdersComponent implements OnInit {
             })
           })
         })
-        this.loaders.loadingData = false
+        this.dialog.closeAll()
 
         serviceSubscription.unsubscribe()
 
       }, error => {
-        this.loaders.loadingData = false
+        this.dialog.closeAll()
         this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
         this.openErrorDialog(this.msgError, true)
         serviceSubscription.unsubscribe()
@@ -201,6 +202,10 @@ export class XploreAllOrdersComponent implements OnInit {
       this.route.navigate(['/admins/envios-todos', this.consultForm.get('initDate').value,
         this.consultForm.get('finDate').value])
     }
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -19,21 +21,22 @@ export class HomeComponent implements OnInit {
     'loadingData': false
   }
 
-  constructor() {
+  constructor(
+    public dialog: MatDialog
+  ) {
 
   }
 
   ngOnInit(): void {
-    this.loadData()
-  }
-
-  loadData() {
-    this.loaders.loadingData = true
-
+    this.openLoader()
   }
 
   setLoading(event) {
-    this.loaders.loadingData = event
+    this.dialog.closeAll()
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

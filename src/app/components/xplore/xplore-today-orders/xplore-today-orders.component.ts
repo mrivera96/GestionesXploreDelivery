@@ -3,6 +3,8 @@ import {Subject} from "rxjs";
 import {Order} from "../../../models/order";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {animate, style, transition, trigger} from "@angular/animations";
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 declare var $: any
 @Component({
   selector: 'app-xplore-today-orders',
@@ -23,15 +25,19 @@ export class XploreTodayOrdersComponent implements OnInit {
   }
 
   constructor(
-
+    public dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-    this.loaders.loadingData = true
+    this.openLoader()
   }
 
   setLoading(event){
-    this.loaders.loadingData = event
+    this.dialog.closeAll()
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }
