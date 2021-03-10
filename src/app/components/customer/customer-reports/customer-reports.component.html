@@ -52,23 +52,26 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-12 mt-2">
-          <button class="float-right" [disabled]="consultResults.length == 0" mat-raised-button color="primary"
-                  (click)="generateExcel()">
-            Exportar a Excel
+      <div class="row mt-2">
+        <div class="col">
+          <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+            Menú de Opciones
+            <mat-icon>more_vert</mat-icon>
           </button>
+          <mat-menu #menu="matMenu">
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generatePDF()">
+              Exportar PDF
+            </button>
+
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generateExcel()">
+              Exportar a Excel
+            </button>
+          </mat-menu>
         </div>
       </div>
 
       <div class="row">
         <div class="col"><h2>Resumen - {{currenCustomer.nomEmpresa}}</h2></div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <p><strong>Envíos Totales: {{totalCustomerOrders}}</strong></p>
-        </div>
       </div>
 
       <div class="row">
@@ -79,40 +82,173 @@
 
       <div class="row">
         <div class="col">
-          <h3>Envíos por categoría</h3>
+          <h3>Envíos por fecha</h3>
         </div>
       </div>
 
-
       <div class="table-responsive">
 
-        <table datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+        <table class="table table-striped" style="width:100%">
           <thead>
           <tr>
-            <th>N°</th>
-            <th>Categoría</th>
-            <th>Envíos Realizados</th>
-            <th>Recargos</th>
-            <!--<th>Cargos Extra</th>-->
-            <th>Costos Totales</th>
+            <th></th>
+            <th style="text-align:center;" colspan="4">Transporte Turismo</th>
+
+            <th style="text-align:center; background-color: #e0e0e0" colspan="4">Moto</th>
+
+            <th style="text-align:center;" colspan="4">Turismo</th>
+
+            <th style="text-align:center; background-color: #e0e0e0" colspan="4">Pick-Up</th>
+
+            <th style="text-align:center;" colspan="4">Panel</th>
+
+            <th style="text-align:center; background-color: #e0e0e0" colspan="4">Pick-Up + Auxiliar</th>
+
+            <th style="text-align:center;" colspan="4">Panel + Auxiliar</th>
+
+            <th style="text-align:center; background-color: #e0e0e0" colspan="4">Camión 11 pies</th>
+
+            <th style="text-align:center; " colspan="4">Totales</th>
+
           </tr>
+
+          <tr>
+            <th style="text-align:center">Fecha</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Totales</th>
+
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Envíos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Recargos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Cargos Extra</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Totales</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Totales</th>
+
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Envíos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Recargos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Cargos Extra</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Totales</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Totales</th>
+
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Envíos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Recargos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Cargos Extra</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Totales</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Totales</th>
+
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Envíos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Recargos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Cargos Extra</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Totales</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Costos</th>
+          </tr>
+
           </thead>
+
           <tbody>
 
-          <tr *ngFor="let res of ordersByCategory; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{res?.category}}</td>
-            <td>{{res?.orders}}</td>
+          <tr *ngFor="let res of consultResults; let i = index">
+            <td>{{res.fecha}}</td>
+            <td>{{res?.transTurism}}</td>
+            <td>{{res?.transTurismRecargo}}</td>
+            <td>{{res?.transTurismcExtras}}</td>
+            <td>{{res?.transTurismcTotal}}</td>
+
+            <td>{{res?.moto}}</td>
+            <td>{{res?.motoRecargo}}</td>
+            <td>{{res?.motocExtras}}</td>
+            <td>{{res?.motocTotal}}</td>
+
+            <td>{{res?.turismo}}</td>
+            <td>{{res?.turismoRecargo}}</td>
+            <td>{{res?.turismocExtras}}</td>
+            <td>{{res?.turismocTotal}}</td>
+
+            <td>{{res?.pickup}}</td>
+            <td>{{res?.pickupRecargo}}</td>
+            <td>{{res?.pickupcExtras}}</td>
+            <td>{{res?.pickupcTotal}}</td>
+
+            <td>{{res?.panel}}</td>
+            <td>{{res?.panelRecargo}}</td>
+            <td>{{res?.panelcExtras}}</td>
+            <td>{{res?.panelcTotal}}</td>
+
+            <td>{{res?.pickupAuxiliar}}</td>
+            <td>{{res?.pickupAuxiliarRecargo}}</td>
+            <td>{{res?.pickupAuxiliarcExtras}}</td>
+            <td>{{res?.pickupAuxiliarcTotal}}</td>
+
+            <td>{{res?.panelAuxiliar}}</td>
+            <td>{{res?.panelAuxiliarRecargo}}</td>
+            <td>{{res?.panelAuxiliarcExtras}}</td>
+            <td>{{res?.panelAuxiliarcTotal}}</td>
+
+            <td>{{res?.camion11}}</td>
+            <td>{{res?.camion11Recargo}}</td>
+            <td>{{res?.camion11cExtras}}</td>
+            <td>{{res?.camion11cTotal}}</td>
+
+            <td>{{res?.totalOrders}}</td>
             <td>L. {{res?.totalSurcharges}}</td>
             <td>L. {{res?.totalExtraCharges}}</td>
-            <td>L. {{res?.cTotal}}</td>
+            <td>L. {{res?.totalCosts}}</td>
           </tr>
 
           </tbody>
           <tfoot style="display: table-footer-group;">
           <tr>
-            <th></th>
             <th>Total:</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
             <th data-priority="1">
               {{ordersInRange}}
             </th>
@@ -121,55 +257,10 @@
             <th>L. {{ totalCosts }}</th>
           </tr>
           </tfoot>
-
         </table>
       </div>
 
-
-      <div class="row">
-        <div class="col">
-          <h3>Envíos por fecha</h3>
-        </div>
-      </div>
-
-
-      <!-- CONTAINER BODY START -->
-      <div class="table-responsive">
-
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" class="display compact" style="width:100%">
-          <thead>
-
-          <tr>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Envíos Realizados</th>
-          </tr>
-
-          </thead>
-          <tbody>
-
-          <tr *ngFor="let result of consultResults">
-            <td>{{result.customer}}</td>
-            <td>{{result.fecha}}</td>
-            <td>{{result.orders}}</td>
-          </tr>
-
-
-          </tbody>
-          <tfoot style="display: table-footer-group;">
-          <tr>
-            <th></th>
-            <th>Total:</th>
-            <th data-priority="1">
-              {{ordersInRange}}
-            </th>
-          </tr>
-          </tfoot>
-
-        </table>
-      </div>
-
-
+      <br>
       <div class="row">
         <div class="col">
           <h3>Detalles de envíos</h3>
@@ -178,7 +269,7 @@
 
 
       <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2"
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
                class="display compact" style="width:100%">
           <thead>
           <tr>
@@ -225,7 +316,6 @@
       <!-- CONTAINER END -->
     </div>
     <!-- REPORT CONTAINER END -->
-
 
   </mat-card-content>
 </mat-card>

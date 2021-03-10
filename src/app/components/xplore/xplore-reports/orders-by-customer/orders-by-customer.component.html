@@ -85,175 +85,260 @@
       </div>
 
 
-        <div class="row">
-          <div class="col">
-            <h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2>
-          </div>
+      <div class="row">
+        <div class="col">
+          <h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col">
-            <p><strong>Envíos Totales: {{totalCustomerOrders}}</strong></p>
-          </div>
+      <div class="row">
+        <div class="col">
+          <h2>Envíos desde {{f.initDate.value}} hasta {{f.finDate.value}}</h2>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col">
-            <h2>Envíos desde {{f.initDate.value}} hasta {{f.finDate.value}}</h2>
-          </div>
+      <div class="row">
+        <div class="col">
+          <h3>Envíos por fecha</h3>
         </div>
+      </div>
 
-        <div class="row">
-          <div class="col">
-            <h3>Envíos por categoría</h3>
-          </div>
+      <div class="table-responsive">
+
+        <table class="table table-striped" style="width:100%">
+          <thead>
+          <tr>
+            <th></th>
+            <th style="text-align:center;" colspan="4">Transporte Turismo</th>
+
+            <th style="text-align:center; background-color: #e0e0e0" colspan="4">Moto</th>
+
+            <th style="text-align:center;" colspan="4">Turismo</th>
+
+            <th style="text-align:center; background-color: #e0e0e0" colspan="4">Pick-Up</th>
+
+            <th style="text-align:center;" colspan="4">Panel</th>
+
+            <th style="text-align:center; background-color: #e0e0e0" colspan="4">Pick-Up + Auxiliar</th>
+
+            <th style="text-align:center;" colspan="4">Panel + Auxiliar</th>
+
+            <th style="text-align:center; background-color: #e0e0e0" colspan="4">Camión 11 pies</th>
+
+            <th style="text-align:center; " colspan="4">Totales</th>
+
+          </tr>
+
+          <tr>
+            <th style="text-align:center">Fecha</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Totales</th>
+
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Envíos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Recargos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Cargos Extra</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Totales</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Totales</th>
+
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Envíos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Recargos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Cargos Extra</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Totales</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Totales</th>
+
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Envíos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Recargos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Cargos Extra</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Totales</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Totales</th>
+
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Envíos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Recargos</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Cargos Extra</th>
+            <th style="text-align:center; width: 5%; background-color: #e0e0e0">Totales</th>
+
+            <th style="text-align:center; width: 5%;">Envíos</th>
+            <th style="text-align:center; width: 5%;">Recargos</th>
+            <th style="text-align:center; width: 5%;">Cargos Extra</th>
+            <th style="text-align:center; width: 5%;">Costos</th>
+          </tr>
+
+          </thead>
+
+          <tbody>
+
+          <tr *ngFor="let res of consultResults; let i = index">
+            <td>{{res.fecha}}</td>
+            <td>{{res?.transTurism}}</td>
+            <td>{{res?.transTurismRecargo}}</td>
+            <td>{{res?.transTurismcExtras}}</td>
+            <td>{{res?.transTurismcTotal}}</td>
+
+            <td>{{res?.moto}}</td>
+            <td>{{res?.motoRecargo}}</td>
+            <td>{{res?.motocExtras}}</td>
+            <td>{{res?.motocTotal}}</td>
+
+            <td>{{res?.turismo}}</td>
+            <td>{{res?.turismoRecargo}}</td>
+            <td>{{res?.turismocExtras}}</td>
+            <td>{{res?.turismocTotal}}</td>
+
+            <td>{{res?.pickup}}</td>
+            <td>{{res?.pickupRecargo}}</td>
+            <td>{{res?.pickupcExtras}}</td>
+            <td>{{res?.pickupcTotal}}</td>
+
+            <td>{{res?.panel}}</td>
+            <td>{{res?.panelRecargo}}</td>
+            <td>{{res?.panelcExtras}}</td>
+            <td>{{res?.panelcTotal}}</td>
+
+            <td>{{res?.pickupAuxiliar}}</td>
+            <td>{{res?.pickupAuxiliarRecargo}}</td>
+            <td>{{res?.pickupAuxiliarcExtras}}</td>
+            <td>{{res?.pickupAuxiliarcTotal}}</td>
+
+            <td>{{res?.panelAuxiliar}}</td>
+            <td>{{res?.panelAuxiliarRecargo}}</td>
+            <td>{{res?.panelAuxiliarcExtras}}</td>
+            <td>{{res?.panelAuxiliarcTotal}}</td>
+
+            <td>{{res?.camion11}}</td>
+            <td>{{res?.camion11Recargo}}</td>
+            <td>{{res?.camion11cExtras}}</td>
+            <td>{{res?.camion11cTotal}}</td>
+
+            <td>{{res?.totalOrders}}</td>
+            <td>L. {{res?.totalSurcharges}}</td>
+            <td>L. {{res?.totalExtraCharges}}</td>
+            <td>L. {{res?.totalCosts}}</td>
+          </tr>
+
+          </tbody>
+          <tfoot style="display: table-footer-group;">
+          <tr>
+            <th>Total:</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th data-priority="1">
+              {{ordersInRange}}
+            </th>
+            <th>L. {{ totalSurcharges }}</th>
+            <th>L. {{ totalExtracharges }}</th>
+            <th>L. {{ totalCosts }}</th>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <br>
+      <div class="row">
+        <div class="col">
+          <h3>Detalles de envíos</h3>
         </div>
+      </div>
 
-        <div class="table-responsive">
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th>N° Envío</th>
+            <th>N° Reserva</th>
+            <th data-priority="1">Destinatario</th>
+            <th data-priority="1">Celular del Destinatario</th>
+            <th>Dirección</th>
+            <th>Detalle</th>
+            <th>Distancia</th>
+            <th>Tarifa Base</th>
+            <th>Recargo</th>
+            <th>Cargos Extra</th>
+            <th>Costo</th>
+            <th>Estado</th>
+            <th>Detalle Cargo Extra</th>
+            <th>Observaciones</th>
+            <th>Conductor</th>
+          </tr>
+          </thead>
+          <tbody>
 
-          <table datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
-            <thead>
-            <tr>
-              <th>N°</th>
-              <th>Categoría</th>
-              <th>Envíos Realizados</th>
-              <th>Recargos</th>
-              <th>Cargos Extra</th>
-              <th>Costos Totales</th>
-            </tr>
-            </thead>
-            <tbody>
+          <tr *ngFor=" let i = index;let order of orders;">
+            <td>{{order.idDetalle}}</td>
+            <td>{{order.idDelivery}}</td>
+            <td>{{order.nomDestinatario}}</td>
+            <td>{{order.numCel}}</td>
+            <td>{{order.direccion}}</td>
+            <td>{{order.nFactura}}</td>
+            <td>{{order.distancia}}</td>
+            <td>L. {{order.tarifaBase }}</td>
+            <td>L. {{order.recargo }}</td>
+            <td>L. {{order.cargosExtra }}</td>
+            <td>L. {{order.cTotal }}</td>
+            <td>{{order.estado.descEstado + ' Fecha: ' + order.fechaEntrega}}
+            </td>
+            <td>
+              <p *ngFor="let extraCharge of order.extra_charges">{{extraCharge.extracharge.nombre}}</p>
+            </td>
+            <td>{{order.observaciones || 'N/A'}}</td>
+            <td>
+              <p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
+              <p *ngIf="!order.conductor">Aún no asignada</p>
+            </td>
 
-            <tr *ngFor="let res of ordersByCategory; let i = index">
-              <td>{{i + 1}}</td>
-              <td>{{res?.category}}</td>
-              <td>{{res?.orders}}</td>
-              <td>L. {{res?.totalSurcharges}}</td>
-              <td>L. {{res?.totalExtraCharges}}</td>
-              <td>L. {{res?.cTotal}}</td>
-            </tr>
+          </tr>
+          </tbody>
+        </table>
 
-            </tbody>
-            <tfoot style="display: table-footer-group;">
-            <tr>
-              <th></th>
-              <th>Total:</th>
-              <th data-priority="1">
-                {{ordersInRange}}
-              </th>
-              <th>L. {{ totalSurcharges }}</th>
-              <th>L. {{ totalExtracharges }}</th>
-              <th>L. {{ totalCosts }}</th>
-            </tr>
-            </tfoot>
-
-          </table>
-        </div>
-        <div class="row">
-          <div class="col">
-            <h3>Envíos por fecha</h3>
-          </div>
-        </div>
-        <div class="table-responsive">
-
-          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" class="display compact" style="width:100%">
-            <thead>
-
-            <tr>
-              <th>Cliente</th>
-              <th>Fecha</th>
-              <th>Envíos Realizados</th>
-            </tr>
-
-            </thead>
-            <tbody>
-
-            <tr *ngFor="let result of consultResults">
-              <td>{{result.customer}}</td>
-              <td>{{result.fecha}}</td>
-              <td>{{result.orders}}</td>
-            </tr>
-
-            </tbody>
-            <tfoot style="display: table-footer-group;">
-            <tr>
-              <th></th>
-              <th>Total:</th>
-              <th data-priority="1">
-                {{ordersInRange}}
-              </th>
-            </tr>
-            </tfoot>
-
-          </table>
-        </div>
-
-
-        <div class="row">
-          <div class="col">
-            <h3>Detalles de envíos</h3>
-          </div>
-        </div>
-        <div class="table-responsive">
-          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2" class="display compact" style="width:100%">
-            <thead>
-            <tr>
-              <th>N° Envío</th>
-              <th>N° Reserva</th>
-              <th data-priority="1">Destinatario</th>
-              <th data-priority="1">Celular del Destinatario</th>
-              <th>Dirección</th>
-              <th>Detalle</th>
-              <th>Distancia</th>
-              <th>Tarifa Base</th>
-              <th>Recargo</th>
-              <th>Cargos Extra</th>
-              <th>Costo</th>
-              <th>Estado</th>
-              <th>Detalle Cargo Extra</th>
-              <th>Observaciones</th>
-              <th>Conductor</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            <tr *ngFor=" let i = index;let order of orders;">
-              <td>{{order.idDetalle}}</td>
-              <td>{{order.idDelivery}}</td>
-              <td>{{order.nomDestinatario}}</td>
-              <td>{{order.numCel}}</td>
-              <td>{{order.direccion}}</td>
-              <td>{{order.nFactura}}</td>
-              <td>{{order.distancia}}</td>
-              <td>L. {{order.tarifaBase }}</td>
-              <td>L. {{order.recargo }}</td>
-              <td>L. {{order.cargosExtra }}</td>
-              <td>L. {{order.cTotal }}</td>
-              <td>{{order.estado.descEstado + ' Fecha: ' + order.fechaEntrega}}
-              </td>
-              <td>
-                <p *ngFor="let extraCharge of order.extra_charges">{{extraCharge.extracharge.nombre}}</p>
-              </td>
-              <td>{{order.observaciones || 'N/A'}}</td>
-              <td>
-                <p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
-                <p *ngIf="!order.conductor">Aún no asignada</p>
-              </td>
-
-            </tr>
-            </tbody>
-          </table>
-
-        </div>
-
-      <!-- CONTAINER BODY START -->
-
+      </div>
 
       <!-- CONTAINER END -->
     </div>
     <!-- REPORT CONTAINER END -->
-
-
   </mat-card-content>
 </mat-card>
 
