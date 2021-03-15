@@ -54,28 +54,22 @@ export class OrdersByDriverComponent implements OnInit {
   totals: any = {
     transTurismOrders: 0,
     transTurismTime: 0,
-    transTurismOver20kms: 0,
     motoOrders: 0,
     motoTime: 0,
-    motoOver20kms: 0,
     turismoOrders: 0,
     turismoTime: 0,
-    turismoOver20kms: 0,
     pickupOrders: 0,
     pickupTime: 0,
-    pickupOver20kms: 0,
     panelOrders: 0,
     panelTime: 0,
-    panelOver20kms: 0,
     pickupAuxiliarOrders: 0,
     pickupAuxiliarTime: 0,
-    pickupAuxiliarOver20kms: 0,
     panelAuxiliarOrders: 0,
     panelAuxiliarTime: 0,
-    panelAuxiliarOver20kms: 0,
     camion11Orders: 0,
     camion11Time: 0,
-    camion11Over20kms: 0,
+    nextDayOrders: 0,
+    nextDayTime: 0,
     totalOrders: 0,
     totalTime: 0,
     totalMoney: 0,
@@ -153,28 +147,22 @@ export class OrdersByDriverComponent implements OnInit {
       this.totals = {
         transTurismOrders: 0,
         transTurismTime: 0,
-        transTurismOver20kms: 0,
         motoOrders: 0,
         motoTime: 0,
-        motoOver20kms: 0,
         turismoOrders: 0,
         turismoTime: 0,
-        turismoOver20kms: 0,
         pickupOrders: 0,
         pickupTime: 0,
-        pickupOver20kms: 0,
         panelOrders: 0,
         panelTime: 0,
-        panelOver20kms: 0,
         pickupAuxiliarOrders: 0,
         pickupAuxiliarTime: 0,
-        pickupAuxiliarOver20kms: 0,
         panelAuxiliarOrders: 0,
         panelAuxiliarTime: 0,
-        panelAuxiliarOver20kms: 0,
         camion11Orders: 0,
         camion11Time: 0,
-        camion11Over20kms: 0,
+        nextDayOrders: 0,
+        nextDayTime: 0,
         totalOrders: 0,
         totalTime: 0,
         totalMoney: 0,
@@ -189,27 +177,22 @@ export class OrdersByDriverComponent implements OnInit {
         this.consultResults.forEach(result => {
           this.totals.transTurismOrders = this.totals.transTurismOrders + +result.transTurism
           this.totals.transTurismTime = this.totals.transTurismTime + +result.transTurismTime
-          this.totals.transTurismOver20kms = this.totals.transTurismOver20kms + +result.transTurismOver20kms
           this.totals.motoOrders = this.totals.motoOrders + +result.moto
           this.totals.motoTime = this.totals.motoTime + +result.motoTime
-          this.totals.motoOver20kms = this.totals.motoOver20kms + +result.motoOver20kms
           this.totals.turismoOrders = this.totals.turismoOrders + +result.turismo
           this.totals.turismoTime = this.totals.turismoTime + +result.turismoTime
-          this.totals.turismoOver20kms = this.totals.turismoOver20kms + +result.turismoOver20kms
           this.totals.pickupOrders = this.totals.pickupOrders + +result.pickup
           this.totals.pickupTime = this.totals.pickupTime + +result.pickupTime
-          this.totals.pickupOver20kms = this.totals.pickupOver20kms + +result.pickupOver20kms
           this.totals.panelOrders = this.totals.panelOrders + +result.panel
           this.totals.panelTime = this.totals.panelTime + +result.panelTime
-          this.totals.panelOver20kms = this.totals.panelOver20kms + +result.panelOver20kms
           this.totals.pickupAuxiliarOrders = this.totals.pickupAuxiliarOrders + +result.pickupAuxiliar
           this.totals.pickupAuxiliarTime = this.totals.pickupAuxiliarTime + +result.pickupAuxiliarTime
-          this.totals.pickupAuxiliarOver20kms = this.totals.pickupAuxiliarOver20kms + +result.pickupAuxiliarOver20kms
           this.totals.panelAuxiliarOrders = this.totals.panelAuxiliarOrders + +result.panelAuxiliar
           this.totals.panelAuxiliarTime = this.totals.panelAuxiliarTime + +result.panelAuxiliarTime
-          this.totals.panelAuxiliarOver20kms = this.totals.panelAuxiliarOver20kms + +result.panelAuxiliarOver20kms
           this.totals.camion11Orders = this.totals.camion11Orders + +result.camion11
           this.totals.camion11Time = this.totals.camion11Time + +result.camion11Time
+          this.totals.nextDayOrders = this.totals.nextDayOrders + +result.nextDay
+          this.totals.nextDayTime = this.totals.nextDayTime + +result.nextDayTime
           this.totals.totalOrders = this.totals.totalOrders + +result.totalOrders
           this.totals.totalTime = this.totals.totalTime + +result.totalTime
           this.totals.totalMoney = this.totals.totalMoney + +result.totalMoney
@@ -240,7 +223,7 @@ export class OrdersByDriverComponent implements OnInit {
           this.loaders.loadingSubmit = false
           this.openErrorDialog(error.statusText)
         }
-       
+
       })
     }
   }
@@ -324,6 +307,8 @@ export class OrdersByDriverComponent implements OnInit {
       "",
       "Camión 11 pies",
       "",
+      "Next Day",
+      "",
       "Totales",
       "",
       "",
@@ -344,7 +329,8 @@ export class OrdersByDriverComponent implements OnInit {
     worksheet.mergeCells('M8:N8');
     worksheet.mergeCells('O8:P8');
     worksheet.mergeCells('Q8:R8');
-    worksheet.mergeCells('S8:Y8');
+    worksheet.mergeCells('S8:T8');
+    worksheet.mergeCells('U8:AA8');
 
     categoriesheaderRow.eachCell((cell, number) => {
       cell.fill = {
@@ -362,6 +348,8 @@ export class OrdersByDriverComponent implements OnInit {
     const ordersByDateHeader = [
       "Conductor",
       "Fecha",
+      "Entregas",
+      "Tiempo",
       "Entregas",
       "Tiempo",
       "Entregas",
@@ -422,6 +410,8 @@ export class OrdersByDriverComponent implements OnInit {
         d.panelAuxiliarTime,
         d.camion11,
         d.camion11Time,
+        d.nextDay,
+        d.nextDayTime,
         d.totalAuxTime,
         d.totalOrders,
         d.totalTime,
@@ -456,6 +446,8 @@ export class OrdersByDriverComponent implements OnInit {
       this.totals.panelAuxiliarTime,
       this.totals.camion11Orders,
       this.totals.camion11Time,
+      this.totals.nextDayOrders,
+      this.totals.nextDayTime,
       this.totals.totalAuxTime,
       this.totals.totalOrders,
       this.totals.totalTime,
@@ -533,7 +525,7 @@ export class OrdersByDriverComponent implements OnInit {
       title = 'Reporte de envíos - Todos los conductores'
     }
 
-    pdf.pageSize('A2')
+    pdf.pageSize('A1')
     pdf.pageOrientation('landscape')
 
     pdf.add(
@@ -592,6 +584,11 @@ export class OrdersByDriverComponent implements OnInit {
       [],
       [
         new Txt('').bold().end,
+        new Cell(new Txt('Next Day').bold().end).colSpan(2).end,
+      ],
+      [],
+      [
+        new Txt('').bold().end,
         new Cell(new Txt('Totales').bold().end).colSpan(6).end,
       ],
       [],
@@ -609,6 +606,8 @@ export class OrdersByDriverComponent implements OnInit {
     const ordersByDateHeader = [
       "Conductor",
       "Fecha",
+      "Entregas",
+      "Tiempo",
       "Entregas",
       "Tiempo",
       "Entregas",
@@ -659,6 +658,8 @@ export class OrdersByDriverComponent implements OnInit {
         d.panelAuxiliarTime,
         d.camion11,
         d.camion11Time,
+        d.nextDay,
+        d.nextDayTime,
         d.totalAuxTime,
         d.totalOrders,
         d.totalTime,
@@ -696,6 +697,8 @@ export class OrdersByDriverComponent implements OnInit {
       this.totals.panelAuxiliarTime,
       this.totals.camion11Orders,
       this.totals.camion11Time,
+      this.totals.nextDayOrders,
+      this.totals.nextDayTime,
       this.totals.totalAuxTime,
       this.totals.totalOrders,
       this.totals.totalTime,

@@ -117,7 +117,9 @@
 
               <th style="text-align:center; background-color: #e0e0e0" colspan="2">Camión 11 pies</th>
 
-              <th style="text-align:center; " colspan="7">Totales</th>
+              <th style="text-align:center;" colspan="2">Next Day</th>
+
+              <th style="text-align:center; background-color: #e0e0e0" colspan="7">Totales</th>
 
             </tr>
 
@@ -149,13 +151,16 @@
               <th style="text-align:center; width: 5%;background-color: #e0e0e0">Entregas</th>
               <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo</th>
 
-              <th style="text-align:center; width: 5%;">Tiempo Auxiliar</th>
               <th style="text-align:center; width: 5%;">Entregas</th>
-              <th style="text-align:center; width: 5%;">Subtotal Tiempo</th>
-              <th style="text-align:center; width: 5%;">Tiempo > 20kms</th>
-              <th style="text-align:center; width: 5%;">Tiempo Extra</th>
-              <th style="text-align:center; width: 5%;">Tiempo Total</th>
-              <th style="text-align:center; width: 5%;">Efectivo</th>
+              <th style="text-align:center; width: 5%;">Tiempo</th>
+
+              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo Auxiliar</th>
+              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Entregas</th>
+              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Subtotal Tiempo</th>
+              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo > 20kms</th>
+              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo Extra</th>
+              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo Total</th>
+              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Efectivo</th>
             </tr>
 
           </thead>
@@ -188,6 +193,9 @@
 
               <td style="text-align:center">{{result.camion11}}</td>
               <td style="text-align:center">{{result.camion11Time}}</td>
+
+              <td style="text-align:center">{{result.nextDay}}</td>
+              <td style="text-align:center">{{result.nextDayTime}}</td>
 
               <td style="text-align:center">{{result.totalAuxTime}}</td>
               <td style="text-align:center">{{result.totalOrders}}</td>
@@ -251,6 +259,12 @@
               </th>
               <th style="text-align:center">
                 {{totals.camion11Time}}
+              </th>
+              <th style="text-align:center">
+                {{totals.nextDayOrders}}
+              </th>
+              <th style="text-align:center">
+                {{totals.nextDayTime}}
               </th>
               <th style="text-align:center">
                 {{totals.totalAuxTime}}
