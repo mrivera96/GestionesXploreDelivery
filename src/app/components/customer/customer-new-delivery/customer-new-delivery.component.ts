@@ -578,11 +578,12 @@ export class CustomerNewDeliveryComponent implements OnInit {
       })
     }
 
-    this.http.post<any>(`${environment.apiUrl}`, {
+    const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getCoords',
       lugar: entrega,
     }).subscribe((response) => {
       this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
+      cordsSubscription.unsubscribe()
     })
 
     const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
@@ -802,8 +803,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
     })
   }
 
-  /*onSelect(event) {
-    if (this.files.length === 0) {
+  onSelect(event) {
+    if (this.files.length === 0 && this.selectedCategory.idCategoria) {
       this.files.push(...event.addedFiles)
       let fileReader = new FileReader();
 
@@ -816,7 +817,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   onFileOrdersAdd() {
-    this.loaders.loadingAdd = true
+    this.openLoader()
 
     this.fileContentArray.forEach(order => {
       let myOrder = order.split('|')
@@ -864,6 +865,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
     })
 
+    this.dialog.closeAll()
+
   }
 
   calculateFileDistance(currOrder) {
@@ -881,6 +884,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
       })
     }
 
+    const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getCoords',
+      lugar: entrega,
+    }).subscribe((response) => {
+      currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
+      cordsSubscription.unsubscribe()
+    })
+
     const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
       function: 'calculateDistance',
       salida: salida,
@@ -895,19 +906,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
       currOrder.cargosExtra = calculatedPayment.cargosExtra
       currOrder.cTotal = calculatedPayment.total
 
-      this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: entrega,
-      }).subscribe((response) => {
-        currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
-      })
-
       this.deliveryForm.get('order').reset()
       this.orders.push(currOrder)
       this.pagos.push(calculatedPayment)
-      this.loaders.loadingAdd = false
-      this.selectedExtraChargeOption = {}
-      this.selectedExtraCharge = null
+
 
       if (this.orders.length > 1) {
         this.dtElement.dtInstance.then(
@@ -942,7 +944,9 @@ export class CustomerNewDeliveryComponent implements OnInit {
           value.recargo = nPay.surcharges
           value.cTotal = nPay.total
           this.pagos[i].baseRate = nPay.baseRate
-          this.pago[i].cargosExtra = nPay.cargosExtra
+          if(this.pagos[i]?.cargosExtra){
+            this.pagos[i].cargosExtra = nPay.cargosExtra
+          }
           this.pagos[i].surcharges = nPay.surcharges
           this.pagos[i].total = nPay.total
         }
@@ -954,7 +958,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
       error.subscribe(error => {
         this.prohibitedDistanceMsg = error.statusText
         this.prohibitedDistance = true
-        this.loaders.loadingAdd = false
         cDistanceSubscription.unsubscribe()
         setTimeout(() => {
           this.prohibitedDistance = false;
@@ -967,7 +970,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   onFileRemove(event) {
     this.files.splice(this.files.indexOf(event), 1)
-  }*/
+  }
 
   //ESTABLECE LA CATEGORÍA A EMPLEAR
   setSelectedCategory() {

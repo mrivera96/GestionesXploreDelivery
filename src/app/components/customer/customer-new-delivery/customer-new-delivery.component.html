@@ -1,4 +1,4 @@
-<!--CARD START -->
+<!-- INICIO CARD -->
 <mat-card @fade>
   <!-- <div class="alert alert-danger" role="alert">
     <div class="row">
@@ -8,24 +8,25 @@
       </div>
     </div>
   </div> -->
+  <!--  INICIO ENCABEZADO CARD-->
   <mat-card-header>
     <mat-card-title>
       <p>Delivery Normal</p>
     </mat-card-title>
   </mat-card-header>
+  <!--  FIN  ENCABEZADO CARD-->
 
-  <!-- CARD BODY START -->
+  <!-- INICIO CARD CONTENT -->
   <mat-card-content>
-    <!--HEADER BLOCK END-->
-
-    <!--DELIVERY FORM BLOCK START-->
+    <!-- INICIO DEL FORM DELIVERY CONTAINER-->
     <div class="row">
       <div class="col">
         <p>Ingresa los datos del Delivery en el siguiente formulario</p>
         <!--FORM START-->
         <form [formGroup]="deliveryForm" role="form" (ngSubmit)="onFormSubmit()">
-          <!--DELIVERY HEADER GROUP START-->
+          <!-- INICIO DELIVERY HEADER -->
           <div class="row">
+            <!-- INICIO LADO DE FORMULARIO-->
             <div class="col-md">
               <div class="row">
                 <div class="col">
@@ -36,15 +37,15 @@
               <div class="form-row" formGroupName="deliveryHeader">
                 <br>
                 <mat-radio-group (change)="calculatedistanceBefore();setSelectedCategory()"
-                                 formControlName="idCategoria" >
+                                 formControlName="idCategoria">
                   <mat-radio-button *ngFor="let category of categories; let  i = index" [id]="category?.idCategoria"
                                     [value]="category.idCategoria" disableRipple="true" [ngStyle]="{'color':
                                     category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
                                     ? '#FF8C00': '#000'}" class="cat-rb">
                     <span class="fa d-block text-center" style="font-size: 24px"
                           [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
-                                       'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4 || category.idCategoria == 11 || category.idCategoria == 12, 'fa-truck': category.idCategoria == 8, 'fas fa-heart': category.idCategoria == 9,
-                                        'fas fa-calendar-plus': category.idCategoria == 10}"></span>
+                                       'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4 || category.idCategoria == 11 || category.idCategoria == 12, 'fa-truck': category.idCategoria == 8,
+                                       'fas fa-heart': category.idCategoria == 9, 'fas fa-calendar-plus': category.idCategoria == 10}"></span>
                     <span class="d-block text-center">{{category.descCategoria}} </span>
                   </mat-radio-button>
                 </mat-radio-group>
@@ -68,6 +69,7 @@
                     <a href="tel:94397234">+504 9439-7234</a></p>
                 </div>
               </div>
+
               <div class="form-row" formGroupName="deliveryHeader">
 
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md">
@@ -189,14 +191,14 @@
               <!--DELIVERY HEADER GROUP END-->
 
               <!--ORDER ADD FORM START-->
-              <div class="row">
+              <div class="row" *ngIf="files.length == 0">
                 <div class="col">
                   <p class="card-title"><strong>Detalles de envíos:</strong></p>
                   <hr>
                 </div>
               </div>
 
-              <div class="form-row" formGroupName="order">
+              <div class="form-row" formGroupName="order" *ngIf="files.length == 0">
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Detalle de envío:</mat-label>
                   <input matInput type="text" formControlName="nFactura" id="nFactura" required maxlength="250"
@@ -225,7 +227,7 @@
                 </mat-form-field>
               </div>
 
-              <div class="form-row" formGroupName="order">
+              <div class="form-row" formGroupName="order" *ngIf="files.length == 0">
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Número celular del destinatario:</mat-label>
                   <input matInput type="tel" id="numCel" formControlName="numCel" required minlength="9"
@@ -288,20 +290,19 @@
                     Ubicación actual
                   </mat-checkbox>
                 </div>
-
               </div>
               <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
                 {{prohibitedDistanceMsg}}
               </div>
 
-              <div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
+              <div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0 && files.length == 0">
                 <div class="col">
                   <p class="card-title"><strong>Servicios Adicionales:</strong></p>
                   <hr>
                 </div>
               </div>
 
-              <div class="row">
+              <div class="row" *ngIf="files.length == 0">
                 <div class="col" *ngFor="let extracharge of selectedCategory.categoryExtraCharges">
                   <p class="card-title">{{extracharge.extra_charge.nombre}}</p>
                   <div class="row" *ngFor="let option of extracharge.extra_charge.options">
@@ -312,17 +313,17 @@
                     </div>
                   </div>
 
-                  <!-- <div class="row" *ngIf="extracharge.idCargoExtra == 5" formGroupName="order">
+                  <div class="row" *ngIf="extracharge.idCargoExtra == 5" formGroupName="order">
                     <input matInput (change)="addCare(extracharge.extra_charge)" formControlName="montoCobertura"
                            type="number" placeholder="Monto de Seguro">
-                  </div> -->
+                  </div>
                 </div>
               </div>
-
             </div>
+            <!-- FIN LADO DE FORMULARIO -->
 
-            <div class="col-md">
-
+            <!-- INICIO LADO DE RUTA -->
+            <div class="col-md" *ngIf="files.length == 0">
               <div class="row">
                 <div class="col">
                   <p class="card-title"><strong>Ruta de Entrega</strong></p>
@@ -335,13 +336,16 @@
                   <google-map #googleMap height="380px" width="100%" id="map" [center]="center"></google-map>
                 </div>
               </div>
-
             </div>
+            <!-- FIN LADO DE RUTA -->
+
           </div>
+          <!-- FIN DELIVERY HEADER -->
 
           <br>
 
-          <!-- <div class="row">
+          <!-- INICIO ARCHIVO TXT -->
+          <div class="row">
             <div class="col">
               <ngx-dropzone [accept]="'text/*'" [expandable]="true" (change)="onSelect($event)" [multiple]="false">
                 <ngx-dropzone-label> Arrastrar archivo de entregas aquí (*Opcional)</ngx-dropzone-label>
@@ -353,8 +357,11 @@
               <small><a href="./assets/helpers/archivo_prueba.txt" target="_blank">Archivo de muestra</a></small>
             </div>
           </div>
+          <!-- FIN ARCHIVO TXT -->
 
-          <br> -->
+          <br>
+
+          <!-- INICIO DATOS EN TIEMPO REAL -->
           <div class="form-row text-center">
             <div class="col">
               <span><i class="fa fa-clock"></i>
@@ -375,9 +382,11 @@
               </span>
             </div>
           </div>
+
+          <!-- FIN DATOS EN TIEMPO REAL -->
           <br>
           <div class="form-row">
-            <div class="col-md-6" >
+            <div class="col-md-6" *ngIf="!files.length">
               <button mat-raised-button type="button" (click)="onOrderAdd()" color="primary" [disabled]="!deliveryForm.get('order').valid || !deliveryForm.get('deliveryHeader').valid ||
                       loaders.loadingAdd || !selectedCategory?.idCategoria" class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
@@ -385,13 +394,13 @@
               </button>
             </div>
 
-            <!--<div class="col-md-6" *ngIf="files.length">
+            <div class="col-md-6" *ngIf="files.length">
               <button mat-raised-button type="button" (click)="onFileOrdersAdd()" color="primary" [disabled]="deliveryForm.get('deliveryHeader').invalid ||
-                                  loaders.loadingAdd" class="float-left">
+                                  loaders.loadingAdd || !selectedCategory?.idCategoria" class="float-left">
                 <span *ngIf="loaders.loadingAdd" class="spinner-border spinner-border-sm mr-1 "></span> Agregar
                 entregas
               </button>
-            </div>-->
+            </div>
           </div>
 
           <div *ngIf="agregado" class="alert alert-success" role="alert">
@@ -402,12 +411,11 @@
         </form>
         <!-- FORM END -->
       </div>
-
     </div>
     <!--DELIVERY FORM BLOCK END-->
     <br>
     <!--CARD BLOCK ORDER TABLE START-->
-    <div class="row" >
+    <div class="row">
       <!--ORDERS TABLE START-->
       <div class="col">
         <div class="table-responsive">
@@ -491,7 +499,7 @@
   </mat-card-content>
   <!--CARD BODY END -->
 
-  <mat-card-actions >
+  <mat-card-actions>
     <button mat-raised-button type="button" *ngIf="paymentMethod == 1 && orders.length>0"
             [disabled]="this.orders.length == 0 || !deliveryForm.get('deliveryHeader').valid" color="primary"
             (click)="openConfirmDialog()">

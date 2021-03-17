@@ -351,7 +351,7 @@ export class OrdersByCustomerComponent implements OnInit {
     this.orders.forEach(d => {
       let orderEC = ''
       d.extra_charges.forEach(value => {
-          orderEC = orderEC + ' ' + value.extracharge.nombre
+        orderEC = orderEC + ' ' + value.extracharge.nombre
       })
 
       let array = [
@@ -454,13 +454,13 @@ export class OrdersByCustomerComponent implements OnInit {
 
     pdf.add(
       new Columns(
-          ordersByCategoryHeader
+        ordersByCategoryHeader
       ).bold().end
     )
     arrayRow.forEach(res => {
       pdf.add(
         new Columns(
-            res
+          res
         ).end
       )
     })

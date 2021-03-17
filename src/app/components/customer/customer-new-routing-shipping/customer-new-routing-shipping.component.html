@@ -46,8 +46,11 @@
                                         category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
                                         ? '#FF8C00': '#000'}" class="cat-rb">
                       <span class="fa d-block text-center" style="font-size: 24px"
-                            [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
-                        'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4 || category.idCategoria == 11 || category.idCategoria == 12, 'fa-truck': category.idCategoria == 8, 'fas fa-calendar-plus': category.idCategoria == 10}"></span>
+                            [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7,
+                            'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
+                                       'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4 || category.idCategoria == 11 || category.idCategoria == 12,
+                                        'fa-truck': category.idCategoria == 8, 'fas fa-heart': category.idCategoria == 9,
+                                        'fas fa-calendar-plus': category.idCategoria == 10}"></span>
                       <span class="d-block text-center">{{category.descCategoria}} </span>
                     </mat-radio-button>
                   </mat-radio-group>
@@ -56,7 +59,8 @@
 
               <div class="row" *ngIf="selectedCategory.idCategoria">
                 <div class="col">
-                  <p class="text-danger">Categoría {{selectedCategory.descCategoria}}: {{selectedCategory.descripcion}}</p>
+                  <p class="text-danger">Categoría {{selectedCategory.descCategoria}}
+                    : {{selectedCategory.descripcion}}</p>
                 </div>
               </div>
 
@@ -187,7 +191,7 @@
                 </div>
               </div>
 
-              <div class="form-row" formGroupName="order" >
+              <div class="form-row" formGroupName="order">
                 <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
                   <mat-label>Detalle de envío:</mat-label>
                   <input matInput type="text" formControlName="nFactura" id="nFactura" required maxlength="250"

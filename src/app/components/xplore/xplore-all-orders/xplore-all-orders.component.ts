@@ -180,6 +180,7 @@ export class XploreAllOrdersComponent implements OnInit {
       {
         data: {
           currentOrder: order,
+          currentDelivery: order.delivery,
           currentUser: this.currUser
         }
       }
