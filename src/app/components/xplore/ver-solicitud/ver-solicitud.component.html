@@ -21,6 +21,11 @@
                 [disabled]="!allowHourChange" (click)="openChangeHourDialog()">
           Cambiar Hora de Recogida
         </button>
+
+        <!--<button type="button" mat-menu-item *ngIf="currentDelivery.detalle[0].coordsDestino != null"
+                (click)="openChangeHourDialog()">
+          Generar Ruta Optimizada
+        </button>-->
       </mat-menu>
     </div>
 
