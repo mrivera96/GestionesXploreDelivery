@@ -399,7 +399,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   //CALCULA LA DISTANCIA PARA PREVISUALIZACIÓN
   calculatedistanceBefore() {
-    if(this.selectedCategory.idCategoria){
+    if (this.selectedCategory.idCategoria) {
       this.directionsRenderer.setMap(null);
       if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
         this.loaders.loadingDistBef = true;
@@ -599,19 +599,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         lugar: salida,
       }).subscribe((response) => {
         this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ',' + response[0].lng);
-        if(!response[0].lat){
-          const cordsSubscription1 = this.http.post<any>(`${environment.apiUrl}`, {
-            function: 'getCoords',
-            lugar: salida,
-          }).subscribe((response) => {
-            this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ',' + response[0].lng);
-            cordsSubscription1.unsubscribe()
-            cordsSubscription.unsubscribe()
-          })
-        }else{
-          cordsSubscription.unsubscribe()
-        }
-
+        cordsSubscription.unsubscribe()
       })
     }
 
@@ -620,19 +608,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       lugar: entrega,
     }).subscribe((response) => {
       this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
-      if(!response[0].lat){
-        const cordsSubscription1 = this.http.post<any>(`${environment.apiUrl}`, {
-          function: 'getCoords',
-          lugar: entrega,
-        }).subscribe((response) => {
-          this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
-          cordsSubscription1.unsubscribe()
-          cordsSubscription.unsubscribe();
-        })
-      }else{
-        cordsSubscription.unsubscribe()
-      }
-
+      cordsSubscription.unsubscribe()
     })
 
     const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
@@ -1195,16 +1171,16 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       lat: this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[0],
       lng: this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[1]
     }
-    orderArray = orderArray + JSON.stringify(originAddress)  + ','
+    orderArray = orderArray + JSON.stringify(originAddress) + ','
     this.orders.forEach(order => {
       const orderObject = {
         address: order.direccion,
         lat: order.coordsDestino.split(',')[0],
         lng: order.coordsDestino.split(',')[1]
       }
-      orderArray = orderArray + JSON.stringify(orderObject)  + ','
+      orderArray = orderArray + JSON.stringify(orderObject) + ','
     })
-    orderArray = orderArray + JSON.stringify(originAddress)  + ']'
+    orderArray = orderArray + JSON.stringify(originAddress) + ']'
     this.loaders.loadingOptimizing = true
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
       .subscribe(response => {
@@ -1217,7 +1193,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
               order.distancia = (optimizedRouteOrder[i].distance - optimizedRouteOrder[i - 1].distance).toPrecision(2) + ' km'
               order.tiempo = optimizedRouteOrder[i].arrival + ' mins'
               order.order = +i
-              totalDistance =  totalDistance + +order.distancia.split(" ")[0]
+              totalDistance = totalDistance + +order.distancia.split(" ")[0]
             }
           }
         })
