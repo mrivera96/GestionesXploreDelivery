@@ -211,7 +211,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       this.demandMSG = response.demand
       categoriesSubscription.unsubscribe()
       this.dialog.closeAll()
-      this.setSelectedCategory()
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
@@ -225,8 +224,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           }
           this.deliveryForm.get('deliveryHeader.dirRecogida')
             .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-          this.calculateRatio()
-          this.calculatedistanceBefore()
         }, function (error) {
           switch (error.code) {
             case error.PERMISSION_DENIED:
@@ -239,7 +236,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
               // Se ha excedido el tiempo para obtener la ubicación.
               break;
           }
-
         })
       } else {
         alert('El GPS está desactivado')
@@ -295,7 +291,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         idCargoExtra: null,
         idDetalleOpcion: null,
       }
-
       //
       this.calculateRate()
 
