@@ -168,6 +168,7 @@ export class OrdersDataTableComponent implements OnInit {
       {
         data: {
           currentOrder: order,
+          currentDelivery: order.delivery,
           currentUser: this.currUser
         }
       }

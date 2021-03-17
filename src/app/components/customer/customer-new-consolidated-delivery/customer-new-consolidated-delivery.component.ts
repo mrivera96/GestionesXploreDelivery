@@ -211,7 +211,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       this.demandMSG = response.demand
       categoriesSubscription.unsubscribe()
       this.dialog.closeAll()
-      this.setSelectedCategory()
+
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
@@ -225,8 +225,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           }
           this.deliveryForm.get('deliveryHeader.dirRecogida')
             .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-          this.calculateRatio()
-          this.calculatedistanceBefore()
+
         }, function (error) {
           switch (error.code) {
             case error.PERMISSION_DENIED:

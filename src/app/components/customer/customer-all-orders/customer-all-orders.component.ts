@@ -180,6 +180,7 @@ export class CustomerAllOrdersComponent implements OnInit {
       {
         data: {
           currentOrder: order,
+          currentDelivery: order.delivery,
           currentUser: this.currUser
         }
       }

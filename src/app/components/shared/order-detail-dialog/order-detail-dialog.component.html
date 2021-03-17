@@ -2,7 +2,8 @@
 <h2 mat-dialog-title>
   <i class="fa fa-box"></i> Detalles de Envío N° {{currentOrder.idDetalle}}
 
-  <button mat-icon-button class="float-right" [matMenuTriggerFor]="menu" *ngIf="currentUser.idPerfil == 1 || currentUser.idPerfil == 9">
+  <button mat-icon-button class="float-right" [matMenuTriggerFor]="menu"
+          *ngIf="currentUser.idPerfil == 1 || currentUser.idPerfil == 9">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #menu="matMenu">
@@ -38,7 +39,8 @@
       <p>N° de Reserva: <strong>{{currentOrder.idDelivery}}</strong></p>
     </div>
     <div class="col-md">
-      Estado: <strong>{{currentOrder.estado.descEstado}} <p *ngIf="currentOrder.estado.idEstado == 44">Fecha: {{currentOrder.fechaEntrega}}</p></strong>
+      Estado: <strong>{{currentOrder.estado.descEstado}} <p *ngIf="currentOrder.estado.idEstado == 44">
+      Fecha: {{currentOrder.fechaEntrega}}</p></strong>
     </div>
   </div>
 
@@ -76,10 +78,10 @@
 
   <div class="row">
     <div class="col-md">
-      Número celular:
+      Categoría:
     </div>
     <div class="col-md">
-      <strong>{{currentOrder.numCel}}</strong>
+      <strong>{{currentDelivery.category.descCategoria}}</strong>
     </div>
     <div class="col-md">
       Cargos Extras:
@@ -91,16 +93,25 @@
 
   <div class="row">
     <div class="col-md">
-      Dirección de Entrega:
+      Número celular:
     </div>
     <div class="col-md">
-      <strong>{{currentOrder.direccion}}</strong>
+      <strong>{{currentOrder.numCel}}</strong>
     </div>
     <div class="col-md">
       Costo Total:
     </div>
     <div class="col-md">
       <strong>L. {{currentOrder.cTotal}}</strong>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md">
+      Dirección de Entrega:
+    </div>
+    <div class="col-md">
+      <strong>{{currentOrder.direccion}}</strong>
     </div>
   </div>
   <hr>
@@ -132,7 +143,8 @@
     </div>
     <div class="col-md">
       <strong>
-        <p *ngIf="currentOrder.conductor">{{currentOrder.conductor.nomUsuario + ' - ' + currentOrder?.conductor?.numCelular}}</p>
+        <p
+          *ngIf="currentOrder.conductor">{{currentOrder.conductor.nomUsuario + ' - ' + currentOrder?.conductor?.numCelular}}</p>
         <p *ngIf="!currentOrder.conductor">Aún no asignada</p>
       </strong>
     </div>
@@ -144,7 +156,8 @@
     </div>
     <div class="col-md">
       <strong>
-        <p *ngIf="currentOrder.auxiliar">{{currentOrder.auxiliar.nomUsuario + ' - ' + currentOrder?.auxiliar?.numCelular}}</p>
+        <p
+          *ngIf="currentOrder.auxiliar">{{currentOrder.auxiliar.nomUsuario + ' - ' + currentOrder?.auxiliar?.numCelular}}</p>
         <p *ngIf="!currentOrder.auxiliar">Sin Registro</p>
       </strong>
     </div>
@@ -158,7 +171,7 @@
           {{extraCharge.extracharge.nombre}}
         </strong>
         <!-- <span class="badge badge-primary" *ngIf="extraCharge.idCargoExtra == 5">{{extraCharge.montoCobertura}}</span> -->
-        
+
       </p>
     </div>
 

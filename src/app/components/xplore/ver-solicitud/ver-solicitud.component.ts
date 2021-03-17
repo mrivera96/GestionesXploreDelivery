@@ -84,6 +84,8 @@ export class VerSolicitudComponent implements OnInit {
       },
     }
 
+    this.dtTrigger = new Subject<any>()
+
   }
 
   loadData() {
@@ -172,6 +174,7 @@ export class VerSolicitudComponent implements OnInit {
       {
         data: {
           currentOrder: order,
+          currentDelivery: this.currentDelivery,
           currentUser: this.currUser
         }
       }

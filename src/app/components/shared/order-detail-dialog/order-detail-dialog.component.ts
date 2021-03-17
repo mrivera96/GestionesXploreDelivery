@@ -6,6 +6,7 @@ import {AddOrderExtrachargeDialogComponent} from "../add-order-extracharge-dialo
 import {ChangeOrderStateDialogComponent} from "../change-order-state-dialog/change-order-state-dialog.component";
 import {User} from "../../../models/user";
 import {AssignAuxiliarComponent} from "../assign-auxiliar/assign-auxiliar.component";
+import {Delivery} from "../../../models/delivery";
 
 @Component({
   selector: 'app-order-detail-dialog',
@@ -15,6 +16,7 @@ import {AssignAuxiliarComponent} from "../assign-auxiliar/assign-auxiliar.compon
 })
 export class OrderDetailDialogComponent implements OnInit {
   currentOrder: Order = {}
+  currentDelivery: Delivery = {}
   currentUser: User = {}
 
   constructor(
@@ -24,6 +26,7 @@ export class OrderDetailDialogComponent implements OnInit {
   ) {
     this.currentOrder = this.data.currentOrder
     this.currentUser = this.data.currentUser
+    this.currentDelivery = this.data.currentDelivery
     this.dialogRef.disableClose = true
   }
 

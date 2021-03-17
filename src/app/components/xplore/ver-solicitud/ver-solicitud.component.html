@@ -9,7 +9,7 @@
       </mat-card-title>
     </mat-card-title-group>
     <div class="ml-auto float-right">
-      <button mat-icon-button  [matMenuTriggerFor]="menu">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
@@ -27,8 +27,8 @@
   </mat-card-header>
 
   <mat-card-content>
-  
-    <div class="container-fluid" >
+
+    <div class="container-fluid">
       <div class="card-title">
         <h4>Datos Generales</h4>
       </div>
@@ -119,14 +119,14 @@
 
         <div class="col-sm">
           <strong>Registrada por:</strong>
-          {{currentDelivery?.regAdmin == true ? 'Admin':'Cliente'}}
+          {{currentDelivery?.regAdmin == true ? 'Admin' : 'Cliente'}}
         </div>
-        
+
         <div class="col-sm">
           <strong>Estado Actual:</strong>
           {{currentDelivery?.estado.descEstado}}
         </div>
-        
+
       </div>
 
       <div class="row">
@@ -134,7 +134,7 @@
           <strong>Asignada a:</strong>
           {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
         </div>
-        
+
       </div>
 
       <hr>
@@ -143,7 +143,7 @@
       </div>
 
       <div class="table-responsive">
-        <table class="compact display" datatable [dtOptions]="dtOptions" style="width: 100%">
+        <table class="compact display" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" style="width: 100%">
 
           <thead>
           <tr>
@@ -158,7 +158,6 @@
             <th>Cargos Extra</th>
             <th>Costo</th>
             <th>Estado</th>
-            <th data-priority="1">Fotografías</th>
             <th data-priority="1">Acción</th>
           </tr>
 
@@ -180,24 +179,26 @@
             <td>L. {{detail?.cTotal}}</td>
             <td>{{detail?.estado.descEstado}}</td>
             <td>
-              <button *ngIf="detail.photography.length > 0" type="button" mat-raised-button color="primary"
-                      (click)="openPhotosDialog(detail.photography)">
-                Ver Fotografías
+              <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
               </button>
-              <span *ngIf="detail.photography.length == 0">N/A</span>
-            </td>
-            <td>
-              <button mat-raised-button type="button" (click)="showDetailDialog(detail)">
-                <mat-icon>visibility</mat-icon>
-                Ver Detalles
-              </button>
+              <mat-menu #menu="matMenu">
+                <button *ngIf="detail.photography.length > 0" type="button" mat-menu-item
+                        (click)="openPhotosDialog(detail.photography)">
+                  <mat-icon>photo_camera</mat-icon>
+                  <span>Ver Fotografías</span>
+                </button>
+
+                <button mat-menu-item type="button" (click)="showDetailDialog(detail)">
+                  <mat-icon>visibility</mat-icon>
+                  Ver Detalles
+                </button>
+              </mat-menu>
             </td>
           </tr>
           </tbody>
         </table>
       </div>
-
-
     </div>
   </mat-card-content>
 </mat-card>
