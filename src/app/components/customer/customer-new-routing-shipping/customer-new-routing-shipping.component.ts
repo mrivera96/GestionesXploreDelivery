@@ -1185,7 +1185,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     this.loaders.loadingOptimizing = true
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
       .subscribe(response => {
-        if(response.route){
+        if(response != null){
           const optimizedRouteOrder: any[] = response.route
           let totalDistance = 0
           this.orders.forEach(order => {
