@@ -603,20 +603,20 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       })
     }
 
-    const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'getCoords',
-      lugar: entrega,
-    }).subscribe((response) => {
-      this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
-      cordsSubscription.unsubscribe()
-    })
-
     const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
       function: 'calculateDistance',
       salida: salida,
       entrega: entrega,
       tarifa: tarifa
     }).subscribe(response => {
+
+      const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCoords',
+        lugar: entrega,
+      }).subscribe((response) => {
+        this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
+        cordsSubscription.unsubscribe()
+      })
 
       this.currOrder.distancia = response.distancia
       this.currOrder.tiempo = response.tiempo
