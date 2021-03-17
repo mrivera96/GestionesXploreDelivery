@@ -15,6 +15,9 @@ import {OrderDetailDialogComponent} from "../../shared/order-detail-dialog/order
 import {User} from "../../../models/user";
 import {AuthService} from "../../../services/auth.service";
 import {LoadingDialogComponent} from '../../shared/loading-dialog/loading-dialog.component';
+import {environment} from "../../../../environments/environment";
+import {HttpClient} from "@angular/common/http";
+import {Cell, Columns, PdfMakeWrapper, Txt} from "pdfmake-wrapper";
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -42,10 +45,12 @@ export class VerSolicitudComponent implements OnInit {
   dtOptions: any
   dtTrigger: Subject<any> = new Subject()
   currUser: User = {}
+  totalDistance = 0
 
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
               private authService: AuthService,
+              private http: HttpClient,
               public dialog: MatDialog) {
     this.loaders.loadingData = true
     this.currUser = this.authService.currentUserValue
@@ -57,6 +62,7 @@ export class VerSolicitudComponent implements OnInit {
       this.deliveryId = Number(params.get("id"));
     })
     this.loadData()
+
   }
 
   initialize() {
@@ -101,6 +107,7 @@ export class VerSolicitudComponent implements OnInit {
       if (state !== 39) {
         this.allowHourChange = true
       }
+      this.getOrdersCoords()
       deliveriesSubscription.unsubscribe()
 
     }, error => {
@@ -192,16 +199,18 @@ export class VerSolicitudComponent implements OnInit {
   }
 
   //COMUNICACIÓN CON LA API RUTEADOR PARA EL REORDENADO DEL ARRAY DE ENVÍOS
-  /*optimizeRoutes() {
+  optimizeRoutes() {
+
+    this.openLoader()
     let orderArray = '['
     const originAddress = {
       address: this.currentDelivery.dirRecogida,
       lat: this.currentDelivery.coordsOrigen.split(',')[0],
-      lng: this.currentDelivery.coordsOrigen.split(',')[1]
+      lng: this.currentDelivery.coordsOrigen.split(',')[1].trim()
     }
 
     orderArray = orderArray + JSON.stringify(originAddress) + ','
-    this.currentDelivery.detalle.forEach(order => {
+    this.currentDeliveryDetail.forEach(order => {
       const orderObject = {
         address: order.direccion,
         lat: order.coordsDestino.split(',')[0],
@@ -215,7 +224,7 @@ export class VerSolicitudComponent implements OnInit {
       .subscribe(response => {
         const optimizedRouteOrder: any[] = response.route
         let totalDistance = 0
-        this.orders.forEach(order => {
+        this.currentDeliveryDetail.forEach(order => {
           for (let i in optimizedRouteOrder) {
             if (order.direccion == optimizedRouteOrder[i].name) {
               // @ts-ignore
@@ -226,16 +235,93 @@ export class VerSolicitudComponent implements OnInit {
             }
           }
         })
-        this.deliveryForm.get('deliveryHeader.distancia').setValue(totalDistance)
+        this.totalDistance = totalDistance
 
-        this.orders.sort((a, b) => (a.order > b.order) ? 1 : -1);
-        this.loaders.loadingOptimizing = false
+        this.currentDeliveryDetail.sort((a, b) => (a.order > b.order) ? 1 : -1)
+        this.generatePDF()
+        this.dialog.closeAll()
         optSubscription.unsubscribe()
       }, error => {
-        this.loaders.loadingOptimizing = false
+        this.dialog.closeAll()
         this.openErrorDialog('Ha ocurrido un error al optimizar la ruta', false)
       })
-  }*/
+  }
+
+  async getOrdersCoords() {
+    this.currentDeliveryDetail.forEach(order => {
+      const coordsSubsc = this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'getCoords',
+        lugar: order.direccion,
+      }).subscribe((response) => {
+        order.coordsDestino = response[0].lat + ',' + response[0].lng
+        coordsSubsc.unsubscribe()
+      })
+    })
+  }
+
+  generatePDF() {
+
+    const pdf = new PdfMakeWrapper()
+
+    let title = 'Ruta optimizada para Delivery N. ' + this.currentDelivery.idDelivery
+
+    pdf.pageSize('letter')
+    pdf.pageOrientation('portrait')
+
+    pdf.add(
+      new Txt(title).bold().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+    pdf.add(
+      new Txt('Distancia Total : ' + this.totalDistance).italics().end
+    )
+    pdf.add(
+      pdf.ln(2)
+    )
+
+    const header = [
+      [
+        new Cell(new Txt('N° Envío').bold().end).end,
+      ],
+      [
+        new Cell(new Txt('Dirección').bold().end).colSpan(2).end,
+      ],
+      [],
+      [
+        new Cell(new Txt('Distancia').bold().end).end,
+      ],
+      [
+        new Cell(new Txt('Tiempo').bold().end).end,
+      ],
+    ]
+
+    pdf.add(
+      new Columns(header).alignment("left").end
+    )
+
+    let array1Row = []
+    this.currentDeliveryDetail.forEach(d => {
+      let array = [
+        d.idDetalle,
+        d.direccion,
+        '',
+        d.distancia,
+        d.tiempo,
+      ]
+      array1Row.push(array)
+    })
+
+    array1Row.forEach(res => {
+      pdf.add(
+        new Columns(res
+        ).alignment("left").end
+      )
+    })
+
+    pdf.create().open()
+  }
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent)

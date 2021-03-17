@@ -608,100 +608,101 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       lugar: entrega,
     }).subscribe((response) => {
       this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
-      cordsSubscription.unsubscribe()
-    })
+      if(this.currOrder.coordsDestino != null){
+        const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+          function: 'calculateDistance',
+          salida: salida,
+          entrega: entrega,
+          tarifa: tarifa
+        }).subscribe(response => {
 
-    const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'calculateDistance',
-      salida: salida,
-      entrega: entrega,
-      tarifa: tarifa
-    }).subscribe(response => {
+          this.currOrder.distancia = response.distancia
+          this.currOrder.tiempo = response.tiempo
+          const calculatedPayment = this.calculateOrderPayment()
+          this.currOrder.tarifaBase = calculatedPayment.baseRate
+          this.currOrder.recargo = calculatedPayment.surcharges
+          this.currOrder.cargosExtra = calculatedPayment.cargosExtra
+          this.currOrder.cTotal = calculatedPayment.total
 
-      this.currOrder.distancia = response.distancia
-      this.currOrder.tiempo = response.tiempo
-      const calculatedPayment = this.calculateOrderPayment()
-      this.currOrder.tarifaBase = calculatedPayment.baseRate
-      this.currOrder.recargo = calculatedPayment.surcharges
-      this.currOrder.cargosExtra = calculatedPayment.cargosExtra
-      this.currOrder.cTotal = calculatedPayment.total
-
-      this.deliveryForm.get('order').reset()
-      this.orders.push(this.currOrder)
-      this.pagos.push(calculatedPayment)
-      this.newForm.get('deliveryHeader.idCategoria').disable()
-      this.newForm.get('deliveryHeader.dirRecogida').disable()
-      this.newForm.get('deliveryHeader.fecha').disable()
-      const cumulativeDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value)
-      const currentDistance = Number(this.currOrder.distancia.split(" ")[0])
-      const nDistance = cumulativeDistance + currentDistance
-      this.deliveryForm.get('deliveryHeader.distancia').setValue(nDistance)
+          this.deliveryForm.get('order').reset()
+          this.orders.push(this.currOrder)
+          this.pagos.push(calculatedPayment)
+          this.newForm.get('deliveryHeader.idCategoria').disable()
+          this.newForm.get('deliveryHeader.dirRecogida').disable()
+          this.newForm.get('deliveryHeader.fecha').disable()
+          const cumulativeDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value)
+          const currentDistance = Number(this.currOrder.distancia.split(" ")[0])
+          const nDistance = cumulativeDistance + currentDistance
+          this.deliveryForm.get('deliveryHeader.distancia').setValue(nDistance)
 
 
-      this.currOrder = {
-        extras: [] = []
-      }
-      this.befDistance = 0
-      this.befTime = 0
-      this.befCost = 0
+          this.currOrder = {
+            extras: [] = []
+          }
+          this.befDistance = 0
+          this.befTime = 0
+          this.befCost = 0
 
-      if (this.orders.length > 1) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.dtTrigger.next()
-          })
-      } else {
-        if (this.dtElement.dtInstance) {
-          this.dtElement.dtInstance.then(
-            (dtInstance: DataTables.Api) => {
-              dtInstance.destroy()
+          if (this.orders.length > 1) {
+            this.dtElement.dtInstance.then(
+              (dtInstance: DataTables.Api) => {
+                dtInstance.destroy()
+                this.dtTrigger.next()
+              })
+          } else {
+            if (this.dtElement.dtInstance) {
+              this.dtElement.dtInstance.then(
+                (dtInstance: DataTables.Api) => {
+                  dtInstance.destroy()
+                  this.dtTrigger.next()
+                })
+            } else {
               this.dtTrigger.next()
-            })
-        } else {
-          this.dtTrigger.next()
-        }
+            }
 
-      }
-
-      this.agregado = true
-      setTimeout(() => {
-        this.agregado = false;
-      }, 2000)
-
-      this.orders.forEach(value => {
-        if (value.tarifaBase != this.pago.baseRate) {
-          const nPay = this.calculateOrderPayment()
-          let i = this.orders.indexOf(value)
-          value.tarifaBase = this.pago.baseRate
-          value.cargosExtra = nPay.cargosExtra
-          value.recargo = nPay.surcharges
-          value.cTotal = nPay.total
-          this.pagos[i].baseRate = nPay.baseRate
-          if (this.pago[i]?.cargosExtra) {
-            this.pago[i].cargosExtra = nPay.cargosExtra
           }
 
-          this.pagos[i].surcharges = nPay.surcharges
-          this.pagos[i].total = nPay.total
-        }
-      })
+          this.agregado = true
+          setTimeout(() => {
+            this.agregado = false;
+          }, 2000)
 
-      cDistanceSubscription.unsubscribe()
-      this.calculatePayment()
+          this.orders.forEach(value => {
+            if (value.tarifaBase != this.pago.baseRate) {
+              const nPay = this.calculateOrderPayment()
+              let i = this.orders.indexOf(value)
+              value.tarifaBase = this.pago.baseRate
+              value.cargosExtra = nPay.cargosExtra
+              value.recargo = nPay.surcharges
+              value.cTotal = nPay.total
+              this.pagos[i].baseRate = nPay.baseRate
+              if (this.pago[i]?.cargosExtra) {
+                this.pago[i].cargosExtra = nPay.cargosExtra
+              }
 
-    }, error => {
+              this.pagos[i].surcharges = nPay.surcharges
+              this.pagos[i].total = nPay.total
+            }
+          })
 
-      error.subscribe(error => {
-        this.prohibitedDistanceMsg = error.statusText
-        this.prohibitedDistance = true
-        this.dialog.closeAll()
-        cDistanceSubscription.unsubscribe()
-        setTimeout(() => {
-          this.prohibitedDistance = false;
-        }, 2000)
-      })
+          cDistanceSubscription.unsubscribe()
+          this.calculatePayment()
 
+        }, error => {
+
+          error.subscribe(error => {
+            this.prohibitedDistanceMsg = error.statusText
+            this.prohibitedDistance = true
+            this.dialog.closeAll()
+            cDistanceSubscription.unsubscribe()
+            setTimeout(() => {
+              this.prohibitedDistance = false;
+            }, 2000)
+          })
+
+        })
+      }
+      cordsSubscription.unsubscribe()
     })
 
   }
