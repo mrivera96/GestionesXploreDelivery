@@ -608,17 +608,10 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
             cordsSubscription1.unsubscribe()
             cordsSubscription.unsubscribe()
           })
-        }
-        cordsSubscription.unsubscribe()
-      }, error => {
-        const cordsSubscription1 = this.http.post<any>(`${environment.apiUrl}`, {
-          function: 'getCoords',
-          lugar: salida,
-        }).subscribe((response) => {
-          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ',' + response[0].lng);
-          cordsSubscription1.unsubscribe()
+        }else{
           cordsSubscription.unsubscribe()
-        })
+        }
+
       })
     }
 
@@ -636,17 +629,10 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
           cordsSubscription1.unsubscribe()
           cordsSubscription.unsubscribe();
         })
+      }else{
+        cordsSubscription.unsubscribe()
       }
-      cordsSubscription.unsubscribe()
-    }, error => {
-      const cordsSubscription1 = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: entrega,
-      }).subscribe((response) => {
-        this.currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
-        cordsSubscription1.unsubscribe()
-        cordsSubscription.unsubscribe();
-      })
+
     })
 
     const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
