@@ -22,8 +22,7 @@
           Cambiar Hora de Recogida
         </button>
 
-        <button type="button" mat-menu-item *ngIf="currentDelivery?.detalle[0]?.coordsDestino != null"
-                (click)="optimizeRoutes()">
+        <button type="button" mat-menu-item (click)="optimizeRoutes()">
           Generar Ruta Optimizada
         </button>
       </mat-menu>
