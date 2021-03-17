@@ -42,6 +42,7 @@ export class VerSolicitudComponent implements OnInit {
   dtOptions: any
   dtTrigger: Subject<any> = new Subject()
   currUser: User = {}
+  totalDistance = 0
 
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
@@ -192,7 +193,7 @@ export class VerSolicitudComponent implements OnInit {
   }
 
   //COMUNICACIÓN CON LA API RUTEADOR PARA EL REORDENADO DEL ARRAY DE ENVÍOS
-  /*optimizeRoutes() {
+  optimizeRoutes() {
     let orderArray = '['
     const originAddress = {
       address: this.currentDelivery.dirRecogida,
@@ -210,12 +211,13 @@ export class VerSolicitudComponent implements OnInit {
       orderArray = orderArray + JSON.stringify(orderObject) + ','
     })
     orderArray = orderArray + JSON.stringify(originAddress) + ']'
+    this.openLoader()
 
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
       .subscribe(response => {
         const optimizedRouteOrder: any[] = response.route
         let totalDistance = 0
-        this.orders.forEach(order => {
+        this.currentDelivery.detalle.forEach(order => {
           for (let i in optimizedRouteOrder) {
             if (order.direccion == optimizedRouteOrder[i].name) {
               // @ts-ignore
@@ -226,16 +228,16 @@ export class VerSolicitudComponent implements OnInit {
             }
           }
         })
-        this.deliveryForm.get('deliveryHeader.distancia').setValue(totalDistance)
+        this.totalDistance = totalDistance
 
-        this.orders.sort((a, b) => (a.order > b.order) ? 1 : -1);
-        this.loaders.loadingOptimizing = false
+        this.currentDelivery.detalle.sort((a, b) => (a.order > b.order) ? 1 : -1);
+        this.dialog.closeAll()
         optSubscription.unsubscribe()
       }, error => {
-        this.loaders.loadingOptimizing = false
+        this.dialog.closeAll()
         this.openErrorDialog('Ha ocurrido un error al optimizar la ruta', false)
       })
-  }*/
+  }
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent)

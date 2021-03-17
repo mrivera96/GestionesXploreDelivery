@@ -528,95 +528,101 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       })
     }
 
-    const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'calculateDistance',
-      salida: salida,
-      entrega: entrega,
-      tarifa: tarifa
+    const coordsSubs =this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getCoords',
+      lugar: entrega,
     }).subscribe((response) => {
-      currOrder.distancia = response.distancia
-      currOrder.tiempo = response.tiempo
-      const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
-      currOrder.tarifaBase = calculatedPayment.baseRate
-      currOrder.recargo = calculatedPayment.surcharges
-      currOrder.cargosExtra = calculatedPayment.cargosExtra
-      currOrder.cTotal = calculatedPayment.total
-      currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra
-      currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion
+      currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
+      if(currOrder.coordsDestino != null){
+        const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+          function: 'calculateDistance',
+          salida: salida,
+          entrega: entrega,
+          tarifa: tarifa
+        }).subscribe((response) => {
+          currOrder.distancia = response.distancia
+          currOrder.tiempo = response.tiempo
+          const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
+          currOrder.tarifaBase = calculatedPayment.baseRate
+          currOrder.recargo = calculatedPayment.surcharges
+          currOrder.cargosExtra = calculatedPayment.cargosExtra
+          currOrder.cTotal = calculatedPayment.total
+          currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra
+          currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion
 
-      this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: entrega,
-      }).subscribe((response) => {
-        currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
-      })
 
-      this.deliveryForm.get('order').reset()
-      this.orders.push(currOrder)
-      this.pagos.push(calculatedPayment)
-      this.newForm.get('deliveryHeader.idCategoria').disable()
-      this.newForm.get('deliveryHeader.dirRecogida').disable()
-      this.newForm.get('deliveryHeader.fecha').disable()
-      this.newForm.get('deliveryHeader.hora').disable()
-      this.selectedExtraChargeOption = {}
-      this.selectedExtraCharge = null
 
-      if (this.orders.length > 1) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.dtTrigger.next()
-          })
-      } else {
-        if (this.dtElement.dtInstance) {
-          this.dtElement.dtInstance.then(
-            (dtInstance: DataTables.Api) => {
-              dtInstance.destroy()
+          this.deliveryForm.get('order').reset()
+          this.orders.push(currOrder)
+          this.pagos.push(calculatedPayment)
+          this.newForm.get('deliveryHeader.idCategoria').disable()
+          this.newForm.get('deliveryHeader.dirRecogida').disable()
+          this.newForm.get('deliveryHeader.fecha').disable()
+          this.newForm.get('deliveryHeader.hora').disable()
+          this.selectedExtraChargeOption = {}
+          this.selectedExtraCharge = null
+
+          if (this.orders.length > 1) {
+            this.dtElement.dtInstance.then(
+              (dtInstance: DataTables.Api) => {
+                dtInstance.destroy()
+                this.dtTrigger.next()
+              })
+          } else {
+            if (this.dtElement.dtInstance) {
+              this.dtElement.dtInstance.then(
+                (dtInstance: DataTables.Api) => {
+                  dtInstance.destroy()
+                  this.dtTrigger.next()
+                })
+            } else {
               this.dtTrigger.next()
-            })
-        } else {
-          this.dtTrigger.next()
-        }
+            }
 
+          }
+
+
+          this.agregado = true
+          setTimeout(() => {
+            this.agregado = false;
+          }, 2000)
+
+          this.orders.forEach(value => {
+            if (value.tarifaBase != this.pago.baseRate) {
+              const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
+              let i = this.orders.indexOf(value)
+              value.tarifaBase = this.pago.baseRate
+              value.cargosExtra = nPay.cargosExtra
+              value.recargo = nPay.surcharges
+              value.cTotal = nPay.total
+              this.pagos[i].baseRate = nPay.baseRate
+              if(this.pagos[i]?.cargosExtra){
+                this.pagos[i].cargosExtra = nPay.cargosExtra
+              }
+              this.pagos[i].surcharges = nPay.surcharges
+              this.pagos[i].total = nPay.total
+            }
+          })
+          cDistanceSubscription.unsubscribe()
+          this.calculatePayment()
+
+        }, error => {
+          error.subscribe(error => {
+            this.prohibitedDistanceMsg = error.statusText
+            this.prohibitedDistance = true
+            this.loaders.loadingAdd = false
+            cDistanceSubscription.unsubscribe()
+            setTimeout(() => {
+              this.prohibitedDistance = false;
+            }, 2000)
+          })
+
+        })
       }
 
-
-      this.agregado = true
-      setTimeout(() => {
-        this.agregado = false;
-      }, 2000)
-
-      this.orders.forEach(value => {
-        if (value.tarifaBase != this.pago.baseRate) {
-          const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
-          let i = this.orders.indexOf(value)
-          value.tarifaBase = this.pago.baseRate
-          value.cargosExtra = nPay.cargosExtra
-          value.recargo = nPay.surcharges
-          value.cTotal = nPay.total
-          this.pagos[i].baseRate = nPay.baseRate
-          if(this.pagos[i]?.cargosExtra){
-            this.pagos[i].cargosExtra = nPay.cargosExtra
-          }
-          this.pagos[i].surcharges = nPay.surcharges
-          this.pagos[i].total = nPay.total
-        }
-      })
-      cDistanceSubscription.unsubscribe()
-      this.calculatePayment()
-
-    }, error => {
-      error.subscribe(error => {
-        this.prohibitedDistanceMsg = error.statusText
-        this.prohibitedDistance = true
-        this.loaders.loadingAdd = false
-        cDistanceSubscription.unsubscribe()
-        setTimeout(() => {
-          this.prohibitedDistance = false;
-        }, 2000)
-      })
-
+      coordsSubs.unsubscribe()
     })
+
 
   }
 
