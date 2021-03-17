@@ -9,12 +9,12 @@ import {animate, style, transition, trigger} from "@angular/animations";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeStateDialogComponent} from "./change-state-dialog/change-state-dialog.component";
-import { XploreChangeHourDialogComponent } from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
+import {XploreChangeHourDialogComponent} from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
 import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
 import {OrderDetailDialogComponent} from "../../shared/order-detail-dialog/order-detail-dialog.component";
 import {User} from "../../../models/user";
 import {AuthService} from "../../../services/auth.service";
-import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
+import {LoadingDialogComponent} from '../../shared/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -98,7 +98,7 @@ export class VerSolicitudComponent implements OnInit {
 
       const state = response.data.idEstado
 
-      if(state !== 39){
+      if (state !== 39) {
         this.allowHourChange = true
       }
       deliveriesSubscription.unsubscribe()
@@ -127,7 +127,7 @@ export class VerSolicitudComponent implements OnInit {
       }
     })
 
-    if(reload){
+    if (reload) {
       dialog.afterClosed().subscribe(result => {
         this.loaders.loadingData = true
         this.reloadPage()
@@ -135,7 +135,7 @@ export class VerSolicitudComponent implements OnInit {
     }
   }
 
-  openChangeStateDialog(){
+  openChangeStateDialog() {
     this.dialog.open(ChangeStateDialogComponent, {
       data: {
         idDelivery: this.deliveryId,
@@ -144,32 +144,32 @@ export class VerSolicitudComponent implements OnInit {
     })
   }
 
-  openChangeHourDialog(){
-    const dialogRef = this.dialog.open(XploreChangeHourDialogComponent,{
-      data:{
+  openChangeHourDialog() {
+    const dialogRef = this.dialog.open(XploreChangeHourDialogComponent, {
+      data: {
         delivery: this.currentDelivery
       }
     })
 
-    dialogRef.afterClosed().subscribe( result => {
-      if(result){
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
         this.ngOnInit()
       }
     })
 
   }
 
-  openPhotosDialog(photos){
+  openPhotosDialog(photos) {
 
-    const dialogRef = this.dialog.open(ViewPhotosDialogComponent,{
-      data:{
+    const dialogRef = this.dialog.open(ViewPhotosDialogComponent, {
+      data: {
         photos: photos
       }
     })
 
   }
 
-  showDetailDialog(order){
+  showDetailDialog(order) {
     const dialogRef = this.dialog.open(OrderDetailDialogComponent,
       {
         data: {
@@ -190,6 +190,52 @@ export class VerSolicitudComponent implements OnInit {
       }
     })*/
   }
+
+  //COMUNICACIÓN CON LA API RUTEADOR PARA EL REORDENADO DEL ARRAY DE ENVÍOS
+  /*optimizeRoutes() {
+    let orderArray = '['
+    const originAddress = {
+      address: this.currentDelivery.dirRecogida,
+      lat: this.currentDelivery.coordsOrigen.split(',')[0],
+      lng: this.currentDelivery.coordsOrigen.split(',')[1]
+    }
+
+    orderArray = orderArray + JSON.stringify(originAddress) + ','
+    this.currentDelivery.detalle.forEach(order => {
+      const orderObject = {
+        address: order.direccion,
+        lat: order.coordsDestino.split(',')[0],
+        lng: order.coordsDestino.split(',')[1]
+      }
+      orderArray = orderArray + JSON.stringify(orderObject) + ','
+    })
+    orderArray = orderArray + JSON.stringify(originAddress) + ']'
+
+    const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
+      .subscribe(response => {
+        const optimizedRouteOrder: any[] = response.route
+        let totalDistance = 0
+        this.orders.forEach(order => {
+          for (let i in optimizedRouteOrder) {
+            if (order.direccion == optimizedRouteOrder[i].name) {
+              // @ts-ignore
+              order.distancia = (optimizedRouteOrder[i].distance - optimizedRouteOrder[i - 1].distance).toPrecision(2) + ' km'
+              order.tiempo = optimizedRouteOrder[i].arrival + ' mins'
+              order.order = +i
+              totalDistance = totalDistance + +order.distancia.split(" ")[0]
+            }
+          }
+        })
+        this.deliveryForm.get('deliveryHeader.distancia').setValue(totalDistance)
+
+        this.orders.sort((a, b) => (a.order > b.order) ? 1 : -1);
+        this.loaders.loadingOptimizing = false
+        optSubscription.unsubscribe()
+      }, error => {
+        this.loaders.loadingOptimizing = false
+        this.openErrorDialog('Ha ocurrido un error al optimizar la ruta', false)
+      })
+  }*/
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent)

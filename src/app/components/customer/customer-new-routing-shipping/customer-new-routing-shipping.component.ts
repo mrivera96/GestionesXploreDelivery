@@ -1199,7 +1199,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
       orderArray = orderArray + JSON.stringify(orderObject)  + ','
     })
     orderArray = orderArray + JSON.stringify(originAddress)  + ']'
-    //this.loaders.loadingOptimizing = true
+    this.loaders.loadingOptimizing = true
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
       .subscribe(response => {
         const optimizedRouteOrder: any[] = response.route
