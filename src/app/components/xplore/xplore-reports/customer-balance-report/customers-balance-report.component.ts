@@ -175,7 +175,7 @@ export class CustomersBalanceReportComponent implements OnInit {
     })
 
 
-    const paymentstotals = worksheet.addRow(['', 'Total:', this.totalOrders, this.totalPayments, this.totalBalance]);
+    const paymentstotals = worksheet.addRow(['', 'Total:', this.totalOrders, this.totalPayments, this.totalBalance, this.totalCredit]);
     paymentstotals.font = {bold: true}
 
     paymentstotals.getCell(3).numFmt = '#,##0'
