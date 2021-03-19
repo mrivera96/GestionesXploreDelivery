@@ -159,10 +159,10 @@ export class CustomersBalanceReportComponent implements OnInit {
       let array = [
         d.customer.idCliente,
         d.customer.nomEmpresa,
-        d.orders,
-        d.payments,
-        d.balance,
-        d.credit
+        +d.orders,
+        +d.payments,
+        +d.balance,
+        +d.credit
        ]
       arrayRow.push(array)
     })
@@ -174,6 +174,7 @@ export class CustomersBalanceReportComponent implements OnInit {
       row.getCell(6).numFmt = 'L#,##0.00'
     })
 
+
     const paymentstotals = worksheet.addRow(['', 'Total:', this.totalOrders, this.totalPayments, this.totalBalance]);
     paymentstotals.font = {bold: true}
 
@@ -182,13 +183,11 @@ export class CustomersBalanceReportComponent implements OnInit {
     paymentstotals.getCell(5).numFmt = 'L#,##0.00'
     paymentstotals.getCell(6).numFmt = 'L#,##0.00'
     worksheet.getColumn(1).width = 30;
-    worksheet.getColumn(2).width = 30;
+    worksheet.getColumn(2).width = 40;
     worksheet.getColumn(3).width = 30;
     worksheet.getColumn(4).width = 30;
     worksheet.getColumn(5).width = 30;
     worksheet.getColumn(6).width = 30;
-
-
 
     worksheet.addRow([]);
 
