@@ -159,10 +159,10 @@ export class CustomersBalanceReportComponent implements OnInit {
       let array = [
         d.customer.idCliente,
         d.customer.nomEmpresa,
-        +d.orders,
-        +d.payments,
-        +d.balance,
-        +d.credit
+        d.orders,
+        d.payments,
+        d.balance,
+        d.credit
        ]
       arrayRow.push(array)
     })
