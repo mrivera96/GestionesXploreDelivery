@@ -35,6 +35,7 @@ export class CustomersBalanceReportComponent implements OnInit {
   totalOrders: number = 0
   totalPayments: number = 0.00
   totalBalance: number = 0.00
+  totalCredit: number = 0.00
   constructor(
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
@@ -89,6 +90,7 @@ export class CustomersBalanceReportComponent implements OnInit {
           this.totalOrders = response.totalOrders
           this.totalPayments = response.totalPayments
           this.totalBalance = response.totalBalance
+          this.totalCredit = response.totalCredit
           if (this.datatableElement.dtInstance) {
             this.datatableElement.dtInstance.then(
               (dtInstance: DataTables.Api) => {
@@ -130,11 +132,12 @@ export class CustomersBalanceReportComponent implements OnInit {
 
     worksheet.addRow([]);
     const paymentsHeader = [
-      "N°",
-      "Cliente",
+      "Código Cliente",
+      "Nombre",
       "Envíos",
       "Pagos",
-      "Balance"
+      "Balance",
+      "Crédito Disponible"
     ]
     let paymentsheaderRow = worksheet.addRow(paymentsHeader);
 
@@ -151,23 +154,24 @@ export class CustomersBalanceReportComponent implements OnInit {
     // worksheet.addRows(data);
     // Add Data and Conditional Formatting
     let arrayRow = []
-    let index = 1
+
     this.consultResults.forEach(d => {
       let array = [
-        index,
+        d.idCliente,
         d.customer.nomEmpresa,
         d.orders,
         d.payments,
-        d.balance
+        d.balance,
+        d.credit
        ]
       arrayRow.push(array)
-      index++
     })
     arrayRow.forEach(v => {
       let row = worksheet.addRow(v);
       row.getCell(3).numFmt = '#,##0'
       row.getCell(4).numFmt = 'L#,##0.00'
       row.getCell(5).numFmt = 'L#,##0.00'
+      row.getCell(6).numFmt = 'L#,##0.00'
     })
 
     const paymentstotals = worksheet.addRow(['', 'Total:', this.totalOrders, this.totalPayments, this.totalBalance]);
@@ -176,11 +180,13 @@ export class CustomersBalanceReportComponent implements OnInit {
     paymentstotals.getCell(3).numFmt = '#,##0'
     paymentstotals.getCell(4).numFmt = 'L#,##0.00'
     paymentstotals.getCell(5).numFmt = 'L#,##0.00'
+    paymentstotals.getCell(6).numFmt = 'L#,##0.00'
     worksheet.getColumn(1).width = 30;
     worksheet.getColumn(2).width = 30;
     worksheet.getColumn(3).width = 30;
     worksheet.getColumn(4).width = 30;
     worksheet.getColumn(5).width = 30;
+    worksheet.getColumn(6).width = 30;
 
 
 
@@ -214,30 +220,30 @@ export class CustomersBalanceReportComponent implements OnInit {
       pdf.ln(2)
     )
     const paymentsHeader = [
-      "N°",
-      "Cliente",
+      "Código Cliente",
+      "Nombre",
       "Envíos",
       "Pagos",
-      "Balance"
+      "Balance",
+      "Crédito Disponible"
     ]
     pdf.add(
       pdf.ln(2)
     )
 
     let arrayRow = []
-    let index = 1
     this.consultResults.forEach(d => {
       let array = [
-        index,
+        d.idCliente,
         d.customer.nomEmpresa,
         d.orders,
         'L. ' + d.payments,
-        'L. ' + d.balance
+        'L. ' + d.balance,
+        'L. ' + d.credit
        ]
       arrayRow.push(array)
-      index++
     })
-    
+
     pdf.add(
       new Columns(
           paymentsHeader
@@ -249,8 +255,8 @@ export class CustomersBalanceReportComponent implements OnInit {
         new Columns(v).alignment('center').end
       )
     })
-   
-    const paymentstotals = ['', 'Total:', this.totalOrders, 'L. ' + this.totalPayments, 'L. ' + this.totalBalance]
+
+    const paymentstotals = ['', 'Total:', this.totalOrders, 'L. ' + this.totalPayments, 'L. ' + this.totalBalance,  'L. ' + this.totalCredit]
     pdf.add(
       new Columns(paymentstotals).alignment('center').bold().end
     )

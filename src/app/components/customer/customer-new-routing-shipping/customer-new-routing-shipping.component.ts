@@ -1194,12 +1194,13 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
               if (order.direccion == optimizedRouteOrder[i].name) {
                 // @ts-ignore
                 order.distancia = (optimizedRouteOrder[i].distance - optimizedRouteOrder[i - 1].distance).toPrecision(2) + ' km'
-                order.tiempo = optimizedRouteOrder[i].arrival + ' mins'
+                // @ts-ignore
+                order.tiempo = (optimizedRouteOrder[i].arrival - optimizedRouteOrder[i - 1]) + ' mins'
                 order.order = +i
-                totalDistance = totalDistance + +order.distancia.split(" ")[0]
               }
             }
           })
+          totalDistance = optimizedRouteOrder[optimizedRouteOrder.length - 1].distance
           this.deliveryForm.get('deliveryHeader.distancia').setValue(totalDistance)
 
           this.orders.sort((a, b) => (a.order > b.order) ? 1 : -1);
