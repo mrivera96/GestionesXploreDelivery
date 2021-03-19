@@ -77,29 +77,35 @@
         <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
                class="display compact" style="width:100%">
           <thead>
-          <tr>          
-            <th>Cliente</th>
+          <tr>
+            <th>Código Cliente</th>
+            <th>Nombre</th>
             <th>Envíos</th>
             <th>Pagos</th>
             <th>Balance</th>
+            <th>Crédito Disponible</th>
           </tr>
           </thead>
           <tbody>
 
-          <tr *ngFor="let result of consultResults">       
+          <tr *ngFor="let result of consultResults">
+            <td>{{result.customer.idCliente}}</td>
             <td>{{result.customer.nomEmpresa}}</td>
             <td>{{result.orders }}</td>
             <td>L. {{result.payments}}</td>
             <td>L. {{result.balance }}</td>
+            <td>L. {{result.credit }}</td>
           </tr>
           </tbody>
 
           <tfoot style="display: table-footer-group;">
           <tr>
             <th>Total:</th>
+            <th></th>
             <th>{{totalOrders}}</th>
             <th>L. {{totalPayments}}</th>
             <th>L. {{totalBalance}}</th>
+            <th>L. {{totalCredit}}</th>
           </tr>
           </tfoot>
 

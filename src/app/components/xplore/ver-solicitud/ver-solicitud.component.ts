@@ -47,6 +47,8 @@ export class VerSolicitudComponent implements OnInit {
   currUser: User = {}
   totalDistance = 0
 
+  optimizedRouteOrder = []
+
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
               private authService: AuthService,
@@ -222,22 +224,25 @@ export class VerSolicitudComponent implements OnInit {
 
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
       .subscribe(response => {
-        const optimizedRouteOrder: any[] = response.route
-        let totalDistance = 0
-        this.currentDeliveryDetail.forEach(order => {
-          for (let i in optimizedRouteOrder) {
-            if (order.direccion == optimizedRouteOrder[i].name) {
-              // @ts-ignore
-              order.distancia = (optimizedRouteOrder[i].distance - optimizedRouteOrder[i - 1].distance).toPrecision(2) + ' km'
-              order.tiempo = optimizedRouteOrder[i].arrival + ' mins'
-              order.order = +i
-              totalDistance = totalDistance + +order.distancia.split(" ")[0]
-            }
-          }
-        })
-        this.totalDistance = totalDistance
+        const data = response.route
+        for (let item in data) {
+          this.optimizedRouteOrder.push(data[item])
+        }
 
-        this.currentDeliveryDetail.sort((a, b) => (a.order > b.order) ? 1 : -1)
+        for (let i in this.optimizedRouteOrder) {
+          // @ts-ignore
+          if (i > 0) {
+            // @ts-ignore
+            this.optimizedRouteOrder[i].distancia = (this.optimizedRouteOrder[i].distance - this.optimizedRouteOrder[i - 1].distance).toPrecision(2) + ' km'
+            // @ts-ignore
+            this.optimizedRouteOrder[i].tiempo = (this.optimizedRouteOrder[i].arrival - this.optimizedRouteOrder[i - 1].arrival) + ' mins'
+          }
+          this.optimizedRouteOrder[i].order = +i
+
+        }
+
+        this.totalDistance = this.optimizedRouteOrder[this.optimizedRouteOrder.length - 1].distance
+
         this.generatePDF()
         this.dialog.closeAll()
         optSubscription.unsubscribe()
@@ -261,6 +266,7 @@ export class VerSolicitudComponent implements OnInit {
 
   generatePDF() {
 
+    console.log(this.optimizedRouteOrder)
     const pdf = new PdfMakeWrapper()
 
     let title = 'Ruta optimizada para Delivery N. ' + this.currentDelivery.idDelivery
@@ -283,7 +289,7 @@ export class VerSolicitudComponent implements OnInit {
 
     const header = [
       [
-        new Cell(new Txt('N° Envío').bold().end).end,
+        new Cell(new Txt('N°').bold().end).end,
       ],
       [
         new Cell(new Txt('Dirección').bold().end).colSpan(2).end,
@@ -302,10 +308,10 @@ export class VerSolicitudComponent implements OnInit {
     )
 
     let array1Row = []
-    this.currentDeliveryDetail.forEach(d => {
+    this.optimizedRouteOrder.forEach(d => {
       let array = [
-        d.idDetalle,
-        d.direccion,
+        d.order + 1,
+        d.name,
         '',
         d.distancia,
         d.tiempo,
