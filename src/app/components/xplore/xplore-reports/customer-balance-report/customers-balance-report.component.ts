@@ -157,7 +157,7 @@ export class CustomersBalanceReportComponent implements OnInit {
 
     this.consultResults.forEach(d => {
       let array = [
-        d.idCliente,
+        d.customer.idCliente,
         d.customer.nomEmpresa,
         d.orders,
         d.payments,
@@ -234,7 +234,7 @@ export class CustomersBalanceReportComponent implements OnInit {
     let arrayRow = []
     this.consultResults.forEach(d => {
       let array = [
-        d.idCliente,
+        d.customer.idCliente,
         d.customer.nomEmpresa,
         d.orders,
         'L. ' + d.payments,
@@ -247,18 +247,18 @@ export class CustomersBalanceReportComponent implements OnInit {
     pdf.add(
       new Columns(
           paymentsHeader
-      ).alignment('center').bold().end
+      ).bold().end
     )
 
     arrayRow.forEach(v => {
       pdf.add(
-        new Columns(v).alignment('center').end
+        new Columns(v).end
       )
     })
 
     const paymentstotals = ['', 'Total:', this.totalOrders, 'L. ' + this.totalPayments, 'L. ' + this.totalBalance,  'L. ' + this.totalCredit]
     pdf.add(
-      new Columns(paymentstotals).alignment('center').bold().end
+      new Columns(paymentstotals).bold().end
     )
 
     pdf.create().open()
