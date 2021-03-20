@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {Delivery} from "../../../models/delivery";
-import {Subject} from "rxjs";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {DataTableDirective} from "angular-datatables";
-import {Router} from "@angular/router";
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { DeliveriesService } from "../../../services/deliveries.service";
+import { Delivery } from "../../../models/delivery";
+import { Subject } from "rxjs";
+import { animate, style, transition, trigger } from "@angular/animations";
+import { DataTableDirective } from "angular-datatables";
+import { Router } from "@angular/router";
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
 import { AgenciesService } from 'src/app/services/agencies.service';
@@ -19,15 +19,15 @@ import { City } from 'src/app/models/city';
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
 })
 export class PendingDeliveriesComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective
+  @ViewChildren(DataTableDirective)
+  dtElement: QueryList<DataTableDirective>
   loaders = {
     'loadingData': false
   }
@@ -133,35 +133,41 @@ export class PendingDeliveriesComponent implements OnInit {
         this.drivers = response.data
         this.dialog.closeAll()
         this.dtTrigger2.next()
+
+        this.dtElement.forEach((dtElement: DataTableDirective) => {
+          if(dtElement.dtOptions.pageLength == 10 ){
+            dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.columns().every(function () {
   
-        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.columns().every(function () {
-            const that = this;
-            $('select', this.footer()).on('change', function () {
-              if (that.search() !== this['value']) {
-                that
-                  .search(this['value'])
-                  .draw();
-              }
+                const that = this;
+                $('#miSelect', this.footer()).on('change', function () {
+                  if (that.search() !== this['value']) {
+                    that
+                      .search(this['value'])
+                      .draw();
+                  }
+                })
+              })
             })
-          })
+          }
+          
+          usrSubs.unsubscribe()
         })
-        usrSubs.unsubscribe()
+
+        deliveriesSubscription.unsubscribe()
+
       })
 
-      deliveriesSubscription.unsubscribe()
+      const agSubs = this.agenciesService.getCities().subscribe(response => {
+        this.cities = response.data
+        agSubs.unsubscribe()
+      })
 
     })
-
-    const agSubs = this.agenciesService.getCities().subscribe(response => {
-      this.cities = response.data
-      agSubs.unsubscribe()
-    })
-
   }
 
   ngOnDestroy() {
-    clearInterval(this.interval);
+      clearInterval(this.interval);
   }
 
   openLoader() {
