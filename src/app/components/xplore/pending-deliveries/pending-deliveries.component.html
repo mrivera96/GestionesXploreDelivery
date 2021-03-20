@@ -91,13 +91,15 @@
       </mat-tab>
     </mat-tab-group>
 
-    <div class="row">
-      <div class="col">
-        <h2>Conductores</h2>
-      </div>
-    </div>
+    
+      <mat-card-header>
+        <mat-card-title>
+          Conductores
+        </mat-card-title>
+      </mat-card-header>
+
     <!-- DATATABLE START -->
-    <div class="table-responsive">
+    <div class="table-responsive mt-2">
       <table id="dTable" datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger2" class="display compact"
         style="width:100%">
         <tfoot>
