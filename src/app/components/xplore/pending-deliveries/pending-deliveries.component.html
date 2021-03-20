@@ -53,7 +53,7 @@
       <mat-tab label="Carga Consolidada" >
         <!-- DATATABLE START -->
         <div class="table-responsive mt-2" >
-          <table datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger1"
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1"
                  class="display compact" style="width:100%">
 
             <thead>
@@ -91,6 +91,52 @@
       </mat-tab>
     </mat-tab-group>
 
+    <div class="row">
+      <div class="col">
+        <h2>Conductores</h2>
+      </div>
+    </div>
+    <!-- DATATABLE START -->
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger2" class="display compact"
+        style="width:100%">
+        <tfoot>
+          <tr>
+            <th></th>
+            <th></th>
+            <th data-priority="1">
+              <select class="form-control-sm" name="search-last-name">
+                <option value="">- Filtrar por ciudad -</option>
+                <option *ngFor="let city of cities" [value]="city.nomCiudad">{{city.nomCiudad}}</option>
+              </select>
+            </th>
+            <th></th>
+            <th></th>
+          </tr>
+        </tfoot>
+        <thead>
+          <tr>
+            <th data-priority="1">N°</th>
+            <th>Nombre de Conductor</th>
+            <th>Ciudad</th>
+            <th>Número de Celular</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr *ngFor="let driver of drivers; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{driver.nomUsuario}}</td>
+            <td>{{driver.agency.city.nomCiudad}}</td>
+            <td>{{driver.numCelular || 'Sin registro' }}</td>
+            <td>{{driver.state}}</td>
+          </tr>
+        </tbody>
+
+      </table>
+    </div>
+    <!-- FIN DATATABLE -->
 
   </mat-card-content>
 </mat-card>

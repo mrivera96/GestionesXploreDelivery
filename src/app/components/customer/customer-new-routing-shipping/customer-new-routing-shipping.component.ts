@@ -635,7 +635,6 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
           const nDistance = cumulativeDistance + currentDistance
           this.deliveryForm.get('deliveryHeader.distancia').setValue(nDistance)
 
-
           this.currOrder = {
             extras: [] = []
           }
