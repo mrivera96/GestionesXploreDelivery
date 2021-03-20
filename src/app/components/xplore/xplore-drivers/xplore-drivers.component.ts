@@ -75,10 +75,12 @@ export class XploreDriversComponent implements OnInit {
 
   loadData() {
     this.openLoader()
-    this.agenciesService.getCities().subscribe(response => {
+    const agSubs = this.agenciesService.getCities().subscribe(response => {
       this.cities = response.data
+      agSubs.unsubscribe()
     })
-    this.usersService.getDrivers().subscribe(response => {
+
+    const usrSubs = this.usersService.getDrivers().subscribe(response => {
       this.drivers = response.data
       this.dialog.closeAll()
       this.dtTrigger.next()
@@ -92,9 +94,10 @@ export class XploreDriversComponent implements OnInit {
                 .search(this['value'])
                 .draw();
             }
-          });
-        });
-      });
+          })
+        })
+      })
+      usrSubs.unsubscribe()
     })
 
   }

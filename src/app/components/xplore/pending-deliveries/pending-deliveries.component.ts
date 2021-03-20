@@ -7,6 +7,10 @@ import {DataTableDirective} from "angular-datatables";
 import {Router} from "@angular/router";
 import { MatDialog } from '@angular/material/dialog';
 import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component';
+import { AgenciesService } from 'src/app/services/agencies.service';
+import { UsersService } from 'src/app/services/users.service';
+import { User } from 'src/app/models/user';
+import { City } from 'src/app/models/city';
 
 @Component({
   selector: 'app-pending-deliveries',
@@ -31,13 +35,18 @@ export class PendingDeliveriesComponent implements OnInit {
   consolidateDeliveries: Delivery[] = []
   dtTrigger: Subject<any> = new Subject<any>()
   dtTrigger1: Subject<any> = new Subject<any>()
+  dtTrigger2: Subject<any> = new Subject<any>()
   dtOptions: any
   dtOptions1: any
   interval
+  drivers: User[] = []
+  cities: City[] = []
 
   constructor(
     private deliveriesService: DeliveriesService,
     private router: Router,
+    private agenciesService: AgenciesService,
+    private usersService: UsersService,
     public dialog: MatDialog
   ) {
   }
@@ -80,12 +89,12 @@ export class PendingDeliveriesComponent implements OnInit {
 
     this.dtOptions1 = {
       pagingType: 'full_numbers',
-      pageLength: 100,
+      pageLength: 10,
       serverSide: false,
       processing: true,
       info: true,
       rowReorder: false,
-      order: [2, 'desc'],
+      order: [1, 'asc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -103,6 +112,8 @@ export class PendingDeliveriesComponent implements OnInit {
         },
       },
     }
+
+
   }
 
   loadData() {
@@ -118,11 +129,35 @@ export class PendingDeliveriesComponent implements OnInit {
       this.dtTrigger.next()
       this.dtTrigger1.next()
 
-      this.dialog.closeAll()
+      const usrSubs = this.usersService.getDrivers().subscribe(response => {
+        this.drivers = response.data
+        this.dialog.closeAll()
+        this.dtTrigger2.next()
+  
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.columns().every(function () {
+            const that = this;
+            $('select', this.footer()).on('change', function () {
+              if (that.search() !== this['value']) {
+                that
+                  .search(this['value'])
+                  .draw();
+              }
+            })
+          })
+        })
+        usrSubs.unsubscribe()
+      })
 
       deliveriesSubscription.unsubscribe()
 
     })
+
+    const agSubs = this.agenciesService.getCities().subscribe(response => {
+      this.cities = response.data
+      agSubs.unsubscribe()
+    })
+
   }
 
   ngOnDestroy() {
