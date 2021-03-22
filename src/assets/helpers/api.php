@@ -385,26 +385,26 @@ if (isset($_GET['function'])) {
         $output = curl_exec($handle);
         curl_close($handle);
     } else if ($_POST['function'] == 'getFilteredDeliveries') {
-             $post = file_get_contents('php://input');
-             $array = json_decode($post);
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-             $handle = curl_init();
+        $handle = curl_init();
 
-             $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/filter";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/deliveries/filter";
 
-             $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
-             // Set the url
-             curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
 
-             curl_setopt($handle, CURLOPT_POST, TRUE);
-             curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-             curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-             /* set return type json */
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
 
-             $output = curl_exec($handle);
-             curl_close($handle);
-         } else if ($_POST['function'] == 'getDeliveryById') {
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getDeliveryById') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -1003,7 +1003,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }   else if ($_POST['function'] == 'reportConsolidatedOrdersByDriver') {
+    } else if ($_POST['function'] == 'reportConsolidatedOrdersByDriver') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -1023,7 +1023,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createPayment') {
+    } else if ($_POST['function'] == 'createPayment') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -1980,7 +1980,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getReportRequests') {
+    } else if ($_POST['function'] == 'getReportRequests') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2000,7 +2000,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createReportRequest') {
+    } else if ($_POST['function'] == 'createReportRequest') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2040,7 +2040,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'checkAvalability') {
+    } else if ($_POST['function'] == 'checkAvalability') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2060,7 +2060,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'checkCustomerDelTypes') {
+    } else if ($_POST['function'] == 'checkCustomerDelTypes') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2080,7 +2080,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getCategoryExtraCharges') {
+    } else if ($_POST['function'] == 'getCategoryExtraCharges') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2100,7 +2100,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'cancelDelivery') {
+    } else if ($_POST['function'] == 'cancelDelivery') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2120,7 +2120,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getDriverCategories') {
+    } else if ($_POST['function'] == 'getDriverCategories') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2140,7 +2140,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'assignDriverCategory') {
+    } else if ($_POST['function'] == 'assignDriverCategory') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2160,7 +2160,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'removeDriverCategory') {
+    } else if ($_POST['function'] == 'removeDriverCategory') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2180,7 +2180,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getMyLabels') {
+    } else if ($_POST['function'] == 'getMyLabels') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2200,7 +2200,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'createLabel') {
+    } else if ($_POST['function'] == 'createLabel') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2220,7 +2220,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'updateLabel') {
+    } else if ($_POST['function'] == 'updateLabel') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2240,7 +2240,7 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'deleteLabel') {
+    } else if ($_POST['function'] == 'deleteLabel') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2261,18 +2261,23 @@ if (isset($_GET['function'])) {
         $output = curl_exec($handle);
         curl_close($handle);
     } else if ($_POST['function'] == 'optimizeRoutes') {
-              $handle = curl_init();
-                     $routes = curl_escape($handle, $_POST['routes'] );
+        $handle = curl_init();
+        $locations =   $_POST['routes'];
+        $controller    = 'tour';
+        $url        = 'https://api.routexl.com/' . '/' . $controller;
 
-                     $url = "http://190.4.56.14/GoogleApi/routes.php?routes=".$routes;
+        $auth = base64_encode('rony.pavon@xplorerentacar.com:Xplore20$Xl');
 
-                     // Set the url
-                     curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+        curl_setopt($handle, CURLOPT_HEADER, 0);
+        curl_setopt($handle, CURLOPT_POST, 1);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, 'locations=' . json_encode($locations));
+        curl_setopt($handle, CURLOPT_ENCODING, 'gzip, deflate'); // Compress
+        curl_setopt($handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC); // Basic authorization
+        curl_setopt($handle, CURLOPT_USERPWD, 'rony.pavon@xplorerentacar.com:Xplore20$Xl'); // Your credentials
 
-                     //curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
-                     /* set return type json */
-
-                     $output = curl_exec($handle);
-                     curl_close($handle);
-         }
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }
 }

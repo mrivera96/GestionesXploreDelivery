@@ -204,25 +204,25 @@ export class VerSolicitudComponent implements OnInit {
   optimizeRoutes() {
 
     this.openLoader()
-    let orderArray = '['
+    let orderArray = []
     const originAddress = {
       address: this.currentDelivery.dirRecogida,
       lat: this.currentDelivery.coordsOrigen.split(',')[0],
       lng: this.currentDelivery.coordsOrigen.split(',')[1].trim()
     }
 
-    orderArray = orderArray + JSON.stringify(originAddress) + ','
+    orderArray.push(originAddress)
     this.currentDeliveryDetail.forEach(order => {
       const orderObject = {
         address: order.direccion,
         lat: order.coordsDestino.split(',')[0],
         lng: order.coordsDestino.split(',')[1]
       }
-      orderArray = orderArray + JSON.stringify(orderObject) + ','
+      orderArray.push(orderObject)
     })
-    orderArray = orderArray + JSON.stringify(originAddress) + ']'
+    orderArray.push(originAddress)
 
-    const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
+    const optSubscription = this.deliveriesService.optimizeRoute(orderArray)
       .subscribe(response => {
         const data = response.route
         for (let item in data) {
@@ -254,25 +254,29 @@ export class VerSolicitudComponent implements OnInit {
 
   async getOrdersCoords() {
     this.currentDeliveryDetail.forEach(order => {
-      const coordsSubsc = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: order.direccion,
-      }).subscribe((response) => {
-        order.coordsDestino = response[0].lat + ',' + response[0].lng
-        coordsSubsc.unsubscribe()
-      })
+      if(order.direccion.startsWith('15.') || order.direccion.startsWith('14.') || order.direccion.startsWith('13.')){
+        order.coordsDestino = order.direccion
+      }else{
+        const coordsSubsc = this.http.post<any>(`${environment.apiUrl}`, {
+          function: 'getCoords',
+          lugar: order.direccion,
+        }).subscribe((response) => {
+          order.coordsDestino = response[0].lat + ',' + response[0].lng
+          coordsSubsc.unsubscribe()
+        })
+      }
+
     })
   }
 
   generatePDF() {
 
-    console.log(this.optimizedRouteOrder)
     const pdf = new PdfMakeWrapper()
 
     let title = 'Ruta optimizada para Delivery N. ' + this.currentDelivery.idDelivery
 
     pdf.pageSize('letter')
-    pdf.pageOrientation('portrait')
+    pdf.pageOrientation('landscape')
 
     pdf.add(
       new Txt(title).bold().end
@@ -298,6 +302,7 @@ export class VerSolicitudComponent implements OnInit {
       [
         new Cell(new Txt('Distancia').bold().end).end,
       ],
+
       [
         new Cell(new Txt('Tiempo').bold().end).end,
       ],
@@ -323,6 +328,9 @@ export class VerSolicitudComponent implements OnInit {
       pdf.add(
         new Columns(res
         ).alignment("left").end
+      )
+      pdf.add(
+        pdf.ln(2)
       )
     })
 
