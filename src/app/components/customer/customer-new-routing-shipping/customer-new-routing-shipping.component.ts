@@ -1166,24 +1166,25 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   //COMUNICACIÓN CON LA API RUTEADOR PARA EL REORDENADO DEL ARRAY DE ENVÍOS
   optimizeRoutes() {
-    let orderArray = '['
+    let orderArray = []
     const originAddress = {
       address: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
       lat: this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[0],
       lng: this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[1]
     }
-    orderArray = orderArray + JSON.stringify(originAddress) + ','
+
+    orderArray.push(originAddress)
     this.orders.forEach(order => {
       const orderObject = {
         address: order.direccion,
         lat: order.coordsDestino.split(',')[0],
         lng: order.coordsDestino.split(',')[1]
       }
-      orderArray = orderArray + JSON.stringify(orderObject) + ','
+      orderArray.push(orderObject)
     })
-    orderArray = orderArray + JSON.stringify(originAddress) + ']'
+    orderArray.push(originAddress)
     this.loaders.loadingOptimizing = true
-    const optSubscription = this.deliveriesService.optimizeRoute(orderArray.replace(' ', ''))
+    const optSubscription = this.deliveriesService.optimizeRoute(orderArray)
       .subscribe(response => {
         if(response != null){
           const optimizedRouteOrder: any[] = response.route
