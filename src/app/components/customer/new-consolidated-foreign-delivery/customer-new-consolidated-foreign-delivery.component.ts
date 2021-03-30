@@ -24,8 +24,8 @@ import { NoUrlValidator } from "../../../helpers/noUrl.validator";
 import { environment } from "../../../../environments/environment";
 import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
 import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component";
-import { ConfirmDialogComponent } from "../customer-new-delivery/confirm-dialog/confirm-dialog.component";
-import { CustomerRestrictionsDialogComponent } from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
+import { ConfirmDialogComponent } from "../new-delivery/confirm-dialog/confirm-dialog.component";
+import { CustomerRestrictionsDialogComponent } from "../restrictions-dialog/customer-restrictions-dialog.component";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { UsersService } from 'src/app/services/users.service';
 import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component';
@@ -987,7 +987,7 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
         if (response.data == false) {
           this.openLockedUserDialog(response.balance)
         } else {
-          
+
           this.loadData()
         }
         usrsSubs.unsubscribe()

@@ -2,8 +2,8 @@
 date_default_timezone_set("America/Tegucigalpa");
 setlocale(LC_TIME, 'es_HN');
 
-//$environment = 'XploreDeliveryAPIDesa';
-$environment = 'XploreDeliveryAPI';
+$environment = 'XploreDeliveryAPIDesa';
+//$environment = 'XploreDeliveryAPI';
 
 if (isset($_GET['function'])) {
     $func = $_GET['function'];
