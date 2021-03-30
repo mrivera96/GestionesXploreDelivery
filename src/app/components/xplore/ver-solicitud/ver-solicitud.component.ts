@@ -1,23 +1,23 @@
-import {Component, OnInit} from '@angular/core'
-import {DeliveriesService} from "../../../services/deliveries.service"
-import {Delivery} from "../../../models/delivery"
-import {ActivatedRoute} from "@angular/router"
-import {State} from "../../../models/state";
-import {Subject} from "rxjs";
-import {DeliveryDetail} from "../../../models/delivery-detail";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {ChangeStateDialogComponent} from "./change-state-dialog/change-state-dialog.component";
-import {XploreChangeHourDialogComponent} from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
-import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
-import {OrderDetailDialogComponent} from "../../shared/order-detail-dialog/order-detail-dialog.component";
-import {User} from "../../../models/user";
-import {AuthService} from "../../../services/auth.service";
+import {Component, OnInit} from '@angular/core';
+import {DeliveriesService} from '../../../services/deliveries.service';
+import {Delivery} from '../../../models/delivery';
+import {ActivatedRoute} from '@angular/router';
+import {State} from '../../../models/state';
+import {Subject} from 'rxjs';
+import {DeliveryDetail} from '../../../models/delivery-detail';
+import {animate, style, transition, trigger} from '@angular/animations';
+import {ErrorModalComponent} from '../../shared/error-modal/error-modal.component';
+import {MatDialog} from '@angular/material/dialog';
+import {ChangeStateDialogComponent} from './change-state-dialog/change-state-dialog.component';
+import {XploreChangeHourDialogComponent} from './xplore-change-hour-dialog/xplore-change-hour-dialog.component';
+import {ViewPhotosDialogComponent} from '../../shared/view-photos-dialog/view-photos-dialog.component';
+import {OrderDetailDialogComponent} from '../../shared/order-detail-dialog/order-detail-dialog.component';
+import {User} from '../../../models/user';
+import {AuthService} from '../../../services/auth.service';
 import {LoadingDialogComponent} from '../../shared/loading-dialog/loading-dialog.component';
-import {environment} from "../../../../environments/environment";
-import {HttpClient} from "@angular/common/http";
-import {Cell, Columns, PdfMakeWrapper, Txt} from "pdfmake-wrapper";
+import {environment} from '../../../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Cell, Columns, PdfMakeWrapper, Txt} from 'pdfmake-wrapper';
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -33,37 +33,37 @@ import {Cell, Columns, PdfMakeWrapper, Txt} from "pdfmake-wrapper";
   ]
 })
 export class VerSolicitudComponent implements OnInit {
-  currentDelivery: Delivery
-  currentDeliveryDetail: DeliveryDetail[]
-  deliveryId: number
+  currentDelivery: Delivery;
+  currentDeliveryDetail: DeliveryDetail[];
+  deliveryId: number;
   loaders = {
     'loadingData': false
-  }
-  allowHourChange: boolean = false
-  succsMsg: string
-  states: State[]
-  dtOptions: any
-  dtTrigger: Subject<any> = new Subject()
-  currUser: User = {}
-  totalDistance = 0
+  };
+  allowHourChange: boolean = false;
+  succsMsg: string;
+  states: State[];
+  dtOptions: any;
+  dtTrigger: Subject<any> = new Subject();
+  currUser: User = {};
+  totalDistance = 0;
 
-  optimizedRouteOrder = []
+  optimizedRouteOrder = [];
 
   constructor(private deliveriesService: DeliveriesService,
               private route: ActivatedRoute,
               private authService: AuthService,
               private http: HttpClient,
               public dialog: MatDialog) {
-    this.loaders.loadingData = true
-    this.currUser = this.authService.currentUserValue
+    this.loaders.loadingData = true;
+    this.currUser = this.authService.currentUserValue;
   }
 
   ngOnInit(): void {
-    this.initialize()
+    this.initialize();
     this.route.paramMap.subscribe(params => {
-      this.deliveryId = Number(params.get("id"));
-    })
-    this.loadData()
+      this.deliveryId = Number(params.get('id'));
+    });
+    this.loadData();
 
   }
 
@@ -90,43 +90,43 @@ export class VerSolicitudComponent implements OnInit {
           previous: 'Ant.'
         },
       },
-    }
+    };
 
-    this.dtTrigger = new Subject<any>()
+    this.dtTrigger = new Subject<any>();
 
   }
 
   loadData() {
-    this.openLoader()
+    this.openLoader();
     const deliveriesSubscription = this.deliveriesService.getById(this.deliveryId).subscribe(response => {
-      this.currentDelivery = response.data
-      this.currentDeliveryDetail = response.data.detalle
-      this.dtTrigger.next()
-      this.dialog.closeAll()
+      this.currentDelivery = response.data;
+      this.currentDeliveryDetail = response.data.detalle;
+      this.dtTrigger.next();
+      this.dialog.closeAll();
 
-      const state = response.data.idEstado
+      const state = response.data.idEstado;
 
       if (state !== 39) {
-        this.allowHourChange = true
+        this.allowHourChange = true;
       }
-      this.getOrdersCoords()
-      deliveriesSubscription.unsubscribe()
+      this.getOrdersCoords();
+      deliveriesSubscription.unsubscribe();
 
     }, error => {
-      this.dialog.closeAll()
-      this.openErrorDialog("Lo sentimos, ha ocurrido un error al cargar los datos de esta reservación. Al dar clic en Aceptar, volveremos a intentarlo", true)
-      deliveriesSubscription.unsubscribe()
-    })
+      this.dialog.closeAll();
+      this.openErrorDialog('Lo sentimos, ha ocurrido un error al cargar los datos de esta reservación. Al dar clic en Aceptar, volveremos a intentarlo', true);
+      deliveriesSubscription.unsubscribe();
+    });
 
     const statesSubscription = this.deliveriesService.getStates().subscribe(response => {
-      this.states = response.data.xploreDelivery
-      statesSubscription.unsubscribe()
-    })
+      this.states = response.data.xploreDelivery;
+      statesSubscription.unsubscribe();
+    });
 
   }
 
   reloadPage() {
-    this.ngOnInit()
+    this.ngOnInit();
   }
 
   openErrorDialog(error: string, reload: boolean): void {
@@ -134,13 +134,13 @@ export class VerSolicitudComponent implements OnInit {
       data: {
         msgError: error
       }
-    })
+    });
 
     if (reload) {
       dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
-        this.reloadPage()
-      })
+        this.loaders.loadingData = true;
+        this.reloadPage();
+      });
     }
   }
 
@@ -150,7 +150,7 @@ export class VerSolicitudComponent implements OnInit {
         idDelivery: this.deliveryId,
         idEstado: this.currentDelivery.idEstado
       }
-    })
+    });
   }
 
   openChangeHourDialog() {
@@ -158,28 +158,26 @@ export class VerSolicitudComponent implements OnInit {
       data: {
         delivery: this.currentDelivery
       }
-    })
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.ngOnInit()
+        this.ngOnInit();
       }
-    })
+    });
 
   }
 
   openPhotosDialog(photos) {
-
-    const dialogRef = this.dialog.open(ViewPhotosDialogComponent, {
+    this.dialog.open(ViewPhotosDialogComponent, {
       data: {
         photos: photos
       }
-    })
-
+    });
   }
 
   showDetailDialog(order) {
-    const dialogRef = this.dialog.open(OrderDetailDialogComponent,
+    this.dialog.open(OrderDetailDialogComponent,
       {
         data: {
           currentOrder: order,
@@ -187,109 +185,100 @@ export class VerSolicitudComponent implements OnInit {
           currentUser: this.currUser
         }
       }
-    )
+    );
 
-    /*dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.datatableElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.ngOnInit()
-          })
-      }
-    })*/
   }
 
   //COMUNICACIÓN CON LA API RUTEADOR PARA EL REORDENADO DEL ARRAY DE ENVÍOS
   optimizeRoutes() {
 
-    this.openLoader()
-    let orderArray = []
+    this.openLoader();
+    let orderArray = [];
     const originAddress = {
       address: this.currentDelivery.dirRecogida,
       lat: this.currentDelivery.coordsOrigen.split(',')[0],
       lng: this.currentDelivery.coordsOrigen.split(',')[1].trim()
-    }
+    };
 
-    orderArray.push(originAddress)
+    orderArray.push(originAddress);
     this.currentDeliveryDetail.forEach(order => {
       const orderObject = {
         address: order.direccion,
         lat: order.coordsDestino.split(',')[0],
         lng: order.coordsDestino.split(',')[1]
-      }
-      orderArray.push(orderObject)
-    })
-    orderArray.push(originAddress)
+      };
+      orderArray.push(orderObject);
+    });
+    orderArray.push(originAddress);
 
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray)
       .subscribe(response => {
-        const data = response.route
+        const data = response.route;
         for (let item in data) {
-          this.optimizedRouteOrder.push(data[item])
+          this.optimizedRouteOrder.push(data[item]);
         }
 
         for (let i in this.optimizedRouteOrder) {
           // @ts-ignore
           if (i > 0) {
             // @ts-ignore
-            this.optimizedRouteOrder[i].distancia = (this.optimizedRouteOrder[i].distance - this.optimizedRouteOrder[i - 1].distance).toPrecision(2) + ' km'
+            this.optimizedRouteOrder[i].distancia = (this.optimizedRouteOrder[i].distance - this.optimizedRouteOrder[i - 1].distance).toPrecision(2) + ' km';
             // @ts-ignore
-            this.optimizedRouteOrder[i].tiempo = (this.optimizedRouteOrder[i].arrival - this.optimizedRouteOrder[i - 1].arrival) + ' mins'
+            this.optimizedRouteOrder[i].tiempo = (this.optimizedRouteOrder[i].arrival - this.optimizedRouteOrder[i - 1].arrival) + ' mins';
           }
-          this.optimizedRouteOrder[i].order = +i
+          this.optimizedRouteOrder[i].order = +i;
 
         }
 
-        this.totalDistance = this.optimizedRouteOrder[this.optimizedRouteOrder.length - 1].distance
+        this.totalDistance = this.optimizedRouteOrder[this.optimizedRouteOrder.length - 1].distance;
 
-        this.generatePDF()
-        this.dialog.closeAll()
-        optSubscription.unsubscribe()
+        this.generatePDF();
+        this.dialog.closeAll();
+        optSubscription.unsubscribe();
       }, error => {
-        this.dialog.closeAll()
-        this.openErrorDialog('Ha ocurrido un error al optimizar la ruta', false)
-      })
+        this.dialog.closeAll();
+        this.openErrorDialog('Ha ocurrido un error al optimizar la ruta', false);
+      });
   }
 
   async getOrdersCoords() {
     this.currentDeliveryDetail.forEach(order => {
-      if(order.direccion.startsWith('15.') || order.direccion.startsWith('14.') || order.direccion.startsWith('13.')){
-        order.coordsDestino = order.direccion
-      }else{
+      if (order.direccion.startsWith('15.') || order.direccion.startsWith('14.') || order.direccion.startsWith('13.')) {
+        order.coordsDestino = order.direccion;
+      } else {
         const coordsSubsc = this.http.post<any>(`${environment.apiUrl}`, {
           function: 'getCoords',
           lugar: order.direccion,
         }).subscribe((response) => {
-          order.coordsDestino = response[0].lat + ',' + response[0].lng
-          coordsSubsc.unsubscribe()
-        })
+          order.coordsDestino = response[0].lat + ',' + response[0].lng;
+          coordsSubsc.unsubscribe();
+        });
       }
 
-    })
+    });
   }
 
   generatePDF() {
 
-    const pdf = new PdfMakeWrapper()
+    const pdf = new PdfMakeWrapper();
 
-    let title = 'Ruta optimizada para Delivery N. ' + this.currentDelivery.idDelivery
+    let title = 'Ruta optimizada para Delivery N. ' + this.currentDelivery.idDelivery;
 
-    pdf.pageSize('letter')
-    pdf.pageOrientation('landscape')
+    pdf.pageSize('letter');
+    pdf.pageOrientation('landscape');
 
     pdf.add(
       new Txt(title).bold().end
-    )
+    );
     pdf.add(
       pdf.ln(2)
-    )
+    );
     pdf.add(
       new Txt('Distancia Total : ' + this.totalDistance).italics().end
-    )
+    );
     pdf.add(
       pdf.ln(2)
-    )
+    );
 
     const header = [
       [
@@ -306,13 +295,13 @@ export class VerSolicitudComponent implements OnInit {
       [
         new Cell(new Txt('Tiempo').bold().end).end,
       ],
-    ]
+    ];
 
     pdf.add(
-      new Columns(header).alignment("left").end
-    )
+      new Columns(header).alignment('left').end
+    );
 
-    let array1Row = []
+    let array1Row = [];
     this.optimizedRouteOrder.forEach(d => {
       let array = [
         d.order + 1,
@@ -320,25 +309,25 @@ export class VerSolicitudComponent implements OnInit {
         '',
         d.distancia,
         d.tiempo,
-      ]
-      array1Row.push(array)
-    })
+      ];
+      array1Row.push(array);
+    });
 
     array1Row.forEach(res => {
       pdf.add(
         new Columns(res
-        ).alignment("left").end
-      )
+        ).alignment('left').end
+      );
       pdf.add(
         pdf.ln(2)
-      )
-    })
+      );
+    });
 
-    pdf.create().open()
+    pdf.create().open();
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
 
 }
