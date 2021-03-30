@@ -7,7 +7,7 @@ import { Label } from 'src/app/models/label';
 import { AuthService } from 'src/app/services/auth.service';
 import { LabelsService } from 'src/app/services/labels.service';
 import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
-import { ConfirmDialogComponent } from '../customer-branch-offices/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../branch-offices/confirm-dialog/confirm-dialog.component';
 import { AddLabelComponent } from './add-label/add-label.component';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
 import { EditLabelComponent } from './edit-label/edit-label.component';

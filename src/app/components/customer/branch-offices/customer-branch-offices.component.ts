@@ -9,7 +9,7 @@ import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
 import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
 import {EditDialogComponent} from "./edit-dialog/edit-dialog.component";
-import {CustomerNewBranchComponent} from "../customer-new-branch/customer-new-branch.component";
+import {CustomerNewBranchComponent} from "../new-branch/customer-new-branch.component";
 import {DataTableDirective} from "angular-datatables";
 import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
 

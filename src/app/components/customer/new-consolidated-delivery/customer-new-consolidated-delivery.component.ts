@@ -1,37 +1,38 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {GoogleMap} from "@angular/google-maps";
-import {Customer} from "../../../models/customer";
-import {Category} from "../../../models/category";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Order} from "../../../models/order";
-import {Rate} from "../../../models/rate";
-import {Surcharge} from "../../../models/surcharge";
-import {Subject} from "rxjs";
-import {DataTableDirective} from "angular-datatables";
-import {ExtraCharge} from "../../../models/extra-charge";
-import {ExtraChargeOption} from "../../../models/extra-charge-option";
-import {CategoriesService} from "../../../services/categories.service";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {HttpClient} from "@angular/common/http";
-import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material/dialog";
-import {AuthService} from "../../../services/auth.service";
-import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
-import {NoUrlValidator} from "../../../helpers/noUrl.validator";
-import {environment} from "../../../../environments/environment";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
-import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
-import {ConfirmDialogComponent} from "../customer-new-delivery/confirm-dialog/confirm-dialog.component";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {BranchService} from "../../../services/branch.service";
-import {Branch} from "../../../models/branch";
-import {Schedule} from "../../../models/schedule";
-import {CustomerRestrictionsDialogComponent} from "../customer-restrictions-dialog/customer-restrictions-dialog.component";
-import {LockedUserDialogComponent} from '../../shared/locked-user-dialog/locked-user-dialog.component';
-import {UsersService} from 'src/app/services/users.service';
-import {LabelsService} from 'src/app/services/labels.service';
-import {Label} from 'src/app/models/label';
-import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
+import { GoogleMap } from "@angular/google-maps"
+import { Customer } from "../../../models/customer"
+import { Category } from "../../../models/category"
+import { FormBuilder, FormGroup, Validators } from "@angular/forms"
+import { Order } from "../../../models/order"
+import { Rate } from "../../../models/rate"
+import { Surcharge } from "../../../models/surcharge"
+import { Subject } from "rxjs"
+import { DataTableDirective } from "angular-datatables"
+import { ExtraCharge } from "../../../models/extra-charge"
+import { ExtraChargeOption } from "../../../models/extra-charge-option"
+import { CategoriesService } from "../../../services/categories.service"
+import { DeliveriesService } from "../../../services/deliveries.service"
+import { HttpClient } from "@angular/common/http"
+import { Router } from "@angular/router"
+import { MatDialog } from "@angular/material/dialog"
+import { AuthService } from "../../../services/auth.service"
+import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator"
+import { NoUrlValidator } from "../../../helpers/noUrl.validator"
+import { environment } from "../../../../environments/environment"
+import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component"
+import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component"
+import { ConfirmDialogComponent } from "../new-delivery/confirm-dialog/confirm-dialog.component"
+import { animate, style, transition, trigger } from "@angular/animations"
+import { BranchService } from "../../../services/branch.service"
+import { Branch } from "../../../models/branch"
+import { Schedule } from "../../../models/schedule"
+import { CustomerRestrictionsDialogComponent } from "../restrictions-dialog/customer-restrictions-dialog.component"
+import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component'
+import { UsersService } from 'src/app/services/users.service'
+import { LabelsService } from 'src/app/services/labels.service'
+import { Label } from 'src/app/models/label'
+import { LoadingDialogComponent } from "../../shared/loading-dialog/loading-dialog.component"
+import { OperationsService } from 'src/app/services/operations.service'
 
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
@@ -40,8 +41,8 @@ import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
@@ -82,7 +83,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   prohibitedDistance = false
   prohibitedDistanceMsg = ''
   paymentMethod: number = 1
-  @ViewChild(DataTableDirective, {static: false})
+  @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective
   selectedCategory: Category = {}
   selectedExtraCharge: ExtraCharge = null
@@ -111,6 +112,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   fileContentArray: String[] = []
   demandMSG: string = ''
   myLabels: Label[] = []
+  defaultBranch
 
   constructor(
     private categoriesService: CategoriesService,
@@ -122,7 +124,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     private authService: AuthService,
     private branchService: BranchService,
     private userService: UsersService,
-    private labelsService: LabelsService
+    private labelsService: LabelsService,
+    private operationsService: OperationsService
   ) {
     this.currCustomer = this.authService.currentUserValue
   }
@@ -138,17 +141,18 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.directionsService = new google.maps.DirectionsService
     this.paymentMethod = 1
     this.locationOption = 1
+
     this.deliveryForm = this.formBuilder.group({
       deliveryHeader: this.formBuilder.group({
-        dirRecogida: [{value: '', disabled: false}, [Validators.required]],
+        dirRecogida: [{ value: '', disabled: false }, [Validators.required]],
         idCategoria: [{
           value: 1,
           disabled: false,
         }, Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
-        fecha: [{value: '', disabled: false}, Validators.required],
-        hora: [{value: '', disabled: false}, Validators.required],
+        fecha: [{ value: '', disabled: false }, Validators.required],
+        hora: [{ value: '', disabled: false }, Validators.required],
         idTarifa: [null],
         idEtiqueta: [null]
       }, {
@@ -212,38 +216,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       categoriesSubscription.unsubscribe()
       this.dialog.closeAll()
       this.setSelectedCategory()
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          this.myCurrentLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          }
-          this.center = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          }
-          this.deliveryForm.get('deliveryHeader.dirRecogida')
-            .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-          this.calculateRatio()
-          this.calculatedistanceBefore()
-        }, function (error) {
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
-              break;
-            case error.POSITION_UNAVAILABLE:
-              // La ubicación no está disponible.
-              break;
-            case error.TIMEOUT:
-              // Se ha excedido el tiempo para obtener la ubicación.
-              break;
-          }
-
-        })
-      } else {
-        alert('El GPS está desactivado')
-      }
     }, error => {
       this.dialog.closeAll()
       this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
@@ -253,12 +225,17 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
     const branchSubscription = this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
-      this.myBranchOffices.forEach(bOffice => {
-        if (bOffice.isDefault == true) {
-          this.checkInsructions()
-        }
+      let defOffice = this.myBranchOffices.find(item => item.isDefault == true)
 
-      })
+      if (defOffice != null) {
+        this.locationOption = 3
+        this.defaultBranch = defOffice.idSucursal
+        this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(defOffice.direccion)
+        this.getOriginCoords()
+        this.checkInsructions()
+      } else {
+        this.setCurrentLocationOrigin()
+      }
       branchSubscription.unsubscribe()
     })
 
@@ -269,6 +246,57 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         lblSubscription.unsubscribe()
       })
 
+  }
+
+  //VERIFICA SI EL CLIENTE TIENE INSTRUCCIONES REGISTRADAS
+  checkInsructions() {
+    this.myBranchOffices.forEach(bOffice => {
+      if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
+        this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones)
+      } else {
+        this.deliveryForm.get('deliveryHeader.instrucciones').setValue('')
+      }
+    })
+  }
+
+  clearLocationField() {
+    this.newForm.get('deliveryHeader.dirRecogida').setValue('')
+  }
+
+  //ESTABLECE LA UBICACIÓN ACTUAL COMO PUNTO DE RECOGIDA
+  setCurrentLocationOrigin() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.myCurrentLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
+
+        this.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
+        this.deliveryForm.get('deliveryHeader.dirRecogida')
+          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+        this.deliveryForm.get('deliveryHeader.coordsOrigen')
+          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+      }, function (error) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
+            break
+          case error.POSITION_UNAVAILABLE:
+            // La ubicación no está disponible.
+            break
+          case error.TIMEOUT:
+            // Se ha excedido el tiempo para obtener la ubicación.
+            break
+        }
+
+      })
+    } else {
+      alert('El GPS está desactivado')
+    }
   }
 
   get newForm() {
@@ -299,7 +327,12 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       //
       this.calculateRate()
 
-      this.calculateDistance(currOrder)
+      const cordsSubscription = this.operationsService.getCoords(currOrder.direccion)
+        .subscribe((response) => {
+        currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
+        this.calculateDistance(currOrder)
+        cordsSubscription.unsubscribe()
+      })
 
       this.befDistance = 0
       this.befTime = 0
@@ -313,6 +346,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.newForm.get('deliveryHeader.dirRecogida').enable()
     this.newForm.get('deliveryHeader.fecha').enable()
     this.newForm.get('deliveryHeader.hora').enable()
+
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
       this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate.idTarifaDelivery)
 
@@ -342,8 +376,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
         })
     } else if (this.deliveryForm.invalid) {
-      let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'));
-      invalidFields[1].focus();
+      let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'))
+      invalidFields[1].focus()
     }
 
   }
@@ -389,8 +423,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.directionsRenderer.setMap(null)
     if (this.newForm.get('deliveryHeader.dirRecogida').value != '' && this.newForm.get('order.direccion').value != '') {
       this.loaders.loadingDistBef = true
-      let ordersCount = this.orders.length + 1
-      //
+
       this.calculateRate()
 
       const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
@@ -408,7 +441,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         this.placesDestination = []
 
         this.directionsRenderer.setMap(this.googleMap._googleMap)
-        this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer);
+        this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer)
         distanceSubscription.unsubscribe()
       }, error => {
         if (error.subscribe()) {
@@ -417,7 +450,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
             this.prohibitedDistance = true
             this.loaders.loadingDistBef = false
             setTimeout(() => {
-              this.prohibitedDistance = false;
+              this.prohibitedDistance = false
             }, 6000)
           })
         }
@@ -430,30 +463,23 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   //CALCULA Y TRAZA LA RUTA EN EL MAPA
   calculateAndDisplayRoute(directionsService, directionsRenderer) {
-
-    const dirRecogida = this.newForm.get('deliveryHeader.dirRecogida').value
     const dirEntrega = this.newForm.get('order.direccion').value
-    const geocoder1 = new google.maps.Geocoder()
+    const geocoder = new google.maps.Geocoder()
+    const originLL = this.deliveryForm.get('deliveryHeader.coordsOrigen').value
 
-    const geocoder2 = new google.maps.Geocoder()
-    geocoder1.geocode({'address': dirRecogida}, results => {
-      const originLL = results[0].geometry.location
-      geocoder2.geocode({'address': dirEntrega}, results => {
-        const destLL = results[0].geometry.location
-        directionsService.route({
-          origin: originLL,  // Haight.
-          destination: destLL,  // Ocean Beach.
-
-          travelMode: google.maps.TravelMode['DRIVING']
-        }, function (response, status) {
-          if (status == 'OK') {
-            directionsRenderer.setDirections(response);
-          } else {
-            window.alert('Directions request failed due to ' + status);
-          }
-        })
+    geocoder.geocode({ 'address': dirEntrega }, results => {
+      const destLL = results[0].geometry.location
+      directionsService.route({
+        origin: originLL,  // Haight.
+        destination: destLL,  // Ocean Beach.
+        travelMode: google.maps.TravelMode['DRIVING']
+      }, function (response, status) {
+        if (status == 'OK') {
+          directionsRenderer.setDirections(response)
+        } else {
+          window.alert('Directions request failed due to ' + status)
+        }
       })
-
     })
   }
 
@@ -469,7 +495,19 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         placeSubscription.unsubscribe()
       })
     }
+  }
 
+  //OBTIENE LAS COORDENADAS DEL PUNTO DE ORIGEN PARA SER UTILIZADAS DURANTE TODO EL PROCESO
+  getOriginCoords() {
+    const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
+      .subscribe(result => {
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result[0].lat + ',' + result[0].lng)
+        this.center = {
+          lat: result[0].lat,
+          lng: result[0].lng,
+        }
+        cordsSubscription.unsubscribe()
+      })
   }
 
   //SELECCIONA LA TARIFA SEGÚN EL NÚMERO DE ENVÍOS AGREGADOS AL MOMENTO
@@ -487,14 +525,12 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       'total': 0.00
     }
     if (distance > this.selectedRate.consolidated_detail.radioMaximo) {
-      this.surcharges.forEach(value => {
-        if (distance >= Number(value.kilomMinimo)
-          && distance <= Number(value.kilomMaximo)
-        ) {
+      const appSurcharge = this.surcharges.find(value => distance >= Number(value.kilomMinimo)
+        && distance <= Number(value.kilomMaximo))
 
-          orderPayment.surcharges = Number(value.monto)
-        }
-      })
+      if (appSurcharge?.monto) {
+        orderPayment.surcharges = Number(appSurcharge?.monto)
+      }
     }
 
     if (this.selectedExtraCharge != null) {
@@ -519,111 +555,86 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     const entrega = currOrder.direccion
     const tarifa = this.pago.baseRate
 
-    if (this.orders.length == 0) {
-      const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: salida,
+    if (currOrder.coordsDestino != null) {
+      const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'calculateDistance',
+        salida: salida,
+        entrega: entrega,
+        tarifa: tarifa
       }).subscribe((response) => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
-        cordsSubscription.unsubscribe()
-      })
-    }
+        currOrder.distancia = response.distancia
+        currOrder.tiempo = response.tiempo
+        const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
+        currOrder.tarifaBase = calculatedPayment.baseRate
+        currOrder.recargo = calculatedPayment.surcharges
+        currOrder.cargosExtra = calculatedPayment.cargosExtra
+        currOrder.cTotal = calculatedPayment.total
 
-    const coordsSubs =this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'getCoords',
-      lugar: entrega,
-    }).subscribe((response) => {
-      currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
-      if(currOrder.coordsDestino != null){
-        const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-          function: 'calculateDistance',
-          salida: salida,
-          entrega: entrega,
-          tarifa: tarifa
-        }).subscribe((response) => {
-          currOrder.distancia = response.distancia
-          currOrder.tiempo = response.tiempo
-          const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
-          currOrder.tarifaBase = calculatedPayment.baseRate
-          currOrder.recargo = calculatedPayment.surcharges
-          currOrder.cargosExtra = calculatedPayment.cargosExtra
-          currOrder.cTotal = calculatedPayment.total
-          currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra
-          currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion
+        this.deliveryForm.get('order').reset()
+        this.orders.push(currOrder)
+        this.pagos.push(calculatedPayment)
+        this.newForm.get('deliveryHeader.idCategoria').disable()
+        this.newForm.get('deliveryHeader.dirRecogida').disable()
+        this.newForm.get('deliveryHeader.fecha').disable()
+        this.newForm.get('deliveryHeader.hora').disable()
 
 
-
-          this.deliveryForm.get('order').reset()
-          this.orders.push(currOrder)
-          this.pagos.push(calculatedPayment)
-          this.newForm.get('deliveryHeader.idCategoria').disable()
-          this.newForm.get('deliveryHeader.dirRecogida').disable()
-          this.newForm.get('deliveryHeader.fecha').disable()
-          this.newForm.get('deliveryHeader.hora').disable()
-          this.selectedExtraChargeOption = {}
-          this.selectedExtraCharge = null
-
-          if (this.orders.length > 1) {
+        if (this.orders.length > 1) {
+          this.dtElement.dtInstance.then(
+            (dtInstance: DataTables.Api) => {
+              dtInstance.destroy()
+              this.dtTrigger.next()
+            })
+        } else {
+          if (this.dtElement.dtInstance) {
             this.dtElement.dtInstance.then(
               (dtInstance: DataTables.Api) => {
                 dtInstance.destroy()
                 this.dtTrigger.next()
               })
           } else {
-            if (this.dtElement.dtInstance) {
-              this.dtElement.dtInstance.then(
-                (dtInstance: DataTables.Api) => {
-                  dtInstance.destroy()
-                  this.dtTrigger.next()
-                })
-            } else {
-              this.dtTrigger.next()
-            }
-
+            this.dtTrigger.next()
           }
 
+        }
 
-          this.agregado = true
-          setTimeout(() => {
-            this.agregado = false;
-          }, 2000)
+        this.agregado = true
+        setTimeout(() => {
+          this.agregado = false
+        }, 2000)
 
-          this.orders.forEach(value => {
-            if (value.tarifaBase != this.pago.baseRate) {
-              const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
-              let i = this.orders.indexOf(value)
-              value.tarifaBase = this.pago.baseRate
-              value.cargosExtra = nPay.cargosExtra
-              value.recargo = nPay.surcharges
-              value.cTotal = nPay.total
-              this.pagos[i].baseRate = nPay.baseRate
-              if(this.pagos[i]?.cargosExtra){
-                this.pagos[i].cargosExtra = nPay.cargosExtra
-              }
-              this.pagos[i].surcharges = nPay.surcharges
-              this.pagos[i].total = nPay.total
+        this.orders.forEach(value => {
+          if (value.tarifaBase != this.pago.baseRate) {
+            const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
+            let i = this.orders.indexOf(value)
+            value.tarifaBase = this.pago.baseRate
+            value.cargosExtra = nPay.cargosExtra
+            value.recargo = nPay.surcharges
+            value.cTotal = nPay.total
+            this.pagos[i].baseRate = nPay.baseRate
+            if (this.pagos[i]?.cargosExtra) {
+              this.pagos[i].cargosExtra = nPay.cargosExtra
             }
-          })
-          cDistanceSubscription.unsubscribe()
-          this.calculatePayment()
-
-        }, error => {
-          error.subscribe(error => {
-            this.prohibitedDistanceMsg = error.statusText
-            this.prohibitedDistance = true
-            this.loaders.loadingAdd = false
-            cDistanceSubscription.unsubscribe()
-            setTimeout(() => {
-              this.prohibitedDistance = false;
-            }, 2000)
-          })
-
+            this.pagos[i].surcharges = nPay.surcharges
+            this.pagos[i].total = nPay.total
+          }
         })
-      }
+        cDistanceSubscription.unsubscribe()
+        this.calculatePayment()
 
-      coordsSubs.unsubscribe()
-    })
+      }, error => {
+        error.subscribe(error => {
+          this.prohibitedDistanceMsg = error.statusText
+          this.prohibitedDistance = true
+          this.loaders.loadingAdd = false
+          cDistanceSubscription.unsubscribe()
+          setTimeout(() => {
+            this.prohibitedDistance = false
+          }, 2000)
+        })
 
+      })
+    }
 
   }
 
@@ -654,8 +665,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.calculatePayment()
 
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.destroy();
-      this.dtTrigger.next();
+      dtInstance.destroy()
+      this.dtTrigger.next()
     })
 
   }
@@ -779,6 +790,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   setCordsOrigin() {
     this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.originCords.nativeElement.value)
+    this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(this.originCords.nativeElement.value)
     this.gcordsOrigin = false
 
     if (this.deliveryForm.get('order.direccion').value != '') {
@@ -801,50 +813,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   }
 
-  setCurrentLocationOrigin() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.myCurrentLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-        this.deliveryForm.get('deliveryHeader.dirRecogida')
-          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-        this.calculateRatio()
-        this.calculatedistanceBefore()
-      }, function (error) {
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
-            break;
-          case error.POSITION_UNAVAILABLE:
-            // La ubicación no está disponible.
-            break;
-          case error.TIMEOUT:
-            // Se ha excedido el tiempo para obtener la ubicación.
-            break;
-        }
-
-      })
-    } else {
-      alert('El GPS está desactivado')
-    }
-  }
-
-  clearLocationField() {
-    this.newForm.get('deliveryHeader.dirRecogida').setValue('')
-  }
-
-  checkInsructions() {
-    this.myBranchOffices.forEach(bOffice => {
-      if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones)
-      } else {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue('')
-      }
-    })
-  }
-
   setDate(date) {
     this.hoursToShow = date.hoursToShow
 
@@ -861,13 +829,13 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   onSelect(event) {
     if (this.files.length === 0) {
       this.files.push(...event.addedFiles)
-      let fileReader = new FileReader();
+      let fileReader = new FileReader()
 
       fileReader.onload = (e) => {
         const fContent = fileReader.result
         this.fileContentArray = fContent.toString().split('?')
       }
-      fileReader.readAsText(this.files[0]);
+      fileReader.readAsText(this.files[0])
     }
   }
 
@@ -907,7 +875,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
       if (errs > 0) {
         this.openErrorDialog('Lo sentimos, Uno o más envíos podrían tener un formato incorrecto. ' +
-          'Por favor verifique el archivo e intentelo nuevamente.', false);
+          'Por favor verifique el archivo e intentelo nuevamente.', false)
         this.loaders.loadingAdd = false
         return false
       }

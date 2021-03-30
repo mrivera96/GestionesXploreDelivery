@@ -1,23 +1,23 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {CustomerNewDeliveryComponent} from "../components/customer/customer-new-delivery/customer-new-delivery.component";
+import {CustomerNewDeliveryComponent} from "../components/customer/new-delivery/customer-new-delivery.component";
 import {CustomerGuard} from "../guards/customer.guard";
 import {HomeCustomerComponent} from "../components/customer/home-customer/home-customer.component";
-import {TodosDeliveriesComponent} from "../components/customer/customer-todos-deliveries/todos-deliveries.component";
-import {DeliveriesManianaComponent} from "../components/customer/customer-deliveries-maniana/deliveries-maniana.component";
-import {CustomerBranchOfficesComponent} from "../components/customer/customer-branch-offices/customer-branch-offices.component";
-import {CustomerNewBranchComponent} from "../components/customer/customer-new-branch/customer-new-branch.component";
-import {CustomerDeliveryDetailComponent} from "../components/customer/customer-delivery-detail/customer-delivery-detail.component";
-import {CustomerTodayOrdersComponent} from "../components/customer/customer-today-orders/customer-today-orders.component";
-import {CustomerAllOrdersComponent} from "../components/customer/customer-all-orders/customer-all-orders.component";
-import {CustomerProfileComponent} from "../components/customer/customer-profile/customer-profile.component";
-import {CustomerBalanceComponent} from "../components/customer/customer-balance/customer-balance.component";
-import {CustomerReportsComponent} from "../components/customer/customer-reports/customer-reports.component";
-import { CustomerDashboardComponent } from '../components/customer/customer-dashboard/customer-dashboard.component';
-import {CustomerNewConsolidatedDeliveryComponent} from "../components/customer/customer-new-consolidated-delivery/customer-new-consolidated-delivery.component";
-import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/customer/customer-new-consolidated-foreign-delivery/customer-new-consolidated-foreign-delivery.component";
-import { CustomerNewRoutingShippingComponent } from '../components/customer/customer-new-routing-shipping/customer-new-routing-shipping.component';
-import { CustomerLabelsComponent } from '../components/customer/customer-labels/customer-labels.component';
+import {TodosDeliveriesComponent} from "../components/customer/all-deliveries/todos-deliveries.component";
+import {DeliveriesManianaComponent} from "../components/customer/tomorrow-deliveries/deliveries-maniana.component";
+import {CustomerBranchOfficesComponent} from "../components/customer/branch-offices/customer-branch-offices.component";
+import {CustomerNewBranchComponent} from "../components/customer/new-branch/customer-new-branch.component";
+import {CustomerDeliveryDetailComponent} from "../components/customer/delivery-detail/customer-delivery-detail.component";
+import {CustomerTodayOrdersComponent} from "../components/customer/today-orders/customer-today-orders.component";
+import {CustomerAllOrdersComponent} from "../components/customer/all-orders/customer-all-orders.component";
+import {CustomerProfileComponent} from "../components/customer/profile/customer-profile.component";
+import {CustomerBalanceComponent} from "../components/customer/balance/customer-balance.component";
+import {CustomerReportsComponent} from "../components/customer/reports/customer-reports.component";
+import { CustomerDashboardComponent } from '../components/customer/dashboard/customer-dashboard.component';
+import {CustomerNewConsolidatedDeliveryComponent} from "../components/customer/new-consolidated-delivery/customer-new-consolidated-delivery.component";
+import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/customer/new-consolidated-foreign-delivery/customer-new-consolidated-foreign-delivery.component";
+import { CustomerNewRoutingShippingComponent } from '../components/customer/new-routing-shipping/customer-new-routing-shipping.component';
+import { CustomerLabelsComponent } from '../components/customer/labels/customer-labels.component';
 
 const routes: Routes = [
   //RUTAS PARA CLIENTES

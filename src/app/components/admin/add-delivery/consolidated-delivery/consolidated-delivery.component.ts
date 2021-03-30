@@ -25,8 +25,8 @@ import {NoUrlValidator} from "../../../../helpers/noUrl.validator";
 import {environment} from "../../../../../environments/environment";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
-import {ConfirmDialogComponent} from "../../../customer/customer-new-delivery/confirm-dialog/confirm-dialog.component";
-import {CustomerRestrictionsDialogComponent} from "../../../customer/customer-restrictions-dialog/customer-restrictions-dialog.component";
+import {ConfirmDialogComponent} from "../../../customer/new-delivery/confirm-dialog/confirm-dialog.component";
+import {CustomerRestrictionsDialogComponent} from "../../../customer/restrictions-dialog/customer-restrictions-dialog.component";
 
 @Component({
   selector: 'app-consolidated-delivery',

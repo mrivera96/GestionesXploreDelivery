@@ -4,7 +4,7 @@ import {Customer} from "../../../models/customer";
 import {UsersService} from "../../../services/users.service";
 import {Subject} from "rxjs";
 import {MatDialog} from "@angular/material/dialog";
-import {XploreAddCustomerComponent} from "../xplore-add-customer/xplore-add-customer.component";
+import {XploreAddCustomerComponent} from "../add-customer/xplore-add-customer.component";
 import {EditCustomerDialogComponent} from "./edit-customer-dialog/edit-customer-dialog.component";
 import {DataTableDirective} from "angular-datatables";
 import {Delivery} from "../../../models/delivery";

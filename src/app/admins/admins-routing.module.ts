@@ -1,35 +1,35 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
-import {HomeComponent} from "../components/xplore/home/home.component";
+import {HomeComponent} from "../components/admin/today-deliveries/home.component";
 import {XploreGuard} from "../guards/xplore.guard";
-import {VerSolicitudComponent} from "../components/xplore/ver-solicitud/ver-solicitud.component";
-import {VerTodasReservasComponent} from "../components/xplore/ver-todas-reservas/ver-todas-reservas.component";
-import {ReservasManianaComponent} from "../components/xplore/reservas-maniana/reservas-maniana.component";
-import {XploreCategoriesComponent} from "../components/xplore/xplore-categories/xplore-categories.component";
-import {XploreRatesComponent} from "../components/xplore/xplore-rates/xplore-rates.component";
-import {XploreSurchargesComponent} from "../components/xplore/xplore-surcharges/xplore-surcharges.component";
-import {XploreCustomersComponent} from "../components/xplore/xplore-customers/xplore-customers.component";
-import {XploreAddCustomerComponent} from "../components/xplore/xplore-add-customer/xplore-add-customer.component";
-import {XploreTodayOrdersComponent} from "../components/xplore/xplore-today-orders/xplore-today-orders.component";
-import {XploreAllOrdersComponent} from "../components/xplore/xplore-all-orders/xplore-all-orders.component";
-import {PendingDeliveriesComponent} from "../components/xplore/pending-deliveries/pending-deliveries.component";
-import {XploreDriversComponent} from "../components/xplore/xplore-drivers/xplore-drivers.component";
-import {OrdersByDriverComponent} from "../components/xplore/xplore-reports/orders-by-driver/orders-by-driver.component";
-import {PaymentsComponent} from "../components/xplore/payments/payments.component";
-import {OrdersByCustomerComponent} from "../components/xplore/xplore-reports/orders-by-customer/orders-by-customer.component";
-import {XploreScheduleComponent} from "../components/xplore/xplore-schedule/xplore-schedule.component";
-import {XploreCustomerBalanceComponent} from "../components/xplore/xplore-customer-balance/xplore-customer-balance.component";
-import {ExtraChargesComponent} from "../components/xplore/extra-charges/extra-charges.component";
-import {DeliveriesReportComponent} from "../components/xplore/xplore-reports/deliveries-report/deliveries-report.component";
-import {PaymentsReportComponent} from "../components/xplore/xplore-reports/payments-report/payments-report.component";
-import {CustomersReportComponent} from "../components/xplore/xplore-reports/customers-report/customers-report.component";
-import {CustomersBalanceReportComponent} from "../components/xplore/xplore-reports/customer-balance-report/customers-balance-report.component";
-import {CustomersTrackingReportComponent} from "../components/xplore/xplore-reports/customers-tracking-report/customers-tracking-report.component";
-import { XploreWorkLinesComponent } from '../components/xplore/xplore-work-lines/xplore-work-lines.component';
-import {ReportRequestsComponent} from "../components/xplore/xplore-reports/report-requests/report-requests.component";
-import {CustomerChooseComponent} from "../components/xplore/xplore-add-delivery/customer-choose/customer-choose.component";
-import { XploreAddDeliveryComponent } from '../components/xplore/xplore-add-delivery/xplore-add-delivery.component';
-import { OrdersByDriverConsolidatedComponent } from '../components/xplore/xplore-reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component';
+import {VerSolicitudComponent} from "../components/admin/delivery-detail/ver-solicitud.component";
+import {VerTodasReservasComponent} from "../components/admin/all-deliveries/ver-todas-reservas.component";
+import {ReservasManianaComponent} from "../components/admin/tomorrow-deliveries/reservas-maniana.component";
+import {XploreCategoriesComponent} from "../components/admin/categories/xplore-categories.component";
+import {XploreRatesComponent} from "../components/admin/rates/xplore-rates.component";
+import {XploreSurchargesComponent} from "../components/admin/surcharges/xplore-surcharges.component";
+import {XploreCustomersComponent} from "../components/admin/customers/xplore-customers.component";
+import {XploreAddCustomerComponent} from "../components/admin/add-customer/xplore-add-customer.component";
+import {XploreTodayOrdersComponent} from "../components/admin/today-orders/xplore-today-orders.component";
+import {XploreAllOrdersComponent} from "../components/admin/all-orders/xplore-all-orders.component";
+import {PendingDeliveriesComponent} from "../components/admin/pending-deliveries/pending-deliveries.component";
+import {XploreDriversComponent} from "../components/admin/drivers/xplore-drivers.component";
+import {OrdersByDriverComponent} from "../components/admin/reports/orders-by-driver/orders-by-driver.component";
+import {PaymentsComponent} from "../components/admin/payments/payments.component";
+import {OrdersByCustomerComponent} from "../components/admin/reports/orders-by-customer/orders-by-customer.component";
+import {XploreScheduleComponent} from "../components/admin/schedule/xplore-schedule.component";
+import {XploreCustomerBalanceComponent} from "../components/admin/customer-balance/xplore-customer-balance.component";
+import {ExtraChargesComponent} from "../components/admin/extra-charges/extra-charges.component";
+import {DeliveriesReportComponent} from "../components/admin/reports/deliveries-report/deliveries-report.component";
+import {PaymentsReportComponent} from "../components/admin/reports/payments-report/payments-report.component";
+import {CustomersReportComponent} from "../components/admin/reports/customers-report/customers-report.component";
+import {CustomersBalanceReportComponent} from "../components/admin/reports/customer-balance-report/customers-balance-report.component";
+import {CustomersTrackingReportComponent} from "../components/admin/reports/customers-tracking-report/customers-tracking-report.component";
+import { XploreWorkLinesComponent } from '../components/admin/work-lines/xplore-work-lines.component';
+import {ReportRequestsComponent} from "../components/admin/reports/report-requests/report-requests.component";
+import {CustomerChooseComponent} from "../components/admin/add-delivery/customer-choose/customer-choose.component";
+import { XploreAddDeliveryComponent } from '../components/admin/add-delivery/xplore-add-delivery.component';
+import { OrdersByDriverConsolidatedComponent } from '../components/admin/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component';
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -38,7 +38,7 @@ const routes: Routes = [
   {path: 'ver-reserva/:id', component: VerSolicitudComponent, canActivate: [XploreGuard]},
   {path: 'reservas-todas', component: VerTodasReservasComponent, canActivate: [XploreGuard]},
   {path: 'reservas-todas/:initDate/:finDate', component: VerTodasReservasComponent, canActivate: [XploreGuard]},
-  {path: 'reservas-maniana', component: ReservasManianaComponent, canActivate: [XploreGuard]},
+  {path: 'tomorrow-deliveries', component: ReservasManianaComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-categorias', component: XploreCategoriesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-rubros', component: XploreWorkLinesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-tarifas', component: XploreRatesComponent, canActivate: [XploreGuard]},

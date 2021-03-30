@@ -90,12 +90,12 @@ export class OrdersDataTableComponent implements OnInit {
         break;
       }
 
-      case 'xplore-todos': {
+      case 'admin-todos': {
         service = this.deliveriesService.getAllOrders()
         break;
       }
 
-      case 'xplore-hoy': {
+      case 'admin-hoy': {
         service = this.deliveriesService.getTodayOrders()
         break;
       }

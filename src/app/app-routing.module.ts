@@ -21,7 +21,7 @@ const routes: Routes = [
   /*{ path: 'todos-mis-deliveries', component: TodasMisReservacionesComponent , canActivate: [CustomerGuard] },
   { path: 'deliveries-manana', component: MisReservacionesManianaComponent , canActivate: [CustomerGuard] },
   { path: 'agregar-delivery', component: CrearDeliveryComponent , canActivate: [CustomerGuard] },*/
-  // redirige a home si no existe la ruta
+  // redirige a today-deliveries si no existe la ruta
 
   {path: '**', redirectTo: ''}
 ];
