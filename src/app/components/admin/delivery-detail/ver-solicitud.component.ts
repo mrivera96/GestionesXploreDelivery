@@ -226,7 +226,14 @@ export class VerSolicitudComponent implements OnInit {
       .subscribe(response => {
         const data = response.route
         for (let item in data) {
+          this.currentDeliveryDetail.forEach(order => {
+            if (order.direccion == data[item].name) {
+              data[item].nomDestinatario = order.nomDestinatario
+
+            }
+          })
           this.optimizedRouteOrder.push(data[item])
+
         }
 
         for (let i in this.optimizedRouteOrder) {
@@ -276,7 +283,7 @@ export class VerSolicitudComponent implements OnInit {
     let title = 'Ruta optimizada para Delivery N. ' + this.currentDelivery.idDelivery
 
     pdf.pageSize('letter')
-    pdf.pageOrientation('landscape')
+    pdf.pageOrientation('portrait')
 
     pdf.add(
       new Txt(title).bold().end
@@ -296,13 +303,15 @@ export class VerSolicitudComponent implements OnInit {
         new Cell(new Txt('N°').bold().end).end,
       ],
       [
+        new Cell(new Txt('Nombre del Destinatario').bold().end).end,
+      ],
+      [
         new Cell(new Txt('Dirección').bold().end).colSpan(2).end,
       ],
       [],
       [
         new Cell(new Txt('Distancia').bold().end).end,
       ],
-
       [
         new Cell(new Txt('Tiempo').bold().end).end,
       ],
@@ -316,6 +325,7 @@ export class VerSolicitudComponent implements OnInit {
     this.optimizedRouteOrder.forEach(d => {
       let array = [
         d.order + 1,
+        d.nomDestinatario,
         d.name,
         '',
         d.distancia,
@@ -330,7 +340,7 @@ export class VerSolicitudComponent implements OnInit {
         ).alignment("left").end
       )
       pdf.add(
-        pdf.ln(2)
+        pdf.ln(1)
       )
     })
 
