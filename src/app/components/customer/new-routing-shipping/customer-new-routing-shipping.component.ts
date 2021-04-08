@@ -310,15 +310,25 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   //OBTIENE LAS COORDENADAS DEL PUNTO DE ORIGEN PARA SER UTILIZADAS DURANTE TODO EL PROCESO
   getOriginCoords() {
-    const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
-      .subscribe(result => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result[0].lat + ',' + result[0].lng)
-        this.center = {
-          lat: result[0].lat,
-          lng: result[0].lng,
-        }
-        cordsSubscription.unsubscribe()
-      })
+    if(this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('15.') || this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('14.') || this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('13.')){
+      this.deliveryForm.get('deliveryHeader.coordsOrigen')
+        .setValue(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
+      this.center = {
+        lat: +this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[0],
+        lng: +this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[1],
+      }
+    }else{
+      const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
+        .subscribe(result => {
+          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result[0].lat + ',' + result[0].lng)
+          this.center = {
+            lat: result[0].lat,
+            lng: result[0].lng,
+          }
+          cordsSubscription.unsubscribe()
+        })
+    }
+
   }
 
   get newForm() {
