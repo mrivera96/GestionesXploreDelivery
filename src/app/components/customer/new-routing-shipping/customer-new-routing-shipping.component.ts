@@ -1166,7 +1166,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     orderArray.push(originAddress)
     this.orders.forEach(order => {
       const orderObject = {
-        address: order.direccion,
+        address: order.direccion.replace('&','Y'),
         lat: order.coordsDestino.split(',')[0],
         lng: order.coordsDestino.split(',')[1]
       }
