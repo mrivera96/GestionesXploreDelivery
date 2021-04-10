@@ -190,8 +190,9 @@ export class OrdersByCustomerComponent implements OnInit {
 
   search(value: string) {
     let filter = value.toLowerCase();
+    filter = filter.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     if (filter != "") {
-      return this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
+      return this.customers.filter(option => option.nomEmpresa.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(filter));
     }
     return this.customers
   }
