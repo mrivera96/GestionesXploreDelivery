@@ -206,7 +206,7 @@ export class VerSolicitudComponent implements OnInit {
     this.openLoader()
     let orderArray = []
     const originAddress = {
-      address: this.currentDelivery.dirRecogida,
+      address: this.currentDelivery.dirRecogida.replace('&','Y'),
       lat: this.currentDelivery.coordsOrigen.split(',')[0],
       lng: this.currentDelivery.coordsOrigen.split(',')[1].trim()
     }
@@ -224,19 +224,27 @@ export class VerSolicitudComponent implements OnInit {
 
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray)
       .subscribe(response => {
-        const data = response.route
-        for (let item in data) {
-          this.currentDeliveryDetail.forEach(order => {
-            if (order.direccion == data[item].name) {
-              data[item].nomDestinatario = order.nomDestinatario
+        const optimizedRouteOrder: any[] = response.route
+        this.currentDeliveryDetail.forEach(order => {
+          for (let item in optimizedRouteOrder) {
+            if(order.direccion.replace('&','Y') == optimizedRouteOrder[item].name){
+              // @ts-ignore
+              order.distancia = (optimizedRouteOrder[item].distance - optimizedRouteOrder[item - 1].distance).toPrecision(2) + ' km'
 
+              // @ts-ignore
+              this.totalDistance = this.totalDistance + (optimizedRouteOrder[item].distance - optimizedRouteOrder[item - 1].distance)
+              // @ts-ignore
+              order.tiempo = (optimizedRouteOrder[item].arrival - optimizedRouteOrder[item - 1].arrival) + ' mins'
+              order.order = +item
             }
-          })
-          this.optimizedRouteOrder.push(data[item])
 
-        }
-
-        for (let i in this.optimizedRouteOrder) {
+          }
+          this.optimizedRouteOrder.push(order)
+        })
+        //@ts-ignore
+        this.totalDistance = this.totalDistance.toPrecision(3)
+        this.currentDeliveryDetail.sort((a, b) => (a.order > b.order) ? 1 : -1)
+        /*for (let i in this.optimizedRouteOrder) {
           // @ts-ignore
           if (i > 0) {
             // @ts-ignore
@@ -246,9 +254,8 @@ export class VerSolicitudComponent implements OnInit {
           }
           this.optimizedRouteOrder[i].order = +i
 
-        }
+        }*/
 
-        this.totalDistance = this.optimizedRouteOrder[this.optimizedRouteOrder.length - 1].distance
 
         this.generatePDF()
         this.dialog.closeAll()
@@ -308,7 +315,7 @@ export class VerSolicitudComponent implements OnInit {
       [
         new Cell(new Txt('Dirección').bold().end).colSpan(2).end,
       ],
-      [],
+
       [
         new Cell(new Txt('Distancia').bold().end).end,
       ],
@@ -322,12 +329,12 @@ export class VerSolicitudComponent implements OnInit {
     )
 
     let array1Row = []
-    this.optimizedRouteOrder.forEach(d => {
+    this.currentDeliveryDetail.forEach(d => {
       let array = [
-        d.order + 1,
-        d.nomDestinatario,
-        d.name,
-        '',
+        d.order,
+        d.nomDestinatario.trim(),
+        d.direccion.trim(),
+
         d.distancia,
         d.tiempo,
       ]

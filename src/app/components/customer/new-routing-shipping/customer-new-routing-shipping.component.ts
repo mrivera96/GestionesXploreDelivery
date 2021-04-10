@@ -1174,6 +1174,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     })
     orderArray.push(originAddress)
     this.loaders.loadingOptimizing = true
+
     const optSubscription = this.deliveriesService.optimizeRoute(orderArray)
       .subscribe(response => {
         if (response != null) {
@@ -1185,7 +1186,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
                 // @ts-ignore
                 order.distancia = (optimizedRouteOrder[i].distance - optimizedRouteOrder[i - 1].distance).toPrecision(2) + ' km'
                 // @ts-ignore
-                order.tiempo = (optimizedRouteOrder[i].arrival - optimizedRouteOrder[i - 1]) + ' mins'
+                order.tiempo = (optimizedRouteOrder[i].arrival - optimizedRouteOrder[i - 1].arrival) + ' mins'
                 order.order = +i
               }
             }
