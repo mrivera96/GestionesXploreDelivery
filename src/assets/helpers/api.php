@@ -2066,7 +2066,7 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/" . $environment . "/api/customers/checkDelTypes";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/customers/checkDelTypes";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
