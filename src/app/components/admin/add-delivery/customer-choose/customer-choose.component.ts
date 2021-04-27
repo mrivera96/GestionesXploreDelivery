@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { animate, style, transition, trigger } from "@angular/animations";
-import { Customer } from "../../../../models/customer";
-import { UsersService } from "../../../../services/users.service";
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core'
+import { animate, style, transition, trigger } from "@angular/animations"
+import { Customer } from "../../../../models/customer"
+import { UsersService } from "../../../../services/users.service"
+import { MatDialog, MatDialogRef } from '@angular/material/dialog'
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-customer-choose',
@@ -35,6 +36,7 @@ export class CustomerChooseComponent implements OnInit {
     private usersService: UsersService,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<CustomerChooseComponent>,
+    private router: Router
   ) {
     this.dialogRef.disableClose = true
   }
@@ -61,13 +63,17 @@ export class CustomerChooseComponent implements OnInit {
   }
 
   onKey(value) {
-    this.filteredCustomers = this.search(value);
+    if(value != " "){
+      this.filteredCustomers = this.search(value)
+    }
+
   }
 
   search(value: string) {
-    let filter = value.toLowerCase();
+    let filter = value.toLowerCase()
+    filter = filter.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
     if (filter != "") {
-      return this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
+      return this.customers.filter(option => option.nomEmpresa.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(filter))
     }
     return this.customers
   }

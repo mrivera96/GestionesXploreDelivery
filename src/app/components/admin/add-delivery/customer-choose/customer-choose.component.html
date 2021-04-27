@@ -1,4 +1,7 @@
 <!-- MODAL START -->
+<button mat-icon-button class="close-button" [mat-dialog-close]="true">
+  <mat-icon class="close-icon" color="warn">close</mat-icon>
+</button>
 <h2 mat-dialog-title class="text-info">
   <mat-icon [inline]="true">people</mat-icon>
   Selección de Cliente
@@ -42,7 +45,7 @@
     </mat-form-field>
 
     <button [disabled]="loaders.loadingSubmit || loaders.loadingData || !customerForm.valid" mat-raised-button
-      class="btn-block" color="primary" type="submit">
+      class="btn-block" color="primary" type="submit" [mat-dialog-close]="true">
       Aceptar
       <span *ngIf="loaders.loadingSubmit" class="spinner-border spinner-border-sm mr-1 "></span>
     </button>
