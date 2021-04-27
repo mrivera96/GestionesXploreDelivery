@@ -1,11 +1,11 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {RatesService} from "../../../../../services/rates.service";
-import {ErrorModalComponent} from "../../../../shared/error-modal/error-modal.component";
-import {SuccessModalComponent} from "../../../../shared/success-modal/success-modal.component";
-import {Customer} from "../../../../../models/customer";
-import {UsersService} from "../../../../../services/users.service";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {Component, Inject, OnInit} from '@angular/core'
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog"
+import {RatesService} from "../../../../../services/rates.service"
+import {ErrorModalComponent} from "../../../../shared/error-modal/error-modal.component"
+import {SuccessModalComponent} from "../../../../shared/success-modal/success-modal.component"
+import {Customer} from "../../../../../models/customer"
+import {UsersService} from "../../../../../services/users.service"
+import {FormBuilder, FormGroup, Validators} from "@angular/forms"
 
 @Component({
   selector: 'app-add-customer-rate-dialog',
@@ -96,13 +96,14 @@ export class AddCustomerRateDialogComponent implements OnInit {
   }
 
   onKey(value) {
-    this.filteredCustomers = this.search(value) ;
+    this.filteredCustomers = this.search(value)
   }
 
   search(value: string) {
-    let filter = value.toLowerCase();
-    if(filter != ""){
-      return  this.customers.filter(option => option.nomEmpresa.toLowerCase().includes(filter));
+    let filter = value.toLowerCase()
+    filter = filter.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    if (filter != "") {
+      return this.customers.filter(option => option.nomEmpresa.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(filter))
     }
     return this.customers
   }

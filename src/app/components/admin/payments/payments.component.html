@@ -25,6 +25,7 @@
              class="display compact" style="width:100%">
         <thead>
         <tr>
+          <th>No. Pago</th>
           <th data-order="2020-06-01">Fecha de Pago</th>
           <th>Monto</th>
           <th>Tipo de Pago</th>
@@ -39,6 +40,7 @@
         <tbody>
 
         <tr *ngFor="let payment of payments">
+          <td>{{payment.idPago}}</td>
           <td>{{payment.fechaPago}}</td>
           <td>L. {{payment.monto}}</td>
           <td>{{payment.payment_type.nomTipoPago}}</td>

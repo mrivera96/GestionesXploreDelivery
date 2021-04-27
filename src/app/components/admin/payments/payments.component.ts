@@ -48,7 +48,7 @@ export class PaymentsComponent implements OnInit {
       processing: true,
       info: true,
       rowReorder: false,
-      order: [0, 'desc'],
+      order: [1, 'desc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
