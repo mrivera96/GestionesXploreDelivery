@@ -19,4 +19,5 @@ export interface Customer {
   paidShow?: string
   balanceShow?: string
   enviarNotificaciones?: boolean
+  instFotografias?: string
 }

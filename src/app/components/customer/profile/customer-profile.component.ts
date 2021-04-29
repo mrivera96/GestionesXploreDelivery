@@ -10,6 +10,7 @@ import {ErrorModalComponent} from "../../shared/error-modal/error-modal.componen
 import {MatDialog} from "@angular/material/dialog";
 import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
 import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
 
 declare var $: any
 
@@ -30,6 +31,7 @@ export class CustomerProfileComponent implements OnInit {
   succsMsg
   errorMsg
   passChangeForm: FormGroup
+  profileForm: FormGroup
   loaders = {
     loadingData: false,
     loadingSubmit: false
@@ -45,6 +47,7 @@ export class CustomerProfileComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.currentUserValue
     this.passChangeForm = this.formBuilder.group({
       oldPass: ['', Validators.required],
       newPass: ['', [Validators.required, Validators.minLength(8)]],
@@ -57,7 +60,11 @@ export class CustomerProfileComponent implements OnInit {
           BlankSpacesValidator('newPass'),
         ]
     })
-    this.currentUser = this.authService.currentUserValue
+
+    this.profileForm = this.formBuilder.group({
+      instFotografias: [this.currentUser.cliente.instFotografias, Validators.required]
+    })
+
   }
 
   onFormSubmit() {
@@ -70,7 +77,7 @@ export class CustomerProfileComponent implements OnInit {
         const userSubscription = this.usersService.changeCustomerPassword(this.passChangeForm.value).subscribe(response => {
           this.loaders.loadingSubmit = false
           this.succsMsg = response.message
-          this.openSuccessDialog('Operación Realizada Correctamente', this.succsMsg)
+          this.openSuccessDialog('Operación Realizada Correctamente', this.succsMsg, true)
           userSubscription.unsubscribe()
         }, error => {
           error.subscribe(error => {
@@ -105,7 +112,7 @@ export class CustomerProfileComponent implements OnInit {
     })
   }
 
-  openSuccessDialog(succsTitle, succssMsg) {
+  openSuccessDialog(succsTitle, succssMsg, logout = false) {
     const dialogRef = this.dialog.open(SuccessModalComponent, {
       data: {
         succsTitle: succsTitle,
@@ -113,9 +120,32 @@ export class CustomerProfileComponent implements OnInit {
       }
     })
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.logout()
+    if(logout){
+      dialogRef.afterClosed().subscribe(result => {
+        this.logout()
+      })
+    }
+
+  }
+
+  updateProfileInfo(){
+    this.openLoader()
+    this.usersService.updateProfileInfo(this.profileForm.value).subscribe(response => {
+      this.dialog.closeAll()
+      this.currentUser.cliente.instFotografias = this.profileForm.get('instFotografias').value
+      this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+    },error => {
+      this.dialog.closeAll()
+      if(error.subscribe()){
+        error.subscribe(err=>{
+          this.openErrorDialog(err.statusText, false)
+        })
+      }
     })
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
 }

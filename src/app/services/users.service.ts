@@ -140,4 +140,12 @@ export class UsersService {
     })
   }
 
+  updateProfileInfo(form){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'changePhotoInstructions',
+      form,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
 }
