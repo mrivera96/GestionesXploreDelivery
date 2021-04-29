@@ -18,12 +18,27 @@
       <div class="row">
         <div class="col-sm">
           <strong><i class="fa fa-user"></i> Nombre:</strong>
-          {{currentUser.nomUsuario}}
+          {{currentUser?.nomUsuario}}
         </div>
         <div class="col-sm">
           <strong><i class="fa fa-user"></i> Nombre de usuario:</strong>
-          {{currentUser.nickUsuario}}
+          {{currentUser?.nickUsuario}}
         </div>
+
+        <div class="col-sm">
+          <form [formGroup]="profileForm" role="form">
+            <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+              <mat-label>Instrucciones de Fotografías:</mat-label>
+              <textarea  maxlength="150" formControlName="instFotografias" class="form-control"
+                     placeholder="¿Necesitamos instrucciones para las fotografías de tus envíos?" matInput>
+              </textarea>
+              <mat-icon matPrefix>photo_camera</mat-icon>
+            </mat-form-field>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <button mat-raised-button color="primary" type="button" (click)="updateProfileInfo()">Actualizar</button>
       </div>
       <hr>
 
