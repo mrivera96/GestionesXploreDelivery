@@ -117,27 +117,29 @@
 
       <div class="row">
         <div class="col-sm">
+          <strong>Estado Actual:</strong>
+          {{currentDelivery?.estado.descEstado}}
+        </div>
+
+        <div class="col-sm">
           <strong>Tipo de delivery:</strong>
           {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : currentDelivery?.isRuteo == true ? 'Envío por Ruteo' : 'Envío Normal'}}
         </div>
 
         <div class="col-sm">
           <strong>Registrada por:</strong>
-          {{currentDelivery?.regAdmin == true ? 'Admin' : 'Cliente'}}
+          {{currentDelivery?.regAdmin == true ? 'Admin ' + currentDelivery?.usuario?.nomUsuario : 'Cliente'}}
         </div>
 
-        <div class="col-sm">
-          <strong>Estado Actual:</strong>
-          {{currentDelivery?.estado.descEstado}}
+        <div class="col-sm" *ngIf="currentDelivery?.idEstado == 37">
+          <strong>Asignada a:</strong>
+          {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
         </div>
 
       </div>
 
       <div class="row">
-        <div class="col-sm" *ngIf="currentDelivery?.idEstado == 37">
-          <strong>Asignada a:</strong>
-          {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
-        </div>
+
 
       </div>
 
@@ -160,7 +162,8 @@
             <th>Distancia</th>
             <th>Recargo</th>
             <th>Cargos Extra</th>
-            <th>Costo</th>
+            <th>Monto Cobertura</th>
+            <th>Costo Total</th>
             <th>Estado</th>
             <th data-priority="1">Acción</th>
           </tr>
@@ -180,6 +183,7 @@
             <td>{{detail?.distancia}}</td>
             <td>L. {{detail?.recargo}}</td>
             <td>L. {{detail?.cargosExtra}}</td>
+            <td>L. {{detail.extra_charges[0]?.montoCobertura || 'N/A' }}</td>
             <td>L. {{detail?.cTotal}}</td>
             <td>{{detail?.estado.descEstado}}</td>
             <td>

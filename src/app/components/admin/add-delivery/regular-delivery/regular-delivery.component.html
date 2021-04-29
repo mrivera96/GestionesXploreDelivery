@@ -47,7 +47,8 @@
                                         ? '#FF8C00': '#000'}" class="cat-rb">
                         <span class="fa d-block text-center" style="font-size: 24px"
                               [ngClass]="{'fa-motorcycle': category.idCategoria == 6,'fa-car': category.idCategoria == 1 || category.idCategoria == 7, 'fa-bus': category.idCategoria == 3 || category.idCategoria == 5,
-                           'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4, 'fa-truck': category.idCategoria == 8}"></span>
+                                       'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4 || category.idCategoria == 11 || category.idCategoria == 12, 'fa-truck': category.idCategoria == 8,
+                                       'fas fa-heart': category.idCategoria == 9, 'fas fa-calendar-plus': category.idCategoria == 10}"></span>
                       <span class="text-center">{{category.descCategoria}} </span>
 
                     </mat-radio-button>
@@ -274,8 +275,9 @@
                     Ubicación actual
                   </mat-checkbox>
                 </div>
-
-
+              </div>
+              <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
+                {{prohibitedDistanceMsg}}
               </div>
 
               <div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
@@ -288,12 +290,17 @@
               <div class="row">
                 <div class="col" *ngFor="let extracharge of selectedCategory.categoryExtraCharges">
                   <p class="card-title">{{extracharge.extra_charge.nombre}}</p>
-                  <div class="row" *ngFor="let option of extracharge.extra_charge.options">
-                    <div class="col ml-2" formGroupName="order">
+                  <div class="row" *ngFor="let option of extracharge.extra_charge.options" >
+                    <div class="col ml-2" formGroupName="order" >
                       <mat-checkbox formControlName="extracharge"
                                     (change)="addExtraCharge($event.checked,extracharge.extra_charge.idCargoExtra,option)">
                         {{option.descripcion + ' L.' + option.costo}}</mat-checkbox>
                     </div>
+                  </div>
+
+                  <div class="row" *ngIf="extracharge.idCargoExtra == 13" formGroupName="order">
+                    <input matInput (change)="addCare()" formControlName="montoCobertura"
+                           type="number" placeholder="Monto de Seguro">
                   </div>
                 </div>
               </div>
@@ -381,9 +388,6 @@
             Se agregó correctamente
           </div>
 
-          <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
-            {{prohibitedDistanceMsg}}
-          </div>
           <!--ORDER ADD FORM END-->
         </form>
         <!-- FORM END -->

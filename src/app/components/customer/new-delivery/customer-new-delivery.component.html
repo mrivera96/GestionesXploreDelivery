@@ -308,16 +308,16 @@
               <div class="row" *ngIf="files.length == 0">
                 <div class="col" *ngFor="let extracharge of selectedCategory.categoryExtraCharges">
                   <p class="card-title">{{extracharge.extra_charge.nombre}}</p>
-                  <div class="row" *ngFor="let option of extracharge.extra_charge.options">
-                    <div class="col ml-2" formGroupName="order">
+                  <div class="row" *ngFor="let option of extracharge.extra_charge.options" >
+                    <div class="col ml-2" formGroupName="order" >
                       <mat-checkbox formControlName="extracharge"
                                     (change)="addExtraCharge($event.checked,extracharge.extra_charge.idCargoExtra,option)">
                         {{option.descripcion + ' L.' + option.costo}}</mat-checkbox>
                     </div>
                   </div>
 
-                  <div class="row" *ngIf="extracharge.idCargoExtra == 5" formGroupName="order">
-                    <input matInput (change)="addCare(extracharge.extra_charge)" formControlName="montoCobertura"
+                  <div class="row" *ngIf="extracharge.idCargoExtra == 13" formGroupName="order">
+                    <input matInput (change)="addCare()" formControlName="montoCobertura"
                            type="number" placeholder="Monto de Seguro">
                   </div>
                 </div>

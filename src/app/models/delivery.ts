@@ -1,5 +1,6 @@
 import {DeliveryDetail} from "./delivery-detail";
 import {Category} from "./category";
+import {User} from "./user";
 
 export interface Delivery {
   idDelivery?: number
@@ -30,4 +31,5 @@ export interface Delivery {
   isRuteo?: boolean
   distTotal?: number
   regAdmin?: boolean
+  usuario?: User
 }

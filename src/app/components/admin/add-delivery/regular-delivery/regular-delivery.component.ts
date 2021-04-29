@@ -164,6 +164,7 @@ export class RegularDeliveryComponent implements OnInit {
         direccion: ['', Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
         extracharge: [null],
+        montoCobertura: ['']
       }, {
         validators: [
           BlankSpacesValidator('nFactura'),
@@ -937,6 +938,13 @@ export class RegularDeliveryComponent implements OnInit {
       const idx = this.currOrder.extras.indexOf(extraCharge)
       this.currOrder.extras.splice(idx, 1)
       this.befCost -= extraCharge.costo
+    }
+  }
+
+//AÑADE MONTO DE COBERTURA
+  addCare() {
+    if (this.newForm.get('order.montoCobertura').value !== '') {
+      this.currOrder.extras.find(x=> x.idCargoExtra == 13).montoCobertura = +this.newForm.get('order.montoCobertura').value
     }
   }
 }

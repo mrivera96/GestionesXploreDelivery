@@ -976,22 +976,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   //AÑADE MONTO DE COBERTURA
-  addCare(excharge) {
+  addCare() {
     if (this.newForm.get('order.montoCobertura').value !== '') {
-      const extraCharge = {
-        idCargoExtra: excharge.idCargoExtra,
-        idDetalleOpcion: null,
-        costo: +excharge.costo,
-        montoCobertura: +this.newForm.get('order.montoCobertura').value
-      }
-      this.currOrder.extras.push(extraCharge)
-      this.befCost += +extraCharge.costo
-    } else {
-      const idx = this.currOrder.extras.indexOf(excharge)
-      this.currOrder.extras.splice(idx, 1)
-      this.befCost -= excharge.costo
+      this.currOrder.extras.find(x=> x.idCargoExtra == 13).montoCobertura = +this.newForm.get('order.montoCobertura').value
     }
-
   }
 
   openLockedUserDialog(balance) {

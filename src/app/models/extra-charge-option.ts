@@ -4,4 +4,5 @@ export interface ExtraChargeOption {
   descripcion?: string
   costo?: number
   tiempo?: number
+  montoCobertura?: number
 }
