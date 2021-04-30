@@ -309,7 +309,7 @@
 
                   <mat-form-field appearance="outline" floatLabel="always" *ngIf="extracharge.idCargoExtra == 13" >
                     <mat-label>Valor a Asegurar:</mat-label>
-                    <input  matInput (change)="addCare()" formControlName="montoCobertura" [required]="currOrder.extras.length > 0"
+                    <input  matInput (change)="addCare()" formControlName="montoCobertura" [required]="newForm.get('order.extracharge').value == 13"
                             type="number" placeholder="Valor a Asegurar" >
                     <mat-error *ngIf="newForm.get('order.montoCobertura')?.errors?.required">*Este campo es obligatorio
                     </mat-error>
