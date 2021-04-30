@@ -29,6 +29,8 @@ import {Schedule} from "../../../../models/schedule";
 import {ExtraCharge} from "../../../../models/extra-charge";
 import {ExtraChargeOption} from "../../../../models/extra-charge-option";
 import {ExtraChargeCategory} from 'src/app/models/extra-charge-category';
+import {OperationsService} from "../../../../services/operations.service";
+import {LoadingDialogComponent} from "../../../shared/loading-dialog/loading-dialog.component";
 
 @Component({
   selector: 'app-regular-delivery',
@@ -117,7 +119,8 @@ export class RegularDeliveryComponent implements OnInit {
     private http: HttpClient,
     private branchService: BranchService,
     private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private operationsService: OperationsService
   ) {
 
   }
@@ -145,10 +148,11 @@ export class RegularDeliveryComponent implements OnInit {
       deliveryHeader: this.formBuilder.group({
         fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
         hora: [formatDate(new Date().setHours(new Date().getHours(), new Date().getMinutes() + 5), 'HH:mm', 'en'), Validators.required],
-        dirRecogida: ['', [Validators.required]],
-        idCategoria: [1, [Validators.required]],
+        dirRecogida: [{value: '', disabled: false}, [Validators.required]],
+        idCategoria: [{value: 1, disabled: false}, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
-        coordsOrigen: ['']
+        coordsOrigen: [''],
+        idEtiqueta: [null]
       }, {
         validators: [
           DateValidate('fecha', 'hora'),
@@ -343,22 +347,27 @@ export class RegularDeliveryComponent implements OnInit {
       //
       this.calculateRate(ordersCount)
 
-      this.calculateDistance()
+      const cordsSubscription = this.operationsService.getCoords(this.currOrder.direccion)
+        .subscribe(result => {
+          this.currOrder.coordsDestino = result[0].lat + ',' + result[0].lng
+          this.calculateDistance()
+          cordsSubscription.unsubscribe()
+        })
     }
   }
 
   onFormSubmit() {
+    this.newForm.get('deliveryHeader.idCategoria').enable()
+    this.newForm.get('deliveryHeader.dirRecogida').enable()
+    this.newForm.get('deliveryHeader.fecha').enable()
+
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
 
-      this.loaders.loadingSubmit = true
+      this.openLoader()
       const deliveriesSubscription = this.deliveriesService
-        .newCustomerDelivery(
-          this.deliveryForm.get('deliveryHeader').value,
-          this.orders, this.pago,
-          this.currCustomer.idCliente
-          )
+        .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
         .subscribe(response => {
-          this.loaders.loadingSubmit = false
+          this.dialog.closeAll()
           this.exitMsg = response.message
           this.nDeliveryResponse = response.nDelivery
           this.openSuccessDialog('Operación Realizada Correctamente', this.exitMsg = response.message, this.nDeliveryResponse)
@@ -366,13 +375,13 @@ export class RegularDeliveryComponent implements OnInit {
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
-              this.loaders.loadingSubmit = false
+              this.dialog.closeAll()
               this.errorMsg = error.statusText
               this.openErrorDialog(this.errorMsg, false)
               deliveriesSubscription.unsubscribe()
             })
           } else {
-            this.loaders.loadingSubmit = false
+            this.dialog.closeAll()
             this.errorMsg = 'Lo sentimos, ha ocurrido un error al procesar tu solicitud. Por favor intenta de nuevo.'
             this.openErrorDialog(this.errorMsg, false)
             deliveriesSubscription.unsubscribe()
@@ -380,8 +389,8 @@ export class RegularDeliveryComponent implements OnInit {
 
         })
     } else if (this.deliveryForm.invalid) {
-      let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'));
-      invalidFields[1].focus();
+      let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'))
+      invalidFields[1].focus()
     }
 
   }
@@ -433,29 +442,23 @@ export class RegularDeliveryComponent implements OnInit {
   }
 
   calculateAndDisplayRoute(directionsService, directionsRenderer) {
-    const dirRecogida = this.newForm.get('deliveryHeader.dirRecogida').value
     const dirEntrega = this.newForm.get('order.direccion').value
-    const geocoder1 = new google.maps.Geocoder()
+    const geocoder = new google.maps.Geocoder()
+    const originLL = this.deliveryForm.get('deliveryHeader.coordsOrigen').value
 
-    const geocoder2 = new google.maps.Geocoder()
-    geocoder1.geocode({'address': dirRecogida}, results => {
-      const originLL = results[0].geometry.location
-      geocoder2.geocode({'address': dirEntrega}, results => {
-        const destLL = results[0].geometry.location
-        directionsService.route({
-          origin: originLL,  // Haight.
-          destination: destLL,  // Ocean Beach.
-
-          travelMode: google.maps.TravelMode['DRIVING']
-        }, function (response, status) {
-          if (status == 'OK') {
-            directionsRenderer.setDirections(response);
-          } else {
-            window.alert('Directions request failed due to ' + status);
-          }
-        })
+    geocoder.geocode({'address': dirEntrega}, results => {
+      const destLL = results[0].geometry.location
+      directionsService.route({
+        origin: originLL,  // Haight.
+        destination: destLL,  // Ocean Beach.
+        travelMode: google.maps.TravelMode['DRIVING']
+      }, function (response, status) {
+        if (status == 'OK') {
+          directionsRenderer.setDirections(response)
+        } else {
+          window.alert('Directions request failed due to ' + status)
+        }
       })
-
     })
   }
 
@@ -472,7 +475,6 @@ export class RegularDeliveryComponent implements OnInit {
         placeSubscription.unsubscribe()
       })
     }
-
   }
 
   searchDestination(event) {
@@ -490,18 +492,40 @@ export class RegularDeliveryComponent implements OnInit {
     }
   }
 
-  calculateRate(ordersCount) {
-    this.rates.forEach(value => {
-      if (ordersCount >= value?.entregasMinimas
-        && ordersCount <= value?.entregasMaximas
-        && this.deliveryForm.get('deliveryHeader.idCategoria').value == value?.idCategoria) {
-        this.pago.baseRate = value.precio
-      } else if (ordersCount == 0) {
-        this.pago.baseRate = 0.00
+  //OBTIENE LAS COORDENADAS DEL PUNTO DE ORIGEN PARA SER UTILIZADAS DURANTE  EL PROCESO
+  getOriginCoords() {
+    if (this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('15.') || this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('14.') || this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('13.')) {
+      this.deliveryForm.get('deliveryHeader.coordsOrigen')
+        .setValue(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
+      this.center = {
+        lat: +this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[0],
+        lng: +this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[1],
       }
-    })
+    } else {
+      const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
+        .subscribe(result => {
+          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result[0].lat + ',' + result[0].lng)
+          this.center = {
+            lat: result[0].lat,
+            lng: result[0].lng,
+          }
+          cordsSubscription.unsubscribe()
+        })
+    }
+
   }
 
+  //SELECCIONA LA TARIFA SEGÚN EL NÚMERO DE ENVÍOS AGREGADOS AL MOMENTO
+  calculateRate(ordersCount) {
+    const currRate = this.rates.find(rate => ordersCount >= rate?.entregasMinimas && ordersCount <= rate?.entregasMaximas && this.deliveryForm.get('deliveryHeader.idCategoria').value == rate?.idCategoria)
+    if (currRate != null) {
+      this.pago.baseRate = currRate.precio
+    } else if (ordersCount == 0) {
+      this.pago.baseRate = 0.00
+    }
+  }
+
+  //CALCULA EL PAGO DEL ENVÍO SEGÚN LA DISTANCIA
   calculateOrderPayment(distance) {
     let orderPayment = {
       'baseRate': this.pago.baseRate,
@@ -510,13 +534,12 @@ export class RegularDeliveryComponent implements OnInit {
       'total': 0.00
     }
 
-    this.surcharges.forEach(value => {
-      if (distance >= Number(value.kilomMinimo)
-        && distance <= Number(value.kilomMaximo)
-      ) {
-        orderPayment.surcharges = Number(value.monto)
-      }
-    })
+    const appSurcharge = this.surcharges.find(value => distance >= Number(value.kilomMinimo)
+      && distance <= Number(value.kilomMaximo))
+
+    if (appSurcharge?.monto) {
+      orderPayment.surcharges = Number(appSurcharge?.monto)
+    }
 
     if (this.currOrder.extras.length > 0) {
       orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
@@ -532,109 +555,100 @@ export class RegularDeliveryComponent implements OnInit {
     return orderPayment
   }
 
+
+  //CÁLCULO DE LA DISTANCIA PARA AGREGAR EL ENVÍO
   calculateDistance() {
     const salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value
     const entrega = this.currOrder.direccion
     const tarifa = this.pago.baseRate
 
-    if (this.orders.length == 0) {
-      const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: salida,
+    if (this.currOrder.coordsDestino != null) {
+      const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'calculateDistance',
+        salida: salida,
+        entrega: entrega,
+        tarifa: tarifa
       }).subscribe((response) => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
-        cordsSubscription.unsubscribe()
-      })
-    }
+        this.currOrder.distancia = response.distancia
+        this.currOrder.tiempo = response.tiempo
+        const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
+        this.currOrder.tarifaBase = calculatedPayment.baseRate
+        this.currOrder.recargo = calculatedPayment.surcharges
+        this.currOrder.cargosExtra = calculatedPayment.cargosExtra
+        this.currOrder.cTotal = calculatedPayment.total
 
-    const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'calculateDistance',
-      salida: salida,
-      entrega: entrega,
-      tarifa: tarifa
-    }).subscribe((response) => {
-      this.currOrder.distancia = response.distancia
-      this.currOrder.tiempo = response.tiempo
-      const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
-      this.currOrder.tarifaBase = calculatedPayment.baseRate
-      this.currOrder.recargo = calculatedPayment.surcharges
-      this.currOrder.cargosExtra = calculatedPayment.cargosExtra
-      this.currOrder.cTotal = calculatedPayment.total
+        this.deliveryForm.get('order').reset()
+        this.orders.push(this.currOrder)
+        this.pagos.push(calculatedPayment)
+        this.newForm.get('deliveryHeader.idCategoria').disable()
+        this.newForm.get('deliveryHeader.dirRecogida').disable()
+        this.newForm.get('deliveryHeader.fecha').disable()
+        this.currOrder = {
+          extras: [] = []
+        }
+        this.befDistance = 0
+        this.befTime = 0
+        this.befCost = 0
 
-      this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: entrega,
-      }).subscribe((response) => {
-        this.currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
-      })
-
-      this.deliveryForm.get('order').reset()
-      this.orders.push(this.currOrder)
-      this.pagos.push(calculatedPayment)
-      this.loaders.loadingAdd = false
-      this.currOrder = {
-        extras: [] = []
-      }
-      this.befDistance = 0
-      this.befTime = 0
-      this.befCost = 0
-
-      if (this.orders.length > 1) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.dtTrigger.next()
-          })
-      } else {
-        if (this.dtElement.dtInstance) {
+        if (this.orders.length > 1) {
           this.dtElement.dtInstance.then(
             (dtInstance: DataTables.Api) => {
               dtInstance.destroy()
               this.dtTrigger.next()
             })
         } else {
-          this.dtTrigger.next()
+          if (this.dtElement.dtInstance) {
+            this.dtElement.dtInstance.then(
+              (dtInstance: DataTables.Api) => {
+                dtInstance.destroy()
+                this.dtTrigger.next()
+              })
+          } else {
+            this.dtTrigger.next()
+          }
+
         }
 
-      }
-
-      this.agregado = true
-      setTimeout(() => {
-        this.agregado = false;
-      }, 2000)
-
-      this.orders.forEach(value => {
-        if (value.tarifaBase != this.pago.baseRate) {
-          const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
-          let i = this.orders.indexOf(value)
-          value.tarifaBase = this.pago.baseRate
-          value.cargosExtra = nPay.cargosExtra
-          value.recargo = nPay.surcharges
-          value.cTotal = nPay.total
-          this.pagos[i].baseRate = nPay.baseRate
-          this.pago[i].cargosExtra = nPay.cargosExtra
-          this.pagos[i].surcharges = nPay.surcharges
-          this.pagos[i].total = nPay.total
-        }
-      })
-      cDistanceSubscription.unsubscribe()
-      this.calculatePayment()
-
-    }, error => {
-      error.subscribe(error => {
-        this.prohibitedDistanceMsg = error.statusText
-        this.prohibitedDistance = true
-        this.loaders.loadingAdd = false
-        cDistanceSubscription.unsubscribe()
+        this.agregado = true
         setTimeout(() => {
-          this.prohibitedDistance = false;
+          this.agregado = false
         }, 2000)
+
+        this.orders.forEach(value => {
+          if (value.tarifaBase != this.pago.baseRate) {
+            const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
+            let i = this.orders.indexOf(value)
+            value.tarifaBase = this.pago.baseRate
+            value.cargosExtra = nPay.cargosExtra
+            value.recargo = nPay.surcharges
+            value.cTotal = nPay.total
+            this.pagos[i].baseRate = nPay.baseRate
+            if (this.pagos[i]?.cargosExtra) {
+              this.pagos[i].cargosExtra = nPay.cargosExtra
+            }
+            this.pagos[i].surcharges = nPay.surcharges
+            this.pagos[i].total = nPay.total
+          }
+        })
+        cDistanceSubscription.unsubscribe()
+        this.calculatePayment()
+
+      }, error => {
+        error.subscribe(error => {
+          this.prohibitedDistanceMsg = error.statusText
+          this.prohibitedDistance = true
+          this.loaders.loadingAdd = false
+          cDistanceSubscription.unsubscribe()
+          setTimeout(() => {
+            this.prohibitedDistance = false
+          }, 2000)
+        })
+
       })
-
-    })
-
+    }
   }
 
+  //CALCULA EL PAGO TOTAL
   calculatePayment() {
     this.pago.recargos = this.pagos.reduce(function (a, b) {
       return +a + +b['surcharges']
@@ -648,6 +662,7 @@ export class RegularDeliveryComponent implements OnInit {
       return +a + +b['total']
     }, 0)
 
+    this.dialog.closeAll()
   }
 
   removeFromArray(item) {
@@ -668,6 +683,7 @@ export class RegularDeliveryComponent implements OnInit {
     location.reload()
   }
 
+  //ESTABLECE LA UBICACIÓN ACTUAL PARA EL PUNTO DESTINO
   setCurrentLocationDest(checked) {
     if (!checked) {
       if (navigator) {
@@ -688,14 +704,15 @@ export class RegularDeliveryComponent implements OnInit {
 
   }
 
+  //ESTABLECE LAS COORDENADAS PARA EL PUNTO DE RECOGIDA
   setCordsOrigin() {
     this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(this.originCords.nativeElement.value)
+    this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(this.originCords.nativeElement.value)
     this.gcordsOrigin = false
 
     if (this.deliveryForm.get('order.direccion').value != '') {
       this.calculatedistanceBefore()
     }
-
   }
 
   setCordsDestination() {
@@ -932,11 +949,11 @@ export class RegularDeliveryComponent implements OnInit {
       idDetalleOpcion: option.idDetalleOpcion,
       costo: option.costo
     }
-    const exists = this.currOrder.extras.find(x=> x.idCargoExtra == extracharge)
+    const exists = this.currOrder.extras.find(x => x.idCargoExtra == extracharge)
     if (!exists) {
       this.currOrder.extras.push(extraCharge)
-    }else{
-      this.currOrder.extras.filter(x=> x.idCargoExtra == extracharge)
+    } else {
+      this.currOrder.extras.filter(x => x.idCargoExtra == extracharge)
 
       this.currOrder.extras.push(extraCharge)
     }
@@ -945,7 +962,11 @@ export class RegularDeliveryComponent implements OnInit {
   //AÑADE MONTO DE COBERTURA
   addCare() {
     if (this.newForm.get('order.montoCobertura').value !== '') {
-      this.currOrder.extras.find(x=> x.idCargoExtra == 13).montoCobertura = +this.newForm.get('order.montoCobertura').value
+      this.currOrder.extras.find(x => x.idCargoExtra == 13).montoCobertura = +this.newForm.get('order.montoCobertura').value
     }
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 }
