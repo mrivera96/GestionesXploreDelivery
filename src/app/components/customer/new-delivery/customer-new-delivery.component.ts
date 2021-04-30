@@ -959,19 +959,19 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   //AÑADE UN CARGO EXTRA
-  addExtraCharge(checked, extracharge, option) {
+  addExtraCharge(extracharge, option) {
     const extraCharge = {
       idCargoExtra: extracharge,
       idDetalleOpcion: option.idDetalleOpcion,
       costo: option.costo
     }
-    if (checked == true) {
+    const exists = this.currOrder.extras.find(x=> x.idCargoExtra == extracharge)
+    if (!exists) {
       this.currOrder.extras.push(extraCharge)
-      this.befCost += +extraCharge.costo
-    } else {
-      const idx = this.currOrder.extras.indexOf(extraCharge)
-      this.currOrder.extras.splice(idx, 1)
-      this.befCost -= extraCharge.costo
+    }else{
+      this.currOrder.extras.filter(x=> x.idCargoExtra == extracharge)
+
+      this.currOrder.extras.push(extraCharge)
     }
   }
 

@@ -41,7 +41,6 @@
                                    formControlName="idCategoria" [disabled]="orders.length > 0">
                     <mat-radio-button [id]="category?.idCategoria" [value]="category.idCategoria" disableRipple="true"
                                       *ngFor="let category of categories; let  i = index"
-                                      [matTooltip]="category.descripcion"
                                       [ngStyle]="{'color':
                                         category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
                                         ? '#FF8C00': '#000'}" class="cat-rb">
@@ -53,6 +52,13 @@
 
                     </mat-radio-button>
                   </mat-radio-group>
+                </div>
+              </div>
+
+              <div class="row" *ngIf="selectedCategory.idCategoria">
+                <div class="col">
+                  <p class="text-danger">Categoría {{selectedCategory.descCategoria}}
+                    : {{selectedCategory.descripcion}}</p>
                 </div>
               </div>
 
@@ -287,21 +293,28 @@
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col" *ngFor="let extracharge of selectedCategory.categoryExtraCharges">
+              <div class="row" >
+                <div class="col-lg-4 col-sm-6" formGroupName="order"
+                     *ngFor="let extracharge of selectedCategory.categoryExtraCharges">
                   <p class="card-title">{{extracharge.extra_charge.nombre}}</p>
-                  <div class="row" *ngFor="let option of extracharge.extra_charge.options" >
-                    <div class="col ml-2" formGroupName="order" >
-                      <mat-checkbox formControlName="extracharge"
-                                    (change)="addExtraCharge($event.checked,extracharge.extra_charge.idCargoExtra,option)">
-                        {{option.descripcion + ' L.' + option.costo}}</mat-checkbox>
-                    </div>
-                  </div>
 
-                  <div class="row" *ngIf="extracharge.idCargoExtra == 13" formGroupName="order">
-                    <input matInput (change)="addCare()" formControlName="montoCobertura"
-                           type="number" placeholder="Monto de Seguro">
-                  </div>
+                  <mat-radio-group formControlName="extracharge">
+                    <mat-radio-button class="col" *ngFor="let option of extracharge.extra_charge.options"
+                                      [value]="option.idDetalleOpcion"
+                                      (change)="addExtraCharge(extracharge.extra_charge.idCargoExtra,option)">
+
+                      <span style="white-space: normal;">{{option.descripcion}} (L. {{option.costo}})</span>
+                    </mat-radio-button>
+                  </mat-radio-group>
+
+                  <mat-form-field appearance="outline" floatLabel="always" *ngIf="extracharge.idCargoExtra == 13" >
+                    <mat-label>Valor a Asegurar:</mat-label>
+                    <input  matInput (change)="addCare()" formControlName="montoCobertura" [required]="currOrder.extras.length > 0"
+                            type="number" placeholder="Valor a Asegurar" >
+                    <mat-error *ngIf="newForm.get('order.montoCobertura')?.errors?.required">*Este campo es obligatorio
+                    </mat-error>
+                  </mat-form-field>
+
                 </div>
               </div>
 

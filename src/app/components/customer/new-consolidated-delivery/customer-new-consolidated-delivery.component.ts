@@ -323,7 +323,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         idCargoExtra: null,
         idDetalleOpcion: null,
       }
-
       //
       this.calculateRate()
 
