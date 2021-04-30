@@ -99,12 +99,9 @@ export class CustomerDashboardComponent implements OnInit {
       this.pendingOrders = response.pendingOrders
       this.assignedOrdersCount = response.assignedOrdersCount
       this.assignedOrders = response.assignedOrders
-      this.pendingOrders.forEach(order => {
-        order.delivery.fechaReserva = formatDate(new Date(order.delivery.fechaReserva), 'yyyy-MM-dd HH:mm', 'en')
-      })
 
-      this.matDialog.closeAll()
       this.dtTrigger.next()
+      this.matDialog.closeAll()
       dashboardDataSubscription.unsubscribe()
     }, error => {
       this.matDialog.closeAll()
@@ -129,7 +126,7 @@ export class CustomerDashboardComponent implements OnInit {
     if (reload) {
       dialog.afterClosed().subscribe(result => {
         this.loaders.loadingData = true
-        this.ngOnInit
+        this.ngOnInit()
       })
     }
 

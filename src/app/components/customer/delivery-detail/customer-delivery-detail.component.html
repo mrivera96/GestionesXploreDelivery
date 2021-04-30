@@ -113,18 +113,21 @@
           {{currentDelivery?.estado?.descEstado}}
         </div>
 
+        <div class="col-sm">
+          <strong>Tipo de delivery:</strong>
+          {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : currentDelivery?.isRuteo == true ? 'Envío por Ruteo' : 'Envío Normal'}}
+        </div>
+
+        <div class="col-sm"></div>
+
+      </div>
+
+      <div class="row">
         <div class="col-sm" *ngIf="currentDelivery?.idEstado == 37">
           <strong>Asignada a:</strong>
           {{currentDelivery?.detalle[0]?.conductor?.nomUsuario}}
         </div>
 
-      </div>
-
-      <div class="row">
-        <div class="col-sm">
-          <strong>Tipo de delivery:</strong>
-          {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : currentDelivery?.isRuteo == true ? 'Envío por Ruteo' : 'Envío Normal'}}
-        </div>
       </div>
       <br>
       <div>
@@ -143,10 +146,10 @@
               <th>Distancia</th>
               <th>Recargo</th>
               <th>Cargos Extra</th>
-              <th>Costo</th>
+              <th>Monto Cobertura</th>
+              <th>Costo Total</th>
               <th>Fotografías</th>
             </tr>
-
           </thead>
 
           <tbody>
@@ -161,9 +164,10 @@
               <td>{{detail.distancia}}</td>
               <td>L. {{detail.recargo}}</td>
               <td>L. {{detail.cargosExtra }}</td>
+              <td>L. {{detail.extra_charges[0]?.montoCobertura || 'N/A' }}</td>
               <td>L. {{detail.cTotal}}</td>
               <td>
-                <button *ngIf="detail.photography.length > 0" button type="button" mat-raised-button color="primary"
+                <button *ngIf="detail.photography.length > 0"  type="button" mat-raised-button color="primary"
                   (click)="openPhotosDialog(detail.photography)">
                   Ver Fotografías
                 </button>

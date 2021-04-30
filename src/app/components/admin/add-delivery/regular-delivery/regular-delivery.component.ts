@@ -164,6 +164,7 @@ export class RegularDeliveryComponent implements OnInit {
         direccion: ['', Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
         extracharge: [null],
+        montoCobertura: ['']
       }, {
         validators: [
           BlankSpacesValidator('nFactura'),
@@ -924,19 +925,27 @@ export class RegularDeliveryComponent implements OnInit {
     })
   }
 
-  addExtraCharge(checked, extracharge, option) {
+  //AÑADE UN CARGO EXTRA
+  addExtraCharge(extracharge, option) {
     const extraCharge = {
       idCargoExtra: extracharge,
       idDetalleOpcion: option.idDetalleOpcion,
       costo: option.costo
     }
-    if (checked == true) {
+    const exists = this.currOrder.extras.find(x=> x.idCargoExtra == extracharge)
+    if (!exists) {
       this.currOrder.extras.push(extraCharge)
-      this.befCost += +extraCharge.costo
-    } else {
-      const idx = this.currOrder.extras.indexOf(extraCharge)
-      this.currOrder.extras.splice(idx, 1)
-      this.befCost -= extraCharge.costo
+    }else{
+      this.currOrder.extras.filter(x=> x.idCargoExtra == extracharge)
+
+      this.currOrder.extras.push(extraCharge)
+    }
+  }
+
+  //AÑADE MONTO DE COBERTURA
+  addCare() {
+    if (this.newForm.get('order.montoCobertura').value !== '') {
+      this.currOrder.extras.find(x=> x.idCargoExtra == 13).montoCobertura = +this.newForm.get('order.montoCobertura').value
     }
   }
 }

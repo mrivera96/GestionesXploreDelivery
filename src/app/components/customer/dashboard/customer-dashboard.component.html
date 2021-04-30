@@ -1,6 +1,6 @@
 <!-- INICIO ALERTA POR SALDO PENDIENTE -->
 <div *ngIf="lockedUser" class="alert alert-danger" role="alert">
-  Hola <strong>{{currentCustomer.nomRepresentante}}</strong>, informamos que tienes un balance abierto de <strong>L. {{actualBalance}}</strong> .
+  Hola <strong>{{currentCustomer.nomRepresentante}}</strong>, informamos que tienes un balance abierto de <strong>L. {{actualBalance }}</strong> .
   Te solicitamos poner tu cuenta al día o solicitar una ampliación de tu crédito para continuar gozando de nuestro servicio.
   Para más información, favor contactarnos al <a href="tel:94397234">+504 9439-7234</a>.
 </div>
@@ -49,7 +49,7 @@
             </div>
             <div class="col-9 text-center">
               <h2> Balance Actual</h2>
-              <h1 class="display-5"><strong>L. {{actualBalance}}</strong></h1>
+              <h1 class="display-5"><strong>L. {{actualBalance }}</strong></h1>
             </div>
           </div>
           <div class="row">
