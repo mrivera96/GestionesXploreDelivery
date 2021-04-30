@@ -300,7 +300,7 @@
 
                   <mat-radio-group formControlName="extracharge">
                     <mat-radio-button class="col" *ngFor="let option of extracharge.extra_charge.options"
-                                      [value]="option.idDetalleOpcion"
+                                      [value]="option.idCargoExtra"
                                       (change)="addExtraCharge(extracharge.extra_charge.idCargoExtra,option)">
 
                       <span style="white-space: normal;">{{option.descripcion}} (L. {{option.costo}})</span>
