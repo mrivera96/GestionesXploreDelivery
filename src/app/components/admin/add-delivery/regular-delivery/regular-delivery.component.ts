@@ -32,6 +32,7 @@ import {ExtraChargeCategory} from 'src/app/models/extra-charge-category';
 import {OperationsService} from "../../../../services/operations.service";
 import {LoadingDialogComponent} from "../../../shared/loading-dialog/loading-dialog.component";
 import {Label} from "../../../../models/label";
+import {LabelsService} from "../../../../services/labels.service";
 
 @Component({
   selector: 'app-regular-delivery',
@@ -121,6 +122,7 @@ export class RegularDeliveryComponent implements OnInit {
     private http: HttpClient,
     private branchService: BranchService,
     private router: Router,
+    private labelsService: LabelsService,
     public dialog: MatDialog,
     private operationsService: OperationsService
   ) {
@@ -146,12 +148,13 @@ export class RegularDeliveryComponent implements OnInit {
     this.directionsService = new google.maps.DirectionsService
     this.locationOption = 1
     this.paymentMethod = 1
+
     this.deliveryForm = this.formBuilder.group({
       deliveryHeader: this.formBuilder.group({
         fecha: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
         hora: [formatDate(new Date().setHours(new Date().getHours(), new Date().getMinutes() + 5), 'HH:mm', 'en'), Validators.required],
-        dirRecogida: [{value: '', disabled: false}, [Validators.required]],
-        idCategoria: [{value: 1, disabled: false}, [Validators.required]],
+        dirRecogida: [{ value: '', disabled: false }, [Validators.required]],
+        idCategoria: [{ value: 1, disabled: false }, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
         idEtiqueta: [null]
@@ -181,37 +184,6 @@ export class RegularDeliveryComponent implements OnInit {
       })
     })
 
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.myCurrentLocation = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-        this.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-
-        this.deliveryForm.get('deliveryHeader.dirRecogida')
-          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-      }, function (error) {
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
-            break;
-          case error.POSITION_UNAVAILABLE:
-            // La ubicación no está disponible.
-            break;
-          case error.TIMEOUT:
-            // Se ha excedido el tiempo para obtener la ubicación.
-            break;
-        }
-
-      })
-    } else {
-      alert('El GPS está desactivado')
-    }
-
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -237,20 +209,19 @@ export class RegularDeliveryComponent implements OnInit {
         },
       },
     }
-
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.openLoader()
     const categoriesSubscription = this.categoriesService
       .getCustomerCategories(this.currCustomer.idCliente)
       .subscribe(response => {
         this.categories = response.data
         this.setSelectedCategory()
-        this.loaders.loadingData = false
+        this.dialog.closeAll()
         categoriesSubscription.unsubscribe()
       }, error => {
-        this.loaders.loadingData = false
+        this.dialog.closeAll()
         this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
         this.openErrorDialog(this.errorMsg, true)
         categoriesSubscription.unsubscribe()
@@ -267,16 +238,25 @@ export class RegularDeliveryComponent implements OnInit {
       .getBranchOffices(this.currCustomer.idCliente)
       .subscribe(response => {
         this.myBranchOffices = response.data
-        this.myBranchOffices.forEach(bOffice => {
-          if (bOffice.isDefault == true) {
-            this.locationOption = 3
-            this.defaultBranch = bOffice.idSucursal
-            this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(bOffice.direccion)
-            this.checkInsructions()
-          }
+        let defOffice = this.myBranchOffices.find(item => item.isDefault == true)
 
-        })
+        if (defOffice != null) {
+          this.locationOption = 3
+          this.defaultBranch = defOffice.idSucursal
+          this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(defOffice.direccion)
+          this.getOriginCoords()
+          this.checkInsructions()
+        } else {
+          this.setCurrentLocationOrigin()
+        }
         branchSubscription.unsubscribe()
+      })
+
+    const lblSubscription = this.labelsService
+      .getMyLabels()
+      .subscribe(response => {
+        this.myLabels = response.data
+        lblSubscription.unsubscribe()
       })
 
   }
@@ -295,6 +275,7 @@ export class RegularDeliveryComponent implements OnInit {
     this.newForm.get('deliveryHeader.dirRecogida').setValue('')
   }
 
+  //ESTABLECE LA UBICACIÓN ACTUAL COMO PUNTO DE RECOGIDA
   setCurrentLocationOrigin() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
@@ -302,20 +283,26 @@ export class RegularDeliveryComponent implements OnInit {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
         }
+
+        this.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
         this.deliveryForm.get('deliveryHeader.dirRecogida')
           .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
-        this.calculatedistanceBefore()
+        this.deliveryForm.get('deliveryHeader.coordsOrigen')
+          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
       }, function (error) {
         switch (error.code) {
           case error.PERMISSION_DENIED:
             alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
-            break;
+            break
           case error.POSITION_UNAVAILABLE:
             // La ubicación no está disponible.
-            break;
+            break
           case error.TIMEOUT:
             // Se ha excedido el tiempo para obtener la ubicación.
-            break;
+            break
         }
 
       })
@@ -330,7 +317,7 @@ export class RegularDeliveryComponent implements OnInit {
 
   onOrderAdd() {
     if (this.deliveryForm.get('order').valid) {
-      this.loaders.loadingAdd = true
+      this.openLoader()
 
       this.currOrder.nFactura = this.newForm.get('order.nFactura').value
       this.currOrder.nomDestinatario = this.newForm.get('order.nomDestinatario').value
