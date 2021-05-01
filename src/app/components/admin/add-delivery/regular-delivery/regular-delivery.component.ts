@@ -354,7 +354,7 @@ export class RegularDeliveryComponent implements OnInit {
 
       this.openLoader()
       const deliveriesSubscription = this.deliveriesService
-        .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
+        .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago, this.currCustomer.idCliente)
         .subscribe(response => {
           this.dialog.closeAll()
           this.exitMsg = response.message
