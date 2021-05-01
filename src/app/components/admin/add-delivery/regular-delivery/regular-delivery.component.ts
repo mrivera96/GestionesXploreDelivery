@@ -31,6 +31,7 @@ import {ExtraChargeOption} from "../../../../models/extra-charge-option";
 import {ExtraChargeCategory} from 'src/app/models/extra-charge-category';
 import {OperationsService} from "../../../../services/operations.service";
 import {LoadingDialogComponent} from "../../../shared/loading-dialog/loading-dialog.component";
+import {Label} from "../../../../models/label";
 
 @Component({
   selector: 'app-regular-delivery',
@@ -110,6 +111,7 @@ export class RegularDeliveryComponent implements OnInit {
   }
   searchingOrigin = false
   searchingDest = false
+  myLabels: Label[] = []
 
   constructor(
     private categoriesService: CategoriesService,
