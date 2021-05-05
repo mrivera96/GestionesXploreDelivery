@@ -207,6 +207,9 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
     this.loaders.loadingData = true
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.consolidatedForeignCategories
+      this.categories.forEach(category =>{
+        category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
+      })
       categoriesSubscription.unsubscribe()
       this.loaders.loadingData = false
       this.setSelectedCategory()
