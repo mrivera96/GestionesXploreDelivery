@@ -223,6 +223,10 @@ export class CustomerNewDeliveryComponent implements OnInit {
       .getCustomerCategories()
       .subscribe(response => {
         this.categories = response.data
+
+        this.categories.forEach(category =>{
+          category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
+        })
         this.demandMSG = response.demand
         this.setSelectedCategory()
         this.dialog.closeAll()
@@ -965,14 +969,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
       idDetalleOpcion: option.idDetalleOpcion,
       costo: option.costo
     }
-    const exists = this.currOrder.extras.find(x=> x.idCargoExtra == extracharge)
-    if (!exists) {
       this.currOrder.extras.push(extraCharge)
-    }else{
-      this.currOrder.extras.filter(x=> x.idCargoExtra == extracharge)
+  }
 
-      this.currOrder.extras.push(extraCharge)
-    }
+  removeExtraCharges(extracharge){
+    this.newForm.get('order.extracharge').setValue(null)
+    const ec = this.currOrder.extras.find(x=> x.idCargoExtra == extracharge)
+    const id = this.currOrder.extras.indexOf(ec)
+    this.currOrder.extras.splice(id,1)
   }
 
   //AÑADE MONTO DE COBERTURA

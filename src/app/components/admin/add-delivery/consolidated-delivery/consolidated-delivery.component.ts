@@ -198,6 +198,9 @@ export class ConsolidatedDeliveryComponent implements OnInit {
       .getCustomerCategories(this.currCustomer.idCliente)
       .subscribe(response => {
         this.categories = response.consolidatedCategories
+        this.categories.forEach(category =>{
+          category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
+        })
         categoriesSubscription.unsubscribe()
         this.loaders.loadingData = false
         this.setSelectedCategory()

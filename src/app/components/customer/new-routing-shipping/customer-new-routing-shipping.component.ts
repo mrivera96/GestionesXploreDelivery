@@ -229,6 +229,9 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     .subscribe(response => {
       this.categories = response.routingCategories
       this.demandMSG = response.demand
+      this.categories.forEach(category =>{
+        category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
+      })
       this.setSelectedCategory()
       this.dialog.closeAll()
       categoriesSubscription.unsubscribe()

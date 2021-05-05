@@ -316,6 +316,10 @@
                                       (change)="addExtraCharge(extracharge.extra_charge.idCargoExtra,option)">
                        <span style="white-space: normal;">{{option.descripcion}} (L. {{option.costo | number:'.2'}})</span>
                     </mat-radio-button>
+                    <mat-radio-button class="col"
+                                      (change)="removeExtraCharges(extracharge.idCargoExtra)">
+                      <span style="white-space: normal;">Ninguno</span>
+                    </mat-radio-button>
                   </mat-radio-group>
 
                   <mat-form-field appearance="outline" floatLabel="always" *ngIf="extracharge.idCargoExtra == 13" >

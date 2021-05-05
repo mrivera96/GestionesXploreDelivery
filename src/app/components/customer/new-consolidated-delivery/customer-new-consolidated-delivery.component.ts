@@ -213,6 +213,9 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.consolidatedCategories
       this.demandMSG = response.demand
+      this.categories.forEach(category =>{
+        category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
+      })
       categoriesSubscription.unsubscribe()
       this.dialog.closeAll()
       this.setSelectedCategory()
