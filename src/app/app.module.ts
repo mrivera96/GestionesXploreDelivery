@@ -40,6 +40,8 @@ import {NgxDropzoneModule} from "ngx-dropzone";
 import { LockedUserDialogComponent } from './components/shared/locked-user-dialog/locked-user-dialog.component';
 import { ConfirmCancelDialogComponent } from './components/customer/delivery-detail/confirm-cancel-dialog/confirm-cancel-dialog.component';
 import { ConfirmDeleteComponent } from './components/customer/labels/confirm-delete/confirm-delete.component';
+import { ChangeAddressDialogComponent } from './components/shared/order-detail-dialog/change-address-dialog/change-address-dialog.component';
+import { RoutingShippingComponent } from './components/admin/add-delivery/routing-shipping/routing-shipping.component';
 
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -58,6 +60,8 @@ PdfMakeWrapper.setFonts(pdfFonts);
         LockedUserDialogComponent,
         ConfirmCancelDialogComponent,
         ConfirmDeleteComponent,
+        ChangeAddressDialogComponent,
+        RoutingShippingComponent,
     ],
 
     imports: [

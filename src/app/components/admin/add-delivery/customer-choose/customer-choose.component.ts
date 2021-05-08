@@ -99,6 +99,10 @@ export class CustomerChooseComponent implements OnInit {
           this.deliveryTypes.push({id: 2, desc: 'Carga Consolidada'})
         }
 
+        if(response.data.consolidated == true){
+          this.deliveryTypes.push({id: 3, desc: 'Ruteo'})
+        }
+
         /* if(response.data.foreign == true){
           this.deliveryTypes.push({id: 4, desc: 'Carga Consolidada Foránea'})
         } */
