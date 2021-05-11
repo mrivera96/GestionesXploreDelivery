@@ -166,22 +166,43 @@ export class ChangeAddressDialogComponent implements OnInit {
   calculateAndDisplayRoute(directionsService, directionsRenderer) {
     const dirEntrega = this.addForm.direccion.value
     const geocoder = new google.maps.Geocoder()
-    const originLL = this.currDelivery.coordsOrigen.trim()
+    let originLL
 
-    geocoder.geocode({'address': dirEntrega}, results => {
-      const destLL = results[0].geometry.location
-      directionsService.route({
-        origin: originLL,  // Haight.
-        destination: destLL,  // Ocean Beach.
-        travelMode: google.maps.TravelMode['DRIVING']
-      }, function (response, status) {
-        if (status == 'OK') {
-          directionsRenderer.setDirections(response)
-        } else {
-          window.alert('Directions request failed due to ' + status)
-        }
+    if(this.currDelivery.coordsOrigen == null){
+      geocoder.geocode({'address': this.currDelivery.dirRecogida}, results => {
+        originLL = results[0].geometry.location
+        geocoder.geocode({'address': dirEntrega}, results => {
+          const destLL = results[0].geometry.location
+          directionsService.route({
+            origin: originLL,  // Haight.
+            destination: destLL,  // Ocean Beach.
+            travelMode: google.maps.TravelMode['DRIVING']
+          }, function (response, status) {
+            if (status == 'OK') {
+              directionsRenderer.setDirections(response)
+            } else {
+              window.alert('Directions request failed due to ' + status)
+            }
+          })
+        })
       })
-    })
+    }else{
+      originLL = this.currDelivery.coordsOrigen.trim()
+      geocoder.geocode({'address': dirEntrega}, results => {
+        const destLL = results[0].geometry.location
+        directionsService.route({
+          origin: originLL,  // Haight.
+          destination: destLL,  // Ocean Beach.
+          travelMode: google.maps.TravelMode['DRIVING']
+        }, function (response, status) {
+          if (status == 'OK') {
+            directionsRenderer.setDirections(response)
+          } else {
+            window.alert('Directions request failed due to ' + status)
+          }
+        })
+      })
+    }
   }
 
   //CALCULA EL PAGO DEL ENVÍO SEGÚN LA DISTANCIA

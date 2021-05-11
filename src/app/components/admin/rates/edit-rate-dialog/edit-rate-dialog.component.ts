@@ -1,14 +1,14 @@
 import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {RatesService} from "../../../../services/rates.service";
-import {CategoriesService} from "../../../../services/categories.service";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
-import {Rate} from "../../../../models/rate";
-import {Category} from "../../../../models/category";
-import {Customer} from "../../../../models/customer";
-import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
-import { RateType } from 'src/app/models/rate-type';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {RatesService} from '../../../../services/rates.service';
+import {CategoriesService} from '../../../../services/categories.service';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {ErrorModalComponent} from '../../../shared/error-modal/error-modal.component';
+import {Rate} from '../../../../models/rate';
+import {Category} from '../../../../models/category';
+import {Customer} from '../../../../models/customer';
+import {SuccessModalComponent} from '../../../shared/success-modal/success-modal.component';
+import {RateType} from 'src/app/models/rate-type';
 
 @Component({
   selector: 'app-edit-rate-dialog',
@@ -17,15 +17,16 @@ import { RateType } from 'src/app/models/rate-type';
   encapsulation: ViewEncapsulation.None
 })
 export class EditRateDialogComponent implements OnInit {
-  edRateForm: FormGroup
-  categories: Category[]
-  customers: Customer[]
+  edRateForm: FormGroup;
+  categories: Category[];
+  customers: Customer[];
   loaders = {
     loadingData: false,
     loadingSubmit: false
-  }
-  currRate: Rate
-  rateTypes: RateType[]
+  };
+  currRate: Rate;
+  rateTypes: RateType[];
+
   constructor(
     private ratesService: RatesService,
     private categoriesService: CategoriesService,
@@ -34,8 +35,8 @@ export class EditRateDialogComponent implements OnInit {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<any>
   ) {
-    this.currRate = data.rate
-    this.dialogRef.disableClose = true
+    this.currRate = data.rate;
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {
@@ -47,48 +48,55 @@ export class EditRateDialogComponent implements OnInit {
         entregasMinimas: [this.currRate.entregasMinimas, Validators.required],
         entregasMaximas: [this.currRate.entregasMaximas, Validators.required],
         precio: [this.currRate.precio, Validators.required],
-        idTipoTarifa: [this.currRate.idTipoTarifa, Validators.required]
+        idTipoTarifa: [this.currRate.idTipoTarifa, Validators.required],
+        tYK: [this.currRate?.item_detail?.tYK || 0],
+        cobVehiculo: [this.currRate?.item_detail?.cobVehiculo ||0],
+        servChofer: [this.currRate?.item_detail?.servChofer ||0],
+        recCombustible: [this.currRate?.item_detail?.recCombustible ||0],
+        cobTransporte: [this.currRate?.item_detail?.cobTransporte ||0],
+        isv: [this.currRate?.item_detail?.isv ||0],
+        tasaTuris: [this.currRate?.item_detail?.tasaTuris ||0]
       }
-    )
+    );
 
     const cateoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
-      this.categories = response.data
-      cateoriesSubscription.unsubscribe()
-    })
+      this.categories = response.data;
+      cateoriesSubscription.unsubscribe();
+    });
 
     const ratesSubscription = this.ratesService.getRateTypes().subscribe(response => {
-      this.rateTypes = response.data
-      ratesSubscription.unsubscribe()
-    })
+      this.rateTypes = response.data;
+      ratesSubscription.unsubscribe();
+    });
   }
 
   get f() {
-    return this.edRateForm.controls
+    return this.edRateForm.controls;
   }
 
   onFormEditSubmit() {
     if (this.edRateForm.valid) {
-      this.loaders.loadingSubmit = true
+      this.loaders.loadingSubmit = true;
       this.ratesService.editRate(this.edRateForm.value)
         .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.openSuccessDialog('Operación Realizada Correctamente',response.message)
+            this.loaders.loadingSubmit = false;
+            this.openSuccessDialog('Operación Realizada Correctamente', response.message);
           },
           error => {
             error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.openErrorDialog(error.statusText)
-            })
-          })
+              this.loaders.loadingSubmit = false;
+              this.openErrorDialog(error.statusText);
+            });
+          });
     }
   }
 
   openErrorDialog(error: string): void {
-     this.dialog.open(ErrorModalComponent, {
+    this.dialog.open(ErrorModalComponent, {
       data: {
         msgError: error
       }
-    })
+    });
   }
 
   openSuccessDialog(succsTitle, succssMsg) {
@@ -97,11 +105,11 @@ export class EditRateDialogComponent implements OnInit {
         succsTitle: succsTitle,
         succsMsg: succssMsg
       }
-    })
+    });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.dialogRef.close(true)
-    })
+      this.dialogRef.close(true);
+    });
   }
 
 

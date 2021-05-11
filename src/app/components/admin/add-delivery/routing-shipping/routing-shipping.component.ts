@@ -325,10 +325,10 @@ export class RoutingShippingComponent implements OnInit {
     }else{
       const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
         .subscribe(result => {
-          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result[0].lat + ',' + result[0].lng)
+          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result.lat + ',' + result.lng)
           this.center = {
-            lat: result[0].lat,
-            lng: result[0].lng,
+            lat: result.lat,
+            lng: result.lng,
           }
           cordsSubscription.unsubscribe()
         })
@@ -367,7 +367,7 @@ export class RoutingShippingComponent implements OnInit {
 
       const cordsSubscription = this.operationsService.getCoords(this.currOrder.direccion)
         .subscribe(result => {
-          this.currOrder.coordsDestino = result[0].lat + ',' + result[0].lng
+          this.currOrder.coordsDestino = result.lat + ',' + result.lng
           this.calculateDistance()
           cordsSubscription.unsubscribe()
         })

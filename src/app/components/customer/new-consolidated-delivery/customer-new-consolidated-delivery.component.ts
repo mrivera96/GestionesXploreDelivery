@@ -1,38 +1,38 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core'
-import { GoogleMap } from "@angular/google-maps"
-import { Customer } from "../../../models/customer"
-import { Category } from "../../../models/category"
-import { FormBuilder, FormGroup, Validators } from "@angular/forms"
-import { Order } from "../../../models/order"
-import { Rate } from "../../../models/rate"
-import { Surcharge } from "../../../models/surcharge"
-import { Subject } from "rxjs"
-import { DataTableDirective } from "angular-datatables"
-import { ExtraCharge } from "../../../models/extra-charge"
-import { ExtraChargeOption } from "../../../models/extra-charge-option"
-import { CategoriesService } from "../../../services/categories.service"
-import { DeliveriesService } from "../../../services/deliveries.service"
-import { HttpClient } from "@angular/common/http"
-import { Router } from "@angular/router"
-import { MatDialog } from "@angular/material/dialog"
-import { AuthService } from "../../../services/auth.service"
-import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator"
-import { NoUrlValidator } from "../../../helpers/noUrl.validator"
-import { environment } from "../../../../environments/environment"
-import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component"
-import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component"
-import { ConfirmDialogComponent } from "../new-delivery/confirm-dialog/confirm-dialog.component"
-import { animate, style, transition, trigger } from "@angular/animations"
-import { BranchService } from "../../../services/branch.service"
-import { Branch } from "../../../models/branch"
-import { Schedule } from "../../../models/schedule"
-import { CustomerRestrictionsDialogComponent } from "../restrictions-dialog/customer-restrictions-dialog.component"
-import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component'
-import { UsersService } from 'src/app/services/users.service'
-import { LabelsService } from 'src/app/services/labels.service'
-import { Label } from 'src/app/models/label'
-import { LoadingDialogComponent } from "../../shared/loading-dialog/loading-dialog.component"
-import { OperationsService } from 'src/app/services/operations.service'
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core'
+import {GoogleMap} from "@angular/google-maps"
+import {Customer} from "../../../models/customer"
+import {Category} from "../../../models/category"
+import {FormBuilder, FormGroup, Validators} from "@angular/forms"
+import {Order} from "../../../models/order"
+import {Rate} from "../../../models/rate"
+import {Surcharge} from "../../../models/surcharge"
+import {Subject} from "rxjs"
+import {DataTableDirective} from "angular-datatables"
+import {ExtraCharge} from "../../../models/extra-charge"
+import {ExtraChargeOption} from "../../../models/extra-charge-option"
+import {CategoriesService} from "../../../services/categories.service"
+import {DeliveriesService} from "../../../services/deliveries.service"
+import {HttpClient} from "@angular/common/http"
+import {Router} from "@angular/router"
+import {MatDialog} from "@angular/material/dialog"
+import {AuthService} from "../../../services/auth.service"
+import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator"
+import {NoUrlValidator} from "../../../helpers/noUrl.validator"
+import {environment} from "../../../../environments/environment"
+import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component"
+import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component"
+import {ConfirmDialogComponent} from "../new-delivery/confirm-dialog/confirm-dialog.component"
+import {animate, style, transition, trigger} from "@angular/animations"
+import {BranchService} from "../../../services/branch.service"
+import {Branch} from "../../../models/branch"
+import {Schedule} from "../../../models/schedule"
+import {CustomerRestrictionsDialogComponent} from "../restrictions-dialog/customer-restrictions-dialog.component"
+import {LockedUserDialogComponent} from '../../shared/locked-user-dialog/locked-user-dialog.component'
+import {UsersService} from 'src/app/services/users.service'
+import {LabelsService} from 'src/app/services/labels.service'
+import {Label} from 'src/app/models/label'
+import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component"
+import {OperationsService} from 'src/app/services/operations.service'
 
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
@@ -41,8 +41,8 @@ import { OperationsService } from 'src/app/services/operations.service'
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 }))
+        style({opacity: 0}),
+        animate(1000, style({opacity: 1}))
       ])
     ])
   ]
@@ -83,7 +83,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   prohibitedDistance = false
   prohibitedDistanceMsg = ''
   paymentMethod: number = 1
-  @ViewChild(DataTableDirective, { static: false })
+  @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
   selectedCategory: Category = {}
   selectedExtraCharge: ExtraCharge = null
@@ -144,15 +144,15 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
     this.deliveryForm = this.formBuilder.group({
       deliveryHeader: this.formBuilder.group({
-        dirRecogida: [{ value: '', disabled: false }, [Validators.required]],
+        dirRecogida: [{value: '', disabled: false}, [Validators.required]],
         idCategoria: [{
           value: 1,
           disabled: false,
         }, Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
-        fecha: [{ value: '', disabled: false }, Validators.required],
-        hora: [{ value: '', disabled: false }, Validators.required],
+        fecha: [{value: '', disabled: false}, Validators.required],
+        hora: [{value: '', disabled: false}, Validators.required],
         idTarifa: [null],
         idEtiqueta: [null]
       }, {
@@ -213,7 +213,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
       this.categories = response.consolidatedCategories
       this.demandMSG = response.demand
-      this.categories.forEach(category =>{
+      this.categories.forEach(category => {
         category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
       })
       categoriesSubscription.unsubscribe()
@@ -331,10 +331,10 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
       const cordsSubscription = this.operationsService.getCoords(currOrder.direccion)
         .subscribe((response) => {
-        currOrder.coordsDestino = response[0].lat + ',' + response[0].lng
-        this.calculateDistance(currOrder)
-        cordsSubscription.unsubscribe()
-      })
+          currOrder.coordsDestino = response.lat + ',' + response.lng
+          this.calculateDistance(currOrder)
+          cordsSubscription.unsubscribe()
+        })
 
       this.befDistance = 0
       this.befTime = 0
@@ -469,7 +469,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     const geocoder = new google.maps.Geocoder()
     const originLL = this.deliveryForm.get('deliveryHeader.coordsOrigen').value
 
-    geocoder.geocode({ 'address': dirEntrega }, results => {
+    geocoder.geocode({'address': dirEntrega}, results => {
       const destLL = results[0].geometry.location
       directionsService.route({
         origin: originLL,  // Haight.
@@ -501,20 +501,20 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   //OBTIENE LAS COORDENADAS DEL PUNTO DE ORIGEN PARA SER UTILIZADAS DURANTE TODO EL PROCESO
   getOriginCoords() {
-    if(this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('15.') || this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('14.') || this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('13.')){
+    if (this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('15.') || this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('14.') || this.deliveryForm.get('deliveryHeader.dirRecogida').value.startsWith('13.')) {
       this.deliveryForm.get('deliveryHeader.coordsOrigen')
         .setValue(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
       this.center = {
         lat: +this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[0],
         lng: +this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[1],
       }
-    }else{
+    } else {
       const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
         .subscribe(result => {
-          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result[0].lat + ',' + result[0].lng)
+          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result.lat + ',' + result.lng)
           this.center = {
-            lat: result[0].lat,
-            lng: result[0].lng,
+            lat: result.lat,
+            lng: result.lng,
           }
           cordsSubscription.unsubscribe()
         })
