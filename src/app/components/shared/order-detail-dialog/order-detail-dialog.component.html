@@ -30,10 +30,10 @@
       <span>Agregar Cargo Extra</span>
     </button>
 
-    <!--<button mat-menu-item (click)="showChangeAddressDialog(currentOrder)">
+    <button *ngIf="currentDelivery?.isRuteo == false" mat-menu-item (click)="showChangeAddressDialog(currentOrder)">
       <mat-icon>location_on</mat-icon>
       <span>Cambiar Dirección</span>
-    </button>-->
+    </button>
 
   </mat-menu>
 </h2>

@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { environment } from "../../environments/environment";
+import {Injectable} from '@angular/core';
+import {environment} from "../../environments/environment";
 
-import { HttpClient } from "@angular/common/http";
-import { AuthService } from "./auth.service";
+import {HttpClient} from "@angular/common/http";
+import {AuthService} from "./auth.service";
 
 @Injectable({
   providedIn: 'root'
@@ -119,7 +119,7 @@ export class DeliveriesService {
   }
 
   getStates() {
-    return this.http.get<any>(`${environment.apiUrl}`, { params: { function: 'listStates' } })
+    return this.http.get<any>(`${environment.apiUrl}`, {params: {function: 'listStates'}})
   }
 
   //CUSTOMER'S SERVICES
@@ -274,7 +274,16 @@ export class DeliveriesService {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'optimizeRoutes',
-        routes:routes
+        routes: routes
+      })
+  }
+
+  changeDestinationAddress(form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'changeDestinationAddress',
+        form,
+        tkn: this.authService.currentUserValue.access_token
       })
   }
 }

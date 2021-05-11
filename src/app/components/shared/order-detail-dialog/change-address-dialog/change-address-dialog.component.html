@@ -51,7 +51,7 @@
     </div>
   </form>
 
-  <div class="col">
+  <div class="col" *ngIf="!loaders.loadingSubmit">
     <div class="row">
       <div class="col">
         <p class="card-title"><strong>Ruta de Entrega</strong></p>
@@ -69,7 +69,7 @@
 
   <br>
   <!-- INICIO DATOS EN TIEMPO REAL -->
-  <div class="form-row text-center">
+  <div class="form-row text-center" *ngIf="!loaders.loadingSubmit">
     <div class="col">
               <span><i class="fa fa-clock"></i>
                 Tiempo: <span *ngIf="loaders.loadingDistBef" class="spinner-border spinner-border-sm mr-1 ">
@@ -94,9 +94,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" mat-raised-button [disabled]="addressForm.invalid" (click)="onFormSubmit()" color="primary">
+  <button type="button" mat-raised-button [disabled]="addForm.direccion.invalid || loaders.loadingSubmit" (click)="calculateDistance()" color="primary">
     Cambiar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+  <button type="button" mat-raised-button [mat-dialog-close]="false">Cancelar</button>
 
 </mat-dialog-actions>

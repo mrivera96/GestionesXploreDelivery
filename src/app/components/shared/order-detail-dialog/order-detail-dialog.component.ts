@@ -102,7 +102,9 @@ export class OrderDetailDialogComponent implements OnInit {
     )
 
     dialogRef.afterClosed().subscribe(result => {
-      location.reload()
+      if(result) {
+        location.reload()
+      }
     })
 
   }

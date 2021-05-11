@@ -211,6 +211,7 @@ export class ChangeAddressDialogComponent implements OnInit {
     const tarifa = this.currDelivery.tarifaBase
 
     if (this.addForm.coordsDestino.value != null) {
+      this.loaders.loadingSubmit = true
       const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
         function: 'calculateDistance',
         salida: salida,
@@ -223,11 +224,7 @@ export class ChangeAddressDialogComponent implements OnInit {
         this.addForm.recargo.setValue(calculatedPayment.surcharges)
         this.addForm.cTotal.setValue(calculatedPayment.total)
 
-        this.addressForm.reset()
-
-        this.befDistance = 0
-        this.befTime = 0
-        this.befCost = 0
+        this.onFormSubmit()
 
         cDistanceSubscription.unsubscribe()
 
@@ -286,7 +283,7 @@ export class ChangeAddressDialogComponent implements OnInit {
 
   }
 
-  openSuccessDialog(succsTitle: string, succssMsg: string, id: number) {
+  openSuccessDialog(succsTitle: string, succssMsg: string) {
     const dialogRef = this.dialog.open(SuccessModalComponent, {
       data: {
         succsTitle: succsTitle,
@@ -295,11 +292,38 @@ export class ChangeAddressDialogComponent implements OnInit {
     })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.dialogRef.close()
+        location.reload()
     })
   }
 
   onFormSubmit() {
+    if (this.addressForm.valid ) {
+      const deliveriesSubscription = this.deliveriesService
+        .changeDestinationAddress(this.addressForm.value)
+        .subscribe(response => {
+          this.loaders.loadingSubmit = false
+
+          this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+          deliveriesSubscription.unsubscribe()
+        }, error => {
+          if (error.subscribe()) {
+            error.subscribe(error => {
+              this.loaders.loadingSubmit = false
+              this.openErrorDialog(error.statusText)
+              deliveriesSubscription.unsubscribe()
+            })
+          } else {
+            this.loaders.loadingSubmit = false
+            this.openErrorDialog('Lo sentimos, ha ocurrido un error al actualizar la dirección. Por favor intenta de nuevo.')
+            deliveriesSubscription.unsubscribe()
+          }
+
+        })
+    } else if (this.addressForm.invalid) {
+      let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'))
+      invalidFields[1].focus()
+    }
+
 
   }
 }
