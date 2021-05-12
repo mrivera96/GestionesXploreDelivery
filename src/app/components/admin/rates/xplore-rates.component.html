@@ -7,7 +7,7 @@
 
   </mat-card-header>
 
-  <mat-card-content> 
+  <mat-card-content>
     <!-- CONTAINER START -->
 
     <div class="row justify-content-end">
@@ -32,8 +32,6 @@
           <th>Entregas Máximas</th>
           <th>Monto</th>
           <th>Tipo de Tarifa</th>
-          <th data-priority="1">Clientes</th>
-          <th data-priority="1">Configuración Consolidada</th>
           <th data-priority="1">Acción</th>
         </tr>
         </thead>
@@ -48,22 +46,28 @@
           <td>L. {{rate.precio}}</td>
           <td>{{rate.rate_type.descTipoTarifa}}</td>
           <td>
-            <a (click)="showRateCustomers(rate.idTarifaDelivery)" style="color: #0071A2" *ngIf="rate.idCliente != 1">
-              <i class="fa fa-eye"></i> Ver Clientes
-            </a>
-            <p *ngIf="rate.idCliente == 1"> Tarifa General</p>
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button (click)="showEditForm(rate.idTarifaDelivery)" mat-menu-item>
+                <mat-icon>create</mat-icon>
+                <span>Editar</span>
+              </button>
+
+              <button (click)="showRateCustomers(rate.idTarifaDelivery)" mat-menu-item *ngIf="rate.idCliente != 1">
+                <mat-icon>people</mat-icon>
+                <span>Ver Clientes</span>
+              </button>
+
+              <button (click)="showRateDetail(rate.consolidated_detail, rate.schedules, rate.idTipoTarifa)"
+                      *ngIf="rate.idTipoTarifa == 2 || rate.idTipoTarifa == 4" mat-menu-item>
+                <mat-icon>tune</mat-icon>
+                <span>Configuraciones</span>
+              </button>
+            </mat-menu>
           </td>
-          <td>
-            <a  (click)="showRateDetail(rate.consolidated_detail, rate.schedules, rate.idTipoTarifa)" *ngIf="rate.idTipoTarifa == 2 || rate.idTipoTarifa == 4"  style="color: #0071A2">
-              <i class="fa fa-sliders-h"></i> Configuraciones
-            </a>
-            <p *ngIf="rate.idTipoTarifa != 2 && rate.idTipoTarifa != 4">N/A</p>
-          </td>
-          <td>
-            <a (click)="showEditForm(rate.idTarifaDelivery)" style="color: #0071A2">
-              <i class="fa fa-edit"></i> Editar
-            </a>
-          </td>
+
 
         </tr>
         </tbody>

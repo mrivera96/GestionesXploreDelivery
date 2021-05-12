@@ -341,7 +341,7 @@ export class RegularDeliveryComponent implements OnInit {
 
       const cordsSubscription = this.operationsService.getCoords(this.currOrder.direccion)
         .subscribe(result => {
-          this.currOrder.coordsDestino = result[0].lat + ',' + result[0].lng
+          this.currOrder.coordsDestino = result.lat + ',' + result.lng
           this.calculateDistance()
           cordsSubscription.unsubscribe()
         })
@@ -496,10 +496,10 @@ export class RegularDeliveryComponent implements OnInit {
     } else {
       const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
         .subscribe(result => {
-          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result[0].lat + ',' + result[0].lng)
+          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result.lat + ',' + result.lng)
           this.center = {
-            lat: result[0].lat,
-            lng: result[0].lng,
+            lat: result.lat,
+            lng: result.lng,
           }
           cordsSubscription.unsubscribe()
         })
@@ -828,11 +828,8 @@ export class RegularDeliveryComponent implements OnInit {
     const tarifa = this.pago.baseRate
 
     if (this.orders.length == 0) {
-      const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: salida,
-      }).subscribe((response) => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
+      const cordsSubscription =  this.operationsService.getCoords(salida).subscribe(result=>{
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result.lat + ',' + result.lng)
         cordsSubscription.unsubscribe()
       })
     }
@@ -851,11 +848,9 @@ export class RegularDeliveryComponent implements OnInit {
       currOrder.cargosExtra = calculatedPayment.cargosExtra
       currOrder.cTotal = calculatedPayment.total
 
-      this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: entrega,
-      }).subscribe((response) => {
-        currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
+      const cordsSubscription = this.operationsService.getCoords(entrega).subscribe(result => {
+        currOrder.coordsDestino = result.lat + ',' + result.lng
+        cordsSubscription.unsubscribe()
       })
 
       this.deliveryForm.get('order').reset()

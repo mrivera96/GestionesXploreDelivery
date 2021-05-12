@@ -27,6 +27,7 @@ import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.compo
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {ConfirmDialogComponent} from "../../../customer/new-delivery/confirm-dialog/confirm-dialog.component";
 import {CustomerRestrictionsDialogComponent} from "../../../customer/restrictions-dialog/customer-restrictions-dialog.component";
+import {OperationsService} from "../../../../services/operations.service";
 
 @Component({
   selector: 'app-consolidated-delivery',
@@ -114,6 +115,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
     public dialog: MatDialog,
     private authService: AuthService,
     private branchService: BranchService,
+    private operationsService: OperationsService
   ) {
   }
 
@@ -198,7 +200,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
       .getCustomerCategories(this.currCustomer.idCliente)
       .subscribe(response => {
         this.categories = response.consolidatedCategories
-        this.categories.forEach(category =>{
+        this.categories.forEach(category => {
           category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
         })
         categoriesSubscription.unsubscribe()
@@ -500,11 +502,8 @@ export class ConsolidatedDeliveryComponent implements OnInit {
     const tarifa = this.pago.baseRate
 
     if (this.orders.length == 0) {
-      const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: salida,
-      }).subscribe((response) => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
+      const cordsSubscription = this.operationsService.getCoords(salida).subscribe((response) => {
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response.lat + ', ' + response.lng)
         cordsSubscription.unsubscribe()
       })
     }
@@ -525,12 +524,11 @@ export class ConsolidatedDeliveryComponent implements OnInit {
       currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra
       currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion
 
-      this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: entrega,
-      }).subscribe((response) => {
-        currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
-      })
+      const coordsSubsc = this.operationsService.getCoords(entrega)
+        .subscribe((response) => {
+          currOrder.coordsDestino = response.lat + ',' + response.lng
+          coordsSubsc.unsubscribe()
+        })
 
       this.deliveryForm.get('order').reset()
       this.orders.push(currOrder)

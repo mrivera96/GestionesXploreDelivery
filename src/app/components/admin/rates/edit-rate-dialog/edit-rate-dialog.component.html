@@ -49,11 +49,65 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Monto:</mat-label>
-        <input matInput id="precio" type="text" formControlName="precio" required>
+        <input matInput id="precio" type="number" formControlName="precio" required>
         <mat-icon matSuffix>attach_money</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
+    </div>
 
+    <div class="form-row">
+      <p class="card-title"><strong>Valores de Facturación</strong></p>
+    </div>
+    <hr>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Tiempo y Kilometraje:</mat-label>
+        <input matInput type="number" formControlName="tYK">
+        <mat-icon matSuffix>schedule</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Cobertura de Vehículo:</mat-label>
+        <input matInput type="number" formControlName="cobVehiculo">
+        <mat-icon matSuffix>directions_car</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Servicio de Chofer:</mat-label>
+        <input matInput type="number" formControlName="servChofer">
+        <mat-icon matSuffix>airline_seat_recline_normal</mat-icon>
+      </mat-form-field>
+
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Recuperación de Combustible:</mat-label>
+        <input matInput type="number" formControlName="recCombustible">
+        <mat-icon matSuffix>local_gas_station</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Cobertura de Transporte:</mat-label>
+        <input matInput type="number" formControlName="cobTransporte">
+        <mat-icon matSuffix>transfer_within_a_station</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>ISV:</mat-label>
+        <input matInput type="number" formControlName="isv">
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Tasa Turística:</mat-label>
+        <input matInput type="number" formControlName="tasaTuris">
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
     </div>
   </form>
 

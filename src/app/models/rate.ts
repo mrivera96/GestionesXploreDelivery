@@ -3,6 +3,7 @@ import {Customer} from "./customer";
 import { RateType } from './rate-type';
 import {ConsolidatedRateDetail} from "./consolidated-rate-detail";
 import {Schedule} from "./schedule";
+import {ItemDetail} from "./item-detail";
 
 export interface Rate {
   idTarifaDelivery?: number
@@ -20,4 +21,5 @@ export interface Rate {
   schedules?: Schedule[]
   rate_detail?: any[]
   datesToShow?: any[]
+  item_detail?: ItemDetail
 }
