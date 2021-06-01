@@ -10,4 +10,5 @@ export interface Category {
   categoryExtraCharges?: ExtraChargeCategory[]
   ratesToShow?: Rate[]
   surcharges?: Surcharge[]
+  idTipoServicio?: number
 }

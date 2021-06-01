@@ -1,16 +1,16 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
-import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {UsersService} from "../../../../services/users.service";
-import {Customer} from "../../../../models/customer";
-import {Surcharge} from "../../../../models/surcharge";
-import {SurchargesService} from "../../../../services/surcharges.service";
-import {Category} from "../../../../models/category";
-import {CategoriesService} from "../../../../services/categories.service";
-import {RateType} from "../../../../models/rate-type";
-import {RatesService} from "../../../../services/rates.service";
+import { Component, Inject, OnInit } from '@angular/core';
+import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
+import { SuccessModalComponent } from "../../../shared/success-modal/success-modal.component";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { UsersService } from "../../../../services/users.service";
+import { Customer } from "../../../../models/customer";
+import { Surcharge } from "../../../../models/surcharge";
+import { SurchargesService } from "../../../../services/surcharges.service";
+import { Category } from "../../../../models/category";
+import { CategoriesService } from "../../../../services/categories.service";
+import { RateType } from "../../../../models/rate-type";
+import { RatesService } from "../../../../services/rates.service";
 
 @Component({
   selector: 'app-edit-surcharge-dialog',
@@ -27,7 +27,7 @@ export class EditSurchargeDialogComponent implements OnInit {
   filteredCustomers: Customer[]
   currSurch: Surcharge
   categories: Category[] = []
-  deliveryTypes: RateType [] = []
+  deliveryTypes: RateType[] = []
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialog: MatDialog,
@@ -46,13 +46,21 @@ export class EditSurchargeDialogComponent implements OnInit {
     this.edSurChForm = this.formBuilder.group(
       {
         idRecargo: [this.currSurch.idRecargo],
-        descRecargo:[this.currSurch.descRecargo, Validators.required],
+        descRecargo: [this.currSurch.descRecargo, Validators.required],
         kilomMinimo: [this.currSurch.kilomMinimo, Validators.required],
         kilomMaximo: [this.currSurch.kilomMaximo, Validators.required],
         monto: [this.currSurch.monto, Validators.required],
         idCliente: [1, Validators.required],
         idCategoria: [this.currSurch.idCategoria, Validators.required],
-        idTipoEnvio: [1, Validators.required]
+        idTipoEnvio: [1, Validators.required],
+        tYK: [this.currSurch?.item_detail?.tYK || 0],
+        cobVehiculo: [this.currSurch?.item_detail?.cobVehiculo || 0],
+        servChofer: [this.currSurch?.item_detail?.servChofer || 0],
+        recCombustible: [this.currSurch?.item_detail?.recCombustible || 0],
+        cobTransporte: [this.currSurch?.item_detail?.cobTransporte || 0],
+        isv: [this.currSurch?.item_detail?.isv || 0],
+        tasaTuris: [this.currSurch?.item_detail?.tasaTuris || 0],
+        gastosReembolsables: [this.currSurch?.item_detail?.gastosReembolsables || 0]
       }
     )
 
@@ -88,17 +96,49 @@ export class EditSurchargeDialogComponent implements OnInit {
   onFormEditSubmit() {
     if (this.edSurChForm.valid) {
       this.loaders.loadingSubmit = true
-      this.surchargesService.editSurcharge(this.edSurChForm.value)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.openSuccessDialog('Operación Realizada Correctamente', response.message)
-          },
-          error => {
-            error.subscribe(error => {
+      const tk = this.f.tYK.value
+      const cobVeh = this.f.cobVehiculo.value
+      const servChof = this.f.servChofer.value
+      const recComb = this.f.recCombustible.value
+      const cobTrans = this.f.cobTransporte.value
+      const isv = this.f.isv.value
+      const tasaTur = this.f.tasaTuris.value
+      const gastRe = this.f.gastosReembolsables.value
+
+      if (tk != 0 || cobVeh != 0 || servChof != 0 || recComb != 0
+        || cobTrans != 0 || isv != 0 || tasaTur != 0 || gastRe != 0) {
+        const sum = tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe
+
+        if (sum != this.currSurch.monto) {
+          this.openErrorDialog('Los valores ingresados para facturación, no coinciden con el monto del recargo')
+          this.loaders.loadingSubmit = false
+        } else {
+          this.surchargesService.editSurcharge(this.edSurChForm.value)
+            .subscribe(response => {
               this.loaders.loadingSubmit = false
-              this.openErrorDialog(error.statusText)
-            })
-          })
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            },
+              error => {
+                error.subscribe(error => {
+                  this.loaders.loadingSubmit = false
+                  this.openErrorDialog(error.statusText)
+                })
+              })
+        }
+      }else{
+        this.surchargesService.editSurcharge(this.edSurChForm.value)
+            .subscribe(response => {
+              this.loaders.loadingSubmit = false
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            },
+              error => {
+                error.subscribe(error => {
+                  this.loaders.loadingSubmit = false
+                  this.openErrorDialog(error.statusText)
+                })
+              })
+      }
+
     }
   }
 
@@ -116,7 +156,7 @@ export class EditSurchargeDialogComponent implements OnInit {
   }
 
   onKey(value) {
-    this.filteredCustomers = this.search(value) ;
+    this.filteredCustomers = this.search(value);
   }
 
   search(value: string) {

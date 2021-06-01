@@ -1,23 +1,22 @@
-import {Component, OnInit} from '@angular/core'
-import {DeliveriesService} from "../../../services/deliveries.service"
-import {Delivery} from "../../../models/delivery"
-import {ActivatedRoute} from "@angular/router"
-import {State} from "../../../models/state";
-import {Subject} from "rxjs";
-import {DeliveryDetail} from "../../../models/delivery-detail";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {ChangeStateDialogComponent} from "./change-state-dialog/change-state-dialog.component";
-import {XploreChangeHourDialogComponent} from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
-import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
-import {OrderDetailDialogComponent} from "../../shared/order-detail-dialog/order-detail-dialog.component";
-import {User} from "../../../models/user";
-import {AuthService} from "../../../services/auth.service";
-import {LoadingDialogComponent} from '../../shared/loading-dialog/loading-dialog.component';
-import {environment} from "../../../../environments/environment";
-import {HttpClient} from "@angular/common/http";
-import {Cell, Columns, PdfMakeWrapper, Txt} from "pdfmake-wrapper";
+import { Component, OnInit } from '@angular/core'
+import { DeliveriesService } from "../../../services/deliveries.service"
+import { Delivery } from "../../../models/delivery"
+import { ActivatedRoute } from "@angular/router"
+import { State } from "../../../models/state"
+import { Subject } from "rxjs"
+import { DeliveryDetail } from "../../../models/delivery-detail"
+import { animate, style, transition, trigger } from "@angular/animations"
+import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component"
+import { MatDialog } from "@angular/material/dialog"
+import { ChangeStateDialogComponent } from "./change-state-dialog/change-state-dialog.component"
+import { XploreChangeHourDialogComponent } from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
+import { ViewPhotosDialogComponent } from "../../shared/view-photos-dialog/view-photos-dialog.component"
+import { OrderDetailDialogComponent } from "../../shared/order-detail-dialog/order-detail-dialog.component"
+import { User } from "../../../models/user"
+import { AuthService } from "../../../services/auth.service"
+import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component'
+import { HttpClient } from "@angular/common/http"
+import { Cell, Columns, PdfMakeWrapper, Txt } from "pdfmake-wrapper"
 
 @Component({
   selector: 'app-ver-solicitud',
@@ -26,8 +25,8 @@ import {Cell, Columns, PdfMakeWrapper, Txt} from "pdfmake-wrapper";
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 }))
       ])
     ])
   ]
@@ -46,14 +45,14 @@ export class VerSolicitudComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject()
   currUser: User = {}
   totalDistance = 0
-
+  geocoder: google.maps.Geocoder
   optimizedRouteOrder = []
 
   constructor(private deliveriesService: DeliveriesService,
-              private route: ActivatedRoute,
-              private authService: AuthService,
-              private http: HttpClient,
-              public dialog: MatDialog) {
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private http: HttpClient,
+    public dialog: MatDialog) {
     this.loaders.loadingData = true
     this.currUser = this.authService.currentUserValue
   }
@@ -61,13 +60,14 @@ export class VerSolicitudComponent implements OnInit {
   ngOnInit(): void {
     this.initialize()
     this.route.paramMap.subscribe(params => {
-      this.deliveryId = Number(params.get("id"));
+      this.deliveryId = Number(params.get("id"))
     })
     this.loadData()
 
   }
 
   initialize() {
+    this.geocoder = new google.maps.Geocoder()
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -206,7 +206,7 @@ export class VerSolicitudComponent implements OnInit {
     this.openLoader()
     let orderArray = []
     const originAddress = {
-      address: this.currentDelivery.dirRecogida.replace('&','Y'),
+      address: this.currentDelivery.dirRecogida.replace('&', 'Y'),
       lat: this.currentDelivery.coordsOrigen.split(',')[0],
       lng: this.currentDelivery.coordsOrigen.split(',')[1].trim()
     }
@@ -214,7 +214,7 @@ export class VerSolicitudComponent implements OnInit {
     orderArray.push(originAddress)
     this.currentDeliveryDetail.forEach(order => {
       const orderObject = {
-        address: order.direccion.replace('&','Y'),
+        address: order.direccion.replace('&', 'Y'),
         lat: order.coordsDestino.split(',')[0],
         lng: order.coordsDestino.split(',')[1]
       }
@@ -227,7 +227,7 @@ export class VerSolicitudComponent implements OnInit {
         const optimizedRouteOrder: any[] = response.route
         this.currentDeliveryDetail.forEach(order => {
           for (let item in optimizedRouteOrder) {
-            if(order.direccion.replace('&','Y') == optimizedRouteOrder[item].name){
+            if (order.direccion.replace('&', 'Y') == optimizedRouteOrder[item].name) {
               // @ts-ignore
               order.distancia = (optimizedRouteOrder[item].distance - optimizedRouteOrder[item - 1].distance).toPrecision(2) + ' km'
 
@@ -263,20 +263,23 @@ export class VerSolicitudComponent implements OnInit {
       }, error => {
         this.dialog.closeAll()
         this.openErrorDialog('Ha ocurrido un error al optimizar la ruta', false)
+        optSubscription.unsubscribe()
       })
   }
 
-  async getOrdersCoords() {
+  getOrdersCoords() {
     this.currentDeliveryDetail.forEach(order => {
-      if(order.direccion.startsWith('15.') || order.direccion.startsWith('14.') || order.direccion.startsWith('13.')){
+      if (order.direccion.startsWith('15.') || order.direccion.startsWith('14.') || order.direccion.startsWith('13.')) {
         order.coordsDestino = order.direccion
-      }else{
-        const coordsSubsc = this.http.post<any>(`${environment.apiUrl}`, {
-          function: 'getCoords',
-          lugar: order.direccion,
-        }).subscribe((response) => {
-          order.coordsDestino = response[0].lat + ',' + response[0].lng
-          coordsSubsc.unsubscribe()
+      } else if (order.coordsDestino == null) {
+
+        this.geocoder.geocode({ 'address': order.direccion }, results => {
+
+          const ll = {
+            lat: results[0].geometry.location.lat(),
+            lng: results[0].geometry.location.lng()
+          }
+          order.coordsDestino = ll.lat + ',' + ll.lng
         })
       }
 
@@ -307,45 +310,66 @@ export class VerSolicitudComponent implements OnInit {
 
     const header = [
       [
-        new Cell(new Txt('N°').bold().end).end,
+        new Cell(new Txt('N°').bold().end).colSpan(1).end,
       ],
       [
-        new Cell(new Txt('Nombre del Destinatario').bold().end).end,
+        new Cell(new Txt('Nombre del Destinatario').bold().end).colSpan(2).end,
       ],
       [
-        new Cell(new Txt('Dirección').bold().end).colSpan(2).end,
+        new Cell(new Txt('Dirección').bold().end).colSpan(3).end,
+      ],
+      [
+        new Cell(new Txt('Instrucciones').bold().end).colSpan(3).end,
       ],
 
       [
-        new Cell(new Txt('Distancia').bold().end).end,
-      ],
-      [
-        new Cell(new Txt('Tiempo').bold().end).end,
+        new Cell(new Txt('Distancia Y Tiempo').bold().end).colSpan(1).end,
       ],
     ]
 
-    pdf.add(
-      new Columns(header).alignment("left").end
-    )
+    const headers = new Columns(header).alignment("left").width(20).end
 
+    pdf.add(
+      headers
+    )
     let array1Row = []
     this.currentDeliveryDetail.forEach(d => {
-      let array = [
-        d.order,
-        d.nomDestinatario.trim(),
-        d.direccion.trim(),
+      if (d.direccion.startsWith('15.') || d.direccion.startsWith('14.') || d.direccion.startsWith('13.')) {
+        d.direccion = d.direccion.split(',')[0] + '  ' + d.direccion.split(',')[1]
+      } else if (d.direccion.includes('+')) {
+        d.direccion = d.direccion.replace(/[^a-zA-Z ]/g, " ")
+      }
 
-        d.distancia,
-        d.tiempo,
+      d.instrucciones = d.instrucciones.replace(/[^a-zA-Z ]/g, " ")
+
+      /*let array = [
+        new Cell(new Txt(d?.order?.toString() || '0')).width(2).end,
+        new Cell(new Txt(d.nomDestinatario.trim())).end,
+        new Cell(new Txt(d.direccion)).end,
+        new Cell(new Txt( d.instrucciones || 'N/A')).end,
+        new Cell(new Txt(d.distancia)).end,
+        new Cell(new Txt(d.tiempo)).end,
+      ]*/
+
+      let array = [
+        d?.order,
+        d.nomDestinatario.trim(),
+        d.direccion,
+        d.instrucciones || 'N/A',
+        d.distancia + ' | ' + d.tiempo,
       ]
+
       array1Row.push(array)
     })
+
 
     array1Row.forEach(res => {
       pdf.add(
         new Columns(res
-        ).alignment("left").end
+        ).alignment("left")
+        .width(20).end
       )
+
       pdf.add(
         pdf.ln(1)
       )

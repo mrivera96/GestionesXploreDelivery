@@ -1,0 +1,27 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-info-circle"></i> Seleccionar Tipo de Servicio
+</h2>
+<mat-dialog-content>
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Tipo de Servicio:</mat-label>
+      <mat-select [(ngModel)]="selectedServiceType" placeholder="- Seleccione un tipo de Servicio -">
+        <mat-option *ngFor="let service of serviceTypes" [value]="service.idTipoServicio">{{service.descripcion}}</mat-option>
+      </mat-select>
+      <mat-icon matSuffix>directions_car</mat-icon>
+      <mat-error>
+        *Este campo es obligatorio
+      </mat-error>
+    </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button [disabled]="!selectedServiceType" color="primary" [mat-dialog-close]="selectedServiceType">
+    Confirmar
+  </button>
+  <button mat-raised-button [mat-dialog-close]="false">
+    Cancelar
+  </button>
+
+</mat-dialog-actions>
+<!-- MODAL END -->

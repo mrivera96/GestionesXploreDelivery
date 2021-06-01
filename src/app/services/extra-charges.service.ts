@@ -104,8 +104,7 @@ export class ExtraChargesService {
         function: 'editExtraChargeOption',
         idCargoExtra: idCargoExtra,
         idDetalleOpcion: idOpcion,
-        costo: form.costo,
-        tiempo: form.tiempo,
+        form,
         tkn: this.authService.currentUserValue.access_token
       }
     )

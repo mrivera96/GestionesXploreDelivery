@@ -118,7 +118,10 @@
           {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : currentDelivery?.isRuteo == true ? 'Envío por Ruteo' : 'Envío Normal'}}
         </div>
 
-        <div class="col-sm"></div>
+        <div class="col-sm">
+          <strong>Fecha y hora de registro:</strong>
+          {{currentDelivery?.fechaRegistro}}
+        </div>
 
       </div>
 

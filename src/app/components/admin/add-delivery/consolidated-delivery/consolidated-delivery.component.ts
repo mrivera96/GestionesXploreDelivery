@@ -105,6 +105,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
   hoursToShow: Array<any> = []
   files: File[] = []
   fileContentArray: String[] = []
+  geocoder: google.maps.Geocoder;
 
   constructor(
     private categoriesService: CategoriesService,
@@ -125,6 +126,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
   }
 
   initialize() {
+    this.geocoder = new google.maps.Geocoder();
     this.directionsRenderer = new google.maps.DirectionsRenderer
     this.directionsService = new google.maps.DirectionsService
     this.paymentMethod = 1
@@ -298,7 +300,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
 
   onFormSubmit() {
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
-      this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate.idTarifaDelivery)
+      this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate)
 
       this.loaders.loadingSubmit = true
       const deliveriesSubscription = this.deliveriesService
@@ -502,11 +504,15 @@ export class ConsolidatedDeliveryComponent implements OnInit {
     const tarifa = this.pago.baseRate
 
     if (this.orders.length == 0) {
-      const cordsSubscription = this.operationsService.getCoords(salida).subscribe((response) => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response.lat + ', ' + response.lng)
-        cordsSubscription.unsubscribe()
+      this.geocoder.geocode({'address': salida}, results => {
+        const ll = {
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng()
+        }
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(ll.lat + ',' + ll.lng)
       })
     }
+
 
     const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
       function: 'calculateDistance',
@@ -524,11 +530,14 @@ export class ConsolidatedDeliveryComponent implements OnInit {
       currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra
       currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion
 
-      const coordsSubsc = this.operationsService.getCoords(entrega)
-        .subscribe((response) => {
-          currOrder.coordsDestino = response.lat + ',' + response.lng
-          coordsSubsc.unsubscribe()
-        })
+
+      this.geocoder.geocode({'address': entrega}, results => {
+        const ll = {
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng()
+        }
+        currOrder.coordsDestino = ll.lat + ',' + ll.lng
+      })
 
       this.deliveryForm.get('order').reset()
       this.orders.push(currOrder)
@@ -868,7 +877,6 @@ export class ConsolidatedDeliveryComponent implements OnInit {
         this.loaders.loadingAdd = false
         return false
       }
-
 
       let ordersCount = this.orders.length + 1
       //

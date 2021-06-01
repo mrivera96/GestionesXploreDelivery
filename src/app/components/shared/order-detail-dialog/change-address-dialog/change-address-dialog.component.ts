@@ -45,6 +45,7 @@ export class ChangeAddressDialogComponent implements OnInit {
     'loadingSubmit': false,
     'loadingDistBef': false
   }
+  geocoder: google.maps.Geocoder;
 
   constructor(
     public dialogRef: MatDialogRef<ChangeAddressDialogComponent>,
@@ -67,6 +68,7 @@ export class ChangeAddressDialogComponent implements OnInit {
 
   //INICIALIZACION DE VARIABLES
   initialize() {
+    this.geocoder = new google.maps.Geocoder();
     this.directionsRenderer = new google.maps.DirectionsRenderer
     this.directionsService = new google.maps.DirectionsService
     this.addressForm = this.formBuilder.group({
@@ -117,11 +119,14 @@ export class ChangeAddressDialogComponent implements OnInit {
     this.directionsRenderer.setMap(null)
     if (this.addForm.direccion.value != '') {
 
-      const cordsSubscription = this.operationsService.getCoords(this.addForm.direccion.value)
-        .subscribe(result => {
-          this.addForm.coordsDestino.setValue(result[0].lat + ',' + result[0].lng)
-          cordsSubscription.unsubscribe()
-        })
+      this.geocoder.geocode({'address': this.addForm.direccion.value}, results => {
+        const ll = {
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng()
+        }
+        this.addForm.coordsDestino.setValue(ll.lat + ',' + ll.lng)
+
+      })
 
       this.befDistance = 0
       this.befTime = 0
@@ -344,7 +349,6 @@ export class ChangeAddressDialogComponent implements OnInit {
       let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'))
       invalidFields[1].focus()
     }
-
 
   }
 }

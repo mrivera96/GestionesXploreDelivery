@@ -5,6 +5,8 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
 import {Category} from "../../../../models/category";
+import {ServiceTypeService} from "../../../../services/service-type.service";
+import {ServiceType} from "../../../../models/service-type";
 
 @Component({
   selector: 'app-edit-category-dialog',
@@ -17,23 +19,29 @@ export class EditCategoryDialogComponent implements OnInit {
   loaders = {
     loadingSubmit: false
   }
+  serviceTypes: ServiceType[]
+
+
   constructor(
     private categoriesService: CategoriesService,
     public dialogRef: MatDialogRef<EditCategoryDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private servTypesService: ServiceTypeService
   ) {
     this.currCategory = this.data.category
     this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {
+    this.loadData()
     this.edCatForm = new FormGroup(
       {
         idCategoria: new FormControl(this.currCategory.idCategoria),
         descCategoria: new FormControl(this.currCategory.descCategoria, [Validators.required, Validators.maxLength(60)]),
         descripcion: new FormControl(this.currCategory.descripcion,[Validators.required, Validators.maxLength(250)]),
-        isActivo: new FormControl(this.currCategory.isActivo, Validators.required)
+        isActivo: new FormControl(this.currCategory.isActivo, Validators.required),
+        idTipoServicio: new FormControl(this.currCategory?.idTipoServicio || null)
       }
     )
 
@@ -41,6 +49,14 @@ export class EditCategoryDialogComponent implements OnInit {
 
   get f() {
     return this.edCatForm.controls
+  }
+
+  loadData() {
+    const servTypeSubs = this.servTypesService.getServiceTypes()
+      .subscribe(response => {
+        this.serviceTypes = response.data
+        servTypeSubs.unsubscribe()
+      })
   }
 
   onFormEditSubmit() {

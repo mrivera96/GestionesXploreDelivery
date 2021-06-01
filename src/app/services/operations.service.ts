@@ -1,7 +1,6 @@
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from "rxjs";
-import {Location} from "@angular/common";
 import {LatLng} from "../models/lat-lng";
 
 @Injectable({
@@ -23,6 +22,7 @@ export class OperationsService {
           lat: results[0].geometry.location.lat(),
           lng: results[0].geometry.location.lng()
         })
+
         observer.complete()
       })
 

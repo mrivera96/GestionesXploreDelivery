@@ -32,4 +32,7 @@ export interface Delivery {
   distTotal?: number
   regAdmin?: boolean
   usuario?: User
+  fechaFacturacion?: number
+  refNumber?: number
+  fechaRegistro?: string
 }
