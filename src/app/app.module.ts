@@ -42,6 +42,7 @@ import { ConfirmCancelDialogComponent } from './components/customer/delivery-det
 import { ConfirmDeleteComponent } from './components/customer/labels/confirm-delete/confirm-delete.component';
 import { ChangeAddressDialogComponent } from './components/shared/order-detail-dialog/change-address-dialog/change-address-dialog.component';
 import { RoutingShippingComponent } from './components/admin/add-delivery/routing-shipping/routing-shipping.component';
+import { ServiceChooseComponent } from './components/shared/service-choose/service-choose.component';
 
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -62,6 +63,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
         ConfirmDeleteComponent,
         ChangeAddressDialogComponent,
         RoutingShippingComponent,
+        ServiceChooseComponent,
     ],
 
     imports: [

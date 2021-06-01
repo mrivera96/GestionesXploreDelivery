@@ -114,6 +114,7 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
   }
   searchingOrigin = false
   searchingDest = false
+  geocoder: google.maps.Geocoder;
 
   constructor(
     private categoriesService: CategoriesService,
@@ -135,6 +136,7 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
   }
 
   initialize() {
+    this.geocoder = new google.maps.Geocoder();
     this.directionsRenderer = new google.maps.DirectionsRenderer
     this.directionsService = new google.maps.DirectionsService
     this.paymentMethod = 1
@@ -537,12 +539,13 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
     const tarifa = this.pago.baseRate
 
     if (this.orders.length == 0) {
-      const cordsSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: salida,
-      }).subscribe((response) => {
-        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(response[0].lat + ', ' + response[0].lng)
-        cordsSubscription.unsubscribe()
+
+      this.geocoder.geocode({'address': salida}, results => {
+        const ll = {
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng()
+        }
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(ll.lat + ', ' + ll.lng)
       })
     }
 
@@ -560,11 +563,12 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
       this.currOrder.cargosExtra = calculatedPayment.cargosExtra
       this.currOrder.cTotal = calculatedPayment.total
 
-      this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: entrega,
-      }).subscribe((response) => {
-        this.currOrder.coordsDestino = response[0].lat + ', ' + response[0].lng
+      this.geocoder.geocode({'address': entrega}, results => {
+        const ll = {
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng()
+        }
+        this.currOrder.coordsDestino =  ll.lat + ',' + ll.lng
       })
 
       this.deliveryForm.get('order').reset()

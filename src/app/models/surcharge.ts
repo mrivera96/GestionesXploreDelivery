@@ -1,6 +1,7 @@
 import {Customer} from "./customer";
 import {Category} from "./category";
 import {RateType} from "./rate-type";
+import { ItemDetail } from "./item-detail";
 
 export interface Surcharge {
   idRecargo?: number
@@ -14,4 +15,5 @@ export interface Surcharge {
   category?: Category
   delivery_type?: RateType
   idTipoEnvio?: number
+  item_detail?: ItemDetail
 }

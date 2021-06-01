@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
-import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {UsersService} from "../../../../services/users.service";
-import {SurchargesService} from "../../../../services/surcharges.service";
-import {Customer} from "../../../../models/customer";
-import {Category} from "../../../../models/category";
-import {CategoriesService} from "../../../../services/categories.service";
-import {RateType} from "../../../../models/rate-type";
-import {RatesService} from "../../../../services/rates.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { SuccessModalComponent } from "../../../shared/success-modal/success-modal.component";
+import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
+import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import { UsersService } from "../../../../services/users.service";
+import { SurchargesService } from "../../../../services/surcharges.service";
+import { Customer } from "../../../../models/customer";
+import { Category } from "../../../../models/category";
+import { CategoriesService } from "../../../../services/categories.service";
+import { RateType } from "../../../../models/rate-type";
+import { RatesService } from "../../../../services/rates.service";
 
 @Component({
   selector: 'app-new-surcharge-dialog',
@@ -28,7 +28,7 @@ export class NewSurchargeDialogComponent implements OnInit {
   surchargeCategories: Category[] = []
   isGeneral: boolean = false
   surchargeCustomers: Customer[] = []
-  deliveryTypes: RateType [] = []
+  deliveryTypes: RateType[] = []
   constructor(
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
@@ -45,13 +45,21 @@ export class NewSurchargeDialogComponent implements OnInit {
 
     this.newSurchForm = this.formBuilder.group(
       {
-        descRecargo:['', Validators.required],
+        descRecargo: ['', Validators.required],
         kilomMinimo: ['', Validators.required],
         kilomMaximo: ['', Validators.required],
         monto: ['', Validators.required],
         idCliente: [null],
-        idCategoria:[null,Validators.required],
-        idTipoEnvio: [1, Validators.required]
+        idCategoria: [null, Validators.required],
+        idTipoEnvio: [1, Validators.required],
+        tYK: [0],
+        cobVehiculo: [0],
+        servChofer: [0],
+        recCombustible: [0],
+        cobTransporte: [0],
+        isv: [0],
+        tasaTuris: [0],
+        gastosReembolsables: [0]
       }
     )
 
@@ -78,17 +86,53 @@ export class NewSurchargeDialogComponent implements OnInit {
   onFormNewSubmit() {
     if (this.newSurchForm.valid) {
       this.loaders.loadingSubmit = true
-      this.surchargesService.createSurcharge(this.newSurchForm.value, this.surchargeCustomers)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.openSuccessDialog('Operación Realizada Correctamente',response.message)
-          },
-          error => {
-            error.subscribe(error => {
+      const tk = this.fNew.tYK.value
+      const cobVeh = this.fNew.cobVehiculo.value
+      const servChof = this.fNew.servChofer.value
+      const recComb = this.fNew.recCombustible.value
+      const cobTrans = this.fNew.cobTransporte.value
+      const isv = this.fNew.isv.value
+      const tasaTur = this.fNew.tasaTuris.value
+      const gastRe = this.fNew.gastosReembolsables.value
+
+      if (tk != 0 || cobVeh != 0 || servChof != 0 || recComb != 0
+        || cobTrans != 0 || isv != 0 || tasaTur != 0 || gastRe != 0) {
+        const sum = tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe
+
+        if (sum != this.fNew.monto.value) {
+          this.openErrorDialog('Los valores ingresados para facturación, no coinciden con el monto del recargo')
+          this.loaders.loadingSubmit = false
+        } else {
+          const surchSubsc = this.surchargesService.createSurcharge(this.newSurchForm.value, this.surchargeCustomers)
+            .subscribe(response => {
               this.loaders.loadingSubmit = false
-              this.openErrorDialog(error.statusText)
+              surchSubsc.unsubscribe()
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+            },
+              error => {
+                error.subscribe(error => {
+                  this.loaders.loadingSubmit = false
+                  surchSubsc.unsubscribe()
+                  this.openErrorDialog(error.statusText)
+                })
+              })
+        }
+      } else {
+        const surchSubsc = this.surchargesService.createSurcharge(this.newSurchForm.value, this.surchargeCustomers)
+          .subscribe(response => {
+            this.loaders.loadingSubmit = false
+            surchSubsc.unsubscribe()
+            this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+          },
+            error => {
+              error.subscribe(error => {
+                this.loaders.loadingSubmit = false
+                surchSubsc.unsubscribe()
+                this.openErrorDialog(error.statusText)
+              })
             })
-          })
+      }
+
     }
   }
 
@@ -113,7 +157,6 @@ export class NewSurchargeDialogComponent implements OnInit {
     if (!this.surchargeCustomers.includes(customerToAdd)) {
       this.surchargeCustomers.push(customerToAdd)
     }
-
   }
 
   openSuccessDialog(succsTitle, succssMsg) {
@@ -136,8 +179,9 @@ export class NewSurchargeDialogComponent implements OnInit {
       }
     })
   }
+
   onKey(value) {
-    this.filteredCustomers = this.search(value) ;
+    this.filteredCustomers = this.search(value);
   }
 
   search(value: string) {

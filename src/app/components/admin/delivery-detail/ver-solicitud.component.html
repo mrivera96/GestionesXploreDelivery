@@ -63,7 +63,7 @@
 
         <div class="col-sm">
           <strong>Instrucciones de recogida:</strong>
-          {{currentDelivery?.instrucciones}}
+          {{currentDelivery?.instrucciones || 'Sin Registro'}}
         </div>
 
         <div class="col-sm">
@@ -87,7 +87,6 @@
           <strong>Tarifa Base:</strong>
           L. {{currentDelivery?.tarifaBase}}
         </div>
-
       </div>
 
       <div class="row">
@@ -135,11 +134,23 @@
           <strong>Asignada a:</strong>
           {{currentDelivery?.detalle[0]?.conductor.nomUsuario}}
         </div>
-
       </div>
 
       <div class="row">
+        <div class="col-sm">
+          <strong>Fecha y hora de registro:</strong>
+          {{currentDelivery?.fechaRegistro }}
+        </div>
 
+        <div class="col-sm">
+          <strong>N° de Factura:</strong>
+          {{currentDelivery?.refNumber || 'Sin Registro'}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Fecha de Facturación:</strong>
+          {{currentDelivery?.fechaFacturacion || 'Sin Registro'}}
+        </div>
 
       </div>
 

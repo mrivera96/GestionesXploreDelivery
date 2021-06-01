@@ -108,6 +108,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
   fileContentArray: String[] = []
   defaultBranch
   selectedCategory: Category = {}
+  selectedRate: Rate = {}
   selectedExtraCharge: ExtraCharge = null
   selectedExtraChargeOption: ExtraChargeOption = {}
   extraCharges: ExtraChargeCategory[] = []
@@ -121,6 +122,8 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
   totalTime = 0
   totalDistance = 0
   demandMSG: string = ''
+  geocoder: google.maps.Geocoder;
+
 
   constructor(
     private categoriesService: CategoriesService,
@@ -152,6 +155,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   //INICIALIZACIÓN DE VARIABLES
   initialize() {
+    this.geocoder = new google.maps.Geocoder();
     this.directionsRenderer = new google.maps.DirectionsRenderer
     this.directionsService = new google.maps.DirectionsService
     this.locationOption = 1
@@ -167,6 +171,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         idCategoria: [{ value: 1, disabled: false }, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
+        idTarifa:[null],
         distancia: [0]
       }, {
         validators: [
@@ -321,15 +326,17 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         lng: +this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[1],
       }
     }else{
-      const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
-        .subscribe(result => {
-          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result.lat + ',' + result.lng)
-          this.center = {
-            lat: result.lat,
-            lng: result.lng,
-          }
-          cordsSubscription.unsubscribe()
-        })
+      this.geocoder.geocode({'address': this.deliveryForm.get('deliveryHeader.dirRecogida').value}, results => {
+        const ll = {
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng()
+        }
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(ll.lat + ',' + ll.lng)
+        this.center = {
+          lat: ll.lat,
+          lng: ll.lng,
+        }
+      })
     }
 
   }
@@ -363,12 +370,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         this.finishFlag = false
       }
 
-      const cordsSubscription = this.operationsService.getCoords(this.currOrder.direccion)
-        .subscribe(result => {
-          this.currOrder.coordsDestino = result.lat + ',' + result.lng
-          this.calculateDistance()
-          cordsSubscription.unsubscribe()
-        })
+      this.calculateDistance()
 
     }
   }
@@ -380,6 +382,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     this.newForm.get('deliveryHeader.fecha').enable()
 
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
+      this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate)
 
       this.openLoader()
       const deliveriesSubscription = this.deliveriesService
@@ -556,9 +559,9 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   //SELECCIÓN DE LA TARIFA A APLICAR SEGÚN EL NÚMERO DE ENTREGAS
   calculateRate(ordersCount) {
-    const currRate= this.rates.find(rate => ordersCount >= rate?.entregasMinimas && ordersCount <= rate?.entregasMaximas && this.deliveryForm.get('deliveryHeader.idCategoria').value == rate?.idCategoria)
-    if (currRate != null) {
-      this.pago.baseRate = currRate.precio
+    this.selectedRate = this.rates.find(rate => ordersCount >= rate?.entregasMinimas && ordersCount <= rate?.entregasMaximas && this.deliveryForm.get('deliveryHeader.idCategoria').value == rate?.idCategoria)
+    if (this.selectedRate != null) {
+      this.pago.baseRate = this.selectedRate.precio
     } else if (ordersCount == 0) {
       this.pago.baseRate = 0.00
     }
@@ -602,6 +605,14 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     }
 
     entrega = this.currOrder.direccion
+
+    this.geocoder.geocode({'address': this.currOrder.direccion}, results => {
+      const ll = {
+        lat: results[0].geometry.location.lat(),
+        lng: results[0].geometry.location.lng()
+      }
+      this.currOrder.coordsDestino = ll.lat + ',' + ll.lng
+    })
 
     if (this.currOrder.coordsDestino != null) {
       const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
@@ -706,6 +717,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
   //CALCULA EL PAGO TOTAL
   calculatePayment(final?: boolean) {
     if (final) {
+      
       this.openLoader()
       let returnDistance = 0
       const distSubs = this.http.post<any>(`${environment.apiUrl}`, {
@@ -715,21 +727,24 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         tarifa: this.pago.baseRate
       }).subscribe((response) => {
         returnDistance = Number(response.distancia.split(' ')[0])
-
+        
         this.http.post<any>(`${environment.apiUrl}`, {
           function: 'calculateDistance',
           salida: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
           entrega: this.orders[this.orders.length - 1].direccion,
           tarifa: this.pago.baseRate
         }).subscribe((res) => {
+
           let initFinishD = 0
           let initFinishT = 0
           initFinishD = Number(res.distancia.split(' ')[0])
+          
           if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
             initFinishT = (+res.tiempo.split(' ')[0] * 60) + Number(res.tiempo.split(' ')[2])
           } else {
             initFinishT = Number(res.tiempo.split(' ')[0])
           }
+          
 
           this.totalDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value) + returnDistance
 
@@ -1194,7 +1209,8 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
               }
             }
           })
-          totalDistance = optimizedRouteOrder[optimizedRouteOrder.length - 1]?.distance
+        
+          totalDistance = optimizedRouteOrder[Object.values(optimizedRouteOrder).length - 1]?.distance
           this.deliveryForm.get('deliveryHeader.distancia').setValue(totalDistance)
 
           this.orders.sort((a, b) => (a.order > b.order) ? 1 : -1)

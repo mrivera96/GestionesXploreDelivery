@@ -4,6 +4,8 @@ import {CategoriesService} from "../../../../services/categories.service";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
 import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
+import {ServiceTypeService} from "../../../../services/service-type.service";
+import {ServiceType} from "../../../../models/service-type";
 
 @Component({
   selector: 'app-new-category-dialog',
@@ -15,24 +17,42 @@ export class NewCategoryDialogComponent implements OnInit {
   loaders = {
     loadingSubmit: false
   }
+  serviceTypes: ServiceType[]
+
+
   constructor(
     private categoriesService: CategoriesService,
     public dialogRef: MatDialogRef<NewCategoryDialogComponent>,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private servTypesService: ServiceTypeService
   ) {
     this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {
+    this.initialize()
+    this.loadData()
+  }
+
+  initialize() {
     this.newCatForm = new FormGroup(
       {
-        descCategoria: new FormControl('', [Validators.required,Validators.maxLength(60)]),
-        descripcion: new FormControl('',[Validators.required, Validators.maxLength(250)])
+        descCategoria: new FormControl('', [Validators.required, Validators.maxLength(60)]),
+        descripcion: new FormControl('', [Validators.required, Validators.maxLength(250)]),
+        idTipoServicio: new FormControl(null)
       }
     )
   }
 
-  get fNew(){
+  loadData() {
+    const servTypeSubs = this.servTypesService.getServiceTypes()
+      .subscribe(response => {
+        this.serviceTypes = response.data
+        servTypeSubs.unsubscribe()
+      })
+  }
+
+  get fNew() {
     return this.newCatForm.controls
   }
 

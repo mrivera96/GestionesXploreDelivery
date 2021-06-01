@@ -10,4 +10,5 @@ export interface ItemDetail {
   cobTransporte?: number
   isv?: number
   tasaTuris?: number
+  gastosReembolsables?: number
 }

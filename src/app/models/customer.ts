@@ -20,4 +20,6 @@ export interface Customer {
   balanceShow?: string
   enviarNotificaciones?: boolean
   instFotografias?: string
+  idFrecuenciaFact?: number
+  correosFact?: string
 }

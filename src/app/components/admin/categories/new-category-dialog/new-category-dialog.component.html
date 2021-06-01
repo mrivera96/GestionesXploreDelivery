@@ -26,6 +26,13 @@
       <mat-icon matSuffix>subtitles</mat-icon>
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Tipo de Servicio:</mat-label>
+      <mat-select formControlName="idTipoServicio" placeholder="- Seleccione un tipo de Servicio -">
+        <mat-option *ngFor="let service of serviceTypes" value="{{service.idTipoServicio}}">{{service.descripcion}}</mat-option>
+      </mat-select>
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 

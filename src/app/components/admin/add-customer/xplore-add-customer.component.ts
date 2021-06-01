@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component";
 import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
+import {BillingFrequenciesService} from "../../../services/billing-frequencies.service";
+import {MultipleMailValidator} from "../../../helpers/multiple.mail.validator";
 
 @Component({
   selector: 'app-xplore-add-customer',
@@ -27,17 +29,20 @@ export class XploreAddCustomerComponent implements OnInit {
     loadingData: false,
     loadingSubmit: false
   }
+  billingFrequencies: any
 
   constructor(
     private usersService: UsersService,
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
-    public dialogRef: MatDialogRef<XploreAddCustomerComponent>
+    public dialogRef: MatDialogRef<XploreAddCustomerComponent>,
+    private billingFrecuenciesService: BillingFrequenciesService
   ) {
     this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {
+    this.loadData()
     this.nCustomerForm = this.formBuilder.group({
       nomEmpresa: ['', [
         Validators.required,
@@ -57,12 +62,23 @@ export class XploreAddCustomerComponent implements OnInit {
         Validators.required,
         Validators.minLength(1),
       ]],
+      idFrecuenciaFact: [null],
       email: ['', [
         Validators.required,
         Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"),
         Validators.maxLength(50)]],
+      correosFact: ['', [
+        Validators.maxLength(200)]],
       enviarNotificaciones: [true, Validators.required]
     })
+  }
+
+  loadData(){
+    const bfSubs = this.billingFrecuenciesService.getBillingFrequencies()
+      .subscribe(response => {
+        this.billingFrequencies = response.data
+        bfSubs.unsubscribe()
+      })
   }
 
   // getter para fácil acceso a los campos del formulario

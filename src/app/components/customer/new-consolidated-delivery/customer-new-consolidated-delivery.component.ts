@@ -113,6 +113,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   demandMSG: string = ''
   myLabels: Label[] = []
   defaultBranch
+  geocoder: google.maps.Geocoder;
 
   constructor(
     private categoriesService: CategoriesService,
@@ -137,6 +138,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   //INICIALIZACIÓN DE VARIABLES
   initialize() {
+    this.geocoder = new google.maps.Geocoder();
     this.directionsRenderer = new google.maps.DirectionsRenderer
     this.directionsService = new google.maps.DirectionsService
     this.paymentMethod = 1
@@ -329,12 +331,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       //
       this.calculateRate()
 
-      const cordsSubscription = this.operationsService.getCoords(currOrder.direccion)
-        .subscribe((response) => {
-          currOrder.coordsDestino = response.lat + ',' + response.lng
-          this.calculateDistance(currOrder)
-          cordsSubscription.unsubscribe()
-        })
+      this.calculateDistance(currOrder)
 
       this.befDistance = 0
       this.befTime = 0
@@ -350,7 +347,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.newForm.get('deliveryHeader.hora').enable()
 
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
-      this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate.idTarifaDelivery)
+      this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate)
 
       this.openLoader()
       const deliveriesSubscription = this.deliveriesService
@@ -509,15 +506,18 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         lng: +this.deliveryForm.get('deliveryHeader.coordsOrigen').value.split(',')[1],
       }
     } else {
-      const cordsSubscription = this.operationsService.getCoords(this.deliveryForm.get('deliveryHeader.dirRecogida').value)
-        .subscribe(result => {
-          this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(result.lat + ',' + result.lng)
-          this.center = {
-            lat: result.lat,
-            lng: result.lng,
-          }
-          cordsSubscription.unsubscribe()
-        })
+
+      this.geocoder.geocode({'address': this.deliveryForm.get('deliveryHeader.dirRecogida').value}, results => {
+        const ll = {
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng()
+        }
+        this.deliveryForm.get('deliveryHeader.coordsOrigen').setValue(ll.lat + ',' + ll.lng)
+        this.center = {
+          lat: ll.lat,
+          lng: ll.lng,
+        }
+      })
     }
 
   }
@@ -566,6 +566,14 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     const salida = this.selectedRate.consolidated_detail.dirRecogida
     const entrega = currOrder.direccion
     const tarifa = this.pago.baseRate
+
+    this.geocoder.geocode({'address': entrega}, results => {
+      const ll = {
+        lat: results[0].geometry.location.lat(),
+        lng: results[0].geometry.location.lng()
+      }
+      currOrder.coordsDestino = ll.lat + ',' + ll.lng
+    })
 
     if (currOrder.coordsDestino != null) {
       const cDistanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
