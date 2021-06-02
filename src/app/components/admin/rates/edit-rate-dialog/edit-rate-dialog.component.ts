@@ -50,14 +50,14 @@ export class EditRateDialogComponent implements OnInit {
         entregasMaximas: [this.currRate.entregasMaximas, Validators.required],
         precio: [this.currRate.precio, Validators.required],
         idTipoTarifa: [this.currRate.idTipoTarifa, Validators.required],
-        tYK: [this.currRate?.item_detail?.tYK || 0],
-        cobVehiculo: [this.currRate?.item_detail?.cobVehiculo || 0],
-        servChofer: [this.currRate?.item_detail?.servChofer || 0],
-        recCombustible: [this.currRate?.item_detail?.recCombustible || 0],
-        cobTransporte: [this.currRate?.item_detail?.cobTransporte || 0],
-        isv: [this.currRate?.item_detail?.isv || 0],
-        tasaTuris: [this.currRate?.item_detail?.tasaTuris || 0],
-        gastosReembolsables: [this.currRate?.item_detail?.gastosReembolsables || 0]
+        tYK: [this.currRate?.item_detail?.tYK || 0, Validators.min(0)],
+        cobVehiculo: [this.currRate?.item_detail?.cobVehiculo || 0, Validators.min(0)],
+        servChofer: [this.currRate?.item_detail?.servChofer || 0, Validators.min(0)],
+        recCombustible: [this.currRate?.item_detail?.recCombustible || 0, Validators.min(0)],
+        cobTransporte: [this.currRate?.item_detail?.cobTransporte || 0, Validators.min(0)],
+        isv: [this.currRate?.item_detail?.isv || 0, Validators.min(0)],
+        tasaTuris: [this.currRate?.item_detail?.tasaTuris || 0, Validators.min(0)],
+        gastosReembolsables: [this.currRate?.item_detail?.gastosReembolsables || 0, Validators.min(0)]
       }
     );
 
@@ -80,45 +80,55 @@ export class EditRateDialogComponent implements OnInit {
     if (this.edRateForm.valid) {
       this.loaders.loadingSubmit = true;
 
-      const tk = this.f.tYK.value
-      const cobVeh = this.f.cobVehiculo.value
-      const servChof = this.f.servChofer.value
-      const recComb = this.f.recCombustible.value
-      const cobTrans = this.f.cobTransporte.value
-      const isv = this.f.isv.value
-      const tasaTur = this.f.tasaTuris.value
-      const gastRe = this.f.gastosReembolsables.value
+      const tk = +this.f.tYK?.value ?? 0
+      const cobVeh = +this.f.cobVehiculo?.value ?? 0
+      const servChof = +this.f.servChofer?.value ?? 0
+      const recComb = +this.f.recCombustible?.value ?? 0
+      const cobTrans = +this.f.cobTransporte?.value ?? 0
+      const isv = +this.f.isv?.value ?? 0
+      const tasaTur = +this.f.tasaTuris?.value ?? 0
+      const gastRe = +this.f.gastosReembolsables?.value ?? 0
 
       if (tk != 0 || cobVeh != 0 || servChof != 0 || recComb != 0
         || cobTrans != 0 || isv != 0 || tasaTur != 0 || gastRe != 0) {
         const sum = tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe
+        console.log(sum)
 
-        if (sum != this.currRate.precio) {
+        let toCompare = +this.currRate.precio
+        if(this.f.precio.value != this.currRate.precio){
+          toCompare = +this.f.precio.value
+        }
+
+        if (sum > toCompare || sum < toCompare) {
           this.openErrorDialog('Los valores ingresados para facturación, no coinciden con el monto de la tarifa')
           this.loaders.loadingSubmit = false
         } else {
-          this.ratesService.editRate(this.edRateForm.value)
+          const rateSubsc = this.ratesService.editRate(this.edRateForm.value)
             .subscribe(response => {
-              this.loaders.loadingSubmit = false;
-              this.openSuccessDialog('Operación Realizada Correctamente', response.message);
+              this.loaders.loadingSubmit = false
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+              rateSubsc.unsubscribe()
             },
               error => {
                 error.subscribe(error => {
-                  this.loaders.loadingSubmit = false;
-                  this.openErrorDialog(error.statusText);
+                  this.loaders.loadingSubmit = false
+                  this.openErrorDialog(error.statusText)
+                  rateSubsc.unsubscribe()
                 });
               });
         }
       }else{
-        this.ratesService.editRate(this.edRateForm.value)
+        const rateSubsc = this.ratesService.editRate(this.edRateForm.value)
             .subscribe(response => {
-              this.loaders.loadingSubmit = false;
-              this.openSuccessDialog('Operación Realizada Correctamente', response.message);
+              this.loaders.loadingSubmit = false
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+              rateSubsc.unsubscribe()
             },
               error => {
                 error.subscribe(error => {
-                  this.loaders.loadingSubmit = false;
-                  this.openErrorDialog(error.statusText);
+                  this.loaders.loadingSubmit = false
+                  this.openErrorDialog(error.statusText)
+                  rateSubsc.unsubscribe()
                 })
               })
       }
