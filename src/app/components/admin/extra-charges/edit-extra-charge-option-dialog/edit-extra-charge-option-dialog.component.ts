@@ -56,14 +56,14 @@ export class EditExtraChargeOptionDialogComponent implements OnInit {
     if (this.exChrgOptForm.valid) {
       this.loaders.loadingSubmit = true
 
-      const tk = this.f.tYK.value
-      const cobVeh = this.f.cobVehiculo.value
-      const servChof = this.f.servChofer.value
-      const recComb = this.f.recCombustible.value
-      const cobTrans = this.f.cobTransporte.value
-      const isv = this.f.isv.value
-      const tasaTur = this.f.tasaTuris.value
-      const gastRe = this.f.gastosReembolsables.value
+      const tk = parseFloat(this.f.tYK.value) ?? 0
+      const cobVeh = parseFloat(this.f.cobVehiculo.value) ?? 0
+      const servChof = parseFloat(this.f.servChofer.value) ?? 0
+      const recComb = parseFloat(this.f.recCombustible.value) ?? 0
+      const cobTrans = parseFloat(this.f.cobTransporte.value) ?? 0
+      const isv = parseFloat(this.f.isv.value) ?? 0
+      const tasaTur = parseFloat(this.f.tasaTuris.value) ?? 0
+      const gastRe = parseFloat(this.f.gastosReembolsables.value) ?? 0
 
       if (tk != 0 || cobVeh != 0 || servChof != 0 || recComb != 0
         || cobTrans != 0 || isv != 0 || tasaTur != 0 || gastRe != 0) {

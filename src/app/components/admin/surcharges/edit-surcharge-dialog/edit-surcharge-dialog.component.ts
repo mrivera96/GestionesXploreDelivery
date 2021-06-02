@@ -53,14 +53,14 @@ export class EditSurchargeDialogComponent implements OnInit {
         idCliente: [1, Validators.required],
         idCategoria: [this.currSurch.idCategoria, Validators.required],
         idTipoEnvio: [1, Validators.required],
-        tYK: [this.currSurch?.item_detail?.tYK || 0],
-        cobVehiculo: [this.currSurch?.item_detail?.cobVehiculo || 0],
-        servChofer: [this.currSurch?.item_detail?.servChofer || 0],
-        recCombustible: [this.currSurch?.item_detail?.recCombustible || 0],
-        cobTransporte: [this.currSurch?.item_detail?.cobTransporte || 0],
-        isv: [this.currSurch?.item_detail?.isv || 0],
-        tasaTuris: [this.currSurch?.item_detail?.tasaTuris || 0],
-        gastosReembolsables: [this.currSurch?.item_detail?.gastosReembolsables || 0]
+        tYK: [this.currSurch?.item_detail?.tYK || 0, Validators.min(0)],
+        cobVehiculo: [this.currSurch?.item_detail?.cobVehiculo || 0, Validators.min(0)],
+        servChofer: [this.currSurch?.item_detail?.servChofer || 0, Validators.min(0)],
+        recCombustible: [this.currSurch?.item_detail?.recCombustible || 0, Validators.min(0)],
+        cobTransporte: [this.currSurch?.item_detail?.cobTransporte || 0, Validators.min(0)],
+        isv: [this.currSurch?.item_detail?.isv || 0, Validators.min(0)],
+        tasaTuris: [this.currSurch?.item_detail?.tasaTuris || 0, Validators.min(0)],
+        gastosReembolsables: [this.currSurch?.item_detail?.gastosReembolsables || 0, Validators.min(0)]
       }
     )
 
@@ -96,14 +96,14 @@ export class EditSurchargeDialogComponent implements OnInit {
   onFormEditSubmit() {
     if (this.edSurChForm.valid) {
       this.loaders.loadingSubmit = true
-      const tk = this.f.tYK.value
-      const cobVeh = this.f.cobVehiculo.value
-      const servChof = this.f.servChofer.value
-      const recComb = this.f.recCombustible.value
-      const cobTrans = this.f.cobTransporte.value
-      const isv = this.f.isv.value
-      const tasaTur = this.f.tasaTuris.value
-      const gastRe = this.f.gastosReembolsables.value
+      const tk = parseFloat(this.f.tYK.value) ?? 0
+      const cobVeh = parseFloat(this.f.cobVehiculo.value) ?? 0
+      const servChof = parseFloat(this.f.servChofer.value) ?? 0
+      const recComb = parseFloat(this.f.recCombustible.value) ?? 0
+      const cobTrans = parseFloat(this.f.cobTransporte.value) ?? 0
+      const isv = parseFloat(this.f.isv.value) ?? 0
+      const tasaTur = parseFloat(this.f.tasaTuris.value) ?? 0
+      const gastRe = parseFloat(this.f.gastosReembolsables.value) ?? 0
 
       if (tk != 0 || cobVeh != 0 || servChof != 0 || recComb != 0
         || cobTrans != 0 || isv != 0 || tasaTur != 0 || gastRe != 0) {

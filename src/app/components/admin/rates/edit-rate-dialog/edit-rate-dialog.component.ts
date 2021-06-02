@@ -80,20 +80,19 @@ export class EditRateDialogComponent implements OnInit {
     if (this.edRateForm.valid) {
       this.loaders.loadingSubmit = true;
 
-      const tk = +this.f.tYK?.value ?? 0
-      const cobVeh = +this.f.cobVehiculo?.value ?? 0
-      const servChof = +this.f.servChofer?.value ?? 0
-      const recComb = +this.f.recCombustible?.value ?? 0
-      const cobTrans = +this.f.cobTransporte?.value ?? 0
-      const isv = +this.f.isv?.value ?? 0
-      const tasaTur = +this.f.tasaTuris?.value ?? 0
-      const gastRe = +this.f.gastosReembolsables?.value ?? 0
+      const tk = parseFloat(this.f.tYK?.value) ?? 0
+      const cobVeh = parseFloat(this.f.cobVehiculo?.value) ?? 0
+      const servChof = parseFloat(this.f.servChofer?.value) ?? 0
+      const recComb = parseFloat(this.f.recCombustible?.value) ?? 0
+      const cobTrans = parseFloat(this.f.cobTransporte?.value) ?? 0
+      const isv = parseFloat(this.f.isv?.value) ?? 0
+      const tasaTur = parseFloat(this.f.tasaTuris?.value) ?? 0
+      const gastRe = parseFloat(this.f.gastosReembolsables?.value) ?? 0
 
       if (tk != 0 || cobVeh != 0 || servChof != 0 || recComb != 0
         || cobTrans != 0 || isv != 0 || tasaTur != 0 || gastRe != 0) {
         const sum = tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe
-        console.log(sum)
-
+        
         let toCompare = +this.currRate.precio
         if(this.f.precio.value != this.currRate.precio){
           toCompare = +this.f.precio.value
