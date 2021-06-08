@@ -5,7 +5,7 @@ import { Customer } from "../../../../models/customer";
 import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
 import { SuccessModalComponent } from "../../../shared/success-modal/success-modal.component";
 import { UsersService } from "../../../../services/users.service";
-import {BillingFrequenciesService} from "../../../../services/billing-frequencies.service";
+import { BillingFrequenciesService } from "../../../../services/billing-frequencies.service";
 
 @Component({
   selector: 'app-edit-customer-dialog',
@@ -56,17 +56,24 @@ export class EditCustomerDialogComponent implements OnInit {
         Validators.minLength(1),
       ]],
       idFrecuenciaFact: [this.currCustomer.idFrecuenciaFact],
+      rtn: [this.currCustomer.rtn, [
+        Validators.required,
+        Validators.maxLength(14),
+        Validators.minLength(14)]],
+      razonSocial: [this.currCustomer.razonSocial, [
+        Validators.required,
+        Validators.maxLength(80)]],
       email: [this.currCustomer.email, [
         Validators.required,
         Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"),
         Validators.maxLength(50)]],
-        correosFact: [this.currCustomer.correosFact, [
-          Validators.maxLength(200)]],
+      correosFact: [this.currCustomer.correosFact, [Validators.required,
+        Validators.maxLength(200)]],
       enviarNotificaciones: [+this.currCustomer.enviarNotificaciones, Validators.required]
     })
   }
 
-  loadData(){
+  loadData() {
     const bfSubs = this.billingFrecuenciesService.getBillingFrequencies()
       .subscribe(response => {
         this.billingFrequencies = response.data
