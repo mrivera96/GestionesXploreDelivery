@@ -22,4 +22,6 @@ export interface Customer {
   instFotografias?: string
   idFrecuenciaFact?: number
   correosFact?: string
+  razonSocial?: string
+  rtn?: string
 }
