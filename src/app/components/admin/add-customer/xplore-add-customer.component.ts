@@ -64,18 +64,15 @@ export class XploreAddCustomerComponent implements OnInit {
       ]],
       idFrecuenciaFact: [null],
       rtn: ['', [
-        Validators.required,
         Validators.maxLength(14),
         Validators.minLength(14)]],
       razonSocial: ['', [
-        Validators.required,
         Validators.maxLength(80)]],
       email: ['', [
         Validators.required,
         Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"),
         Validators.maxLength(50)]],
       correosFact: ['', [
-        Validators.required,
         Validators.maxLength(200)]],
       enviarNotificaciones: [true, Validators.required]
     })

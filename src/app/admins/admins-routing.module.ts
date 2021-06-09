@@ -30,6 +30,7 @@ import {ReportRequestsComponent} from "../components/admin/reports/report-reques
 import {CustomerChooseComponent} from "../components/admin/add-delivery/customer-choose/customer-choose.component";
 import { XploreAddDeliveryComponent } from '../components/admin/add-delivery/xplore-add-delivery.component';
 import { OrdersByDriverConsolidatedComponent } from '../components/admin/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component';
+import {RestrictionsComponent} from "../components/admin/restrictions/restrictions.component";
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -40,6 +41,7 @@ const routes: Routes = [
   {path: 'reservas-todas/:initDate/:finDate', component: VerTodasReservasComponent, canActivate: [XploreGuard]},
   {path: 'tomorrow-deliveries', component: ReservasManianaComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-categorias', component: XploreCategoriesComponent, canActivate: [XploreGuard]},
+  {path: 'parametrizar-restricciones', component: RestrictionsComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-rubros', component: XploreWorkLinesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-tarifas', component: XploreRatesComponent, canActivate: [XploreGuard]},
   {path: 'parametrizar-recargos', component: XploreSurchargesComponent, canActivate: [XploreGuard]},

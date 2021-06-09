@@ -116,7 +116,7 @@
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Nombre o Razón Social:</mat-label>
         <input matInput id="razonSocial" type="text" formControlName="razonSocial" placeholder="Razón Social"
-          maxlength="80" required>
+          maxlength="80">
         <mat-icon matSuffix>person</mat-icon>
         <mat-error *ngIf="f.razonSocial.errors?.required">
           *Este campo es obligatorio
@@ -126,7 +126,7 @@
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>RTN:</mat-label>
         <input matInput id="rtn" type="text" formControlName="rtn" minlength="14" maxlength="14"
-          placeholder="Ej. 1111333355555" required>
+          placeholder="Ej. 1111333355555">
         <mat-icon matSuffix>subtitles</mat-icon>
         <mat-error *ngIf="f.rtn.errors?.required">
           *Este campo es obligatorio
@@ -144,7 +144,7 @@
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>e-mail de facturación:</mat-label>
         <input matInput id="correosFact" type="email" formControlName="correosFact" maxlength="200"
-          placeholder="ejemplo@email.com,ejemplo2@mail.es" required>
+          placeholder="ejemplo@email.com,ejemplo2@mail.es">
         <mat-error *ngIf="f.correosFact.errors?.required">
           *Este campo es obligatorio
         </mat-error>
