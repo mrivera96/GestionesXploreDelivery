@@ -57,17 +57,15 @@ export class EditCustomerDialogComponent implements OnInit {
       ]],
       idFrecuenciaFact: [this.currCustomer.idFrecuenciaFact],
       rtn: [this.currCustomer.rtn, [
-        Validators.required,
         Validators.maxLength(14),
         Validators.minLength(14)]],
       razonSocial: [this.currCustomer.razonSocial, [
-        Validators.required,
         Validators.maxLength(80)]],
       email: [this.currCustomer.email, [
         Validators.required,
         Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"),
         Validators.maxLength(50)]],
-      correosFact: [this.currCustomer.correosFact, [Validators.required,
+      correosFact: [this.currCustomer.correosFact, [
         Validators.maxLength(200)]],
       enviarNotificaciones: [+this.currCustomer.enviarNotificaciones, Validators.required]
     })
