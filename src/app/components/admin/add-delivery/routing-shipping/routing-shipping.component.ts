@@ -755,17 +755,23 @@ export class RoutingShippingComponent implements OnInit {
           let avgDistance = this.totalDistance / (this.orders.length + 1)
           this.avgDistance = +avgDistance.toPrecision(2)
 
-          let appSurcharge = 0.00
+          let appSurcharge = null
           this.surcharges.forEach(value => {
             if (avgDistance >= Number(value.kilomMinimo)
               && avgDistance <= Number(value.kilomMaximo)
             ) {
-              appSurcharge = Number(value.monto)
+              appSurcharge = value
             }
           })
 
           this.orders.forEach(order => {
-            order.recargo = appSurcharge
+            if(appSurcharge != null){
+              order.recargo = Number(appSurcharge?.monto)
+              order.idRecargo = appSurcharge?.idRecargo
+            }else{
+              order.recargo = 0
+              order.idRecargo = null
+            }
             let ordrTime = 0
             if (order.tiempo.includes('hour') || order.tiempo.includes('h')) {
               ordrTime = (+order.tiempo.split(' ')[0] * 60) + Number(order.tiempo.split(' ')[2]) + avgTime
@@ -774,9 +780,14 @@ export class RoutingShippingComponent implements OnInit {
             }
             order.tiempo = ordrTime.toFixed() + ' mins'
             order.cTotal = +order.tarifaBase + +order.recargo
+
           })
 
-          this.pago.recargos = appSurcharge * this.orders.length
+          if(appSurcharge != null){
+            this.pago.recargos = appSurcharge.monto * this.orders.length
+          }else{
+            this.pago.recargos = 0
+          }
 
           this.pago.total = this.pago.total + this.pago.recargos
 

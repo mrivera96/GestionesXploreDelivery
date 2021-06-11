@@ -469,15 +469,16 @@ export class ConsolidatedDeliveryComponent implements OnInit {
       'baseRate': this.pago.baseRate,
       'surcharges': 0.00,
       'cargosExtra': 0.00,
-      'total': 0.00
+      'total': 0.00,
+      'idRecargo': null
     }
-    if (distance > this.selectedRate.consolidated_detail.radioMaximo) {
+    if (distance > +this.selectedRate.consolidated_detail.radioMaximo) {
       this.surcharges.forEach(value => {
         if (distance >= Number(value.kilomMinimo)
           && distance <= Number(value.kilomMaximo)
         ) {
-
           orderPayment.surcharges = Number(value.monto)
+          orderPayment.idRecargo = value.idRecargo
         }
       })
     }
@@ -529,6 +530,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
       currOrder.cTotal = calculatedPayment.total
       currOrder.idCargoExtra = this.selectedExtraCharge?.idCargoExtra
       currOrder.idDetalleOpcion = this.selectedExtraChargeOption?.idDetalleOpcion
+      currOrder.idRecargo = calculatedPayment.idRecargo
 
 
       this.geocoder.geocode({'address': entrega}, results => {

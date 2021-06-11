@@ -167,7 +167,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         idCategoria: [{value: 1, disabled: false}, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
-        idTarifa:[null],
+        idTarifa: [null],
         idEtiqueta: [null]
       }, {
         validators: [
@@ -262,14 +262,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
         this.setCurrentLocationOrigin();
       }
       branchSubscription.unsubscribe();
-    });
+    })
 
     const lblSubscription = this.labelsService
       .getMyLabels()
       .subscribe(response => {
-        this.myLabels = response.data;
-        lblSubscription.unsubscribe();
-      });
+        this.myLabels = response.data
+        lblSubscription.unsubscribe()
+      })
 
   }
 
@@ -277,15 +277,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
   checkInsructions() {
     this.myBranchOffices.forEach(bOffice => {
       if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones);
+        this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones)
       } else {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue('');
+        this.deliveryForm.get('deliveryHeader.instrucciones').setValue('')
       }
-    });
+    })
   }
 
   clearLocationField() {
-    this.newForm.get('deliveryHeader.dirRecogida').setValue('');
+    this.newForm.get('deliveryHeader.dirRecogida').setValue('')
   }
 
   //ESTABLECE LA UBICACIÓN ACTUAL COMO PUNTO DE RECOGIDA
@@ -295,90 +295,90 @@ export class CustomerNewDeliveryComponent implements OnInit {
         this.myCurrentLocation = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-        };
+        }
 
         this.center = {
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-        };
+        }
         this.deliveryForm.get('deliveryHeader.dirRecogida')
-          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng);
+          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
         this.deliveryForm.get('deliveryHeader.coordsOrigen')
-          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng);
-      }, function(error) {
+          .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+      }, function (error) {
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.');
-            break;
+            alert('Permiso de Ubicación Denegado. Por tanto, no podremos obtener tu ubicación actual.')
+            break
           case error.POSITION_UNAVAILABLE:
             // La ubicación no está disponible.
-            break;
+            break
           case error.TIMEOUT:
             // Se ha excedido el tiempo para obtener la ubicación.
-            break;
+            break
         }
 
-      });
+      })
     } else {
-      alert('El GPS está desactivado');
+      alert('El GPS está desactivado')
     }
   }
 
   get newForm() {
-    return this.deliveryForm;
+    return this.deliveryForm
   }
 
   //MÉTODO QUE EJECUTA LA ADICIÓN DE UN NUEVO ENVÍO
   onOrderAdd() {
     if (this.deliveryForm.get('order').valid) {
-      this.openLoader();
+      this.openLoader()
 
-      this.currOrder.nFactura = this.newForm.get('order.nFactura').value;
-      this.currOrder.nomDestinatario = this.newForm.get('order.nomDestinatario').value;
-      this.currOrder.numCel = this.newForm.get('order.numCel').value;
-      this.currOrder.direccion = this.newForm.get('order.direccion').value;
-      this.currOrder.instrucciones = this.newForm.get('order.instrucciones').value;
-      this.currOrder.coordsDestino = '';
-      this.currOrder.distancia = '';
-      this.currOrder.tiempo = '';
-      this.currOrder.tarifaBase = 0;
-      this.currOrder.recargo = 0;
-      this.currOrder.cTotal = 0;
-      this.currOrder.cargosExtra = 0;
+      this.currOrder.nFactura = this.newForm.get('order.nFactura').value
+      this.currOrder.nomDestinatario = this.newForm.get('order.nomDestinatario').value
+      this.currOrder.numCel = this.newForm.get('order.numCel').value
+      this.currOrder.direccion = this.newForm.get('order.direccion').value
+      this.currOrder.instrucciones = this.newForm.get('order.instrucciones').value
+      this.currOrder.coordsDestino = ''
+      this.currOrder.distancia = ''
+      this.currOrder.tiempo = ''
+      this.currOrder.tarifaBase = 0
+      this.currOrder.recargo = 0
+      this.currOrder.cTotal = 0
+      this.currOrder.cargosExtra = 0
 
-      let ordersCount = this.orders.length + 1;
+      let ordersCount = this.orders.length + 1
       //
-      this.calculateRate(ordersCount);
+      this.calculateRate(ordersCount)
 
-      this.calculateDistance();
+      this.calculateDistance()
 
     }
   }
 
   //COMUNICACIÓN CON LA API PARA REGISTRAR EL DELIVERY
   onFormSubmit() {
-    this.newForm.get('deliveryHeader.idCategoria').enable();
-    this.newForm.get('deliveryHeader.dirRecogida').enable();
-    this.newForm.get('deliveryHeader.fecha').enable();
+    this.newForm.get('deliveryHeader.idCategoria').enable()
+    this.newForm.get('deliveryHeader.dirRecogida').enable()
+    this.newForm.get('deliveryHeader.fecha').enable()
 
     if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
       this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate)
 
-      this.openLoader();
+      this.openLoader()
       const deliveriesSubscription = this.deliveriesService
         .newCustomerDelivery(this.deliveryForm.get('deliveryHeader').value, this.orders, this.pago)
         .subscribe(response => {
-          this.dialog.closeAll();
-          this.exitMsg = response.message;
-          this.nDeliveryResponse = response.nDelivery;
-          this.openSuccessDialog('Operación Realizada Correctamente', this.exitMsg = response.message, this.nDeliveryResponse);
-          deliveriesSubscription.unsubscribe();
+          this.dialog.closeAll()
+          this.exitMsg = response.message
+          this.nDeliveryResponse = response.nDelivery
+          this.openSuccessDialog('Operación Realizada Correctamente', this.exitMsg = response.message, this.nDeliveryResponse)
+          deliveriesSubscription.unsubscribe()
         }, error => {
           if (error.subscribe()) {
             error.subscribe(error => {
-              this.dialog.closeAll();
-              this.errorMsg = error.statusText;
-              this.openErrorDialog(this.errorMsg, false);
+              this.dialog.closeAll()
+              this.errorMsg = error.statusText
+              this.openErrorDialog(this.errorMsg, false)
               deliveriesSubscription.unsubscribe();
             });
           } else {
@@ -455,7 +455,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         origin: originLL,  // Haight.
         destination: destLL,  // Ocean Beach.
         travelMode: google.maps.TravelMode['DRIVING']
-      }, function(response, status) {
+      }, function (response, status) {
         if (status == 'OK') {
           directionsRenderer.setDirections(response);
         } else {
@@ -542,28 +542,30 @@ export class CustomerNewDeliveryComponent implements OnInit {
       'baseRate': this.pago.baseRate,
       'surcharges': 0.00,
       'cargosExtra': 0.00,
-      'total': 0.00
-    };
+      'total': 0.00,
+      'idRecargo': null
+    }
 
     const appSurcharge = this.surcharges.find(value => distance >= Number(value.kilomMinimo)
-      && distance <= Number(value.kilomMaximo));
+      && distance <= Number(value.kilomMaximo))
 
     if (appSurcharge?.monto) {
-      orderPayment.surcharges = Number(appSurcharge?.monto);
+      orderPayment.surcharges = Number(appSurcharge?.monto)
+      orderPayment.idRecargo = appSurcharge.idRecargo
     }
 
     if (this.currOrder.extras.length > 0) {
-      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges;
+      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
       this.currOrder.extras.forEach(extra => {
-        orderPayment.cargosExtra = +orderPayment.cargosExtra + +extra.costo;
-        orderPayment.total = +orderPayment.total + +extra.costo;
-      });
+        orderPayment.cargosExtra = +orderPayment.cargosExtra + +extra.costo
+        orderPayment.total = +orderPayment.total + +extra.costo
+      })
 
     } else {
-      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges;
+      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
     }
 
-    return orderPayment;
+    return orderPayment
   }
 
   //CÁLCULO DE LA DISTANCIA PARA AGREGAR EL ENVÍO
@@ -588,97 +590,98 @@ export class CustomerNewDeliveryComponent implements OnInit {
         entrega: entrega,
         tarifa: tarifa
       }).subscribe((response) => {
-        this.currOrder.distancia = response.distancia;
-        this.currOrder.tiempo = response.tiempo;
-        const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(' ')[0]));
-        this.currOrder.tarifaBase = calculatedPayment.baseRate;
-        this.currOrder.recargo = calculatedPayment.surcharges;
-        this.currOrder.cargosExtra = calculatedPayment.cargosExtra;
-        this.currOrder.cTotal = calculatedPayment.total;
+        this.currOrder.distancia = response.distancia
+        this.currOrder.tiempo = response.tiempo
+        const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(' ')[0]))
+        this.currOrder.tarifaBase = calculatedPayment.baseRate
+        this.currOrder.recargo = calculatedPayment.surcharges
+        this.currOrder.cargosExtra = calculatedPayment.cargosExtra
+        this.currOrder.cTotal = calculatedPayment.total
+        this.currOrder.idRecargo = calculatedPayment.idRecargo
 
-        this.deliveryForm.get('order').reset();
-        this.orders.push(this.currOrder);
-        this.pagos.push(calculatedPayment);
-        this.newForm.get('deliveryHeader.idCategoria').disable();
-        this.newForm.get('deliveryHeader.dirRecogida').disable();
-        this.newForm.get('deliveryHeader.fecha').disable();
+        this.deliveryForm.get('order').reset()
+        this.orders.push(this.currOrder)
+        this.pagos.push(calculatedPayment)
+        this.newForm.get('deliveryHeader.idCategoria').disable()
+        this.newForm.get('deliveryHeader.dirRecogida').disable()
+        this.newForm.get('deliveryHeader.fecha').disable()
         this.currOrder = {
           extras: [] = []
         };
-        this.befDistance = 0;
-        this.befTime = 0;
-        this.befCost = 0;
+        this.befDistance = 0
+        this.befTime = 0
+        this.befCost = 0
 
         if (this.orders.length > 1) {
           this.dtElement.dtInstance.then(
             (dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
+              dtInstance.destroy()
+              this.dtTrigger.next()
             });
         } else {
           if (this.dtElement.dtInstance) {
             this.dtElement.dtInstance.then(
               (dtInstance: DataTables.Api) => {
-                dtInstance.destroy();
-                this.dtTrigger.next();
-              });
+                dtInstance.destroy()
+                this.dtTrigger.next()
+              })
           } else {
             this.dtTrigger.next();
           }
 
         }
 
-        this.agregado = true;
+        this.agregado = true
         setTimeout(() => {
-          this.agregado = false;
-        }, 1000);
+          this.agregado = false
+        }, 1000)
 
         this.orders.forEach(value => {
           if (value.tarifaBase != this.pago.baseRate) {
-            const nPay = this.calculateOrderPayment(Number(value.distancia.split(' ')[0]));
-            let i = this.orders.indexOf(value);
-            value.tarifaBase = this.pago.baseRate;
-            value.cargosExtra = nPay.cargosExtra;
-            value.recargo = nPay.surcharges;
-            value.cTotal = nPay.total;
-            this.pagos[i].baseRate = nPay.baseRate;
+            const nPay = this.calculateOrderPayment(Number(value.distancia.split(' ')[0]))
+            let i = this.orders.indexOf(value)
+            value.tarifaBase = this.pago.baseRate
+            value.cargosExtra = nPay.cargosExtra
+            value.recargo = nPay.surcharges
+            value.cTotal = nPay.total
+            this.pagos[i].baseRate = nPay.baseRate
             if (this.pagos[i]?.cargosExtra) {
-              this.pagos[i].cargosExtra = nPay.cargosExtra;
+              this.pagos[i].cargosExtra = nPay.cargosExtra
             }
-            this.pagos[i].surcharges = nPay.surcharges;
-            this.pagos[i].total = nPay.total;
+            this.pagos[i].surcharges = nPay.surcharges
+            this.pagos[i].total = nPay.total
           }
         });
-        cDistanceSubscription.unsubscribe();
-        this.calculatePayment();
+        cDistanceSubscription.unsubscribe()
+        this.calculatePayment()
 
       }, error => {
         error.subscribe(error => {
-          this.prohibitedDistanceMsg = error.statusText;
-          this.prohibitedDistance = true;
-          this.loaders.loadingAdd = false;
-          cDistanceSubscription.unsubscribe();
+          this.prohibitedDistanceMsg = error.statusText
+          this.prohibitedDistance = true
+          this.loaders.loadingAdd = false
+          cDistanceSubscription.unsubscribe()
           setTimeout(() => {
-            this.prohibitedDistance = false;
-          }, 1000);
-        });
+            this.prohibitedDistance = false
+          }, 1000)
+        })
 
-      });
+      })
     }
   }
 
 
   //CALCULA EL PAGO TOTAL
   calculatePayment() {
-    this.pago.recargos = this.pagos.reduce(function(a, b) {
+    this.pago.recargos = this.pagos.reduce(function (a, b) {
       return +a + +b['surcharges'];
     }, 0);
 
-    this.pago.cargosExtra = this.pagos.reduce(function(a, b) {
+    this.pago.cargosExtra = this.pagos.reduce(function (a, b) {
       return +a + +b['cargosExtra'];
     }, 0);
 
-    this.pago.total = this.pagos.reduce(function(a, b) {
+    this.pago.total = this.pagos.reduce(function (a, b) {
       return +a + +b['total'];
     }, 0);
 
@@ -708,8 +711,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
   setCurrentLocationDest(checked) {
     if (!checked) {
       if (navigator) {
-        navigator.geolocation.getCurrentPosition(function() {
-        }, function() {
+        navigator.geolocation.getCurrentPosition(function () {
+        }, function () {
         }, {});
         navigator.geolocation.getCurrentPosition(pos => {
           const destCords = Number(pos.coords.latitude) + ',' + Number(pos.coords.longitude);
@@ -898,42 +901,43 @@ export class CustomerNewDeliveryComponent implements OnInit {
       entrega: entrega,
       tarifa: tarifa
     }).subscribe((response) => {
-      currOrder.distancia = response.distancia;
-      currOrder.tiempo = response.tiempo;
-      const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(' ')[0]));
-      currOrder.tarifaBase = calculatedPayment.baseRate;
-      currOrder.recargo = calculatedPayment.surcharges;
-      currOrder.cargosExtra = calculatedPayment.cargosExtra;
-      currOrder.cTotal = calculatedPayment.total;
+      currOrder.distancia = response.distancia
+      currOrder.tiempo = response.tiempo
+      const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(' ')[0]))
+      currOrder.tarifaBase = calculatedPayment.baseRate
+      currOrder.recargo = calculatedPayment.surcharges
+      currOrder.cargosExtra = calculatedPayment.cargosExtra
+      currOrder.cTotal = calculatedPayment.total
+      currOrder.idRecargo = calculatedPayment.idRecargo
 
-      this.deliveryForm.get('order').reset();
-      this.orders.push(currOrder);
-      this.pagos.push(calculatedPayment);
+      this.deliveryForm.get('order').reset()
+      this.orders.push(currOrder)
+      this.pagos.push(calculatedPayment)
 
 
       if (this.orders.length > 1) {
         this.dtElement.dtInstance.then(
           (dtInstance: DataTables.Api) => {
-            dtInstance.destroy();
-            this.dtTrigger.next();
-          });
+            dtInstance.destroy()
+            this.dtTrigger.next()
+          })
       } else {
         if (this.dtElement.dtInstance) {
           this.dtElement.dtInstance.then(
             (dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
-            });
+              dtInstance.destroy()
+              this.dtTrigger.next()
+            })
         } else {
-          this.dtTrigger.next();
+          this.dtTrigger.next()
         }
 
       }
 
-      this.agregado = true;
+      this.agregado = true
       setTimeout(() => {
-        this.agregado = false;
-      }, 2000);
+        this.agregado = false
+      }, 2000)
 
       this.orders.forEach(value => {
         if (value.tarifaBase != this.pago.baseRate) {
@@ -956,16 +960,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
     }, error => {
       error.subscribe(error => {
-        this.prohibitedDistanceMsg = error.statusText;
-        this.prohibitedDistance = true;
-        cDistanceSubscription.unsubscribe();
+        this.prohibitedDistanceMsg = error.statusText
+        this.prohibitedDistance = true
+        cDistanceSubscription.unsubscribe()
         setTimeout(() => {
-          this.prohibitedDistance = false;
-        }, 2000);
-      });
-
-    });
-
+          this.prohibitedDistance = false
+        }, 2000)
+      })
+    })
   }
 
   onFileRemove(event) {

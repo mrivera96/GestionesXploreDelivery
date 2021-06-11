@@ -534,7 +534,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       'baseRate': this.pago.baseRate,
       'surcharges': 0.00,
       'cargosExtra': 0.00,
-      'total': 0.00
+      'total': 0.00,
+      'idRecargo': null
     }
     if (distance > this.selectedRate.consolidated_detail.radioMaximo) {
       const appSurcharge = this.surcharges.find(value => distance >= Number(value.kilomMinimo)
@@ -542,6 +543,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
       if (appSurcharge?.monto) {
         orderPayment.surcharges = Number(appSurcharge?.monto)
+        orderPayment.idRecargo = appSurcharge.idRecargo
       }
     }
 
@@ -589,6 +591,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         currOrder.recargo = calculatedPayment.surcharges
         currOrder.cargosExtra = calculatedPayment.cargosExtra
         currOrder.cTotal = calculatedPayment.total
+        currOrder.idRecargo = calculatedPayment.idRecargo
 
         this.deliveryForm.get('order').reset()
         this.orders.push(currOrder)
