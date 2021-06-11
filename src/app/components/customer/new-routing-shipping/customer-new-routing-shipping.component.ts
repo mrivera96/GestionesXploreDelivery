@@ -717,7 +717,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
   //CALCULA EL PAGO TOTAL
   calculatePayment(final?: boolean) {
     if (final) {
-      
+
       this.openLoader()
       let returnDistance = 0
       const distSubs = this.http.post<any>(`${environment.apiUrl}`, {
@@ -727,7 +727,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         tarifa: this.pago.baseRate
       }).subscribe((response) => {
         returnDistance = Number(response.distancia.split(' ')[0])
-        
+
         this.http.post<any>(`${environment.apiUrl}`, {
           function: 'calculateDistance',
           salida: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
@@ -738,13 +738,12 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
           let initFinishD = 0
           let initFinishT = 0
           initFinishD = Number(res.distancia.split(' ')[0])
-          
+
           if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
             initFinishT = (+res.tiempo.split(' ')[0] * 60) + Number(res.tiempo.split(' ')[2])
           } else {
             initFinishT = Number(res.tiempo.split(' ')[0])
           }
-          
 
           this.totalDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value) + returnDistance
 
@@ -757,17 +756,23 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
           let avgDistance = this.totalDistance / (this.orders.length + 1)
           this.avgDistance = +avgDistance.toPrecision(2)
 
-          let appSurcharge = 0.00
+          let appSurcharge
           this.surcharges.forEach(value => {
             if (avgDistance >= Number(value.kilomMinimo)
               && avgDistance <= Number(value.kilomMaximo)
             ) {
-              appSurcharge = Number(value.monto)
+              appSurcharge = value
             }
           })
 
           this.orders.forEach(order => {
-            order.recargo = appSurcharge
+            if(appSurcharge != null){
+              order.recargo = Number(appSurcharge?.monto)
+              order.idRecargo = appSurcharge?.idRecargo
+            }else{
+              order.recargo = 0
+              order.idRecargo = null
+            }
             let ordrTime = 0
             if (order.tiempo.includes('hour') || order.tiempo.includes('h')) {
               ordrTime = (+order.tiempo.split(' ')[0] * 60) + Number(order.tiempo.split(' ')[2]) + avgTime
@@ -778,7 +783,11 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
             order.cTotal = +order.tarifaBase + +order.recargo
           })
 
-          this.pago.recargos = appSurcharge * this.orders.length
+          if(appSurcharge != null){
+            this.pago.recargos = appSurcharge.monto * this.orders.length
+          }else{
+            this.pago.recargos = 0
+          }
 
           this.pago.total = this.pago.total + this.pago.recargos
 
@@ -1209,7 +1218,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
               }
             }
           })
-        
+
           totalDistance = optimizedRouteOrder[Object.values(optimizedRouteOrder).length - 1]?.distance
           this.deliveryForm.get('deliveryHeader.distancia').setValue(totalDistance)
 

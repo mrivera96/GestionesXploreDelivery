@@ -40,4 +40,5 @@ export interface DeliveryDetail {
   extra_charges?: OrderExtraCharges[]
   efectivoRecibido?: number
   order?: number
+  idRecargo?: number
 }
