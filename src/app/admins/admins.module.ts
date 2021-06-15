@@ -80,6 +80,10 @@ import {RoutingShippingComponent} from "../components/admin/add-delivery/routing
 import {ConsolidatedDeliveryComponent} from "../components/admin/add-delivery/consolidated-delivery/consolidated-delivery.component";
 import {XploreAddDeliveryComponent} from "../components/admin/add-delivery/xplore-add-delivery.component";
 import {RegularDeliveryComponent} from "../components/admin/add-delivery/regular-delivery/regular-delivery.component";
+import {GoogleMapsModule} from "@angular/google-maps";
+import {MatRadioModule} from "@angular/material/radio";
+import {MatTooltipModule} from "@angular/material/tooltip";
+import {NgxDropzoneModule} from "ngx-dropzone";
 
 @NgModule({
   declarations: [
@@ -168,15 +172,19 @@ import {RegularDeliveryComponent} from "../components/admin/add-delivery/regular
     NewSurchargeDialogComponent,
     ChangeStateDialogComponent,
   ],
-    imports: [
-        CommonModule,
-        SharedModule,
-        AdminsRoutingModule,
-        MatSlideToggleModule,
-        MatTabsModule,
-        MatAutocompleteModule,
-        MatMenuModule,
-    ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    AdminsRoutingModule,
+    MatSlideToggleModule,
+    MatTabsModule,
+    MatAutocompleteModule,
+    MatMenuModule,
+    GoogleMapsModule,
+    MatRadioModule,
+    MatTooltipModule,
+    NgxDropzoneModule,
+  ],
 
 })
 export class AdminsModule { }

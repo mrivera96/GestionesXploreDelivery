@@ -221,6 +221,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       categoriesSubscription.unsubscribe()
       this.dialog.closeAll()
       this.setSelectedCategory()
+      this.setCurrentLocationOrigin()
     }, error => {
       this.dialog.closeAll()
       this.errorMsg = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
@@ -230,17 +231,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
     const branchSubscription = this.branchService.getBranchOffices().subscribe(response => {
       this.myBranchOffices = response.data
-      let defOffice = this.myBranchOffices.find(item => item.isDefault == true)
 
-      if (defOffice != null) {
-        this.locationOption = 3
-        this.defaultBranch = defOffice.idSucursal
-        this.deliveryForm.get('deliveryHeader.dirRecogida').setValue(defOffice.direccion)
-        this.getOriginCoords()
-        this.checkInsructions()
-      } else {
-        this.setCurrentLocationOrigin()
-      }
       branchSubscription.unsubscribe()
     })
 
@@ -285,6 +276,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
         this.deliveryForm.get('deliveryHeader.coordsOrigen')
           .setValue(this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng)
+        this.calculateRatio()
       }, function (error) {
         switch (error.code) {
           case error.PERMISSION_DENIED:
