@@ -389,31 +389,35 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       //
       this.calculateRate()
 
-      const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
-        function: 'calculateDistance',
-        salida: this.selectedRate.consolidated_detail.dirRecogida,
-        entrega: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
-        tarifa: this.pago.baseRate
-      }).subscribe((response) => {
-        if (Number(response.distancia.split(" ")[0]) > this.selectedRate.consolidated_detail.radioMaximo) {
-          this.prohibitedAddressMsg = "El lugar de recogida seleccionado se encuentra fuera de nuestro radio de servicio. "
-          this.prohibitedAddress = true
-          this.prohibitedAddressCentinel = true
-          distanceSubscription.unsubscribe()
-        }
-
-        distanceSubscription.unsubscribe()
-      }, error => {
-        if (error.subscribe()) {
-          error.subscribe(error => {
-            this.prohibitedAddressMsg = error.statusText
+      if (this.deliveryForm.get('deliveryHeader.dirRecogida').value != this.selectedRate.consolidated_detail.dirRecogida) {
+        const distanceSubscription = this.http.post<any>(`${environment.apiUrl}`, {
+          function: 'calculateDistance',
+          salida: this.selectedRate.consolidated_detail.dirRecogida,
+          entrega: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
+          tarifa: this.pago.baseRate
+        }).subscribe((response) => {
+          if (Number(response.distancia.split(" ")[0]) > this.selectedRate.consolidated_detail.radioMaximo) {
+            this.prohibitedAddressMsg = "El lugar de recogida seleccionado se encuentra fuera de nuestro radio de servicio. "
             this.prohibitedAddress = true
             this.prohibitedAddressCentinel = true
-          })
-        }
-        distanceSubscription.unsubscribe()
+            distanceSubscription.unsubscribe()
+          }
 
-      })
+          distanceSubscription.unsubscribe()
+        }, error => {
+          if (error.subscribe()) {
+            error.subscribe(error => {
+              this.prohibitedAddressMsg = error.statusText
+              this.prohibitedAddress = true
+              this.prohibitedAddressCentinel = true
+            })
+          }
+          distanceSubscription.unsubscribe()
+
+        })
+      }
+
+
     }
   }
 

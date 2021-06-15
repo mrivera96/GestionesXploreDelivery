@@ -2261,27 +2261,26 @@ if (isset($_GET['function'])) {
         $output = curl_exec($handle);
         curl_close($handle);
     } else if ($_POST['function'] == 'changePhotoInstructions') {
-             $post = file_get_contents('php://input');
-             $array = json_decode($post);
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-             $handle = curl_init();
+        $handle = curl_init();
 
-             $url = "http://190.4.56.14/" . $environment . "/api/customers/profile/changePhotoInstructions";
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/profile/changePhotoInstructions";
 
-             $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
-             // Set the url
-             curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
 
-             curl_setopt($handle, CURLOPT_POST, TRUE);
-             curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-             curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-             /* set return type json */
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
 
-             $output = curl_exec($handle);
-             curl_close($handle);
-         }
-     else if ($_POST['function'] == 'optimizeRoutes') {
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'optimizeRoutes') {
         $handle = curl_init();
         $locations =   $_POST['routes'];
         $controller    = 'tour';
@@ -2301,64 +2300,124 @@ if (isset($_GET['function'])) {
         $output = curl_exec($handle);
         curl_close($handle);
     } else if ($_POST['function'] == 'changeDestinationAddress') {
-                  $post = file_get_contents('php://input');
-                  $array = json_decode($post);
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-                  $handle = curl_init();
+        $handle = curl_init();
 
-                  $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/changeAddress";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/changeAddress";
 
-                  $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
-                  // Set the url
-                  curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
 
-                  curl_setopt($handle, CURLOPT_POST, TRUE);
-                  curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-                  curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-                  /* set return type json */
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
 
-                  $output = curl_exec($handle);
-                  curl_close($handle);
-              } else if ($_POST['function'] == 'getServiceTypes') {
-                                 $post = file_get_contents('php://input');
-                                 $array = json_decode($post);
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getServiceTypes') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-                                 $handle = curl_init();
+        $handle = curl_init();
 
-                                 $url = "http://190.4.56.14/" . $environment . "/api/admins/serviceTypes/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/serviceTypes/get";
 
-                                 $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
-                                 // Set the url
-                                 curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
 
-                                 curl_setopt($handle, CURLOPT_POST, TRUE);
-                                 curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-                                 curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-                                 /* set return type json */
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
 
-                                 $output = curl_exec($handle);
-                                 curl_close($handle);
-                             } else if ($_POST['function'] == 'getBillingFrequencies') {
-                                                               $post = file_get_contents('php://input');
-                                                               $array = json_decode($post);
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getBillingFrequencies') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-                                                               $handle = curl_init();
+        $handle = curl_init();
 
-                                                               $url = "http://190.4.56.14/" . $environment . "/api/admins/billingFrequencies/get";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/billingFrequencies/get";
 
-                                                               $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
-                                                               // Set the url
-                                                               curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
 
-                                                               curl_setopt($handle, CURLOPT_POST, TRUE);
-                                                               curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-                                                               curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-                                                               /* set return type json */
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
 
-                                                               $output = curl_exec($handle);
-                                                               curl_close($handle);
-                                                           }
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getRestrictions') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/restrictions/get";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'createRestriction') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/restrictions/create";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'updateRestriction') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/restrictions/update";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }
 }

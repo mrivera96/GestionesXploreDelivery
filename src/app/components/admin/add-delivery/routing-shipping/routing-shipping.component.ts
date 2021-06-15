@@ -873,7 +873,7 @@ export class RoutingShippingComponent implements OnInit {
   }
 
   showNewDeliveryDetail(id) {
-    this.router.navigate(['customers/ver-reserva', id])
+    this.router.navigate(['admins/ver-reserva', id])
   }
 
   openErrorDialog(error: string, reload: boolean): void {
