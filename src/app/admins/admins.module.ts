@@ -74,6 +74,12 @@ import {CustomerChooseComponent} from "../components/admin/add-delivery/customer
 import { DriverCategoriesComponent } from '../components/admin/drivers/driver-categories/driver-categories.component';
 import { AddCategoryComponent } from '../components/admin/drivers/add-category/add-category.component';
 import { OrdersByDriverConsolidatedComponent } from '../components/admin/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component';
+import { RestrictionsComponent } from '../components/admin/restrictions/restrictions.component';
+import {ChangeAddressDialogComponent} from "../components/shared/order-detail-dialog/change-address-dialog/change-address-dialog.component";
+import {RoutingShippingComponent} from "../components/admin/add-delivery/routing-shipping/routing-shipping.component";
+import {ConsolidatedDeliveryComponent} from "../components/admin/add-delivery/consolidated-delivery/consolidated-delivery.component";
+import {XploreAddDeliveryComponent} from "../components/admin/add-delivery/xplore-add-delivery.component";
+import {RegularDeliveryComponent} from "../components/admin/add-delivery/regular-delivery/regular-delivery.component";
 
 @NgModule({
   declarations: [
@@ -144,7 +150,13 @@ import { OrdersByDriverConsolidatedComponent } from '../components/admin/reports
     CustomerChooseComponent,
     DriverCategoriesComponent,
     AddCategoryComponent,
-    OrdersByDriverConsolidatedComponent
+    OrdersByDriverConsolidatedComponent,
+    RestrictionsComponent,
+    ChangeAddressDialogComponent,
+    RoutingShippingComponent,
+    ConsolidatedDeliveryComponent,
+    XploreAddDeliveryComponent,
+    RegularDeliveryComponent,
   ],
   entryComponents:[
     ConfirmModalComponent,
