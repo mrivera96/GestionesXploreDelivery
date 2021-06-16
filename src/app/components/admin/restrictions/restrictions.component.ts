@@ -7,6 +7,8 @@ import {Restriction} from "../../../models/restriction";
 import {Subject} from "rxjs";
 import {DataTableDirective} from "angular-datatables";
 import {animate, style, transition, trigger} from "@angular/animations";
+import {EditRestrictionDialogComponent} from "./edit-restriction-dialog/edit-restriction-dialog.component";
+import {CreateRestrictionDialogComponent} from "./create-restriction-dialog/create-restriction-dialog.component";
 
 @Component({
   selector: 'app-restrictions',
@@ -28,10 +30,12 @@ export class RestrictionsComponent implements OnInit {
   @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
   dtOptions
 
+
   constructor(
     private restrictionsService: RestrictionsService,
     public dialog: MatDialog
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.initialize()
@@ -68,7 +72,7 @@ export class RestrictionsComponent implements OnInit {
 
   }
 
-  loadData(){
+  loadData() {
     this.openLoader()
     const restSubsc = this.restrictionsService.getRestrictions()
       .subscribe(response => {
@@ -79,8 +83,8 @@ export class RestrictionsComponent implements OnInit {
         restSubsc.unsubscribe()
 
       }, error => {
-        error.subscribe(err=>{
-          this.openErrorDialog(err.statusText,false)
+        error.subscribe(err => {
+          this.openErrorDialog(err.statusText, false)
           restSubsc.unsubscribe()
         })
       })
@@ -104,6 +108,38 @@ export class RestrictionsComponent implements OnInit {
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent)
+  }
+
+  openEditDialog(currRestriction): void {
+    const dialogRef = this.dialog.open(EditRestrictionDialogComponent, {
+      data: {
+        restriction: currRestriction
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
+  }
+
+  openCreateDialog(): void {
+    const dialogRef = this.dialog.open(CreateRestrictionDialogComponent)
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.dtElement.dtInstance.then(
+          (dtInstance: DataTables.Api) => {
+            dtInstance.destroy()
+            this.loadData()
+          })
+      }
+    })
   }
 
 }

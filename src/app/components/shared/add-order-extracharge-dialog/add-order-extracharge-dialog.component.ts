@@ -49,6 +49,7 @@ export class AddOrderExtrachargeDialogComponent implements OnInit {
       idCargoExtra: [null, [Validators.required]],
       idOpcionExtra: [null],
       montoCargoVariable: [1.00],
+      observaciones:[ this.currentOrder.observaciones || null, [Validators.maxLength(100)]]
     })
   }
 

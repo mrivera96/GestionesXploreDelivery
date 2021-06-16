@@ -1,14 +1,14 @@
-import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RatesService } from '../../../../services/rates.service';
-import { CategoriesService } from '../../../../services/categories.service';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ErrorModalComponent } from '../../../shared/error-modal/error-modal.component';
-import { Rate } from '../../../../models/rate';
-import { Category } from '../../../../models/category';
-import { Customer } from '../../../../models/customer';
-import { SuccessModalComponent } from '../../../shared/success-modal/success-modal.component';
-import { RateType } from 'src/app/models/rate-type';
+import {Component, Inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {RatesService} from '../../../../services/rates.service';
+import {CategoriesService} from '../../../../services/categories.service';
+import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {ErrorModalComponent} from '../../../shared/error-modal/error-modal.component';
+import {Rate} from '../../../../models/rate';
+import {Category} from '../../../../models/category';
+import {Customer} from '../../../../models/customer';
+import {SuccessModalComponent} from '../../../shared/success-modal/success-modal.component';
+import {RateType} from 'src/app/models/rate-type';
 
 @Component({
   selector: 'app-edit-rate-dialog',
@@ -17,16 +17,15 @@ import { RateType } from 'src/app/models/rate-type';
   encapsulation: ViewEncapsulation.None
 })
 export class EditRateDialogComponent implements OnInit {
-  edRateForm: FormGroup;
-  categories: Category[];
-  customers: Customer[];
+  edRateForm: FormGroup
+  categories: Category[]
+  customers: Customer[]
   loaders = {
     loadingData: false,
     loadingSubmit: false
-  };
-  currRate: Rate;
-  rateTypes: RateType[];
-
+  }
+  currRate: Rate
+  rateTypes: RateType[]
 
   constructor(
     private ratesService: RatesService,
@@ -36,8 +35,8 @@ export class EditRateDialogComponent implements OnInit {
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<any>
   ) {
-    this.currRate = data.rate;
-    this.dialogRef.disableClose = true;
+    this.currRate = data.rate
+    this.dialogRef.disableClose = true
   }
 
   ngOnInit(): void {
@@ -92,9 +91,9 @@ export class EditRateDialogComponent implements OnInit {
       if (tk != 0 || cobVeh != 0 || servChof != 0 || recComb != 0
         || cobTrans != 0 || isv != 0 || tasaTur != 0 || gastRe != 0) {
         const sum = tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe
-        
+
         let toCompare = +this.currRate.precio
-        if(this.f.precio.value != this.currRate.precio){
+        if (this.f.precio.value != this.currRate.precio) {
           toCompare = +this.f.precio.value
         }
 
@@ -104,10 +103,10 @@ export class EditRateDialogComponent implements OnInit {
         } else {
           const rateSubsc = this.ratesService.editRate(this.edRateForm.value)
             .subscribe(response => {
-              this.loaders.loadingSubmit = false
-              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
-              rateSubsc.unsubscribe()
-            },
+                this.loaders.loadingSubmit = false
+                this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+                rateSubsc.unsubscribe()
+              },
               error => {
                 error.subscribe(error => {
                   this.loaders.loadingSubmit = false
@@ -116,20 +115,20 @@ export class EditRateDialogComponent implements OnInit {
                 });
               });
         }
-      }else{
+      } else {
         const rateSubsc = this.ratesService.editRate(this.edRateForm.value)
-            .subscribe(response => {
+          .subscribe(response => {
               this.loaders.loadingSubmit = false
               this.openSuccessDialog('Operación Realizada Correctamente', response.message)
               rateSubsc.unsubscribe()
             },
-              error => {
-                error.subscribe(error => {
-                  this.loaders.loadingSubmit = false
-                  this.openErrorDialog(error.statusText)
-                  rateSubsc.unsubscribe()
-                })
+            error => {
+              error.subscribe(error => {
+                this.loaders.loadingSubmit = false
+                this.openErrorDialog(error.statusText)
+                rateSubsc.unsubscribe()
               })
+            })
       }
 
     }
@@ -140,7 +139,7 @@ export class EditRateDialogComponent implements OnInit {
       data: {
         msgError: error
       }
-    });
+    })
   }
 
   openSuccessDialog(succsTitle, succssMsg) {
@@ -149,11 +148,11 @@ export class EditRateDialogComponent implements OnInit {
         succsTitle: succsTitle,
         succsMsg: succssMsg
       }
-    });
+    })
 
     dialogRef.afterClosed().subscribe(result => {
-      this.dialogRef.close(true);
-    });
+      this.dialogRef.close(true)
+    })
   }
 
 }
