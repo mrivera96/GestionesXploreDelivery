@@ -12,7 +12,7 @@
 
     <div class="row justify-content-end">
       <div class="col">
-        <button mat-raised-button  type="button" color="primary" class="float-right mb-2">
+        <button (click)="openCreateDialog()" mat-raised-button type="button" color="primary" class="float-right mb-2">
           <i class="fa fa-plus"></i>
           Agregar Restricción
         </button>
@@ -44,14 +44,12 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button  mat-menu-item>
+              <button (click)="openEditDialog(restriction)" mat-menu-item>
                 <mat-icon>create</mat-icon>
                 <span>Editar</span>
               </button>
             </mat-menu>
           </td>
-
-
         </tr>
         </tbody>
 

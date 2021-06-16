@@ -31,7 +31,8 @@
     </mat-form-field>
 
 
-    <mat-form-field appearance="outline" floatLabel="always" class="col-12" *ngIf="selectedExtraCharge?.options?.length > 0">
+    <mat-form-field appearance="outline" floatLabel="always" class="col-12"
+                    *ngIf="selectedExtraCharge?.options?.length > 0">
       <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
       <mat-select formControlName="idOpcionExtra" required
                   placeholder="- Seleccione una opción -" class="col">
@@ -43,12 +44,17 @@
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" floatLabel="always" class="col-12" *ngIf="selectedExtraCharge?.tipoCargo == 'V'">
+    <mat-form-field appearance="outline" floatLabel="always" class="col-12"
+                    *ngIf="selectedExtraCharge?.tipoCargo == 'V'">
       <mat-label>Monto de Cargo Variable:</mat-label>
       <input type="number" min="1" matInput required formControlName="montoCargoVariable">
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
 
+    <mat-form-field appearance="outline" floatLabel="always" class="col-12">
+      <mat-label>Observaciones:</mat-label>
+      <input type="text" maxlength="100" matInput formControlName="observaciones" placeholder="Agregar observaciones al envío">
+    </mat-form-field>
 
   </form>
 
@@ -57,7 +63,7 @@
       <h3>Cargos Aplicados</h3>
     </div>
 
-    <div class="col-12" >
+    <div class="col-12">
       <div class="row" *ngFor="let extraCharge of currentOrder.extra_charges">
         <div class="col-md">
           <p>{{extraCharge.extracharge.nombre}}</p>
@@ -77,12 +83,12 @@
 
 <mat-dialog-actions>
   <button *ngIf="selectedExtraCharge?.options?.length > 0" type="button" mat-raised-button
-    [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
+          [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
     Cambiar
   </button>
 
   <button *ngIf="selectedExtraCharge?.options?.length == 0 || !selectedExtraCharge.options"
-  type="button" mat-raised-button [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
+          type="button" mat-raised-button [disabled]="extraChargeForm.invalid" (click)="onFormSubmit()" color="primary">
     Cambiar
   </button>
   <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
