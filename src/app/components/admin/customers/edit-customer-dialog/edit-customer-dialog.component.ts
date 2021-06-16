@@ -5,7 +5,7 @@ import { Customer } from "../../../../models/customer";
 import { ErrorModalComponent } from "../../../shared/error-modal/error-modal.component";
 import { SuccessModalComponent } from "../../../shared/success-modal/success-modal.component";
 import { UsersService } from "../../../../services/users.service";
-import { BillingFrequenciesService } from "../../../../services/billing-frequencies.service";
+import { BillingService } from "../../../../services/billing.service";
 
 @Component({
   selector: 'app-edit-customer-dialog',
@@ -27,7 +27,7 @@ export class EditCustomerDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<EditCustomerDialogComponent>,
     private formBuilder: FormBuilder,
     private usersService: UsersService,
-    private billingFrecuenciesService: BillingFrequenciesService
+    private billingFrecuenciesService: BillingService
   ) {
     this.currCustomer = data.customer
     this.dialogRef.disableClose = true

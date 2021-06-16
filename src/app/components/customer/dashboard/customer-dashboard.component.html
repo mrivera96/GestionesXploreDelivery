@@ -147,7 +147,7 @@
               <tr *ngFor="let order of assignedOrders">
                 <td>{{order.idDetalle}}</td>
                 <td>{{order.nFactura}}</td>
-                <td>{{order.conductor.nomUsuario}} - {{order.conductor.numCelular}}</td>
+                <td>{{order?.conductor?.nomUsuario}} - {{order?.conductor?.numCelular}}</td>
               </tr>
             </tbody>
 

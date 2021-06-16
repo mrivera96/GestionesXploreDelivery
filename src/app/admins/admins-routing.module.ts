@@ -27,10 +27,10 @@ import {CustomersBalanceReportComponent} from "../components/admin/reports/custo
 import {CustomersTrackingReportComponent} from "../components/admin/reports/customers-tracking-report/customers-tracking-report.component";
 import { XploreWorkLinesComponent } from '../components/admin/work-lines/xplore-work-lines.component';
 import {ReportRequestsComponent} from "../components/admin/reports/report-requests/report-requests.component";
-import {CustomerChooseComponent} from "../components/admin/add-delivery/customer-choose/customer-choose.component";
 import { XploreAddDeliveryComponent } from '../components/admin/add-delivery/xplore-add-delivery.component';
 import { OrdersByDriverConsolidatedComponent } from '../components/admin/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component';
 import {RestrictionsComponent} from "../components/admin/restrictions/restrictions.component";
+import {BillingReportComponent} from "../components/admin/reports/billing-report/billing-report/billing-report.component";
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -63,6 +63,7 @@ const routes: Routes = [
   {path: 'reportes/balance-clientes', component: CustomersBalanceReportComponent, canActivate: [XploreGuard]},
   {path: 'reportes/seguimiento-clientes', component: CustomersTrackingReportComponent, canActivate: [XploreGuard]},
   {path: 'reportes/envios-clientes', component: OrdersByCustomerComponent, canActivate: [XploreGuard]},
+  {path: 'reportes/facturas', component: BillingReportComponent, canActivate: [XploreGuard]},
   {path: 'pagos', component: PaymentsComponent, canActivate: [XploreGuard]},
   {path: 'balance-cliente/:id/:nombre', component: XploreCustomerBalanceComponent, canActivate: [XploreGuard]},
   {path: 'nuevo-delivery', component: XploreAddDeliveryComponent, canActivate: [XploreGuard]},

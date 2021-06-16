@@ -84,6 +84,7 @@ import {GoogleMapsModule} from "@angular/google-maps";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {NgxDropzoneModule} from "ngx-dropzone";
+import {BillingReportComponent} from "../components/admin/reports/billing-report/billing-report/billing-report.component";
 
 @NgModule({
   declarations: [
@@ -161,6 +162,7 @@ import {NgxDropzoneModule} from "ngx-dropzone";
     ConsolidatedDeliveryComponent,
     XploreAddDeliveryComponent,
     RegularDeliveryComponent,
+    BillingReportComponent
   ],
   entryComponents:[
     ConfirmModalComponent,

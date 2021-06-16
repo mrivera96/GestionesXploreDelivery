@@ -136,6 +136,11 @@
           <mat-icon>timeline</mat-icon>
           Reporte de Seguimiento a Clientes
         </a>
+
+        <a [routerLink]="['admins/reportes/facturas']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>receipt</mat-icon>
+          Reporte de Facturas
+        </a>
       </mat-nav-list>
 
       <a (click)="showConfSubMenu()" mat-list-item>
