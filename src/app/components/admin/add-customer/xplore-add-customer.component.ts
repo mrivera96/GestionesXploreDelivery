@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component";
 import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import {BillingFrequenciesService} from "../../../services/billing-frequencies.service";
+import {BillingService} from "../../../services/billing.service";
 import {MultipleMailValidator} from "../../../helpers/multiple.mail.validator";
 
 @Component({
@@ -36,7 +36,7 @@ export class XploreAddCustomerComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<XploreAddCustomerComponent>,
-    private billingFrecuenciesService: BillingFrequenciesService
+    private billingFrecuenciesService: BillingService
   ) {
     this.dialogRef.disableClose = true
   }

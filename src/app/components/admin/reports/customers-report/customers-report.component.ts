@@ -72,8 +72,6 @@ export class CustomersReportComponent implements OnInit {
       },
     }
     this.loadData()
-
-
   }
 
   loadData() {

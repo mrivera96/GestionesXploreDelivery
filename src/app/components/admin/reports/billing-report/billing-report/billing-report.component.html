@@ -1,0 +1,64 @@
+<!-- CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Reporte de Facturas
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <div class="container-fluid">
+      <div class="row mt-2">
+        <div class="col">
+          <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+            Menú de Opciones
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <!--<button [disabled]="results.length == 0" mat-menu-item (click)="generatePDF()">
+              Exportar PDF
+            </button>-->
+
+            <button [disabled]="results.length == 0" mat-menu-item (click)="generateExcel()">
+              Exportar a Excel
+            </button>
+
+            <button [disabled]="results.length == 0" mat-menu-item (click)="printReport()">
+              Imprimir
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+
+      <div class="table-responsive mt-2">
+        <table id="printTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
+               class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th>No. Factura</th>
+            <th>Fecha y Hora</th>
+            <th>Cliente</th>
+            <th>Valor</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr *ngFor="let result of results">
+            <td class="id">{{result?.idFacturaDelivery}}</td>
+            <td>{{result?.fechaFacturacion | date:'d/MM/yyyy h:m a'}}</td>
+            <td>{{result?.delivery?.cliente?.nomEmpresa}}</td>
+            <td>L. {{result?.total | number: '.2'}}</td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+
+    </div>
+
+  </mat-card-content>
+
+</mat-card>
+
+<!-- CARD END -->
