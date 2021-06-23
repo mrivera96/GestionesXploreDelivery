@@ -1,45 +1,48 @@
-import { Component, OnInit } from '@angular/core'
-import { DeliveriesService } from "../../../services/deliveries.service"
-import { Delivery } from "../../../models/delivery"
-import { ActivatedRoute } from "@angular/router"
-import { State } from "../../../models/state"
-import { Subject } from "rxjs"
-import { DeliveryDetail } from "../../../models/delivery-detail"
-import { animate, style, transition, trigger } from "@angular/animations"
-import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component"
-import { MatDialog } from "@angular/material/dialog"
-import { ChangeStateDialogComponent } from "./change-state-dialog/change-state-dialog.component"
-import { XploreChangeHourDialogComponent } from './xplore-change-hour-dialog/xplore-change-hour-dialog.component'
-import { ViewPhotosDialogComponent } from "../../shared/view-photos-dialog/view-photos-dialog.component"
-import { OrderDetailDialogComponent } from "../../shared/order-detail-dialog/order-detail-dialog.component"
-import { User } from "../../../models/user"
-import { AuthService } from "../../../services/auth.service"
-import { LoadingDialogComponent } from '../../shared/loading-dialog/loading-dialog.component'
-import { HttpClient } from "@angular/common/http"
-import { Cell, Columns, PdfMakeWrapper, Txt } from "pdfmake-wrapper"
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {animate, style, transition, trigger} from "@angular/animations";
+import {Delivery} from "../../../models/delivery";
+import {DeliveryDetail} from "../../../models/delivery-detail";
+import {DataTableDirective} from "angular-datatables";
+import {State} from "../../../models/state";
+import {Subject} from "rxjs";
+import {User} from "../../../models/user";
+import {DeliveriesService} from "../../../services/deliveries.service";
+import {ActivatedRoute} from "@angular/router";
+import {AuthService} from "../../../services/auth.service";
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorModalComponent} from "../error-modal/error-modal.component";
+import {SuccessModalComponent} from "../success-modal/success-modal.component";
+import {ChangeStateDialogComponent} from "../../admin/delivery-detail/change-state-dialog/change-state-dialog.component";
+import {ChangeHourDialogComponent} from "../../customer/delivery-detail/change-hour-dialog/change-hour-dialog.component";
+import {XploreChangeHourDialogComponent} from "../../admin/delivery-detail/xplore-change-hour-dialog/xplore-change-hour-dialog.component";
+import {ConfirmCancelDialogComponent} from "../../customer/delivery-detail/confirm-cancel-dialog/confirm-cancel-dialog.component";
+import {ViewPhotosDialogComponent} from "../view-photos-dialog/view-photos-dialog.component";
+import {LoadingDialogComponent} from "../loading-dialog/loading-dialog.component";
+import {OrderDetailDialogComponent} from "../order-detail-dialog/order-detail-dialog.component";
+import {Cell, Columns, PdfMakeWrapper, Txt} from "pdfmake-wrapper";
 
 @Component({
-  selector: 'app-ver-solicitud',
-  templateUrl: './ver-solicitud.component.html',
-  styleUrls: ['./ver-solicitud.component.css'],
+  selector: 'app-delivery-detail',
+  templateUrl: './delivery-detail.component.html',
+  styles: [],
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 }))
+        style({opacity: 0}),
+        animate(1000, style({opacity: 1}))
       ])
     ])
   ]
 })
-export class VerSolicitudComponent implements OnInit {
+export class DeliveryDetailComponent implements OnInit {
   currentDelivery: Delivery
   currentDeliveryDetail: DeliveryDetail[]
   deliveryId: number
-  loaders = {
-    'loadingData': false
-  }
+
   allowHourChange: boolean = false
-  succsMsg: string
+  @ViewChild(DataTableDirective, {static: false})
+  dtElement: DataTableDirective
+  hasPhotos: boolean = false
   states: State[]
   dtOptions: any
   dtTrigger: Subject<any> = new Subject()
@@ -47,13 +50,14 @@ export class VerSolicitudComponent implements OnInit {
   totalDistance = 0
   geocoder: google.maps.Geocoder
   optimizedRouteOrder = []
+  allowCancel: boolean = false
 
-  constructor(private deliveriesService: DeliveriesService,
+  constructor(
+    private deliveriesService: DeliveriesService,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private http: HttpClient,
-    public dialog: MatDialog) {
-    this.loaders.loadingData = true
+    public dialog: MatDialog
+  ) {
     this.currUser = this.authService.currentUserValue
   }
 
@@ -62,10 +66,11 @@ export class VerSolicitudComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.deliveryId = Number(params.get("id"))
     })
-    this.loadData()
 
+    this.loadData()
   }
 
+  //INICIALIZACIÓN DE VARIABLES
   initialize() {
     this.geocoder = new google.maps.Geocoder()
     this.dtOptions = {
@@ -93,23 +98,47 @@ export class VerSolicitudComponent implements OnInit {
     }
 
     this.dtTrigger = new Subject<any>()
-
   }
 
+  //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
   loadData() {
     this.openLoader()
     const deliveriesSubscription = this.deliveriesService.getById(this.deliveryId).subscribe(response => {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
       this.dtTrigger.next()
-      this.dialog.closeAll()
 
-      const state = response.data.idEstado
+      if (this.currUser.idPerfil != 8) {
+        const state = response.data.idEstado
 
-      if (state !== 39) {
-        this.allowHourChange = true
+        if (state !== 39) {
+          this.allowHourChange = true
+        }
+        this.getOrdersCoords()
+
+      } else {
+        let photos = 0
+        this.currentDeliveryDetail.forEach(detail => {
+          if (detail.photography.length > 0) {
+            photos++
+          }
+        })
+
+        if (photos > 0) {
+          this.hasPhotos = true
+        }
+        const registered_date = ((new Date(response.data.fechaNoFormatted).getTime()) / 1000) / 60
+        const new_date = ((new Date().getTime() / 1000) / 60)
+        const diff = registered_date - new_date
+        const diffReverse = new_date - registered_date
+        if (diff >= 30) {
+          this.allowHourChange = true
+        }
+        if (diffReverse >= 30) {
+          this.allowCancel = true
+        }
       }
-      this.getOrdersCoords()
+      this.dialog.closeAll()
       deliveriesSubscription.unsubscribe()
 
     }, error => {
@@ -118,15 +147,6 @@ export class VerSolicitudComponent implements OnInit {
       deliveriesSubscription.unsubscribe()
     })
 
-    const statesSubscription = this.deliveriesService.getStates().subscribe(response => {
-      this.states = response.data.xploreDelivery
-      statesSubscription.unsubscribe()
-    })
-
-  }
-
-  reloadPage() {
-    this.ngOnInit()
   }
 
   openErrorDialog(error: string, reload: boolean): void {
@@ -138,10 +158,23 @@ export class VerSolicitudComponent implements OnInit {
 
     if (reload) {
       dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
-        this.reloadPage()
+        this.ngOnInit()
       })
     }
+
+  }
+
+  openSuccessDialog(succsTitle: string, succssMsg: string) {
+    const dialogRef = this.dialog.open(SuccessModalComponent, {
+      data: {
+        succsTitle: succsTitle,
+        succsMsg: succssMsg
+      }
+    })
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.ngOnInit()
+    })
   }
 
   openChangeStateDialog() {
@@ -153,7 +186,22 @@ export class VerSolicitudComponent implements OnInit {
     })
   }
 
-  openChangeHourDialog() {
+  openCustomerChangeHourDialog(){
+    const dialogRef = this.dialog.open(ChangeHourDialogComponent,{
+      data:{
+        delivery: this.currentDelivery
+      }
+    })
+
+    dialogRef.afterClosed().subscribe( result => {
+      if(result){
+        this.ngOnInit()
+      }
+    })
+
+  }
+
+  openAdminChangeHourDialog() {
     const dialogRef = this.dialog.open(XploreChangeHourDialogComponent, {
       data: {
         delivery: this.currentDelivery
@@ -168,14 +216,40 @@ export class VerSolicitudComponent implements OnInit {
 
   }
 
+  openCancelDialog(){
+    const dialogRef = this.dialog.open(ConfirmCancelDialogComponent)
+
+    dialogRef.afterClosed().subscribe( result => {
+      if(result){
+        this.openLoader()
+        const cancelSubs = this.deliveriesService.cancelDelivery(this.currentDelivery.idDelivery)
+          .subscribe(response => {
+              this.dialog.closeAll()
+              this.openSuccessDialog('Operación Realizada Correctamente', response.message)
+              cancelSubs.unsubscribe()
+            }, error => {
+              error.subscribe(error => {
+                this.dialog.closeAll()
+                this.openErrorDialog(error.statusText, true)
+              })
+            }
+          )
+      }
+    })
+  }
+
   openPhotosDialog(photos) {
 
-    const dialogRef = this.dialog.open(ViewPhotosDialogComponent, {
+    this.dialog.open(ViewPhotosDialogComponent, {
       data: {
         photos: photos
       }
     })
 
+  }
+
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent)
   }
 
   showDetailDialog(order) {
@@ -367,7 +441,7 @@ export class VerSolicitudComponent implements OnInit {
       pdf.add(
         new Columns(res
         ).alignment("left")
-        .width(20).end
+          .width(20).end
       )
 
       pdf.add(
@@ -378,8 +452,6 @@ export class VerSolicitudComponent implements OnInit {
     pdf.create().open()
   }
 
-  openLoader() {
-    this.dialog.open(LoadingDialogComponent)
-  }
+
 
 }

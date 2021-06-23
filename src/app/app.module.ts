@@ -40,6 +40,7 @@ import { ConfirmDeleteComponent } from './components/customer/labels/confirm-del
 import { ServiceChooseComponent } from './components/shared/service-choose/service-choose.component';
 import { EditRestrictionDialogComponent } from './components/admin/restrictions/edit-restriction-dialog/edit-restriction-dialog.component';
 import { CreateRestrictionDialogComponent } from './components/admin/restrictions/create-restriction-dialog/create-restriction-dialog.component';
+import { DeliveryDetailComponent } from './components/shared/delivery-detail/delivery-detail.component';
 
 
 // Set the fonts to use
@@ -60,6 +61,7 @@ PdfMakeWrapper.setFonts(pdfFonts);
         ServiceChooseComponent,
         EditRestrictionDialogComponent,
         CreateRestrictionDialogComponent,
+        DeliveryDetailComponent,
 
     ],
 

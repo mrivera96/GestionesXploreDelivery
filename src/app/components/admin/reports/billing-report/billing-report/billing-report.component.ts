@@ -10,6 +10,8 @@ import * as fs from 'file-saver';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import {formatDate} from "@angular/common";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -31,7 +33,12 @@ export class BillingReportComponent implements OnInit {
   dtTrigger: Subject<any> = new Subject()
   results = []
   dtOptions: any
-  constructor(public dialog: MatDialog, private billingService: BillingService) { }
+  consultForm: FormGroup
+
+  constructor(public dialog: MatDialog,
+              private billingService: BillingService,
+              private formBuilder: FormBuilder) {
+  }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -60,22 +67,43 @@ export class BillingReportComponent implements OnInit {
         },
       },
     }
-    this.loadData()
+
+    this.consultForm = this.formBuilder.group({
+      initDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
+      finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
+    })
+
   }
 
-  loadData(): void {
-    this.openLoader()
-    const billingSubsc = this.billingService.getBillingReport()
-      .subscribe(response => {
-        this.results = response.data
-        this.dtTrigger.next()
-        this.dialog.closeAll()
+  onConsultFormSubmit(): void {
+    if (this.consultForm.valid) {
 
-        billingSubsc.unsubscribe()
-      },error => {
-        this.dialog.closeAll()
-        billingSubsc.unsubscribe()
-      })
+      this.openLoader()
+      const billingSubsc = this.billingService
+        .getBillingReport(this.consultForm.value)
+        .subscribe(response => {
+
+          if (this.dtElement.dtInstance) {
+            this.results = []
+            this.results = response.data
+            this.dtElement.dtInstance.then(
+              (dtInstance: DataTables.Api) => {
+                dtInstance.destroy()
+                this.dtTrigger.next()
+              })
+          } else {
+            this.results = response.data
+            this.dtTrigger.next()
+          }
+
+          this.dialog.closeAll()
+
+          billingSubsc.unsubscribe()
+        }, error => {
+          this.dialog.closeAll()
+          billingSubsc.unsubscribe()
+        })
+    }
 
   }
 
@@ -83,7 +111,7 @@ export class BillingReportComponent implements OnInit {
     this.dialog.open(LoadingDialogComponent)
   }
 
-  generateExcel():void {
+  generateExcel(): void {
 
     //Excel Title, Header, Data
     let title = 'Reporte de Facturas Delivery'
@@ -93,7 +121,7 @@ export class BillingReportComponent implements OnInit {
     let worksheet = workbook.addWorksheet('Reporte Facturas');
     //Add Row and formatting
     let titleRow = worksheet.addRow([title]);
-    titleRow.font = { name: 'Arial', family: 4, size: 16, underline: 'double', bold: true }
+    titleRow.font = {name: 'Arial', family: 4, size: 16, underline: 'double', bold: true}
     worksheet.mergeCells('A1:C2');
     worksheet.addRow([]);
     //Blank Row
@@ -122,10 +150,10 @@ export class BillingReportComponent implements OnInit {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'D3D3D3' },
-        bgColor: { argb: 'D3D3D3' }
+        fgColor: {argb: 'D3D3D3'},
+        bgColor: {argb: 'D3D3D3'}
       }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
       cell.alignment = {
         horizontal: "center"
       }
@@ -139,7 +167,7 @@ export class BillingReportComponent implements OnInit {
     this.results.forEach(d => {
       let array = [
         +d.idFacturaDelivery,
-        formatDate(d.fechaFacturacion, 'd/MM/yyyy h:m a','en') ,
+        formatDate(d.fechaFacturacion, 'd/MM/yyyy h:m a', 'en'),
         d.delivery.cliente.nomEmpresa,
         parseFloat(d.total)
       ]
@@ -151,11 +179,11 @@ export class BillingReportComponent implements OnInit {
       row.getCell(1).numFmt = '#'
       row.getCell(4).numFmt = 'L#,##0.00'
 
-        row.eachCell((cell, number) => {
-          cell.alignment = {
-            horizontal: "left"
-          }
-        })
+      row.eachCell((cell, number) => {
+        cell.alignment = {
+          horizontal: "left"
+        }
+      })
     })
 
     worksheet.getColumn(1).width = 15
@@ -166,9 +194,9 @@ export class BillingReportComponent implements OnInit {
 
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
       const date = new Date().toLocaleDateString()
-      fs.saveAs(blob, 'Reporte Facturas Delivery ('+date+').xlsx');
+      fs.saveAs(blob, 'Reporte Facturas Delivery (' + date + ').xlsx');
     })
   }
 

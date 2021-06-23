@@ -83,35 +83,13 @@
         </div>
 
         <div class="col-sm">
-          <strong>Tarifa Base:</strong>
-          L. {{currentDelivery?.tarifaBase}}
-        </div>
-
-      </div>
-
-      <div class="row">
-        <div class="col-sm">
-          <strong>Recargos:</strong>
-          L. {{currentDelivery?.recargos}}
-        </div>
-
-        <div class="col-sm">
-          <strong>Cargos Extra:</strong>
-          L. {{currentDelivery?.cargosExtra}}
-        </div>
-
-        <div class="col-sm">
-          <strong>Total:</strong>
-          L. {{currentDelivery?.total}}
-        </div>
-
-      </div>
-
-      <div class="row">
-        <div class="col-sm">
           <strong>Estado Actual:</strong>
           {{currentDelivery?.estado?.descEstado}}
         </div>
+
+      </div>
+
+      <div class="row">
 
         <div class="col-sm">
           <strong>Tipo de delivery:</strong>
@@ -129,6 +107,29 @@
         <div class="col-sm" *ngIf="currentDelivery?.idEstado == 37">
           <strong>Asignada a:</strong>
           {{currentDelivery?.detalle[0]?.conductor?.nomUsuario}}
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Tarifa Base:</strong>
+          L. {{currentDelivery?.tarifaBase}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Recargos:</strong>
+          L. {{currentDelivery?.recargos}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Cargos Extra:</strong>
+          L. {{currentDelivery?.cargosExtra}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Total:</strong>
+          L. {{currentDelivery?.total}}
         </div>
 
       </div>

@@ -20,9 +20,10 @@ export class BillingService {
     })
   }
 
-  getBillingReport(){
+  getBillingReport(form){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'getBillingReport',
+      form,
       tkn: this.authService.currentUserValue.access_token
     })
   }
