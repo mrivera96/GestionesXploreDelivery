@@ -41,6 +41,7 @@ export class CustomerDeliveryDetailComponent implements OnInit {
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
   hasPhotos: boolean = false
+
   constructor(
     private deliveriesService: DeliveriesService,
     private route: ActivatedRoute,

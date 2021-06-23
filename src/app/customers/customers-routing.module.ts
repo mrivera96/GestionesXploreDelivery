@@ -18,6 +18,7 @@ import {CustomerNewConsolidatedDeliveryComponent} from "../components/customer/n
 import {CustomerNewConsolidatedForeignDeliveryComponent} from "../components/customer/new-consolidated-foreign-delivery/customer-new-consolidated-foreign-delivery.component";
 import { CustomerNewRoutingShippingComponent } from '../components/customer/new-routing-shipping/customer-new-routing-shipping.component';
 import { CustomerLabelsComponent } from '../components/customer/labels/customer-labels.component';
+import {DeliveryDetailComponent} from "../components/shared/delivery-detail/delivery-detail.component";
 
 const routes: Routes = [
   //RUTAS PARA CLIENTES
@@ -28,7 +29,7 @@ const routes: Routes = [
   {path: 'reservas-mañana', component: DeliveriesManianaComponent, canActivate: [CustomerGuard]},
   {path: 'direcciones', component: CustomerBranchOfficesComponent, canActivate: [CustomerGuard]},
   {path: 'agregar-direccion', component: CustomerNewBranchComponent, canActivate: [CustomerGuard]},
-  {path: 'ver-reserva/:id', component: CustomerDeliveryDetailComponent, canActivate: [CustomerGuard]},
+  {path: 'ver-reserva/:id', component: DeliveryDetailComponent, canActivate: [CustomerGuard]},
   {path: 'envios-hoy', component: CustomerTodayOrdersComponent, canActivate: [CustomerGuard]},
   {path: 'envios-todos', component: CustomerAllOrdersComponent, canActivate: [CustomerGuard]},
   {path: 'envios-todos/:initDate/:finDate', component: CustomerAllOrdersComponent, canActivate: [CustomerGuard]},

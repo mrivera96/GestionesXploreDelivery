@@ -2,7 +2,6 @@ import {NgModule} from '@angular/core';
 import {Routes, RouterModule} from '@angular/router';
 import {HomeComponent} from "../components/admin/today-deliveries/home.component";
 import {XploreGuard} from "../guards/xplore.guard";
-import {VerSolicitudComponent} from "../components/admin/delivery-detail/ver-solicitud.component";
 import {VerTodasReservasComponent} from "../components/admin/all-deliveries/ver-todas-reservas.component";
 import {ReservasManianaComponent} from "../components/admin/tomorrow-deliveries/reservas-maniana.component";
 import {XploreCategoriesComponent} from "../components/admin/categories/xplore-categories.component";
@@ -31,12 +30,13 @@ import { XploreAddDeliveryComponent } from '../components/admin/add-delivery/xpl
 import { OrdersByDriverConsolidatedComponent } from '../components/admin/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component';
 import {RestrictionsComponent} from "../components/admin/restrictions/restrictions.component";
 import {BillingReportComponent} from "../components/admin/reports/billing-report/billing-report/billing-report.component";
+import {DeliveryDetailComponent} from "../components/shared/delivery-detail/delivery-detail.component";
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
 
   {path: 'reservas-hoy', component: HomeComponent, canActivate: [XploreGuard]},
-  {path: 'ver-reserva/:id', component: VerSolicitudComponent, canActivate: [XploreGuard]},
+  {path: 'ver-reserva/:id', component: DeliveryDetailComponent, canActivate: [XploreGuard]},
   {path: 'reservas-todas', component: VerTodasReservasComponent, canActivate: [XploreGuard]},
   {path: 'reservas-todas/:initDate/:finDate', component: VerTodasReservasComponent, canActivate: [XploreGuard]},
   {path: 'tomorrow-deliveries', component: ReservasManianaComponent, canActivate: [XploreGuard]},

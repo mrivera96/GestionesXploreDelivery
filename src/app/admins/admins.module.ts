@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {HomeComponent} from '../components/admin/today-deliveries/home.component'
-import {VerSolicitudComponent} from '../components/admin/delivery-detail/ver-solicitud.component'
 import {VerTodasReservasComponent} from '../components/admin/all-deliveries/ver-todas-reservas.component';
 import {ReservasManianaComponent} from '../components/admin/tomorrow-deliveries/reservas-maniana.component';
 import {DataTableComponent} from '../components/admin/data-table/data-table.component';
@@ -89,7 +88,6 @@ import {BillingReportComponent} from "../components/admin/reports/billing-report
 @NgModule({
   declarations: [
     HomeComponent,
-    VerSolicitudComponent,
     VerTodasReservasComponent,
     ReservasManianaComponent,
     DataTableComponent,
