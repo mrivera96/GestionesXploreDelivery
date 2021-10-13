@@ -1,8 +1,8 @@
 import {NgModule} from '@angular/core';
 import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
-import {LoginComponent} from "./components/shared/login/login.component";
-import {RootComponent} from "./components/shared/root/root.component";
-import {PasswordRecoveryComponent} from "./components/shared/password-recovery/password-recovery.component";
+import {LoginComponent} from "./shared/components/login/login.component";
+import {RootComponent} from "./shared/components/root/root.component";
+import {PasswordRecoveryComponent} from "./shared/components/password-recovery/password-recovery.component";
 
 const routes: Routes = [
   //RUTAS COMUNES

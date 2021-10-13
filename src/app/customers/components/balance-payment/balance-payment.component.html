@@ -1,0 +1,108 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-credit-card"></i> Realizar Pago
+</h2>
+
+<form #paymentForm="ngForm" id="ngForm">
+  <mat-dialog-content>
+    <div class="form-row" *ngIf="loaders.loadingSubmit">
+      <div class="col text-center">
+        <img
+          src="../../../../assets/img/loading.svg"
+          width="35%"
+          alt="loading"
+        />
+        <p>Cargando información...</p>
+      </div>
+    </div>
+
+    <div class="form-row" *ngIf="!loaders.loadingSubmit">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Forma de Pago:</mat-label>
+        <mat-select
+          [(ngModel)]="selectedCard"
+          name="selectedCard"
+          required
+          placeholder="Seleccione una forma de pago"
+        >
+          <mat-option *ngFor="let card of myCards" [value]="card">
+            {{ card.alias }}</mat-option
+          >
+        </mat-select>
+        <mat-icon matSuffix>credit_card</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Tipo de Pago:</mat-label>
+        <mat-select
+          [(ngModel)]="paymentType"
+          #payType="ngModel"
+          name="paymentType"
+          required
+          placeholder="Seleccione un tipo de pago"
+        >
+          <mat-option [value]="1"> Pago Parcial</mat-option>
+          <mat-option [value]="0"> Pago Total</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field
+        *ngIf="paymentType === 1"
+        appearance="outline"
+        floatLabel="always"
+        class="col-sm"
+      >
+        <mat-label>Pago Parcial:</mat-label>
+        <input
+          matInput
+          type="number"
+          name="amountToPay"
+          [max]="currentBalance"
+          [(ngModel)]="amountToPay"
+          required
+        />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row text-center" *ngIf="!loaders.loadingSubmit">
+      <div class="col-md">
+        <span>
+          <i class="fa fa-dollar-sign"></i>
+          Balance Actual:
+          {{ currentBalance }}
+        </span>
+      </div>
+      <div class="col-md">
+        <span
+          ><i class="fa fa-dollar-sign"></i>
+          Valor a Pagar:
+          {{ amountToPay }}</span
+        >
+      </div>
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="paymentError">
+      Ocurrió un error al procesar el pago, intenta nuevamente o elige otro
+      método de pago.
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button
+      type="button"
+      form="ngForm"
+      [disabled]="paymentForm.form.invalid || loaders.loadingSubmit"
+      (click)="autorizePayment()"
+      mat-raised-button
+      color="primary"
+    >
+      Confimar
+    </button>
+
+    <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+  </mat-dialog-actions>
+</form>
+<!-- MODAL END -->

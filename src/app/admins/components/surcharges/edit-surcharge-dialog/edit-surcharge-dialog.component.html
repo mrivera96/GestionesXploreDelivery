@@ -1,0 +1,225 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-edit"></i> Editar Recargo
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="edSurChForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Descripción de Recargo:</mat-label>
+        <input
+          matInput
+          id="descRecargo"
+          type="text"
+          formControlName="descRecargo"
+          required
+          maxlength="60"
+        />
+        <mat-icon matSuffix>create</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Kilometraje Mínimo:</mat-label>
+        <input
+          matInput
+          id="kilomMinimo"
+          type="number"
+          formControlName="kilomMinimo"
+          required
+        />
+        <mat-error>*Este campo es obligatorio</mat-error>
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Kilometraje Máximo:</mat-label>
+        <input
+          matInput
+          id="kilomMaximo"
+          type="number"
+          formControlName="kilomMaximo"
+          required
+        />
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Monto:</mat-label>
+        <input
+          matInput
+          id="monto"
+          type="text"
+          formControlName="monto"
+          required
+        />
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Cliente:</mat-label>
+        <mat-select
+          id="idCliente"
+          formControlName="idCliente"
+          required
+          placeholder="- Seleccione un cliente -"
+        >
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Buscar Cliente"
+              (keyup)="onKey($event.target.value)"
+            />
+            <mat-icon [inline]="true" matPrefix>search</mat-icon>
+          </mat-form-field>
+          <mat-option
+            *ngFor="let customer of filteredCustomers"
+            value="{{ customer.idCliente }}"
+          >
+            {{ customer.nomEmpresa }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Tipo de envío:</mat-label>
+        <mat-select
+          formControlName="idTipoEnvio"
+          placeholder="- Seleccione un tipo de envío -"
+          required
+        >
+          <mat-option
+            *ngFor="let delType of deliveryTypes"
+            value="{{ delType.idTipoTarifa }}"
+          >
+            {{ delType.descTipoTarifa }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>local_shipping</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Categoría:</mat-label>
+        <mat-select
+          formControlName="idCategoria"
+          placeholder="- Seleccione una categoría -"
+          required
+        >
+          <mat-option
+            *ngFor="let category of categories"
+            value="{{ category.idCategoria }}"
+          >
+            {{ category.descCategoria }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>list</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <p class="card-title"><strong>Valores de Facturación</strong></p>
+    </div>
+    <hr />
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Tiempo y Kilometraje:</mat-label>
+        <input matInput type="number" formControlName="tYK" min="0" />
+        <mat-icon matSuffix>schedule</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Cobertura de Vehículo:</mat-label>
+        <input matInput type="number" formControlName="cobVehiculo" min="0" />
+        <mat-icon matSuffix>directions_car</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Servicio de Chofer:</mat-label>
+        <input matInput type="number" formControlName="servChofer" min="0" />
+        <mat-icon matSuffix>airline_seat_recline_normal</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Recuperación de Combustible:</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="recCombustible"
+          min="0"
+        />
+        <mat-icon matSuffix>local_gas_station</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Cobertura de Transporte:</mat-label>
+        <input matInput type="number" formControlName="cobTransporte" min="0" />
+        <mat-icon matSuffix>transfer_within_a_station</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>ISV:</mat-label>
+        <input matInput type="number" formControlName="isv" min="0" />
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Tasa Turística:</mat-label>
+        <input matInput type="number" formControlName="tasaTuris" min="0" />
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Gastos Reembolsables:</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="gastosReembolsables"
+          min="0"
+        />
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    [disabled]="edSurChForm.invalid || loaders.loadingSubmit"
+    (click)="onFormEditSubmit()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

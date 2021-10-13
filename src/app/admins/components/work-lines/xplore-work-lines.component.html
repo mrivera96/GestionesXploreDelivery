@@ -1,0 +1,67 @@
+<!--CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title> Parametrización de Rubros </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- CONTAINER START -->
+
+    <div class="row justify-content-end">
+      <div class="col">
+        <button
+          mat-raised-button
+          (click)="showNewWLForm()"
+          type="button"
+          color="primary"
+          class="float-right mb-2"
+        >
+          <i class="fa fa-plus"></i>
+          Agregar Rubro
+        </button>
+      </div>
+    </div>
+    <!-- CONTAINER BODY START -->
+
+    <div class="table-responsive">
+      <table
+        id="dTable"
+        datatable
+        [dtOptions]="dtOptions"
+        [dtTrigger]="dtTrigger"
+        class="compact display"
+        style="width: 100%"
+      >
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Nombre de Rubro</th>
+            <th>Descripción de Rubro</th>
+            <th>Activo</th>
+            <th data-priority="1">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let workline of workLines">
+            <td>{{ workline.idRubro }}</td>
+            <td>{{ workline.nomRubro }}</td>
+            <td>{{ workline.descRubro || "N/A" }}</td>
+            <td>{{ workline.isActivo == true ? "Sí" : "No" }}</td>
+            <td>
+              <a
+                (click)="showEditForm(workline.idRubro)"
+                style="color: #0071a2"
+              >
+                <i class="fa fa-edit"></i> Editar
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CONTAINER END -->
+  </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->

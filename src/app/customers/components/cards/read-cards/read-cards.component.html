@@ -1,0 +1,55 @@
+<!--CARD START -->
+<mat-card @fade>
+    <mat-card-header>
+        <mat-card-title>
+            Mis Formas de Pago
+        </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <!-- CONTAINER START -->
+
+        <div class="row justify-content-end">
+            <div class="col">
+                <button (click)="createCard()" mat-raised-button type="button" color="primary" class="float-right mb-2">
+                    <i class="fa fa-plus"></i>
+                    Agregar Forma de pago
+                </button>
+            </div>
+
+        </div>
+        <!-- CONTAINER BODY START -->
+
+        <div class="table-responsive">
+            <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="compact display"
+                style="width:100%">
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>No. de Tarjeta</th>
+                        <th>Expira</th>
+                        <th data-priority="1">Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr *ngFor="let card of myCards; let i = index">
+                        <td>{{i + 1}}</td>
+                        <td>{{card?.token_card}}</td>
+                        <td>{{card.mes}}/{{card.anio}}</td>
+                        <td>
+                            <a (click)="editCard(card)" style="color: #0071A2">
+                                <i class="fa fa-edit"></i> Editar
+                            </a>
+                        </td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+        <!-- CONTAINER END -->
+    </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->

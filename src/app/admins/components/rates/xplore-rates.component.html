@@ -1,0 +1,102 @@
+<!--CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title> Parametrización de Tarifas </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- CONTAINER START -->
+
+    <div class="row justify-content-end">
+      <div class="col">
+        <button
+          mat-raised-button
+          (click)="showNewForm()"
+          type="button"
+          color="primary"
+          class="float-right mb-2"
+        >
+          <i class="fa fa-plus"></i>
+          Agregar Tarifa
+        </button>
+      </div>
+    </div>
+    <!-- CONTAINER BODY START -->
+
+    <div class="table-responsive">
+      <table
+        id="dTable"
+        datatable
+        [dtOptions]="dtOptions"
+        [dtTrigger]="dtTrigger"
+        class="display compact"
+        style="width: 100%"
+      >
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Entregas Mínimas</th>
+            <th>Entregas Máximas</th>
+            <th>Monto</th>
+            <th>Tipo de Tarifa</th>
+            <th data-priority="1">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let rate of rates; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ rate.descTarifa }}</td>
+            <td>{{ rate.category.descCategoria }}</td>
+            <td>{{ rate.entregasMinimas }}</td>
+            <td>{{ rate.entregasMaximas }}</td>
+            <td>L. {{ rate.precio }}</td>
+            <td>{{ rate.rate_type.descTipoTarifa }}</td>
+            <td>
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button
+                  (click)="showEditForm(rate.idTarifaDelivery)"
+                  mat-menu-item
+                >
+                  <mat-icon>create</mat-icon>
+                  <span>Editar</span>
+                </button>
+
+                <button
+                  (click)="showRateCustomers(rate.idTarifaDelivery)"
+                  mat-menu-item
+                  *ngIf="rate.idCliente != 1"
+                >
+                  <mat-icon>people</mat-icon>
+                  <span>Ver Clientes</span>
+                </button>
+
+                <button
+                  (click)="
+                    showRateDetail(
+                      rate.consolidated_detail,
+                      rate.schedules,
+                      rate.idTipoTarifa
+                    )
+                  "
+                  *ngIf="rate.idTipoTarifa == 2 || rate.idTipoTarifa == 4"
+                  mat-menu-item
+                >
+                  <mat-icon>tune</mat-icon>
+                  <span>Configuraciones</span>
+                </button>
+              </mat-menu>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- CONTAINER END -->
+  </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->

@@ -1,0 +1,72 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">list</mat-icon>
+  Categorías Asignadas
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingData">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <div class="row justify-content-end">
+    <div class="col">
+      <button
+        mat-raised-button
+        (click)="showAddDialog()"
+        type="button"
+        color="primary"
+        class="float-right mb-2"
+      >
+        <i class="fa fa-plus"></i>
+        Agregar Categoría
+      </button>
+    </div>
+  </div>
+  <br />
+
+  <div class="row d-block" *ngIf="!loaders.loadingData">
+    <div class="col">
+      <div class="table-responsive">
+        <table id="dTable" class="display compact" style="width: 100%">
+          <thead>
+            <tr>
+              <th scope="col">N°</th>
+              <th scope="col">Categoría</th>
+              <th scope="col" data-priority="1">Acción</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let category of extraChargeCategories; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ category.category.descCategoria }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="removeCategoryFromExtraCharge(category.idCategoria)"
+                >
+                  <i class="fa fa-trash-alt"></i>
+                  Quitar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" mat-raised-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

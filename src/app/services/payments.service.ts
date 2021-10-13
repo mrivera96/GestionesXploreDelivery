@@ -24,10 +24,11 @@ export class PaymentsService {
     )
   }
 
-  getPayments(){
+  getPayments(form){
     return this.http.post<any>(`${environment.apiUrl}`,
       {
         function: 'getPayments',
+        form,
         tkn: this.authService.currentUserValue.access_token
       }
     )

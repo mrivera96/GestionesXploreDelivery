@@ -181,6 +181,11 @@
           Restricciones
         </a>
 
+        <a [routerLink]="['admins/parametrizar-terminos']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>gavel</mat-icon>
+          Términos y Condiciones
+        </a>
+
         <a [routerLink]="['admins/parametrizar-rubros']" (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>business_center</mat-icon>
           Rubros
@@ -219,15 +224,9 @@
         Dashboard
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['customers/inicio']" mat-list-item>
+      <a (click)="sidenav.close()" [routerLink]="['customers/envio-normal']" mat-list-item>
         <mat-icon>add</mat-icon>
-        Agregar delivery
-      </a>
-
-      <a *ngIf="currentUser.permiteConsolidada" (click)="sidenav.close()" [routerLink]="['customers/envio-consolidado']"
-        mat-list-item>
-        <mat-icon>add</mat-icon>
-        Agregar delivery (Carga Consolidada)
+        Delivery Express
       </a>
 
       <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
@@ -237,8 +236,15 @@
       </a>
 
       <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item>
-        <mat-icon>add_road</mat-icon>
-        +Delivery en Ruta
+        <mat-icon>add</mat-icon>
+        Delivery en Ruta
+      </a>
+
+      <a *ngIf="currentUser.permiteConsolidada" (click)="sidenav.close()" [routerLink]="['customers/envio-consolidado']"
+        mat-list-item>
+        <mat-icon>add</mat-icon>
+        Delivery Consolidado
+        <mat-icon color="accent">star</mat-icon>
       </a>
 
       <a (click)="sidenav.close()" [routerLink]="['customers/envios-hoy']" mat-list-item>
@@ -276,9 +282,19 @@
         Mis Etiquetas
       </a>
 
+      <a [routerLink]="['customers/metodos-pago']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>credit_card</mat-icon>
+        Mis Formas de Pago
+      </a>
+
       <a [routerLink]="['customers/reporte-envios']" (click)="sidenav.close()" mat-list-item>
         <mat-icon>analytics</mat-icon>
         Reporte de Envíos
+      </a>
+
+      <a [routerLink]="['customers/terminos-y-condiciones']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>gavel</mat-icon>
+        Términos y Condiciones
       </a>
 
     </mat-nav-list>

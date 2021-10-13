@@ -1,0 +1,174 @@
+<!-- INICIO DE CARD -->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Mi Balance - {{ currCustomer.cliente.nomEmpresa }}
+    </mat-card-title>
+  </mat-card-header>
+
+  <!-- INICIO DE CONTENIDO DEL CARD -->
+  <mat-card-content>
+    <mat-tab-group>
+      <mat-tab label="Envíos Realizados">
+        <div class="container-fluid pt-0 pb-0 mt-0 mb-0">
+          <mat-card
+            class="shadow mb-3 text-center text-white"
+            style="background-color: #0277bd"
+          >
+            <mat-card-content>
+              <h2>Sub-Total: L. {{ subtotal }}</h2>
+              <h2>Pago Realizado: L. {{ paid }}</h2>
+              <h2>Balance: L. {{ balance }}</h2>
+            </mat-card-content>
+          </mat-card>
+          <!-- INICIO DATATABLE -->
+          <div class="row">
+            <div class="col">
+              <h3>Historial de Envíos</h3>
+            </div>
+          </div>
+          <hr />
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger1"
+              class="display compact"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>N°</th>
+                  <th data-priority="1">Destinatario</th>
+                  <th data-priority="1">Celular del Destinatario</th>
+                  <th>Dirección</th>
+                  <th>Detalle</th>
+                  <th>Distancia</th>
+                  <th>Recargo</th>
+                  <th>Cargos Extra</th>
+                  <th>Costo Total</th>
+                  <th>Fecha de entrega</th>
+                  <th>Conductor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let i = index;
+                    let order;
+                    of: myFinishedOrders;
+                    let idx = index
+                  "
+                >
+                  <td>{{ idx + 1 }}</td>
+                  <td>{{ order.nomDestinatario }}</td>
+                  <td>{{ order.numCel }}</td>
+                  <td>{{ order.direccion }}</td>
+                  <td>{{ order.nFactura }}</td>
+                  <td>{{ order.distancia }}</td>
+                  <td>L. {{ order.recargo }}</td>
+                  <td>L. {{ order.cargosExtra || "0.00" }}</td>
+                  <td>L. {{ order.cTotal }}</td>
+                  <td>{{ order.fechaEntrega }}</td>
+                  <td>
+                    <p *ngIf="order.conductor">
+                      {{
+                        order.conductor.nomUsuario +
+                          " - " +
+                          order?.conductor?.numCelular
+                      }}
+                    </p>
+                    <p *ngIf="!order.conductor">Aún no asignada</p>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot style="display: table-footer-group">
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                  <th>Total:</th>
+                  <th>L. {{ totalSurcharges }}</th>
+                  <th>L.{{ totalExtraCharges }}</th>
+                  <th>L. {{ totalCTotal }}</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- FIN DATATABLE -->
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Envíos Pagados">
+        <div class="container-fluid pt-0 pb-0 mt-0 mb-0">
+          <mat-card
+            class="shadow mb-3 text-white text-center"
+            style="background-color: #0277bd"
+          >
+            <mat-card-content>
+              <h2>Sub-Total: L. {{ subtotal }}</h2>
+              <h2>Pago Realizado: L. {{ paid }}</h2>
+              <h2>Balance: L. {{ balance }}</h2>
+            </mat-card-content>
+          </mat-card>
+          <!-- INICIO DATATABLE -->
+          <div class="row">
+            <div class="col">
+              <h3>Historial de Pagos</h3>
+            </div>
+          </div>
+          <hr />
+          <div class="table-responsive">
+            <table
+              id="dTable"
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="display compact"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>N°</th>
+                  <th>Fecha de Pago</th>
+                  <th>Monto</th>
+                  <th>Tipo de Pago</th>
+                  <th>Referencia</th>
+                  <th>Banco</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let payment of myPayments; let idx1 = index">
+                  <td>{{ idx1 + 1 }}</td>
+                  <td>{{ payment.fechaPago }}</td>
+                  <td>L. {{ payment.monto }}</td>
+                  <td>{{ payment.payment_type.nomTipoPago }}</td>
+                  <td>{{ payment.referencia || "N/A" }}</td>
+                  <td>{{ payment.banco || "N/A" }}</td>
+                </tr>
+              </tbody>
+
+              <tfoot style="display: table-footer-group">
+                <tr>
+                  <th></th>
+                  <th>Total:</th>
+                  <th>L.{{ totalPaid }}</th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <!-- FIN DATATABLE -->
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+  <!-- FIN DE CONTENIDO DEL CARD -->
+</mat-card>
+<!-- FIN DE CARD -->

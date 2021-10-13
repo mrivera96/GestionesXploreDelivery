@@ -1,0 +1,132 @@
+<!-- INICIO DE CARD -->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Reporte de Balances </mat-card-title>
+  </mat-card-header>
+
+  <!-- INICIO DE CONTENIDO DEL CARD -->
+  <mat-card-content>
+    <div class="row">
+      <div class="col">
+        <form [formGroup]="consultForm">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Inicial:</mat-label>
+              <input matInput type="date" formControlName="initDate" required />
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Final:</mat-label>
+              <input matInput type="date" formControlName="finDate" required />
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <button
+              [disabled]="consultForm.invalid"
+              type="button"
+              mat-raised-button
+              color="primary"
+              (click)="onConsultFormSubmit()"
+              class="col-md mt-auto mb-auto"
+            >
+              <mat-icon>search</mat-icon>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- REPORT CONTAINER START -->
+    <div class="row" *ngIf="loaders.loadingSubmit">
+      <div class="col text-center">
+        <img
+          src="../../../../../assets/img/loading.svg"
+          width="5%"
+          alt="loading"
+        />
+        <p>Cargando información...</p>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row mt-2">
+        <div class="col">
+          <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+            Menú de Opciones
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button
+              [disabled]="consultResults.length == 0"
+              mat-menu-item
+              (click)="generatePDF()"
+            >
+              Exportar PDF
+            </button>
+
+            <button
+              [disabled]="consultResults.length == 0"
+              mat-menu-item
+              (click)="generateExcel()"
+            >
+              Exportar a Excel
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+
+      <!-- DATATABLE START -->
+
+      <div class="table-responsive mt-2">
+        <table
+          id="dTable"
+          datatable
+          [dtOptions]="dtOptions"
+          [dtTrigger]="dtTrigger"
+          class="display compact"
+          style="width: 100%"
+        >
+          <thead>
+            <tr>
+              <th>Código Cliente</th>
+              <th>Nombre</th>
+              <th>Envíos</th>
+              <th>Pagos</th>
+              <th>Balance</th>
+              <th>Crédito Disponible</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let result of consultResults">
+              <td>{{ result.customer.idCliente }}</td>
+              <td>{{ result.customer.nomEmpresa }}</td>
+              <td>{{ result.orders }}</td>
+              <td>L. {{ result.payments }}</td>
+              <td>L. {{ result.balance }}</td>
+              <td>L. {{ result.credit }}</td>
+            </tr>
+          </tbody>
+
+          <tfoot style="display: table-footer-group">
+            <tr>
+              <th>Total:</th>
+              <th></th>
+              <th>{{ totalOrders }}</th>
+              <th>L. {{ totalPayments }}</th>
+              <th>L. {{ totalBalance }}</th>
+              <th>L. {{ totalCredit }}</th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <!-- DATATABLE END -->
+    </div>
+  </mat-card-content>
+  <!-- FIN DE CONTENIDO DEL CARD -->
+</mat-card>
+<!-- FIN DE CARD -->

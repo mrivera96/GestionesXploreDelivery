@@ -1,0 +1,8 @@
+::ng-deep .cat-rb .mat-radio-button .mat-radio-container {
+    width: 0;
+  }
+  ::ng-deep .cat-rb .mat-radio-container .mat-radio-outer-circle,
+  ::ng-deep .cat-rb .mat-radio-container .mat-radio-inner-circle {
+    border: none;
+    width: 0;
+  }

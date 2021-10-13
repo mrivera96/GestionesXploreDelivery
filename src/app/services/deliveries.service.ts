@@ -286,4 +286,13 @@ export class DeliveriesService {
         tkn: this.authService.currentUserValue.access_token
       })
   }
+
+  getDriverPending(id) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'getDriverPending',
+        driverId: id,
+        tkn: this.authService.currentUserValue.access_token
+      })
+  }
 }

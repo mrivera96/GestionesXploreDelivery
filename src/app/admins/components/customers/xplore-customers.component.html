@@ -1,0 +1,87 @@
+<!-- CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title> Clientes </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="row justify-content-end">
+      <div class="col">
+        <button
+          mat-raised-button
+          (click)="showNewCustForm()"
+          type="button"
+          color="primary"
+          class="float-right mb-2"
+        >
+          <i class="fa fa-plus"></i>
+          Agregar Cliente
+        </button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table
+        id="dTable"
+        datatable
+        [dtOptions]="dtOptions"
+        [dtTrigger]="dtTrigger"
+        class="display compact"
+        style="width: 100%"
+      >
+        <thead>
+          <tr>
+            <th data-priority="1">Nombre de Empresa</th>
+            <th>Nombre de Representante</th>
+            <th>Número de Identificación</th>
+            <th data-priority="1">Número de Teléfono</th>
+            <th>email</th>
+            <th data-priority="1">Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let customer of customers; let i = index">
+            <td>{{ customer.nomEmpresa }}</td>
+            <td>{{ customer.nomRepresentante }}</td>
+            <td class="fId">{{ customer.numIdentificacion }}</td>
+            <td>{{ customer.numTelefono }}</td>
+            <td>{{ customer.email }}</td>
+            <td>
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button
+                  (click)="showEditForm(customer.idCliente)"
+                  mat-menu-item
+                >
+                  <mat-icon>create</mat-icon>
+                  <span>Editar</span>
+                </button>
+
+                <button
+                  (click)="showCustomerWorkLines(customer.idCliente)"
+                  mat-menu-item
+                >
+                  <mat-icon>business_center</mat-icon>
+                  <span>Ver Rubros</span>
+                </button>
+
+                <button
+                  (click)="
+                    showCustomerBalance(customer.idCliente, customer.nomEmpresa)
+                  "
+                  mat-menu-item
+                >
+                  <mat-icon>account_balance_wallet</mat-icon>
+                  <span>Ver Balance</span>
+                </button>
+              </mat-menu>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->

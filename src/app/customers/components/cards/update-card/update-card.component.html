@@ -1,0 +1,57 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+    <i class="fa fa-edit"></i> Editar Forma de Pago
+</h2>
+
+<mat-dialog-content>
+    <div class="row" *ngIf="loaders.loadingSubmit">
+        <div class="col text-center">
+            <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+            <p>Cargando información...</p>
+        </div>
+    </div>
+
+    <form [formGroup]="edCardForm" *ngIf="!loaders.loadingSubmit">
+        <div class="row">
+            <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+                <mat-label>Fecha de expiración:</mat-label>
+                <input matInput appExpDate formControlName="expDate" type="tel" minlength="4" maxlength="4" placeholder="MM/AA (04/25)"
+                    required>
+                <mat-icon matSuffix>event</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+                <mat-label>CVC/CVV:</mat-label>
+                <input matInput required type="number" formControlName="cvv"
+                    onKeyPress="if(this.value.length==3) return false;" placeholder="000">
+                <mat-icon matSuffix>lock</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="row">
+            <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+                <mat-label>Alias para esta tarjeta:</mat-label>
+                <input matInput required type="text" formControlName="alias"
+                    maxlength="30"
+                    placeholder="Alias con que desea guardar su tarjeta">
+                <mat-icon matSuffix>credit_card</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button type="button" [disabled]="edCardForm.invalid || loaders.loadingSubmit" (click)="onFormSubmit()"
+        mat-raised-button color="primary">
+        Confimar
+    </button>
+    <button type="button" mat-raised-button mat-dialog-close>
+        Cancelar
+    </button>
+
+</mat-dialog-actions>
+
+<!-- MODAL END -->

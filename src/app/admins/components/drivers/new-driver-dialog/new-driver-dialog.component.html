@@ -1,0 +1,138 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">note_add</mat-icon> Nuevo Conductor
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="nDrivForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Nombre de Conductor:</mat-label>
+        <input
+          matInput
+          id="nomUsuario"
+          type="text"
+          formControlName="nomUsuario"
+          required
+          placeholder="Nombre del Conductor"
+          maxlength="80"
+        />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Número de Celular:</mat-label>
+        <input
+          appPhoneMask
+          matInput
+          id="numCelular"
+          type="tel"
+          formControlName="numCelular"
+          autocomplete="nope"
+          required
+          placeholder="Ej. 9999-9999 (Guión automáticamente)"
+          minlength="9"
+          maxlength="9"
+        />
+        <mat-icon matSuffix>phone</mat-icon>
+        <mat-error *ngIf="f.numCelular.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.numCelular.errors?.maxlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+        <mat-error *ngIf="f.numCelular.errors?.minlength">
+          *Por favor ingrese un número válido
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Nombre de usuario del conductor:</mat-label>
+        <input
+          matInput
+          id="nickUsuario"
+          type="text"
+          formControlName="nickUsuario"
+          required
+          (keydown.space)="$event.preventDefault()"
+          placeholder="Nombre de usuario del conductor"
+          maxlength="15"
+        />
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Passcode del conductor:</mat-label>
+        <input
+          matInput
+          id="passcodeUsuario"
+          type="number"
+          formControlName="passcodeUsuario"
+          minlength="4"
+          maxlength="4"
+          placeholder="****"
+          required
+        />
+        <mat-icon matSuffix>lock</mat-icon>
+        <mat-error *ngIf="f.passcodeUsuario.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="f.passcodeUsuario.errors?.maxlength">
+          *Passcode no válido
+        </mat-error>
+        <mat-error *ngIf="f.passcodeUsuario.errors?.minlength">
+          *Passcode no válido
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Agencia:</mat-label>
+        <mat-select
+          formControlName="idAgencia"
+          required
+          placeholder="- Seleccione una agencia -"
+        >
+          <mat-option
+            *ngFor="let agency of agencies"
+            value="{{ agency.idAgencia }}"
+          >
+            {{ agency.descAgencia }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>business</mat-icon>
+        <mat-error *ngIf="f.idAgencia.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    [disabled]="nDrivForm.invalid || loaders.loadingSubmit"
+    (click)="onNewFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

@@ -1,0 +1,193 @@
+<!-- INICIO CARD -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>
+        <a [routerLink]="['/']"> <i class="fa fa-home m-r-xs"></i></a>
+        Solicitud N° {{deliveryId}}
+      </mat-card-title>
+    </mat-card-title-group>
+
+    <div class="ml-auto float-right">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button type="button" mat-menu-item *ngIf="allowHourChange &&
+        currentDelivery.idEstado != 39 && currentDelivery.isConsolidada == false" [disabled]="!allowHourChange"
+          (click)="openChangeHourDialog()">
+          Cambiar Hora de Recogida
+        </button>
+
+        <!-- <button type="button" mat-menu-item *ngIf="allowCancel &&
+        currentDelivery.idEstado == 34" [disabled]="!allowCancel"
+          (click)="openCancelDialog()">
+          Cancelar Solicitud
+        </button> -->
+      </mat-menu>
+    </div>
+  </mat-card-header>
+
+  <!-- INICIO CARD BODY -->
+  <mat-card-content>
+
+    <div class="container-fluid" >
+
+      
+      <div class="card-title">
+        <h4>Datos Generales</h4>
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Nombre del cliente:</strong>
+          {{currentDelivery?.nomCliente}}
+        </div>
+        <div class="col-sm">
+          <strong>Número de identificación:</strong>
+          {{currentDelivery?.numIdentificacion}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Número de celular:</strong>
+          {{currentDelivery?.numCelular}}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Dirección de recogida:</strong>
+          <a href="https://www.google.com/maps?q={{currentDelivery?.dirRecogida}}"> {{currentDelivery?.dirRecogida}}
+          </a>
+        </div>
+
+        <div class="col-sm">
+          <strong>Instrucciones de recogida:</strong>
+          {{currentDelivery?.instrucciones}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Categoría reservada:</strong>
+          {{currentDelivery?.category?.descCategoria}}
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Fecha y hora de recogida:</strong>
+          {{currentDelivery?.fechaReserva}}
+        </div>
+
+        <div class="col-sm">
+          <strong>e-mail:</strong>
+          {{currentDelivery?.email}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Estado Actual:</strong>
+          {{currentDelivery?.estado?.descEstado}}
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm">
+          <strong>Tipo de delivery:</strong>
+          {{currentDelivery?.isConsolidada == true ? 'Carga Consolidada' : currentDelivery?.isRuteo == true ? 'Envío por Ruteo' : 'Envío Normal'}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Fecha y hora de registro:</strong>
+          {{currentDelivery?.fechaRegistro}}
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm" *ngIf="currentDelivery?.idEstado == 37">
+          <strong>Asignada a:</strong>
+          {{currentDelivery?.detalle[0]?.conductor?.nomUsuario}}
+        </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col-sm">
+          <strong>Tarifa Base:</strong>
+          L. {{currentDelivery?.tarifaBase}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Recargos:</strong>
+          L. {{currentDelivery?.recargos}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Cargos Extra:</strong>
+          L. {{currentDelivery?.cargosExtra}}
+        </div>
+
+        <div class="col-sm">
+          <strong>Total:</strong>
+          L. {{currentDelivery?.total}}
+        </div>
+
+      </div>
+      <br>
+      <div>
+        <h4 class="card-title">Entregas programadas</h4>
+      </div>
+
+      <div class="table-responsive">
+        <table class="display compact" datatable [dtOptions]="dddtOptions" [dtTrigger]="dddtTrigger" style="width: 100%">
+          <thead>
+            <tr>
+              <th>Detalle de entrega</th>
+              <th>Nombre de destinatario</th>
+              <th>Número de teléfono</th>
+              <th>Dirección de entrega</th>
+              <th>Instrucciones de entrega</th>
+              <th>Distancia</th>
+              <th>Recargo</th>
+              <th>Cargos Extra</th>
+              <th>Monto Cobertura</th>
+              <th>Costo Total</th>
+              <th>Fotografías</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let detail of currentDeliveryDetail; let i = index">
+              <td>{{detail.nFactura}}</td>
+              <td>{{detail.nomDestinatario}}</td>
+              <td>{{detail.numCel}}</td>
+              <td>
+                <a href="https://www.google.com/maps?q={{detail.direccion}}"> {{detail.direccion}} </a>
+              </td>
+              <td>{{detail?.instrucciones}}</td>
+              <td>{{detail.distancia}}</td>
+              <td>L. {{detail.recargo}}</td>
+              <td>L. {{detail.cargosExtra }}</td>
+              <td>L. {{detail.extra_charges[0]?.montoCobertura || 'N/A' }}</td>
+              <td>L. {{detail.cTotal}}</td>
+              <td>
+                <button *ngIf="detail.photography.length > 0"  type="button" mat-raised-button color="primary"
+                  (click)="openPhotosDialog(detail.photography)">
+                  Ver Fotografías
+                </button>
+                <span *ngIf="detail.photography.length == 0">N/A</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      
+    </div>
+
+  </mat-card-content>
+  <!-- FIN CARD BODY -->
+</mat-card>
+<!-- FIN CARD -->

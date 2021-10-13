@@ -1,0 +1,183 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">note_add</mat-icon> Nuevo Pago
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Procesando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="nPayForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Fecha de pago:</mat-label>
+        <input
+          matInput
+          id="fechaPago"
+          type="date"
+          formControlName="fechaPago"
+          required
+        />
+        <mat-icon matSuffix>today</mat-icon>
+        <mat-error *ngIf="f.fechaPago?.errors?.required"
+          >*Este campo es obligatorio</mat-error
+        >
+        <mat-error *ngIf="f.fechaPago?.errors?.mustBeforeDate"
+          >*Ups, parece que esa fecha no es válida</mat-error
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Monto de pago:</mat-label>
+        <input
+          matInput
+          id="monto"
+          type="number"
+          formControlName="monto"
+          required
+          maxlength="20"
+        />
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Tipo de pago:</mat-label>
+        <mat-select
+          required
+          placeholder="- Seleccione un tipo de pago -"
+          formControlName="tipoPago"
+        >
+          <mat-option
+            *ngFor="let pType of paymentTipes"
+            value="{{ pType.idTipoPago }}"
+            (click)="changeValidators(pType.idTipoPago)"
+          >
+            {{ pType.nomTipoPago }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>payment</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Cliente:</mat-label>
+        <mat-select
+          required
+          placeholder="- Seleccione un cliente -"
+          formControlName="idCliente"
+        >
+          <mat-form-field>
+            <input
+              matInput
+              placeholder="Buscar Cliente"
+              (keyup)="onKey($event.target.value)"
+            />
+            <mat-icon [inline]="true" matPrefix>search</mat-icon>
+          </mat-form-field>
+          <mat-option
+            *ngFor="let customer of filteredCustomers"
+            value="{{ customer.idCliente }}"
+          >
+            {{ customer.nomEmpresa }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        *ngIf="f.tipoPago.value == 6"
+        class="col-sm"
+      >
+        <mat-label>Número de Autorización:</mat-label>
+        <input
+          matInput
+          id="numAutorizacion"
+          type="text"
+          formControlName="numAutorizacion"
+          minlength="6"
+          maxlength="6"
+          placeholder="¿Cuál es el número de autorización?"
+          [required]="f.tipoPago.value == 6"
+        />
+        <mat-icon matSuffix>comment</mat-icon>
+        <mat-error *ngIf="f.numAutorizacion?.errors?.required"
+          >*Este campo es obligatorio</mat-error
+        >
+        <mat-error *ngIf="f.numAutorizacion?.errors?.minlength"
+          >*Este campo debe contener al menos 6 dígitos</mat-error
+        >
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        *ngIf="f.tipoPago.value == 7"
+        class="col-sm"
+      >
+        <mat-label>Referencia:</mat-label>
+        <input
+          matInput
+          id="referencia"
+          type="text"
+          formControlName="referencia"
+          maxlength="12"
+          placeholder="¿Cuál es la referencia del pago?"
+          [required]="f.tipoPago.value == 7"
+        />
+        <mat-icon matSuffix>comment</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        *ngIf="f.tipoPago.value == 7"
+        class="col-sm"
+      >
+        <mat-label>Banco:</mat-label>
+        <mat-select
+          formControlName="banco"
+          placeholder="¿En cuál banco se realizó el pago?"
+          [required]="f.tipoPago.value == 7"
+        >
+          <mat-option
+            *ngFor="let bank of banks"
+            value="{{ bank.descBanco + ' - ' + bank.numCuenta }}"
+          >
+            {{ bank.descBanco + " - " + bank.numCuenta }}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_balance</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    [disabled]="nPayForm.invalid || loaders.loadingSubmit"
+    (click)="onNewFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

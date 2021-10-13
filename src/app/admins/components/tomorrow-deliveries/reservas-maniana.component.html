@@ -1,0 +1,17 @@
+<!--CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title> Reservaciones para mañana </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <!-- DATATABLE START -->
+    <app-data-table
+      [deliveries]="2"
+      (loadingData)="setLoading($event)"
+    ></app-data-table>
+    <!-- DATATABLE END -->
+  </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->
