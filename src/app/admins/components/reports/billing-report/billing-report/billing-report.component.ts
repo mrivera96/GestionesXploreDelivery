@@ -1,3 +1,4 @@
+<<<<<<< HEAD:src/app/admins/components/reports/billing-report/billing-report/billing-report.component.ts
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {DataTableDirective} from "angular-datatables";
@@ -6,11 +7,21 @@ import {MatDialog} from "@angular/material/dialog";
 import {LoadingDialogComponent} from "../../../../../components/shared/loading-dialog/loading-dialog.component";
 import {BillingService} from "../../../../../services/billing.service";
 import {Workbook} from "exceljs";
+=======
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingDialogComponent } from '../../../../../shared/components/loading-dialog/loading-dialog.component';
+import { BillingService } from '../../../../../services/billing.service';
+import { Workbook } from 'exceljs';
+>>>>>>> origin/V5:src/app/admins/components/reports/billing-report/billing-report/billing-report.component.ts
 import * as fs from 'file-saver';
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import {formatDate} from "@angular/common";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { formatDate } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
@@ -21,24 +32,25 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class BillingReportComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective
-  dtTrigger: Subject<any> = new Subject()
-  results = []
-  dtOptions: any
-  consultForm: FormGroup
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtTrigger: Subject<any> = new Subject();
+  results = [];
+  dtOptions: any;
+  consultForm: FormGroup;
 
-  constructor(public dialog: MatDialog,
-              private billingService: BillingService,
-              private formBuilder: FormBuilder) {
-  }
+  constructor(
+    public dialog: MatDialog,
+    private billingService: BillingService,
+    private formBuilder: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -63,65 +75,74 @@ export class BillingReportComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
+    };
 
     this.consultForm = this.formBuilder.group({
-      initDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
-      finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
-    })
-
+      initDate: [
+        formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+        Validators.required,
+      ],
+      finDate: [
+        formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+        Validators.required,
+      ],
+    });
   }
 
   onConsultFormSubmit(): void {
     if (this.consultForm.valid) {
-
-      this.openLoader()
+      this.openLoader();
       const billingSubsc = this.billingService
         .getBillingReport(this.consultForm.value)
-        .subscribe(response => {
+        .subscribe(
+          (response) => {
+            if (this.dtElement.dtInstance) {
+              this.results = [];
+              this.results = response.data;
+              this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                dtInstance.destroy();
+                this.dtTrigger.next();
+              });
+            } else {
+              this.results = response.data;
+              this.dtTrigger.next();
+            }
 
-          if (this.dtElement.dtInstance) {
-            this.results = []
-            this.results = response.data
-            this.dtElement.dtInstance.then(
-              (dtInstance: DataTables.Api) => {
-                dtInstance.destroy()
-                this.dtTrigger.next()
-              })
-          } else {
-            this.results = response.data
-            this.dtTrigger.next()
+            this.dialog.closeAll();
+
+            billingSubsc.unsubscribe();
+          },
+          (error) => {
+            this.dialog.closeAll();
+            billingSubsc.unsubscribe();
           }
-
-          this.dialog.closeAll()
-
-          billingSubsc.unsubscribe()
-        }, error => {
-          this.dialog.closeAll()
-          billingSubsc.unsubscribe()
-        })
+        );
     }
-
   }
 
   openLoader(): void {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
 
   generateExcel(): void {
-
     //Excel Title, Header, Data
-    let title = 'Reporte de Facturas Delivery'
+    let title = 'Reporte de Facturas Delivery';
 
     //Create workbook and worksheet
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet('Reporte Facturas');
     //Add Row and formatting
     let titleRow = worksheet.addRow([title]);
-    titleRow.font = {name: 'Arial', family: 4, size: 16, underline: 'double', bold: true}
+    titleRow.font = {
+      name: 'Arial',
+      family: 4,
+      size: 16,
+      underline: 'double',
+      bold: true,
+    };
     worksheet.mergeCells('A1:C2');
     worksheet.addRow([]);
     //Blank Row
@@ -132,84 +153,88 @@ export class BillingReportComponent implements OnInit {
 
     worksheet.addRow([]);*/
 
-
     worksheet.addRow([]);
-    const reportHeader = [
-      "No. Factura",
-      "Fecha y Hora",
-      "Cliente",
-      "Valor"
-    ]
+    const reportHeader = ['No. Factura', 'Fecha y Hora', 'Cliente', 'Valor'];
 
     let reportheaderRow = worksheet.addRow(reportHeader);
 
     /*worksheet.mergeCells('A8:B8');*/
 
-
     reportheaderRow.eachCell((cell, number) => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: {argb: 'D3D3D3'},
-        bgColor: {argb: 'D3D3D3'}
-      }
-      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
+        fgColor: { argb: 'D3D3D3' },
+        bgColor: { argb: 'D3D3D3' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
       cell.alignment = {
-        horizontal: "center"
-      }
-    })
+        horizontal: 'center',
+      };
+    });
 
     // Add Data and Conditional Formatting
-    let array1Row = []
+    let array1Row = [];
 
     /*'yyyy-MM-dd', 'en'
         HH:mm', 'en')] */
-    this.results.forEach(d => {
+    this.results.forEach((d) => {
       let array = [
         +d.idFacturaDelivery,
         formatDate(d.fechaFacturacion, 'd/MM/yyyy h:m a', 'en'),
         d.delivery.cliente.nomEmpresa,
-        parseFloat(d.total)
-      ]
-      array1Row.push(array)
-    })
+        parseFloat(d.total),
+      ];
+      array1Row.push(array);
+    });
 
-    array1Row.forEach(v => {
-      const row = worksheet.addRow(v)
-      row.getCell(1).numFmt = '#'
-      row.getCell(4).numFmt = 'L#,##0.00'
+    array1Row.forEach((v) => {
+      const row = worksheet.addRow(v);
+      row.getCell(1).numFmt = '#';
+      row.getCell(4).numFmt = 'L#,##0.00';
 
       row.eachCell((cell, number) => {
         cell.alignment = {
-          horizontal: "left"
-        }
-      })
-    })
+          horizontal: 'left',
+        };
+      });
+    });
 
-    worksheet.getColumn(1).width = 15
-    worksheet.getColumn(2).width = 30
-    worksheet.getColumn(3).width = 50
-    worksheet.getColumn(4).width = 30
-
+    worksheet.getColumn(1).width = 15;
+    worksheet.getColumn(2).width = 30;
+    worksheet.getColumn(3).width = 50;
+    worksheet.getColumn(4).width = 30;
 
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
-      const date = new Date().toLocaleDateString()
+      let blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
+      const date = new Date().toLocaleDateString();
       fs.saveAs(blob, 'Reporte Facturas Delivery (' + date + ').xlsx');
-    })
+    });
   }
 
   printReport(): void {
-    let divToPrint = document.getElementById('printTable')
-    const newWin = window.open('', '_blank', 'width=1366,height=760,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no')
+    let divToPrint = document.getElementById('printTable');
+    const newWin = window.open(
+      '',
+      '_blank',
+      'width=1366,height=760,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no'
+    );
     newWin.document.open();
-    newWin.document.write(divToPrint.outerHTML)
-    newWin.print()
-    newWin.document.close()
+    newWin.document.write(divToPrint.outerHTML);
+    newWin.print();
+    newWin.document.close();
   }
 
-  generatePDF(): void {/*
+  generatePDF(): void {
+    /*
     let currentDriver: User = {}
 
     this.drivers.forEach(driver => {
@@ -405,5 +430,4 @@ export class BillingReportComponent implements OnInit {
 
     pdf.create().open()*/
   }
-
 }

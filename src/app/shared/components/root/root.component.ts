@@ -31,7 +31,7 @@ export class RootComponent implements OnInit {
     }
     if(this.currentUser.idPerfil === '1' || this.currentUser.idPerfil === '9'){
       this.router.navigate(['/admins/reservas-pendientes'])
-    }else if(this.currentUser.idPerfil === '8'){
+    }else if(this.currentUser.idPerfil === '8' || this.currentUser.idPerfil === '12'){
       this.currentCustomer = this.authService.currentUserValue.cliente   
       this.router.navigate(['/customers/dashboard'])
     }

@@ -6,7 +6,15 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
     <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/surcharges/add-customer-surcharge-dialog/add-customer-surcharge-dialog.component.html
       <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+=======
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+>>>>>>> origin/V5:src/app/admins/components/surcharges/add-customer-surcharge-dialog/add-customer-surcharge-dialog.component.html
       <p>Procesando información...</p>
     </div>
   </div>
@@ -15,36 +23,45 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-12">
         <mat-label>Cliente</mat-label>
-        <mat-select formControlName="idCliente" required placeholder="- Seleccione un cliente -">
+        <mat-select
+          formControlName="idCliente"
+          required
+          placeholder="- Seleccione un cliente -"
+        >
           <mat-form-field>
-            <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)" >
+            <input
+              matInput
+              placeholder="Buscar Cliente"
+              (keyup)="onKey($event.target.value)"
+            />
             <mat-icon [inline]="true" matPrefix>search</mat-icon>
           </mat-form-field>
 
-          <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
-            {{customer.nomEmpresa}}
+          <mat-option
+            *ngFor="let customer of filteredCustomers"
+            value="{{ customer.idCliente }}"
+          >
+            {{ customer.nomEmpresa }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>account_circle</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>
-
   </form>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="custForm.invalid || loaders.loadingSubmit"
-          (click)="onFormSubmit()"
-          mat-raised-button color="primary">
+  <button
+    type="button"
+    [disabled]="custForm.invalid || loaders.loadingSubmit"
+    (click)="onFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->
-
-

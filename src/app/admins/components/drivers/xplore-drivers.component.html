@@ -1,25 +1,33 @@
 <!-- CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Conductores
-    </mat-card-title>
+    <mat-card-title> Conductores </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
-    
-    <div class="row justify-content-end ">
+    <div class="row justify-content-end">
       <div class="col">
-        <button mat-raised-button (click)="showNewCustForm()" type="button" color="primary" class="float-right mb-2">
+        <button
+          mat-raised-button
+          (click)="showNewCustForm()"
+          type="button"
+          color="primary"
+          class="float-right mb-2"
+        >
           <i class="fa fa-plus"></i>
           Agregar Conductor
         </button>
       </div>
-
     </div>
     <div class="table-responsive">
-      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact"
-        style="width:100%">
+      <table
+        id="dTable"
+        datatable
+        [dtOptions]="dtOptions"
+        [dtTrigger]="dtTrigger"
+        class="display compact"
+        style="width: 100%"
+      >
         <tfoot>
           <tr>
             <th></th>
@@ -27,7 +35,9 @@
             <th data-priority="1">
               <select class="form-control-sm" name="search-last-name">
                 <option value="">- Filtrar por ciudad -</option>
-                <option *ngFor="let city of cities" [value]="city.nomCiudad">{{city.nomCiudad}}</option>
+                <option *ngFor="let city of cities" [value]="city.nomCiudad">
+                  {{ city.nomCiudad }}
+                </option>
               </select>
             </th>
             <th></th>
@@ -46,13 +56,12 @@
           </tr>
         </thead>
         <tbody>
-
           <tr *ngFor="let driver of drivers; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{driver.nomUsuario}}</td>
-            <td>{{driver.agency.city.nomCiudad}}</td>
-            <td>{{driver.numCelular || 'Sin registro' }}</td>
-            <td>{{driver.state}}</td>
+            <td>{{ i + 1 }}</td>
+            <td>{{ driver.nomUsuario }}</td>
+            <td>{{ driver.agency.city.nomCiudad }}</td>
+            <td>{{ driver.numCelular || "Sin registro" }}</td>
+            <td>{{ driver.state }}</td>
             <td>
               <button mat-icon-button [matMenuTriggerFor]="menu">
                 <mat-icon>more_vert</mat-icon>
@@ -63,7 +72,10 @@
                   <span>Editar</span>
                 </button>
 
-                <button (click)="showCategoriesDialog(driver.idUsuario)" mat-menu-item>
+                <button
+                  (click)="showCategoriesDialog(driver.idUsuario)"
+                  mat-menu-item
+                >
                   <mat-icon>list</mat-icon>
                   <span>Ver Categorías</span>
                 </button>
@@ -71,12 +83,9 @@
             </td>
           </tr>
         </tbody>
-
       </table>
     </div>
-
   </mat-card-content>
-
 </mat-card>
 
 <!-- CARD END -->

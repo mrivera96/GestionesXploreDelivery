@@ -11,4 +11,5 @@ export interface Category {
   ratesToShow?: Rate[]
   surcharges?: Surcharge[]
   idTipoServicio?: number
+  datesToShow?: any[]
 }

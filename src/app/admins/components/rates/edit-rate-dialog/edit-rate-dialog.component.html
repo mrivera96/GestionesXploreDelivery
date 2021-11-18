@@ -5,7 +5,15 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit">
     <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/rates/edit-rate-dialog/edit-rate-dialog.component.html
       <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+=======
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+>>>>>>> origin/V5:src/app/admins/components/rates/edit-rate-dialog/edit-rate-dialog.component.html
       <p>Cargando información...</p>
     </div>
   </div>
@@ -14,17 +22,30 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label class="d-inline-flex">Descripción de Tarifa:</mat-label>
-        <input matInput type="text" formControlName="descTarifa" maxlength="60" required>
+        <input
+          matInput
+          type="text"
+          formControlName="descTarifa"
+          maxlength="60"
+          required
+        />
         <mat-icon matSuffix>create</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Categoría:</mat-label>
-        <mat-select id="idCategoria" formControlName="idCategoria" required
-                    placeholder="- Seleccione una categoría -">
-          <mat-option *ngFor="let category of categories" value="{{category.idCategoria}}">
-            {{category.descCategoria}}
+        <mat-select
+          id="idCategoria"
+          formControlName="idCategoria"
+          required
+          placeholder="- Seleccione una categoría -"
+        >
+          <mat-option
+            *ngFor="let category of categories"
+            value="{{ category.idCategoria }}"
+          >
+            {{ category.descCategoria }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>directions_car</mat-icon>
@@ -34,14 +55,26 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Entregas Mínimas:</mat-label>
-        <input matInput id="entregasMinimas" type="number" formControlName="entregasMinimas" required>
+        <input
+          matInput
+          id="entregasMinimas"
+          type="number"
+          formControlName="entregasMinimas"
+          required
+        />
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Entregas máximas:</mat-label>
-        <input matInput id="entregasMaximas" type="number" formControlName="entregasMaximas" required>
+        <input
+          matInput
+          id="entregasMaximas"
+          type="number"
+          formControlName="entregasMaximas"
+          required
+        />
         <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
@@ -49,7 +82,13 @@
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Monto:</mat-label>
-        <input matInput id="precio" type="number" formControlName="precio" required>
+        <input
+          matInput
+          id="precio"
+          type="number"
+          formControlName="precio"
+          required
+        />
         <mat-icon matSuffix>attach_money</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
@@ -58,62 +97,71 @@
     <div class="form-row">
       <p class="card-title"><strong>Valores de Facturación</strong></p>
     </div>
-    <hr>
+    <hr />
 
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Tiempo y Kilometraje:</mat-label>
-        <input matInput type="number" formControlName="tYK" min="0">
+        <input matInput type="number" formControlName="tYK" min="0" />
         <mat-icon matSuffix>schedule</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Cobertura de Vehículo:</mat-label>
-        <input matInput type="number" formControlName="cobVehiculo" min="0">
+        <input matInput type="number" formControlName="cobVehiculo" min="0" />
         <mat-icon matSuffix>directions_car</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Servicio de Chofer:</mat-label>
-        <input matInput type="number" formControlName="servChofer" min="0">
+        <input matInput type="number" formControlName="servChofer" min="0" />
         <mat-icon matSuffix>airline_seat_recline_normal</mat-icon>
       </mat-form-field>
-
     </div>
 
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Recuperación de Combustible:</mat-label>
-        <input matInput type="number" formControlName="recCombustible" min="0">
+        <input
+          matInput
+          type="number"
+          formControlName="recCombustible"
+          min="0"
+        />
         <mat-icon matSuffix>local_gas_station</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Cobertura de Transporte:</mat-label>
-        <input matInput type="number" formControlName="cobTransporte" min="0">
+        <input matInput type="number" formControlName="cobTransporte" min="0" />
         <mat-icon matSuffix>transfer_within_a_station</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>ISV:</mat-label>
-        <input matInput type="number" formControlName="isv" min="0">
+        <input matInput type="number" formControlName="isv" min="0" />
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
-
     </div>
 
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Tasa Turística:</mat-label>
-        <input matInput type="number" formControlName="tasaTuris" min="0">
+        <input matInput type="number" formControlName="tasaTuris" min="0" />
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Gastos Reembolsables:</mat-label>
-        <input matInput type="number" formControlName="gastosReembolsables" min="0">
+        <input
+          matInput
+          type="number"
+          formControlName="gastosReembolsables"
+          min="0"
+        />
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
+<<<<<<< HEAD:src/app/admins/components/rates/edit-rate-dialog/edit-rate-dialog.component.html
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Transporte de Personas:</mat-label>
@@ -121,22 +169,34 @@
         <mat-icon matSuffix>transfer_within_a_station</mat-icon>
       </mat-form-field>
     </div>
+=======
+>>>>>>> origin/V5:src/app/admins/components/rates/edit-rate-dialog/edit-rate-dialog.component.html
 
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Transporte de Personas:</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="transportePersonas"
+          min="0"
+        />
+        <mat-icon matSuffix>transfer_within_a_station</mat-icon>
+      </mat-form-field>
+    </div>
   </form>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="edRateForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()"
-          mat-raised-button color="primary" >
+  <button
+    type="button"
+    [disabled]="edRateForm.invalid || loaders.loadingSubmit"
+    (click)="onFormEditSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
-
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->
-
-

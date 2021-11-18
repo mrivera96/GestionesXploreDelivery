@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
 import {Delivery} from "../../../models/delivery";
-import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import {LoadingDialogComponent} from "../../../shared/components/loading-dialog/loading-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 declare var $: any
 

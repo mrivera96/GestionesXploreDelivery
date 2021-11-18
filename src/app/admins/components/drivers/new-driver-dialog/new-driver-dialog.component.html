@@ -5,7 +5,15 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit">
     <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/drivers/new-driver-dialog/new-driver-dialog.component.html
       <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+=======
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+>>>>>>> origin/V5:src/app/admins/components/drivers/new-driver-dialog/new-driver-dialog.component.html
       <p>Cargando información...</p>
     </div>
   </div>
@@ -14,16 +22,33 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Nombre de Conductor:</mat-label>
-        <input matInput id="nomUsuario" type="text" formControlName="nomUsuario" required
-               placeholder="Nombre del Conductor" maxlength="80">
+        <input
+          matInput
+          id="nomUsuario"
+          type="text"
+          formControlName="nomUsuario"
+          required
+          placeholder="Nombre del Conductor"
+          maxlength="80"
+        />
         <mat-icon matSuffix>person</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Número de Celular:</mat-label>
-        <input appPhoneMask matInput id="numCelular" type="tel" formControlName="numCelular" autocomplete="nope"
-               required placeholder="Ej. 9999-9999 (Guión automáticamente)" minlength="9" maxlength="9">
+        <input
+          appPhoneMask
+          matInput
+          id="numCelular"
+          type="tel"
+          formControlName="numCelular"
+          autocomplete="nope"
+          required
+          placeholder="Ej. 9999-9999 (Guión automáticamente)"
+          minlength="9"
+          maxlength="9"
+        />
         <mat-icon matSuffix>phone</mat-icon>
         <mat-error *ngIf="f.numCelular.errors?.required">
           *Este campo es obligatorio
@@ -36,23 +61,36 @@
         </mat-error>
       </mat-form-field>
 
-
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Nombre de usuario del conductor:</mat-label>
-        <input matInput id="nickUsuario" type="text" formControlName="nickUsuario" required
-               (keydown.space)="$event.preventDefault()"
-               placeholder="Nombre de usuario del conductor" maxlength="15">
+        <input
+          matInput
+          id="nickUsuario"
+          type="text"
+          formControlName="nickUsuario"
+          required
+          (keydown.space)="$event.preventDefault()"
+          placeholder="Nombre de usuario del conductor"
+          maxlength="15"
+        />
         <mat-icon matSuffix>account_circle</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
-
     </div>
 
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Passcode del conductor:</mat-label>
-        <input matInput id="passcodeUsuario" type="number" formControlName="passcodeUsuario"
-               minlength="4" maxlength="4" placeholder="****" required>
+        <input
+          matInput
+          id="passcodeUsuario"
+          type="number"
+          formControlName="passcodeUsuario"
+          minlength="4"
+          maxlength="4"
+          placeholder="****"
+          required
+        />
         <mat-icon matSuffix>lock</mat-icon>
         <mat-error *ngIf="f.passcodeUsuario.errors?.required">
           *Este campo es obligatorio
@@ -67,9 +105,16 @@
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Agencia:</mat-label>
-        <mat-select formControlName="idAgencia" required placeholder="- Seleccione una agencia -">
-          <mat-option *ngFor="let agency of agencies" value="{{agency.idAgencia}}">
-            {{agency.descAgencia}}
+        <mat-select
+          formControlName="idAgencia"
+          required
+          placeholder="- Seleccione una agencia -"
+        >
+          <mat-option
+            *ngFor="let agency of agencies"
+            value="{{ agency.idAgencia }}"
+          >
+            {{ agency.descAgencia }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>business</mat-icon>
@@ -77,22 +122,21 @@
           *Este campo es obligatorio
         </mat-error>
       </mat-form-field>
-
     </div>
-
   </form>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="nDrivForm.invalid || loaders.loadingSubmit" (click)="onNewFormSubmit()"
-          mat-raised-button color="primary">
+  <button
+    type="button"
+    [disabled]="nDrivForm.invalid || loaders.loadingSubmit"
+    (click)="onNewFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
-
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->

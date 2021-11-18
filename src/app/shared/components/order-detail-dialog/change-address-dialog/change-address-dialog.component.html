@@ -19,12 +19,23 @@
           matInput
           formControlName="direccion"
           name="direccion"
+<<<<<<< HEAD
           id="direccion"
+=======
+>>>>>>> origin/V5
           required
           placeholder="¿Dónde entregaremos tu pedido?"
         />
         <mat-autocomplete #autoDest="matAutocomplete">
+<<<<<<< HEAD
           <mat-option (click)="calculatedistanceBefore()" *ngFor="let s of placesDestination" [value]="s.text">
+=======
+          <mat-option
+            *ngFor="let s of placesDestination"
+            [value]="s.text"
+            (click)="calculatedistanceBefore()"
+          >
+>>>>>>> origin/V5
             {{ s.text }}
           </mat-option>
         </mat-autocomplete>
@@ -78,10 +89,13 @@
         Ubicación actual
       </mat-checkbox>
       <input type="text" formControlName="coordsDestino" hidden />
+<<<<<<< HEAD
 
       <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
         {{ prohibitedDistanceMsg }}
       </div>
+=======
+>>>>>>> origin/V5
     </div>
   </form>
 
@@ -107,7 +121,10 @@
   </div>
 
   <br />
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/V5
   <!-- INICIO DATOS EN TIEMPO REAL -->
   <div class="form-row text-center" *ngIf="!loaders.loadingSubmit">
     <div class="col">
@@ -152,7 +169,13 @@
   <button
     type="button"
     mat-raised-button
+<<<<<<< HEAD
     [disabled]="addForm.direccion.invalid || loaders.loadingSubmit || prohibitedDistance"
+=======
+    [disabled]="
+      addForm.direccion.invalid || loaders.loadingSubmit || prohibitedDistance
+    "
+>>>>>>> origin/V5
     (click)="calculateDistance()"
     color="primary"
   >

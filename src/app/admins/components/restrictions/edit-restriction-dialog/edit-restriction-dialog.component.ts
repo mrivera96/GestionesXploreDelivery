@@ -2,8 +2,13 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Restriction} from "../../../../models/restriction";
+<<<<<<< HEAD:src/app/admins/components/restrictions/edit-restriction-dialog/edit-restriction-dialog.component.ts
 import {ErrorModalComponent} from "../../../../components/shared/error-modal/error-modal.component";
 import {SuccessModalComponent} from "../../../../components/shared/success-modal/success-modal.component";
+=======
+import {ErrorModalComponent} from "../../../../shared/components/error-modal/error-modal.component";
+import {SuccessModalComponent} from "../../../../shared/components/success-modal/success-modal.component";
+>>>>>>> origin/V5:src/app/admins/components/restrictions/edit-restriction-dialog/edit-restriction-dialog.component.ts
 import {RestrictionsService} from "../../../../services/restrictions.service";
 
 @Component({

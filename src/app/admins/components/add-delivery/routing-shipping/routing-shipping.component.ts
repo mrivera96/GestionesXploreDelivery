@@ -23,6 +23,7 @@ import { AuthService } from "../../../../services/auth.service";
 import { UsersService } from "../../../../services/users.service";
 import { OperationsService } from "../../../../services/operations.service";
 import { formatDate } from "@angular/common";
+<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
 import { DateValidate } from "../../../../helpers/admin.date.validator";
 import { BlankSpacesValidator } from "../../../../helpers/blankSpaces.validator";
 import { NoUrlValidator } from "../../../../helpers/noUrl.validator";
@@ -32,6 +33,17 @@ import { SuccessModalComponent } from "../../../../components/shared/success-mod
 import { ConfirmDialogComponent } from "../../../../components/customer/new-delivery/confirm-dialog/confirm-dialog.component";
 import { LockedUserDialogComponent } from "../../../../components/shared/locked-user-dialog/locked-user-dialog.component";
 import { LoadingDialogComponent } from "../../../../components/shared/loading-dialog/loading-dialog.component";
+=======
+import { DateValidate } from "../../../../helpers/date.validator";
+import { BlankSpacesValidator } from "../../../../helpers/blankSpaces.validator";
+import { NoUrlValidator } from "../../../../helpers/noUrl.validator";
+import { environment } from "../../../../../environments/environment";
+import { ErrorModalComponent } from "../../../../shared/components/error-modal/error-modal.component";
+import { SuccessModalComponent } from "../../../../shared/components/success-modal/success-modal.component";
+import { ConfirmDialogComponent } from "../../../../customers/components/new-delivery/confirm-dialog/confirm-dialog.component";
+import { LockedUserDialogComponent } from "../../../../shared/components/locked-user-dialog/locked-user-dialog.component";
+import { LoadingDialogComponent } from "../../../../shared/components/loading-dialog/loading-dialog.component";
+>>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
 import { animate, style, transition, trigger } from "@angular/animations";
 
 @Component({
@@ -132,8 +144,7 @@ export class RoutingShippingComponent implements OnInit {
     private branchService: BranchService,
     private router: Router,
     public dialog: MatDialog,
-    private authService: AuthService,
-    private userService: UsersService,
+    private operationsService: OperationsService
   ) {
 
   }
@@ -163,17 +174,22 @@ export class RoutingShippingComponent implements OnInit {
       deliveryHeader: this.formBuilder.group({
         fecha: [{
           value: formatDate(new Date(), 'yyyy-MM-dd', 'en'), disabled: false
-        }, Validators.required],
+        }, [Validators.required, DateValidate]],
         hora: [formatDate(new Date().setHours(new Date().getHours(), new Date().getMinutes() + 5), 'HH:mm', 'en'), Validators.required],
         dirRecogida: [{ value: '', disabled: false }, [Validators.required]],
         idCategoria: [{ value: null, disabled: false }, [Validators.required]],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
         distancia: [0],
+<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
         idTarifa: [null]
+=======
+        idTarifa: [null],
+        prioridad: [false]
+>>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
       }, {
         validators: [
-          DateValidate('fecha'),
+          DateValidate('fecha', 'hora'),
           BlankSpacesValidator('dirRecogida'),
           NoUrlValidator('dirRecogida'),
         ]
@@ -230,8 +246,12 @@ export class RoutingShippingComponent implements OnInit {
   loadData() {
     this.openLoader()
     const categoriesSubscription = this.categoriesService
-      .getCustomerCategories(this.currCustomer.idCliente)
+      .getCustomerCategories(this.currCustomer.idCliente, 3)
       .subscribe(response => {
+<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
+=======
+
+>>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
         this.demandMSG = response.demand
         response.routingCategories.forEach(element => {
           if (element.idTipoServicio == 2) {
@@ -242,6 +262,7 @@ export class RoutingShippingComponent implements OnInit {
         });
 
         this.deliveryCategories.forEach(category => {
+<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
           category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
         })
 
@@ -249,6 +270,15 @@ export class RoutingShippingComponent implements OnInit {
           category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
         })
 
+=======
+          category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
+        })
+
+        this.transportationCategories.forEach(category => {
+          category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
+        })
+
+>>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
         this.dialog.closeAll()
         categoriesSubscription.unsubscribe()
       }, error => {
@@ -280,13 +310,15 @@ export class RoutingShippingComponent implements OnInit {
 
   //VERIFICIA SI EL CLIENTE TIENE REGISTRADAS INSTRUCCIONES DE RECOGIDA
   checkInsructions() {
-    this.myBranchOffices.forEach(bOffice => {
-      if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones)
-      } else {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue('')
-      }
-    })
+    const bOffice = this.myBranchOffices.find(
+      (item) =>
+        item.direccion ==
+        this.deliveryForm.get('deliveryHeader.dirRecogida').value
+    );
+    this.operationsService.checkCustomerInstructions(
+      bOffice,
+      this.deliveryForm.get('deliveryHeader.instrucciones')
+    );
   }
 
   clearLocationField() {
@@ -1136,8 +1168,11 @@ export class RoutingShippingComponent implements OnInit {
     this.selectedCategory = category
     this.surcharges = this.selectedCategory.surcharges
     this.rates = this.selectedCategory.ratesToShow
+<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
 
 
+=======
+>>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
   }
 
   //AÑADE UN CARGO EXTRA

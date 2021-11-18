@@ -1,0 +1,76 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-edit"></i> Crear Párrafo
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="edParagraphForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label class="d-inline-flex">Descripción de Párrafo:</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="descripcion"
+          maxlength="30"
+          required
+        />
+        <mat-icon matSuffix>create</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Texto a mostrar:</mat-label>
+        <textarea
+          matInput
+          id="valor"
+          formControlName="valor"
+          maxlength="255"
+          required
+        ></textarea>
+        <mat-icon matSuffix>gavel</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <h4>Formato</h4>
+    <hr />
+
+    <div class="form-row">
+      <div class="form-group col-md">
+        <mat-slide-toggle formControlName="negrita">Negrita</mat-slide-toggle>
+      </div>
+
+      <div class="form-group col-md">
+        <mat-slide-toggle formControlName="cursiva">Cursiva</mat-slide-toggle>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    [disabled]="edParagraphForm.invalid || loaders.loadingSubmit"
+    (click)="onFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

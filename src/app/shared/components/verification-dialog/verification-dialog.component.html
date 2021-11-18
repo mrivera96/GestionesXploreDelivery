@@ -1,0 +1,80 @@
+<h2 mat-dialog-title class="text-warning">
+  <mat-icon>done_all</mat-icon> Código de Verificación
+</h2>
+
+<mat-dialog-content>
+  <div class="row">
+    <div class="col text-center">
+      <img src="assets/img/chat-icon.png" alt="verification-icon" width="30%" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col text-center">
+      <h3>Hemos enviado un código de verificación a</h3>
+      <h2>
+        <strong>{{ data.form.numTelefono }}</strong>
+      </h2>
+      <h5>
+        ¿No recibiste el código? <a (click)="sendCode()">Haz clic aquí</a>
+      </h5>
+    </div>
+  </div>
+
+  <h3>Ingresa el código abajo:</h3>
+  <div class="row">
+    <mat-form-field class="col-sm" appearance="outline">
+      <input
+        matInput
+        [(ngModel)]="confirmationCod[0]"
+        type="number"
+        placeholder="0"
+        min="0"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="col-sm" appearance="outline">
+      <input
+        matInput
+        [(ngModel)]="confirmationCod[1]"
+        type="number"
+        placeholder="0"
+        min="0"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="col-sm" appearance="outline">
+      <input
+        matInput
+        [(ngModel)]="confirmationCod[2]"
+        type="number"
+        placeholder="0"
+        min="0"
+      />
+    </mat-form-field>
+
+    <mat-form-field class="col-sm" appearance="outline">
+      <input
+        matInput
+        [(ngModel)]="confirmationCod[3]"
+        type="number"
+        placeholder="0"
+        min="0"
+      />
+    </mat-form-field>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <button
+        mat-raised-button
+        [disabled]="confirmationCod.length < 4"
+        color="primary"
+        type="button"
+        (click)="confirmCode()"
+      >
+        Confirmar
+      </button>
+    </div>
+  </div>
+</mat-dialog-content>

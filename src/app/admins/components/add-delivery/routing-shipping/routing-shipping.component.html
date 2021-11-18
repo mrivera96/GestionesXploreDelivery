@@ -1,5 +1,6 @@
 <!--CARD START -->
 <mat-card @fade>
+<<<<<<< HEAD
   <mat-card-header>
     <mat-card-title>
       Delivery en Ruta para {{ currCustomer.nomEmpresa }}
@@ -11,6 +12,17 @@
     <!--HEADER BLOCK END-->
 
     <!--DELIVERY FORM BLOCK START-->
+=======
+  <!--  INICIO ENCABEZADO CARD-->
+  <app-form-title
+    [title]="'Delivery en Ruta para ' + currCustomer.nomEmpresa"
+  ></app-form-title>
+  <!--  FIN  ENCABEZADO CARD-->
+
+  <!-- INICIO CARD CONTENT -->
+  <mat-card-content>
+    <!-- INICIO DEL FORM DELIVERY CONTAINER-->
+>>>>>>> origin/V5
     <div class="row">
       <div class="col">
         <p>
@@ -26,6 +38,7 @@
           role="form"
           (ngSubmit)="onFormSubmit()"
         >
+<<<<<<< HEAD
           <!--DELIVERY HEADER GROUP START-->
           <div class="row">
             <div class="col-md">
@@ -39,6 +52,16 @@
               </div>
 
               <mat-tab-group (selectedTabChange)="onTabChanged($event)">
+=======
+          <!-- INICIO DELIVERY HEADER -->
+          <div class="row">
+            <!-- INICIO LADO DE FORMULARIO-->
+            <div class="col-md">
+              <h3 class="card-title">Categoría a Reservar</h3>
+              <hr />
+
+              <mat-tab-group>
+>>>>>>> origin/V5
                 <mat-tab label="Delivery">
                   <div class="col" formGroupName="deliveryHeader">
                     <br />
@@ -46,6 +69,7 @@
                       (change)="calculatedistanceBefore()"
                       formControlName="idCategoria"
                     >
+<<<<<<< HEAD
                       <mat-radio-button
                         [id]="category?.idCategoria"
                         [value]="category.idCategoria"
@@ -94,6 +118,15 @@
                         </span>
                       </mat-radio-button>
                     </mat-radio-group>
+=======
+                    <app-category-selection
+                      (setSelectedCategory)="setSelectedCategory($event)"
+                      [newForm]="newForm"
+                      [categories]="deliveryCategories"
+                    >
+                    </app-category-selection>
+                  </mat-radio-group>
+>>>>>>> origin/V5
                   </div>
                 </mat-tab>
 
@@ -104,6 +137,7 @@
                       (change)="calculatedistanceBefore()"
                       formControlName="idCategoria"
                     >
+<<<<<<< HEAD
                       <mat-radio-button
                         *ngFor="
                           let category of transportationCategories;
@@ -151,10 +185,20 @@
                         </span>
                       </mat-radio-button>
                     </mat-radio-group>
+=======
+                    <app-category-selection
+                      (setSelectedCategory)="setSelectedCategory($event)"
+                      [newForm]="newForm"
+                      [categories]="transportationCategories"
+                    >
+                    </app-category-selection>
+                  </mat-radio-group>
+>>>>>>> origin/V5
                   </div>
                 </mat-tab>
               </mat-tab-group>
 
+<<<<<<< HEAD
               <div class="row" *ngIf="selectedCategory.idCategoria">
                 <div class="col">
                   <p class="text-danger">
@@ -163,6 +207,13 @@
                   </p>
                 </div>
               </div>
+=======
+              <app-category-description
+                *ngIf="selectedCategory.idCategoria"
+                [selectedCategory]="selectedCategory"
+              >
+              </app-category-description>
+>>>>>>> origin/V5
 
               <div class="row">
                 <div class="col">
@@ -180,6 +231,10 @@
                   </p>
                 </div>
               </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/V5
               <div class="form-row" formGroupName="deliveryHeader">
                 <mat-form-field
                   appearance="outline"
@@ -418,11 +473,15 @@
                 </div>
               </div>
 
+<<<<<<< HEAD
               <div
                 class="form-row"
                 formGroupName="order"
                 *ngIf="selectedCategory.idCategoria"
               >
+=======
+              <div class="form-row" formGroupName="order">
+>>>>>>> origin/V5
                 <mat-form-field
                   appearance="outline"
                   floatLabel="always"
@@ -484,11 +543,15 @@
                 </mat-form-field>
               </div>
 
+<<<<<<< HEAD
               <div
                 class="form-row"
                 formGroupName="order"
                 *ngIf="selectedCategory.idCategoria"
               >
+=======
+              <div class="form-row" formGroupName="order">
+>>>>>>> origin/V5
                 <mat-form-field
                   appearance="outline"
                   floatLabel="always"
@@ -623,6 +686,7 @@
             </div>
 
             <div class="col-md">
+<<<<<<< HEAD
               <div class="row">
                 <div class="col">
                   <p class="card-title"><strong>Ruta de Entrega</strong></p>
@@ -630,6 +694,10 @@
                 </div>
               </div>
 
+=======
+              <h3 class="card-title">Ruta de Entrega</h3>
+              <hr />
+>>>>>>> origin/V5
               <div class="row">
                 <div class="col">
                   <google-map
@@ -709,8 +777,12 @@
                   !deliveryForm.get('order').valid ||
                   !deliveryForm.get('deliveryHeader').valid ||
                   loaders.loadingAdd ||
+<<<<<<< HEAD
                   !selectedCategory?.idCategoria ||
                   prohibitedDistance
+=======
+                  !selectedCategory?.idCategoria
+>>>>>>> origin/V5
                 "
                 class="float-left"
               >
@@ -881,6 +953,7 @@
           </li>
         </ul>
       </div>
+<<<<<<< HEAD
 
       <!-- <div class="col-12">
         <p class="card-title"><strong>Forma de pago:</strong></p>
@@ -1015,6 +1088,27 @@
           bienes o en costos por tiempo de carga/espera adicional.
         </p>
       </div>
+=======
+      <!--
+      <div class="col-12">
+        <p class="card-title"><strong>Forma de pago:</strong></p>
+        <hr>
+      </div>-->
+
+      <!-- <div class="col-12">
+        <mat-checkbox [(ngModel)]="paymentMethod" [value]="1">
+          <span>
+            <i class="fa fa-book"></i> Reservar
+            <span class="badge badge-primary">
+              L. {{pago.total | number: '.2'}}
+            </span>
+            <span *ngIf="loaders.loadingCalculating" class="spinner-border spinner-border-sm mr-1 "></span>
+          </span>
+        </mat-checkbox>
+      </div> -->
+
+     
+>>>>>>> origin/V5
     </div>
     <!--CARD BLOCK PAYMENT OPTION end-->
   </mat-card-content>
@@ -1024,7 +1118,11 @@
     <button
       mat-raised-button
       type="button"
+<<<<<<< HEAD
       *ngIf="paymentMethod == 1 && orders.length >= 2 && finishFlag == true"
+=======
+      *ngIf="paymentMethod == 1 && orders.length > 0 && finishFlag == true"
+>>>>>>> origin/V5
       [disabled]="
         this.orders.length < 2 || !deliveryForm.get('deliveryHeader').valid
       "
@@ -1032,6 +1130,12 @@
       (click)="openConfirmDialog()"
     >
       Registrar Reservación
+<<<<<<< HEAD
+=======
+      <span class="badge badge-warning">
+        {{ "L. " + pago.total }}
+      </span>
+>>>>>>> origin/V5
     </button>
 
     <!--<button type="button" *ngIf="paymentMethod == 2 && orders.length>0"

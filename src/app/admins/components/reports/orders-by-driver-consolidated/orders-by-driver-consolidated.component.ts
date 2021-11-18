@@ -1,22 +1,28 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { formatDate } from "@angular/common";
-import { UsersService } from "../../../../services/users.service";
-import { User } from "../../../../models/user";
-import { DeliveriesService } from "../../../../services/deliveries.service";
-import { animate, style, transition, trigger } from "@angular/animations";
-import { Subject } from "rxjs";
-import { DataTableDirective } from "angular-datatables";
-import { OrdersByCategory } from "../../../../models/orders-by-category";
-import { Order } from "../../../../models/order";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { formatDate } from '@angular/common';
+import { UsersService } from '../../../../services/users.service';
+import { User } from '../../../../models/user';
+import { DeliveriesService } from '../../../../services/deliveries.service';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { OrdersByCategory } from '../../../../models/orders-by-category';
+import { Order } from '../../../../models/order';
 import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
-import pdfMake from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+<<<<<<< HEAD:src/app/admins/components/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component.ts
 import { Cell, Columns, PdfMakeWrapper, Txt } from 'pdfmake-wrapper'
 import { ErrorModalComponent } from "../../../../components/shared/error-modal/error-modal.component";
 import { MatDialog } from "@angular/material/dialog";
+=======
+import { Cell, Columns, PdfMakeWrapper, Txt } from 'pdfmake-wrapper';
+import { ErrorModalComponent } from '../../../../shared/components/error-modal/error-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+>>>>>>> origin/V5:src/app/admins/components/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component.ts
 import { ConsolidatedReportResult } from 'src/app/models/consolidated-report-result';
 @Component({
   selector: 'app-orders-by-driver-consolidated',
@@ -26,67 +32,71 @@ import { ConsolidatedReportResult } from 'src/app/models/consolidated-report-res
     trigger('fade', [
       transition('void => *', [
         style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 }))
-      ])
-    ])
-  ]
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class OrdersByDriverConsolidatedComponent implements OnInit {
-
   @ViewChild(DataTableDirective, { static: false })
-  datatableElement: DataTableDirective
+  datatableElement: DataTableDirective;
   loaders = {
-    'loadingData': false,
-    'loadingSubmit': false,
-  }
-  consultForm: FormGroup
-  drivers: User[]
-  filteredDrivers: User[]
-  consultResults:any[] = []
-  dtOptions: any
-  dtTrigger: Subject<any>
-  totalOrders: number
-  ordersByCategory: OrdersByCategory[]
-  totalSurcharges: number = 0
-  totalCosts: number = 0
-  totalExtracharges: number = 0
-  ordersInRange: number = 0
-  orders: Order[] = []
+    loadingData: false,
+    loadingSubmit: false,
+  };
+  consultForm: FormGroup;
+  drivers: User[];
+  filteredDrivers: User[];
+  consultResults: any[] = [];
+  dtOptions: any;
+  dtTrigger: Subject<any>;
+  totalOrders: number;
+  ordersByCategory: OrdersByCategory[];
+  totalSurcharges: number = 0;
+  totalCosts: number = 0;
+  totalExtracharges: number = 0;
+  ordersInRange: number = 0;
+  orders: Order[] = [];
   totals: any = {
     totalOrders: 0,
     totalTime: 0,
     totalMoney: 0,
-  }
-  dates: any[] = []
-  headers: any[] = []
+  };
+  dates: any[] = [];
+  headers: any[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     private deliveriesService: DeliveriesService,
-    public dialog: MatDialog,
-  ) {
-  }
+    public dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   loadData() {
-    this.usersService.getDrivers().subscribe(response => {
-      this.drivers = response.data
-      this.filteredDrivers = response.data
-    })
+    this.usersService.getDrivers().subscribe((response) => {
+      this.drivers = response.data;
+      this.filteredDrivers = response.data;
+    });
   }
 
   initialize() {
     //this.dtTrigger = new Subject<any>()
     this.consultForm = this.formBuilder.group({
       driverId: ['', [Validators.required]],
-      initDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required],
-      finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
-    })
+      initDate: [
+        formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+        Validators.required,
+      ],
+      finDate: [
+        formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+        Validators.required,
+      ],
+    });
 
     /*this.dtOptions = {
       pagingType: 'full_numbers',
@@ -114,44 +124,47 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
         },
       },
     }*/
-
   }
 
   get f() {
-    return this.consultForm.controls
+    return this.consultForm.controls;
   }
 
   onConsultFormSubmit() {
     if (this.consultForm.valid) {
-      this.loaders.loadingSubmit = true
-      this.dates = []
-      this.headers = []
-      this.consultResults = []
+      this.loaders.loadingSubmit = true;
+      this.dates = [];
+      this.headers = [];
+      this.consultResults = [];
 
-      this.deliveriesService.getConsolidatedOrdersByDriver(this.consultForm.value).subscribe(response => {
-        this.consultResults = response.data
-        this.dates = response.dates
-        this.headers.push("Conductor")
-        const datesLength = this.dates.length
+      this.deliveriesService
+        .getConsolidatedOrdersByDriver(this.consultForm.value)
+        .subscribe(
+          (response) => {
+            this.consultResults = response.data;
+            this.dates = response.dates;
+            this.headers.push('Conductor');
+            const datesLength = this.dates.length;
 
-        for (let idx = 0; idx < datesLength; idx++) {
-          this.headers.push("Cantidad")
-          this.headers.push("Tiempo")
-        }
+            for (let idx = 0; idx < datesLength; idx++) {
+              this.headers.push('Cantidad');
+              this.headers.push('Tiempo');
+            }
 
-        this.loaders.loadingSubmit = false
-      }, error => {
-        if (error.subscribe()) {
-          error.subscribe(error => {
-            this.loaders.loadingSubmit = false
-            this.openErrorDialog(error.statusText)
-          })
-        } else {
-          this.loaders.loadingSubmit = false
-          this.openErrorDialog(error.statusText)
-        }
-
-      })
+            this.loaders.loadingSubmit = false;
+          },
+          (error) => {
+            if (error.subscribe()) {
+              error.subscribe((error) => {
+                this.loaders.loadingSubmit = false;
+                this.openErrorDialog(error.statusText);
+              });
+            } else {
+              this.loaders.loadingSubmit = false;
+              this.openErrorDialog(error.statusText);
+            }
+          }
+        );
     }
   }
 
@@ -161,84 +174,95 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
 
   search(value: string) {
     let filter = value.toLowerCase();
-    if (filter != "") {
-      return this.drivers.filter(option => option.nomUsuario.toLowerCase().includes(filter));
+    if (filter != '') {
+      return this.drivers.filter((option) =>
+        option.nomUsuario.toLowerCase().includes(filter)
+      );
     }
-    return this.drivers
+    return this.drivers;
   }
 
   openErrorDialog(error: string): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
-
+        msgError: error,
+      },
+    });
   }
 
   generateExcel() {
-    let currentDriver: User = {}
+    let currentDriver: User = {};
 
-    this.drivers.forEach(driver => {
+    this.drivers.forEach((driver) => {
       if (driver.idUsuario == this.f.driverId.value) {
-        currentDriver = driver
+        currentDriver = driver;
       }
-    })
+    });
 
     //Excel Title, Header, Data
-    let title = ''
+    let title = '';
     if (currentDriver.nomUsuario) {
-      title = 'Reporte de envíos consolidados - ' + currentDriver.nomUsuario
+      title = 'Reporte de envíos consolidados - ' + currentDriver.nomUsuario;
     } else {
-      title = 'Reporte de envíos consolidados - Todos los conductores'
+      title = 'Reporte de envíos consolidados - Todos los conductores';
     }
-
 
     //Create workbook and worksheet
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet('Reporte Envíos Consolidados');
     //Add Row and formatting
     let titleRow = worksheet.addRow([title]);
-    titleRow.font = { name: 'Arial', family: 4, size: 16, underline: 'double', bold: true }
+    titleRow.font = {
+      name: 'Arial',
+      family: 4,
+      size: 16,
+      underline: 'double',
+      bold: true,
+    };
     worksheet.mergeCells('A1:B2');
     worksheet.addRow([]);
     //Blank Row
 
-    let subTitleRow = worksheet.addRow(['Desde : ' + this.f.initDate.value + ' Hasta: ' + this.f.finDate.value])
+    let subTitleRow = worksheet.addRow([
+      'Desde : ' + this.f.initDate.value + ' Hasta: ' + this.f.finDate.value,
+    ]);
     worksheet.mergeCells('A4:B4');
-    subTitleRow.font = { name: 'Arial', family: 4, size: 12, bold: true }
+    subTitleRow.font = { name: 'Arial', family: 4, size: 12, bold: true };
 
     worksheet.addRow([]);
     //Add Header Row
 
     //Add Header Row
     const rangeTitle = worksheet.addRow(['Envíos por fecha']);
-    rangeTitle.font = { name: 'Arial', family: 4, size: 12, bold: true }
+    rangeTitle.font = { name: 'Arial', family: 4, size: 12, bold: true };
     worksheet.addRow([]);
 
-    const datesHeader = []
+    const datesHeader = [];
 
-    datesHeader[0] = ""
-    this.dates.forEach(date=>{
-      datesHeader.push(date)
-      datesHeader.push("")
-    })
+    datesHeader[0] = '';
+    this.dates.forEach((date) => {
+      datesHeader.push(date);
+      datesHeader.push('');
+    });
 
-
-
-    let firstheaderRow = worksheet.addRow(datesHeader)
+    let firstheaderRow = worksheet.addRow(datesHeader);
     firstheaderRow.eachCell((cell, number) => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
         fgColor: { argb: 'D3D3D3' },
-        bgColor: { argb: 'D3D3D3' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
+        bgColor: { argb: 'D3D3D3' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
       cell.alignment = {
-        horizontal: "center"
-      }
-    })
+        horizontal: 'center',
+      };
+    });
 
     worksheet.mergeCells('B8:C8');
     worksheet.mergeCells('D8:E8');
@@ -249,18 +273,16 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     worksheet.mergeCells('N8:O8');
     worksheet.mergeCells('P8:R8');
 
-    const headers = [
-      "Conductor",
-    ]
-    const datesLength = this.dates.length
+    const headers = ['Conductor'];
+    const datesLength = this.dates.length;
     for (let idx = 0; idx < datesLength; idx++) {
-      headers.push("Cantidad")
-      headers.push("Tiempo")
+      headers.push('Cantidad');
+      headers.push('Tiempo');
     }
 
-    headers.push("Total Envíos")
-    headers.push("Total Tiempo")
-    headers.push("Efectivo Recibido")
+    headers.push('Total Envíos');
+    headers.push('Total Tiempo');
+    headers.push('Efectivo Recibido');
 
     let ordersByDateheaderRow = worksheet.addRow(headers);
 
@@ -270,22 +292,26 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
         type: 'pattern',
         pattern: 'solid',
         fgColor: { argb: 'D3D3D3' },
-        bgColor: { argb: 'D3D3D3' }
-      }
-      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } }
-    })
+        bgColor: { argb: 'D3D3D3' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    });
     // worksheet.addRows(data);
     // Add Data and Conditional Formatting
-    let array1Row = []
+    let array1Row = [];
 
-    this.consultResults.forEach(d => {
-      array1Row.push(d)
-    })
+    this.consultResults.forEach((d) => {
+      array1Row.push(d);
+    });
 
-    array1Row.forEach(v => {
+    array1Row.forEach((v) => {
       worksheet.addRow(v);
-    })
-
+    });
 
     worksheet.getColumn(1).width = 40;
     worksheet.getColumn(2).width = 20;
@@ -314,25 +340,38 @@ export class OrdersByDriverConsolidatedComponent implements OnInit {
     worksheet.getColumn(25).width = 20;
     worksheet.getColumn(26).width = 20;
 
-
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      let blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
       if (currentDriver.nomUsuario) {
-        fs.saveAs(blob, 'Reporte envíos por conductor consolidado (' + currentDriver.nomUsuario + ').xlsx');
+        fs.saveAs(
+          blob,
+          'Reporte envíos por conductor consolidado (' +
+            currentDriver.nomUsuario +
+            ').xlsx'
+        );
       } else {
-        fs.saveAs(blob, 'Reporte envíos por conductor consolidado (todos).xlsx');
+        fs.saveAs(
+          blob,
+          'Reporte envíos por conductor consolidado (todos).xlsx'
+        );
       }
-    })
+    });
   }
 
   printReport() {
-    let divToPrint = document.getElementById('printTable')
-    const newWin = window.open('', '_blank', 'width=1366,height=760,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no')
+    let divToPrint = document.getElementById('printTable');
+    const newWin = window.open(
+      '',
+      '_blank',
+      'width=1366,height=760,scrollbars=no,menubar=no,toolbar=no,location=no,status=no,titlebar=no'
+    );
     newWin.document.open();
-    newWin.document.write(divToPrint.outerHTML)
-    newWin.print()
-    newWin.document.close()
+    newWin.document.write(divToPrint.outerHTML);
+    newWin.print();
+    newWin.document.close();
   }
 
   generatePDF() {

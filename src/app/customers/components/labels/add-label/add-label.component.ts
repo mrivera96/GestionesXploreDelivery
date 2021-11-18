@@ -2,8 +2,8 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ErrorModalComponent } from 'src/app/components/shared/error-modal/error-modal.component';
-import { SuccessModalComponent } from 'src/app/components/shared/success-modal/success-modal.component';
+import { ErrorModalComponent } from 'src/app/shared/components/error-modal/error-modal.component';
+import { SuccessModalComponent } from 'src/app/shared/components/success-modal/success-modal.component';
 import { LabelsService } from 'src/app/services/labels.service';
 
 @Component({

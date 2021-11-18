@@ -6,11 +6,11 @@ import {AuthService} from "../../../services/auth.service";
 import {User} from "../../../models/user";
 import {MustMatch} from "../../../helpers/mustMatch.validator";
 import {PasswordValidate} from "../../../helpers/passwordValidation.validator";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {ErrorModalComponent} from "../../../shared/components/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
-import {SuccessModalComponent} from "../../shared/success-modal/success-modal.component";
+import {SuccessModalComponent} from "../../../shared/components/success-modal/success-modal.component";
 import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
-import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import {LoadingDialogComponent} from "../../../shared/components/loading-dialog/loading-dialog.component";
 
 declare var $: any
 

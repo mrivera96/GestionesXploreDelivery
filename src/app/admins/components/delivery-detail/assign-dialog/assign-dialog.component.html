@@ -1,12 +1,17 @@
 <!-- MODAL START -->
-<h2 mat-dialog-title class="text-primary">
-  Asignar Reserva
-</h2>
+<h2 mat-dialog-title class="text-primary">Asignar Reserva</h2>
 <mat-dialog-content>
-
   <div class="row" *ngIf="loaders.loadingData">
     <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/delivery-detail/assign-dialog/assign-dialog.component.html
       <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+=======
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+>>>>>>> origin/V5:src/app/admins/components/delivery-detail/assign-dialog/assign-dialog.component.html
       <p>Cargando información...</p>
     </div>
   </div>
@@ -16,27 +21,29 @@
       <mat-label>Conductor:</mat-label>
       <mat-select formControlName="idConductor">
         <mat-option [value]="null">-Seleccione un conductor-</mat-option>
-        <mat-option *ngFor="let conductor of conductores" value="{{conductor.idUsuario}}">
-          {{conductor?.nomUsuario}}
+        <mat-option
+          *ngFor="let conductor of conductores"
+          value="{{ conductor.idUsuario }}"
+        >
+          {{ conductor?.nomUsuario }}
         </mat-option>
-
       </mat-select>
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
-
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-raised-button [disabled]="asignForm.invalid" (click)="assignDelivery()" color="primary"
-          mat-dialog-close>
+  <button
+    mat-raised-button
+    [disabled]="asignForm.invalid"
+    (click)="assignDelivery()"
+    color="primary"
+    mat-dialog-close
+  >
     Asignar
   </button>
-  <button mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
+  <button mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->
-
-

@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 .xplore-bg{
-  background-color: #0071A2/*#006b9e #00679a*/ !important;
+  background-color: #0071a2/*#006b9e #00679a*/ !important;
 }
 
 mat-form-field {
@@ -14,7 +14,7 @@ mat-sidenav{
 mat-card-header{
   border-style: none none solid;
   border-width: 0 0 3px;
-  border-color:  #0277bd;
+  border-color:  #0071a2;
 }
 
 mat-card-content{
@@ -72,4 +72,11 @@ mat-sidenav{
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+ngx-dropzone{
+  height: 70px !important;
+  min-height: 40px !important;
+  min-width: 200px !important;
+  max-width: 200px !important;
+}
 

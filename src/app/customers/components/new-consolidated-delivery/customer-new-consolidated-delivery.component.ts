@@ -19,12 +19,18 @@ import { AuthService } from "../../../services/auth.service"
 import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator"
 import { NoUrlValidator } from "../../../helpers/noUrl.validator"
 import { environment } from "../../../../environments/environment"
+<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
 import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component"
 import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component"
+=======
+import { ErrorModalComponent } from "../../../shared/components/error-modal/error-modal.component"
+import { SuccessModalComponent } from "../../../shared/components/success-modal/success-modal.component"
+>>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
 import { ConfirmDialogComponent } from "../new-delivery/confirm-dialog/confirm-dialog.component"
 import { animate, style, transition, trigger } from "@angular/animations"
 import { BranchService } from "../../../services/branch.service"
 import { Branch } from "../../../models/branch"
+<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
 import { Schedule } from "../../../models/schedule"
 import { CustomerRestrictionsDialogComponent } from "../restrictions-dialog/customer-restrictions-dialog.component"
 import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component'
@@ -34,6 +40,17 @@ import { Label } from 'src/app/models/label'
 import { LoadingDialogComponent } from "../../shared/loading-dialog/loading-dialog.component"
 import { OperationsService } from 'src/app/services/operations.service'
 import { DateValidate } from 'src/app/helpers/date.validator'
+=======
+import { CustomerRestrictionsDialogComponent } from "../restrictions-dialog/customer-restrictions-dialog.component"
+import { LockedUserDialogComponent } from '../../../shared/components/locked-user-dialog/locked-user-dialog.component'
+import { UsersService } from 'src/app/services/users.service'
+import { LabelsService } from 'src/app/services/labels.service'
+import { Label } from 'src/app/models/label'
+import { LoadingDialogComponent } from "../../../shared/components/loading-dialog/loading-dialog.component"
+import { OperationsService } from 'src/app/services/operations.service'
+import { DateValidate } from 'src/app/helpers/date.validator'
+import { ConsolidatedHourValidate } from 'src/app/helpers/consolidatedHour.validator'
+>>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
 
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
@@ -163,6 +180,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         validators: [
           BlankSpacesValidator('dirRecogida'),
           NoUrlValidator('dirRecogida'),
+          ConsolidatedHourValidate('fecha','hora')
         ]
       }),
 
@@ -180,6 +198,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           BlankSpacesValidator('nomDestinatario'),
           BlankSpacesValidator('direccion'),
           NoUrlValidator('direccion'),
+          
         ]
       })
     })
@@ -215,7 +234,11 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
   loadData() {
     const categoriesSubscription = this.categoriesService
+<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
       .getCustomerCategories().subscribe(response => {
+=======
+      .getCustomerCategories(null, 2).subscribe(response => {
+>>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
         this.categories = response.consolidatedCategories
         this.demandMSG = response.demand
         this.categories.forEach(category => {
@@ -223,7 +246,11 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         })
         categoriesSubscription.unsubscribe()
         this.dialog.closeAll()
+<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
         this.setSelectedCategory()
+=======
+        this.setSelectedCategory(this.categories[0])
+>>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
         this.setCurrentLocationOrigin()
       }, error => {
         this.dialog.closeAll()
@@ -260,13 +287,15 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   //VERIFICA SI EL CLIENTE TIENE INSTRUCCIONES REGISTRADAS
   checkInsructions() {
-    this.myBranchOffices.forEach(bOffice => {
-      if (bOffice.direccion == this.deliveryForm.get('deliveryHeader.dirRecogida').value && bOffice.instrucciones != '') {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue(bOffice.instrucciones)
-      } else {
-        this.deliveryForm.get('deliveryHeader.instrucciones').setValue('')
-      }
-    })
+    const bOffice = this.myBranchOffices.find(
+      (item) =>
+        item.direccion ==
+        this.deliveryForm.get('deliveryHeader.dirRecogida').value
+    );
+    this.operationsService.checkCustomerInstructions(
+      bOffice,
+      this.deliveryForm.get('deliveryHeader.instrucciones')
+    );
   }
 
   clearLocationField() {
@@ -351,7 +380,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.newForm.get('deliveryHeader.fecha').enable()
     this.newForm.get('deliveryHeader.hora').enable()
 
-    if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
+    if (this.deliveryForm.get('deliveryHeader').valid) {
       this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate)
 
       this.openLoader()
@@ -381,7 +410,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         })
     } else if (this.deliveryForm.invalid) {
       let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'))
-      invalidFields[1].focus()
+      invalidFields[0].focus()
     }
 
   }
@@ -805,6 +834,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   }
 
   //ESTABLECE LA CATEGORÍA A EMPLEAR
+<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
   setSelectedCategory() {
     this.categories.forEach(category => {
       if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
@@ -818,6 +848,17 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         this.newForm.get('deliveryHeader.hora').setValue('')
       }
     })
+=======
+  setSelectedCategory(category) {
+    this.selectedCategory = category
+
+    this.datesToShow = this.selectedCategory.datesToShow
+
+    this.surcharges = this.selectedCategory.surcharges
+
+    this.newForm.get('deliveryHeader.fecha').setValue('')
+    this.newForm.get('deliveryHeader.hora').setValue('')
+>>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
 
   }
 
@@ -972,6 +1013,35 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent)
+  }
+
+  checkRate(){
+    if(this.orders.length > 0){
+      this.pago.baseRate = this.selectedRate.precio
+      
+      this.orders.forEach(value => {
+        if (value.tarifaBase != this.selectedRate.precio ) {
+          const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
+          let i = this.orders.indexOf(value)
+          value.tarifaBase = this.pago.baseRate
+          value.cargosExtra = nPay.cargosExtra
+          value.recargo = nPay.surcharges
+          value.cTotal = nPay.total
+          this.pagos[i].baseRate = nPay.baseRate
+          if (this.pagos[i]?.cargosExtra) {
+            this.pagos[i].cargosExtra = nPay.cargosExtra
+          }
+          this.pagos[i].surcharges = nPay.surcharges
+          this.pagos[i].total = nPay.total  
+        }
+        
+      })
+      this.pago.recargos = this.pagos.reduce(function(a,b){return a.surcharges + b.surcharges})
+      this.pago.cargosExtra = this.pagos.reduce(function(a,b){ return a.cargosExtra + b.cargosExtra})
+      this.pago.total = this.pagos.reduce(function(a,b){ return a.total + b.total})
+      
+    }
+    
   }
 
 }

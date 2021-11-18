@@ -1,0 +1,86 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-edit"></i> Crear Forma de Pago
+</h2>
+
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="newCardForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Número de tarjeta:</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="cardNumber"
+          required
+          placeholder="1234 5678 9012 3456"
+          onKeyPress="if(this.value.length==16) return false;"
+        />
+        <mat-icon matSuffix>credit_card</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Fecha de expiración:</mat-label>
+        <input
+          matInput
+          appExpDate
+          formControlName="expDate"
+          type="tel"
+          minlength="4"
+          maxlength="4"
+          placeholder="MM/AA (04/25)"
+          required
+        />
+        <mat-icon matSuffix>event</mat-icon>
+        <mat-error *ngIf="newCardForm.controls.expDate?.errors?.required">*Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="newCardForm.controls.expDate?.errors?.mustAfterDate">
+          *Esta tarjeta ya ha expirado
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>CVC/CVV:</mat-label>
+        <input
+          matInput
+          required
+          type="number"
+          formControlName="cvv"
+          onKeyPress="if(this.value.length==3) return false;"
+          placeholder="000"
+        />
+        <mat-icon matSuffix>lock</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    [disabled]="newCardForm.invalid || loaders.loadingSubmit"
+    (click)="tokenize()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
+
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

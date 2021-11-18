@@ -6,12 +6,12 @@ import { Subject } from 'rxjs';
 import { Label } from 'src/app/models/label';
 import { AuthService } from 'src/app/services/auth.service';
 import { LabelsService } from 'src/app/services/labels.service';
-import { ErrorModalComponent } from '../../shared/error-modal/error-modal.component';
-import { ConfirmDialogComponent } from '../branch-offices/confirm-dialog/confirm-dialog.component';
+import { ErrorModalComponent } from '../../../shared/components/error-modal/error-modal.component';
+import { ConfirmDialogComponent } from '../address/confirm-dialog/confirm-dialog.component';
 import { AddLabelComponent } from './add-label/add-label.component';
 import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
 import { EditLabelComponent } from './edit-label/edit-label.component';
-import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-customer-labels',
@@ -21,28 +21,30 @@ import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog
     trigger('fade', [
       transition('void => *', [
         style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 }))
-      ])
-    ])
-  ]
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class CustomerLabelsComponent implements OnInit {
-  myLabels: Label[] = []
-  @ViewChild(DataTableDirective, { static: false }) dtElement: DataTableDirective
+  myLabels: Label[] = [];
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
   loaders = {
     loadingData: false,
-    loadingSubmit: false
-  }
-  bdtTrigger: Subject<any> = new Subject()
-  bdtOptions
-  confMsg = ''
-  labelToDelete = null
+    loadingSubmit: false,
+  };
+  bdtTrigger: Subject<any> = new Subject();
+  bdtOptions;
+  confMsg = '';
+  labelToDelete = null;
+  help = false;
 
   constructor(
     private authService: AuthService,
     private labelsService: LabelsService,
     public dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.bdtOptions = {
@@ -66,125 +68,123 @@ export class CustomerLabelsComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
-    this.loadData()
+    };
+    this.loadData();
   }
 
   loadData() {
-    this.openLoader()
-    const lblSubsc = this.labelsService.getMyLabels()
-      .subscribe(response => {
-        this.myLabels = response.data
-        this.dialog.closeAll()
-        this.bdtTrigger.next()
-        lblSubsc.unsubscribe()
-      }, error => {
-        error.subscribe(error => {
-          this.dialog.closeAll()
-          this.openErrorDialog(error.statusText, true)
-        })
-      })
+    this.openLoader();
+    const lblSubsc = this.labelsService.getMyLabels().subscribe(
+      (response) => {
+        this.myLabels = response.data;
+        this.dialog.closeAll();
+        this.bdtTrigger.next();
+        lblSubsc.unsubscribe();
+      },
+      (error) => {
+        error.subscribe((error) => {
+          this.dialog.closeAll();
+          this.openErrorDialog(error.statusText, true);
+        });
+      }
+    );
   }
 
   showEditForm(id) {
-    let currLabel: Label = {}
-    this.myLabels.forEach(value => {
+    let currLabel: Label = {};
+    this.myLabels.forEach((value) => {
       if (value.idEtiqueta === id) {
-        currLabel = value
+        currLabel = value;
       }
-    })
-    this.openEditDialog(currLabel)
+    });
+    this.openEditDialog(currLabel);
   }
 
   openEditDialog(label) {
     const dialogRef = this.dialog.open(EditLabelComponent, {
       data: {
-        label: label
-      }
-    })
+        label: label,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   reloadData() {
-    location.reload(true)
+    location.reload();
   }
 
   showConfirmDelete(id) {
-    let currLabel: Label = {}
+    let currLabel: Label = {};
 
-    this.myLabels.forEach(value => {
+    this.myLabels.forEach((value) => {
       if (value.idEtiqueta === id) {
-        currLabel = value
+        currLabel = value;
       }
-    })
-    this.labelToDelete = currLabel.idEtiqueta
-    this.confMsg = '¿Estás seguro de eliminar la etiqueta ' + currLabel.descEtiqueta + '?'
-    this.openConfirmDialog(id, this.confMsg)
+    });
+    this.labelToDelete = currLabel.idEtiqueta;
+    this.confMsg =
+      '¿Estás seguro de eliminar la etiqueta ' + currLabel.descEtiqueta + '?';
+    this.openConfirmDialog(id, this.confMsg);
   }
 
   showNewForm() {
-    const dialogRef = this.dialog.open(AddLabelComponent)
+    const dialogRef = this.dialog.open(AddLabelComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   openConfirmDialog(id, msg) {
     const dialogRef = this.dialog.open(ConfirmDeleteComponent, {
       data: {
         labelToDelete: id,
-        confMsg: msg
-      }
-    })
+        confMsg: msg,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
 
     if (reload) {
-      dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
-        this.reloadData()
-      })
+      dialog.afterClosed().subscribe((result) => {
+        this.loaders.loadingData = true;
+        this.reloadData();
+      });
     }
-
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }

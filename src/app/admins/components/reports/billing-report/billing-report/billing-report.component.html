@@ -1,13 +1,10 @@
 <!-- CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Reporte de Facturas
-    </mat-card-title>
+    <mat-card-title> Reporte de Facturas </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
-
     <div class="container-fluid">
       <div class="row mt-2">
         <div class="col">
@@ -20,11 +17,19 @@
               Exportar PDF
             </button>-->
 
-            <button [disabled]="results?.length == 0" mat-menu-item (click)="generateExcel()">
+            <button
+              [disabled]="results?.length == 0"
+              mat-menu-item
+              (click)="generateExcel()"
+            >
               Exportar a Excel
             </button>
 
-            <button [disabled]="results?.length == 0" mat-menu-item (click)="printReport()">
+            <button
+              [disabled]="results?.length == 0"
+              mat-menu-item
+              (click)="printReport()"
+            >
               Imprimir
             </button>
           </mat-menu>
@@ -37,58 +42,74 @@
             <div class="form-row">
               <mat-form-field appearance="outline" class="col-md">
                 <mat-label>Fecha Inicial:</mat-label>
-                <input matInput type="date" formControlName="initDate" required>
+                <input
+                  matInput
+                  type="date"
+                  formControlName="initDate"
+                  required
+                />
                 <mat-icon matPrefix>today</mat-icon>
                 <mat-error>*Este campo es obligatorio</mat-error>
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="col-md">
                 <mat-label>Fecha Final:</mat-label>
-                <input matInput type="date" formControlName="finDate" required>
+                <input
+                  matInput
+                  type="date"
+                  formControlName="finDate"
+                  required
+                />
                 <mat-icon matPrefix>today</mat-icon>
                 <mat-error>*Este campo es obligatorio</mat-error>
               </mat-form-field>
             </div>
 
             <div class="form-row">
-              <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
-                      (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+              <button
+                [disabled]="consultForm.invalid"
+                type="button"
+                mat-raised-button
+                color="primary"
+                (click)="onConsultFormSubmit()"
+                class="col-md mt-auto mb-auto"
+              >
                 <mat-icon>search</mat-icon>
               </button>
             </div>
           </form>
         </div>
-
       </div>
 
       <div class="table-responsive mt-2">
-        <table id="printTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-               class="display compact" style="width:100%">
+        <table
+          id="printTable"
+          datatable
+          [dtOptions]="dtOptions"
+          [dtTrigger]="dtTrigger"
+          class="display compact"
+          style="width: 100%"
+        >
           <thead>
-          <tr>
-            <th>No. Factura</th>
-            <th>Fecha y Hora</th>
-            <th>Cliente</th>
-            <th>Valor</th>
-          </tr>
+            <tr>
+              <th>No. Factura</th>
+              <th>Fecha y Hora</th>
+              <th>Cliente</th>
+              <th>Valor</th>
+            </tr>
           </thead>
           <tbody>
-
-          <tr *ngFor="let result of results">
-            <td class="id">{{result?.refNumber}}</td>
-            <td>{{result?.fechaFacturacion | date:'d/MM/yyyy h:m a'}}</td>
-            <td>{{result?.delivery?.cliente?.nomEmpresa}}</td>
-            <td>L. {{result?.total | number: '.2'}}</td>
-          </tr>
+            <tr *ngFor="let result of results">
+              <td class="id">{{ result?.refNumber }}</td>
+              <td>{{ result?.fechaFacturacion | date: "d/MM/yyyy h:m a" }}</td>
+              <td>{{ result?.delivery?.cliente?.nomEmpresa }}</td>
+              <td>L. {{ result?.total | number: ".2" }}</td>
+            </tr>
           </tbody>
-
         </table>
       </div>
-
     </div>
-
   </mat-card-content>
-
 </mat-card>
 
 <!-- CARD END -->

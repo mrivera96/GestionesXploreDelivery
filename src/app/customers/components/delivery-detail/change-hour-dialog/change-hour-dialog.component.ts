@@ -1,11 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {DeliveriesService} from "../../../../services/deliveries.service";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {Delivery} from "../../../../models/delivery";
 import {formatDate} from "@angular/common";
-import {ErrorModalComponent} from "../../../shared/error-modal/error-modal.component";
-import {SuccessModalComponent} from "../../../shared/success-modal/success-modal.component";
+import {ErrorModalComponent} from "../../../../shared/components/error-modal/error-modal.component";
+import {SuccessModalComponent} from "../../../../shared/components/success-modal/success-modal.component";
 import {DateValidate} from "../../../../helpers/date.validator";
 import {Schedule} from "../../../../models/schedule";
 
@@ -50,10 +50,8 @@ export class ChangeHourDialogComponent implements OnInit {
   initialize() {
     this.changeForm = this.formBuilder.group({
       idDelivery: [this.currDelivery.idDelivery],
-      fecha: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'yyyy-MM-dd', 'en')],
+      fecha: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'yyyy-MM-dd', 'en'), [Validators.required,DateValidate]],
       hora: [formatDate(new Date(this.currDelivery.fechaNoFormatted), 'HH:mm', 'en')]
-    }, {
-      validators: DateValidate('fecha', 'hora'),
     })
   }
 

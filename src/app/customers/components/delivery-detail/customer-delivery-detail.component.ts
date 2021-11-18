@@ -5,14 +5,14 @@ import {DeliveryDetail} from "../../../models/delivery-detail";
 import {Subject} from "rxjs";
 import {DeliveriesService} from "../../../services/deliveries.service";
 import {ActivatedRoute} from "@angular/router";
-import {ErrorModalComponent} from "../../shared/error-modal/error-modal.component";
+import {ErrorModalComponent} from "../../../shared/components/error-modal/error-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {ChangeHourDialogComponent} from "./change-hour-dialog/change-hour-dialog.component";
 import {DataTableDirective} from "angular-datatables";
-import {ViewPhotosDialogComponent} from "../../shared/view-photos-dialog/view-photos-dialog.component";
+import {ViewPhotosDialogComponent} from "../../../shared/components/view-photos-dialog/view-photos-dialog.component";
 import { ConfirmCancelDialogComponent } from './confirm-cancel-dialog/confirm-cancel-dialog.component';
-import { SuccessModalComponent } from '../../shared/success-modal/success-modal.component';
-import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import { SuccessModalComponent } from '../../../shared/components/success-modal/success-modal.component';
+import {LoadingDialogComponent} from "../../../shared/components/loading-dialog/loading-dialog.component";
 @Component({
   selector: 'app-customer-delivery-detail',
   templateUrl: './customer-delivery-detail.component.html',
@@ -41,6 +41,8 @@ export class CustomerDeliveryDetailComponent implements OnInit {
   @ViewChild(DataTableDirective, {static: false})
   dtElement: DataTableDirective
   hasPhotos: boolean = false
+
+  
 
   constructor(
     private deliveriesService: DeliveriesService,
@@ -97,6 +99,7 @@ export class CustomerDeliveryDetailComponent implements OnInit {
     const deliveriesSubscription = this.deliveriesService.getById(this.deliveryId).subscribe(response => {
       this.currentDelivery = response.data
       this.currentDeliveryDetail = response.data.detalle
+      
       this.dddtTrigger.next()
 
       let photos = 0

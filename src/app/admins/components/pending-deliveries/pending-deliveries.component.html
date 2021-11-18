@@ -5,8 +5,17 @@
   </mat-card-header>
 
   <mat-card-content>
+<<<<<<< HEAD
     <mat-tab-group>
       <mat-tab label="Envío Normal">
+=======
+    <div class="row">
+      <div class="col-lg-6 col-md-12">
+        <mat-card-header>
+          <mat-card-title> Envío Normal </mat-card-title>
+        </mat-card-header>
+    
+>>>>>>> origin/V5
         <!-- DATATABLE START -->
         <div class="table-responsive mt-2">
           <table
@@ -27,11 +36,19 @@
                 <th>Dirección de recogida</th>
                 <th>Entregas</th>
                 <th>Categoría</th>
+<<<<<<< HEAD
                 <th>Acción</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let delivery of deliveries">
+=======
+                <th>Ver Detalle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let delivery of deliveries" [ngStyle]="{'background-color': delivery.prioritaria == 1 ? '#fcf63a': ''}">
+>>>>>>> origin/V5
                 <td class="id">{{ delivery.idDelivery }}</td>
                 <td>{{ delivery.nomCliente }}</td>
                 <td>{{ delivery.fechaReserva }}</td>
@@ -43,7 +60,11 @@
                     [routerLink]="['/admins/ver-reserva', delivery.idDelivery]"
                     style="color: #0071a2"
                   >
+<<<<<<< HEAD
                     <i class="fa fa-eye"></i> Ver Detalle
+=======
+                    <i class="fa fa-eye"></i>
+>>>>>>> origin/V5
                   </a>
                 </td>
               </tr>
@@ -51,9 +72,17 @@
           </table>
         </div>
         <!-- DATATABLE END -->
+<<<<<<< HEAD
       </mat-tab>
 
       <mat-tab label="Envíos Consolidados">
+=======
+    
+        <mat-card-header>
+          <mat-card-title> Envíos Consolidados </mat-card-title>
+        </mat-card-header>
+    
+>>>>>>> origin/V5
         <!-- DATATABLE START -->
         <div class="table-responsive mt-2">
           <table
@@ -73,6 +102,7 @@
                 <th>Dirección de recogida</th>
                 <th>Entregas</th>
                 <th>Categoría</th>
+<<<<<<< HEAD
                 <th>Acción</th>
               </tr>
             </thead>
@@ -81,6 +111,16 @@
                 <td class="id">{{ delivery.idDelivery }}</td>
                 <td>{{ delivery.nomCliente }}</td>
                 <td>{{ delivery.fechaReserva }}</td >
+=======
+                <th>Ver Detalle</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let delivery of consolidateDeliveries" [ngStyle]="{'background-color': delivery.prioritaria == 1 ? '#FF5733': ''}">
+                <td class="id">{{ delivery.idDelivery }}</td>
+                <td>{{ delivery.nomCliente }}</td>
+                <td>{{ delivery.fechaReserva }}</td>
+>>>>>>> origin/V5
                 <td class="fId">{{ delivery.dirRecogida }}</td>
                 <td>{{ delivery.cantidad }}</td>
                 <td>{{ delivery.descCategoria }}</td>
@@ -89,7 +129,11 @@
                     [routerLink]="['/admins/ver-reserva', delivery.idDelivery]"
                     style="color: #0071a2"
                   >
+<<<<<<< HEAD
                     <i class="fa fa-eye"></i> Ver Detalle
+=======
+                    <i class="fa fa-eye"></i>
+>>>>>>> origin/V5
                   </a>
                 </td>
               </tr>
@@ -97,6 +141,7 @@
           </table>
         </div>
         <!-- DATATABLE END -->
+<<<<<<< HEAD
       </mat-tab>
     </mat-tab-group>
 
@@ -162,6 +207,77 @@
       </table>
     </div>
     <!-- FIN DATATABLE -->
+=======
+      </div>
+
+      <div class="col-lg-6 col-md-12">
+        <mat-card-header>
+          <mat-card-title> Conductores </mat-card-title>
+        </mat-card-header>
+    
+        <!-- DATATABLE START -->
+        <div class="table-responsive mt-2">
+          <table
+            id="dTable"
+            datatable
+            [dtOptions]="dtOptions1"
+            [dtTrigger]="dtTrigger2"
+            class="display compact"
+            style="width: 100%"
+          >
+            <tfoot>
+              <tr>
+                <th></th>
+                <th></th>
+                <th data-priority="1">
+                  <select
+                    id="miSelect"
+                    class="form-control-sm"
+                    name="search-last-name"
+                  >
+                    <option value="">- Filtrar por ciudad -</option>
+                    <option *ngFor="let city of cities" [value]="city.nomCiudad">
+                      {{ city.nomCiudad }}
+                    </option>
+                  </select>
+                </th>
+                <th></th>
+                <th></th>
+                <th></th>
+              </tr>
+            </tfoot>
+            <thead>
+              <tr>
+                <th data-priority="1">N°</th>
+                <th data-priority="1">Nombre de Conductor</th>
+                <th>Ciudad</th>
+                <th>Número de Celular</th>
+                <th>Estado</th>
+                <th data-priority="1">Ver pendientes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let driver of drivers; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ driver.nomUsuario }}</td>
+                <td>{{ driver.agency.city.nomCiudad }}</td>
+                <td>{{ driver.numCelular || "Sin registro" }}</td>
+                <td>{{ driver.state }}</td>
+                <td>
+                  <button mat-button (click)="openDriverPending(driver.idUsuario)">
+                    <i class="fa fa-eye"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+           <!-- FIN DATATABLE -->
+        </div>
+      </div>
+      
+    </div>
+      
+>>>>>>> origin/V5
   </mat-card-content>
 </mat-card>
 

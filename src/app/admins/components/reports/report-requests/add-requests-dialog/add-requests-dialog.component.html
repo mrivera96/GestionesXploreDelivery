@@ -6,23 +6,45 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
     <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/reports/report-requests/add-requests-dialog/add-requests-dialog.component.html
       <img src="../../../../../../assets/img/loading.svg" width="35%" alt="loading">
+=======
+      <img
+        src="../../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+>>>>>>> origin/V5:src/app/admins/components/reports/report-requests/add-requests-dialog/add-requests-dialog.component.html
       <p>Procesando información...</p>
     </div>
   </div>
 
-  <form [formGroup]="requestForm" *ngIf="!loaders.loadingSubmit && !loaders.loadingData ">
+  <form
+    [formGroup]="requestForm"
+    *ngIf="!loaders.loadingSubmit && !loaders.loadingData"
+  >
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Cliente</mat-label>
-        <mat-select formControlName="idCliente" required placeholder="- Seleccione un cliente -">
+        <mat-select
+          formControlName="idCliente"
+          required
+          placeholder="- Seleccione un cliente -"
+        >
           <mat-form-field>
-            <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)" >
+            <input
+              matInput
+              placeholder="Buscar Cliente"
+              (keyup)="onKey($event.target.value)"
+            />
             <mat-icon [inline]="true" matPrefix>search</mat-icon>
           </mat-form-field>
 
-          <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
-            {{customer.nomEmpresa}}
+          <mat-option
+            *ngFor="let customer of filteredCustomers"
+            value="{{ customer.idCliente }}"
+          >
+            {{ customer.nomEmpresa }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>account_circle</mat-icon>
@@ -31,8 +53,16 @@
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>email:</mat-label>
-        <input matInput id="email" type="email" formControlName="correo" required maxlength="50"
-               pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="ejemplo@email.com">
+        <input
+          matInput
+          id="email"
+          type="email"
+          formControlName="correo"
+          required
+          maxlength="50"
+          pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+          placeholder="ejemplo@email.com"
+        />
         <mat-icon matSuffix>alternate_email</mat-icon>
         <mat-error *ngIf="f.correo.errors?.required">
           *Este campo es obligatorio
@@ -42,22 +72,20 @@
         </mat-error>
       </mat-form-field>
     </div>
-
   </form>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="requestForm.invalid || loaders.loadingSubmit"
-          (click)="formSubmit()"
-          mat-raised-button color="primary">
+  <button
+    type="button"
+    [disabled]="requestForm.invalid || loaders.loadingSubmit"
+    (click)="formSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->
-
-

@@ -1,14 +1,14 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {DataTableDirective} from "angular-datatables";
-import {Customer} from "../../../../models/customer";
-import {Subject} from "rxjs";
-import {Delivery} from "../../../../models/delivery";
-import {Payment} from "../../../../models/payment";
-import {UsersService} from "../../../../services/users.service";
-import {MatDialog} from "@angular/material/dialog";
-import {Router} from "@angular/router";
-import {Workbook} from 'exceljs';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { DataTableDirective } from 'angular-datatables';
+import { Customer } from '../../../../models/customer';
+import { Subject } from 'rxjs';
+import { Delivery } from '../../../../models/delivery';
+import { Payment } from '../../../../models/payment';
+import { UsersService } from '../../../../services/users.service';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { Workbook } from 'exceljs';
 import * as fs from 'file-saver';
 
 @Component({
@@ -18,31 +18,29 @@ import * as fs from 'file-saver';
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class CustomersReportComponent implements OnInit {
-
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective
-  customers: Customer[] = []
-  dtTrigger: Subject<any> = new Subject()
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  customers: Customer[] = [];
+  dtTrigger: Subject<any> = new Subject();
   loaders = {
-    loadingData: false
-  }
-  dtOptions: any
-  deliveries: Delivery[] = []
-  payments: Payment[] = []
+    loadingData: false,
+  };
+  dtOptions: any;
+  deliveries: Delivery[] = [];
+  payments: Payment[] = [];
 
   constructor(
     private usersService: UsersService,
     public dialog: MatDialog,
     private router: Router
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -67,47 +65,53 @@ export class CustomersReportComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
-    this.loadData()
+    };
+    this.loadData();
   }
 
   loadData() {
-    this.loaders.loadingData = true
+    this.loaders.loadingData = true;
 
-    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
-      this.customers = response.data
+    const usersSubscription = this.usersService
+      .getCustomers()
+      .subscribe((response) => {
+        this.customers = response.data;
 
-      this.loaders.loadingData = false
-      this.dtTrigger.next()
-      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-        dtInstance.columns().every(function () {
-          const that = this;
-          $('select', this.footer()).on('change', function () {
-            if (that.search() !== this['value']) {
-              that
-                .search(this['value'])
-                .draw();
-            }
-          })
-        })
-      })
-      usersSubscription.unsubscribe()
-    })
+        this.loaders.loadingData = false;
+        this.dtTrigger.next();
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.columns().every(function () {
+            const that = this;
+            $('select', this.footer()).on('change', function () {
+              if (that.search() !== this['value']) {
+                that.search(this['value']).draw();
+              }
+            });
+          });
+        });
+        usersSubscription.unsubscribe();
+      });
   }
 
   generateExcel() {
     //Excel Title, Header, Data
-    const title = 'Reporte de Clientes'
+    const title = 'Reporte de Clientes';
 
     //Create workbook and worksheet
     let workbook = new Workbook();
     let worksheet = workbook.addWorksheet('Reporte Clientes');
     //Add Row and formatting
     let titleRow = worksheet.addRow([title]);
-    titleRow.font = {name: 'Arial', family: 4, size: 16, underline: 'double', bold: true}
+    titleRow.font = {
+      name: 'Arial',
+      family: 4,
+      size: 16,
+      underline: 'double',
+      bold: true,
+    };
     worksheet.addRow([]);
     //Blank Row
     worksheet.addRow([]);
@@ -115,13 +119,14 @@ export class CustomersReportComponent implements OnInit {
     worksheet.addRow([]);
 
     worksheet.addRow([]);
-    const customersHeader = ['N°',
+    const customersHeader = [
+      'N°',
       'Nombre de Empresa',
       'Nombre de Representante',
       'Número de Identificación',
       'Número de Teléfono',
-      'email'
-    ]
+      'email',
+    ];
     let customersheaderRow = worksheet.addRow(customersHeader);
 
     // Cell Style : Fill and Border
@@ -129,31 +134,36 @@ export class CustomersReportComponent implements OnInit {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: {argb: 'D3D3D3'},
-        bgColor: {argb: 'D3D3D3'}
-      }
-      cell.border = {top: {style: 'thin'}, left: {style: 'thin'}, bottom: {style: 'thin'}, right: {style: 'thin'}}
-    })
+        fgColor: { argb: 'D3D3D3' },
+        bgColor: { argb: 'D3D3D3' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    });
     // worksheet.addRows(data);
     // Add Data and Conditional Formatting
-    let arrayRow = []
-    let index = 1
-    this.customers.forEach(d => {
+    let arrayRow = [];
+    let index = 1;
+    this.customers.forEach((d) => {
       let array = [
         index,
         d.nomEmpresa,
         d.nomRepresentante,
         d.numIdentificacion,
         d.numTelefono,
-        d.email
-      ]
-      arrayRow.push(array)
-      index++
-    })
+        d.email,
+      ];
+      arrayRow.push(array);
+      index++;
+    });
 
-    arrayRow.forEach(v => {
+    arrayRow.forEach((v) => {
       worksheet.addRow(v);
-    })
+    });
 
     worksheet.getColumn(1).width = 30;
     worksheet.getColumn(2).width = 30;
@@ -166,8 +176,10 @@ export class CustomersReportComponent implements OnInit {
 
     //Generate Excel File with given name
     workbook.xlsx.writeBuffer().then((data) => {
-      let blob = new Blob([data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+      let blob = new Blob([data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      });
       fs.saveAs(blob, 'Reporte Clientes Xplore Delivery.xlsx');
-    })
+    });
   }
 }

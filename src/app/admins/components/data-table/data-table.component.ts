@@ -7,88 +7,85 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import {Observable, Subject} from "rxjs";
-import {Delivery} from "../../../models/delivery";
-import {Router} from "@angular/router";
-import {DataTableDirective} from "angular-datatables";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {State} from "../../../models/state";
+import { Observable, Subject } from 'rxjs';
+import { Delivery } from '../../../models/delivery';
+import { Router } from '@angular/router';
+import { DataTableDirective } from 'angular-datatables';
+import { DeliveriesService } from '../../../services/deliveries.service';
+import { State } from '../../../models/state';
 
 @Component({
   selector: 'app-data-table',
   templateUrl: './data-table.component.html',
-  styleUrls: ['./data-table.component.css']
+  styleUrls: ['./data-table.component.css'],
 })
 export class DataTableComponent implements OnInit {
+  @Input('deliveries') tDeliveries: number;
+  deliveries: Delivery[];
+  dtTrigger: Subject<any> = new Subject<any>();
+  @Output('loadingData')
+  stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  @Input('deliveries') tDeliveries: number
-  deliveries: Delivery[]
-  dtTrigger: Subject<any> = new Subject<any>()
-  @Output('loadingData') 
-  stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
+  @ViewChild(DataTableDirective, { static: false })
+  datatableElement: DataTableDirective;
 
-  @ViewChild(DataTableDirective, {static: false})
-  datatableElement: DataTableDirective
+  dtOptions: any;
 
-  dtOptions: any
-
-  states: State[]
+  states: State[];
 
   constructor(
     private router: Router,
-    private deliveriesService: DeliveriesService,
-  ) {
-  }
+    private deliveriesService: DeliveriesService
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   loadData() {
-    const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
-      this.states = response.data.xploreDelivery
-      deliveriesSubscription.unsubscribe()
-    })
+    const deliveriesSubscription = this.deliveriesService
+      .getStates()
+      .subscribe((response) => {
+        this.states = response.data.xploreDelivery;
+        deliveriesSubscription.unsubscribe();
+      });
 
-    let service: Observable<any>
+    let service: Observable<any>;
 
     switch (this.tDeliveries) {
       case 1: {
-        service = this.deliveriesService.getTodayDeliveries()
-        break
+        service = this.deliveriesService.getTodayDeliveries();
+        break;
       }
       case 2: {
-        service = this.deliveriesService.getTomorrowDeliveries()
-        break
+        service = this.deliveriesService.getTomorrowDeliveries();
+        break;
       }
       default: {
-        service = this.deliveriesService.getAllDeliveries()
+        service = this.deliveriesService.getAllDeliveries();
       }
-
     }
 
-    const serviceSubscription = service.subscribe(response => {
-      this.stopLoading.emit(false)
-      this.deliveries = response.data
-      this.deliveries.forEach(delivery => {
-        delivery.entregas = delivery.detalle.length
-      })
-      this.dtTrigger.next()
+    const serviceSubscription = service.subscribe((response) => {
+      this.stopLoading.emit(false);
+      this.deliveries = response.data;
+      this.deliveries.forEach((delivery) => {
+        delivery.entregas = delivery.detalle.length;
+      });
+      this.dtTrigger.next();
       this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
         dtInstance.columns().every(function () {
           const that = this;
           $('select', this.footer()).on('change', function () {
             if (that.search() !== this['value']) {
-              that
-                .search(this['value'])
-                .draw();
+              that.search(this['value']).draw();
             }
-          })
-        })
-      })
-      serviceSubscription.unsubscribe()
-    })
+          });
+        });
+      });
+      serviceSubscription.unsubscribe();
+    });
   }
 
   initialize() {
@@ -113,11 +110,9 @@ export class DataTableComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
+    };
   }
-
-
 }

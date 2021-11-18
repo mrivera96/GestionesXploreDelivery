@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {animate, style, transition, trigger} from "@angular/animations";
-import {LoadingDialogComponent} from "../../shared/loading-dialog/loading-dialog.component";
+import {LoadingDialogComponent} from "../../../shared/components/loading-dialog/loading-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 @Component({
   selector: 'app-customer-today-orders',

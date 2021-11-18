@@ -6,7 +6,15 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit">
     <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/surcharges/new-surcharge-dialog/new-surcharge-dialog.component.html
       <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+=======
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+>>>>>>> origin/V5:src/app/admins/components/surcharges/new-surcharge-dialog/new-surcharge-dialog.component.html
       <p>Cargando información...</p>
     </div>
   </div>
@@ -15,24 +23,43 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Descripción de Recargo:</mat-label>
-        <input matInput id="descRecargoN" type="text" formControlName="descRecargo" required maxlength="60"
-          placeholder="¿Cuál será la descripción del nuevo recargo?">
+        <input
+          matInput
+          id="descRecargoN"
+          type="text"
+          formControlName="descRecargo"
+          required
+          maxlength="60"
+          placeholder="¿Cuál será la descripción del nuevo recargo?"
+        />
         <mat-icon matSuffix>create</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Kilometraje Mínimo:</mat-label>
-        <input matInput id="kilomMinimoN" type="number" formControlName="kilomMinimo" required
-          placeholder="Kilómetros mínimos que abarcará el recargo">
+        <input
+          matInput
+          id="kilomMinimoN"
+          type="number"
+          formControlName="kilomMinimo"
+          required
+          placeholder="Kilómetros mínimos que abarcará el recargo"
+        />
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Kilometraje Máximo:</mat-label>
-        <input matInput id="kilomMaximoN" type="number" formControlName="kilomMaximo" required
-          placeholder="Kilómetros máximos que abarcará el recargo">
+        <input
+          matInput
+          id="kilomMaximoN"
+          type="number"
+          formControlName="kilomMaximo"
+          required
+          placeholder="Kilómetros máximos que abarcará el recargo"
+        />
         <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
@@ -41,17 +68,30 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Monto:</mat-label>
-        <input matInput id="montoN" type="number" formControlName="monto" required
-          placeholder="¿Cuál será el monto del recargo?">
+        <input
+          matInput
+          id="montoN"
+          type="number"
+          formControlName="monto"
+          required
+          placeholder="¿Cuál será el monto del recargo?"
+        />
         <mat-icon matSuffix>attach_money</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Categoría:</mat-label>
-        <mat-select formControlName="idCategoria" placeholder="- Seleccione una categoría -" required>
-          <mat-option *ngFor="let category of categories" value="{{category.idCategoria}}">
-            {{category.descCategoria}}
+        <mat-select
+          formControlName="idCategoria"
+          placeholder="- Seleccione una categoría -"
+          required
+        >
+          <mat-option
+            *ngFor="let category of categories"
+            value="{{ category.idCategoria }}"
+          >
+            {{ category.descCategoria }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>list</mat-icon>
@@ -60,13 +100,19 @@
     </div>
 
     <div class="form-row">
-
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Tipo de envío:</mat-label>
-        <mat-select formControlName="idTipoEnvio" placeholder="- Seleccione un tipo de envío -" required
-          readonly="true">
-          <mat-option *ngFor="let delType of deliveryTypes" value="{{delType.idTipoTarifa}}">
-            {{delType.descTipoTarifa}}
+        <mat-select
+          formControlName="idTipoEnvio"
+          placeholder="- Seleccione un tipo de envío -"
+          required
+          readonly="true"
+        >
+          <mat-option
+            *ngFor="let delType of deliveryTypes"
+            value="{{ delType.idTipoTarifa }}"
+          >
+            {{ delType.descTipoTarifa }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>local_shipping</mat-icon>
@@ -74,68 +120,69 @@
       </mat-form-field>
 
       <div class="col-md">
-        <mat-slide-toggle #matSlideToggle (toggleChange)="changeGeneral(!matSlideToggle.checked)" required>Recargo
-          General
+        <mat-slide-toggle
+          #matSlideToggle
+          (toggleChange)="changeGeneral(!matSlideToggle.checked)"
+          required
+          >Recargo General
         </mat-slide-toggle>
       </div>
     </div>
-    <br>
+    <br />
 
     <h4>Valores de Facturación</h4>
-    <hr>
+    <hr />
 
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Tiempo y Kilometraje:</mat-label>
-        <input matInput type="number" formControlName="tYK">
+        <input matInput type="number" formControlName="tYK" />
         <mat-icon matSuffix>schedule</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Cobertura de Vehículo:</mat-label>
-        <input matInput type="number" formControlName="cobVehiculo">
+        <input matInput type="number" formControlName="cobVehiculo" />
         <mat-icon matSuffix>directions_car</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Servicio de Chofer:</mat-label>
-        <input matInput type="number" formControlName="servChofer">
+        <input matInput type="number" formControlName="servChofer" />
         <mat-icon matSuffix>airline_seat_recline_normal</mat-icon>
       </mat-form-field>
-
     </div>
 
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Recuperación de Combustible:</mat-label>
-        <input matInput type="number" formControlName="recCombustible">
+        <input matInput type="number" formControlName="recCombustible" />
         <mat-icon matSuffix>local_gas_station</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Cobertura de Transporte:</mat-label>
-        <input matInput type="number" formControlName="cobTransporte">
+        <input matInput type="number" formControlName="cobTransporte" />
         <mat-icon matSuffix>transfer_within_a_station</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>ISV:</mat-label>
-        <input matInput type="number" formControlName="isv">
+        <input matInput type="number" formControlName="isv" />
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
-
     </div>
 
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Tasa Turística:</mat-label>
-        <input matInput type="number" formControlName="tasaTuris">
+        <input matInput type="number" formControlName="tasaTuris" />
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Gastos Reembolsables:</mat-label>
-        <input matInput type="number" formControlName="gastosReembolsables">
+        <input matInput type="number" formControlName="gastosReembolsables" />
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
 
@@ -146,20 +193,35 @@
       </mat-form-field>
     </div>
 
-    <br>
+    <br />
     <h4 *ngIf="isGeneral == false">Agregar Cliente</h4>
-    <hr>
+    <hr />
     <div class="form-row" *ngIf="isGeneral == false">
-
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md-10">
+      <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        class="col-md-10"
+      >
         <mat-label>Cliente:</mat-label>
-        <mat-select id="idClienteN" formControlName="idCliente" required placeholder="- Seleccione un cliente -">
+        <mat-select
+          id="idClienteN"
+          formControlName="idCliente"
+          required
+          placeholder="- Seleccione un cliente -"
+        >
           <mat-form-field>
-            <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)">
+            <input
+              matInput
+              placeholder="Buscar Cliente"
+              (keyup)="onKey($event.target.value)"
+            />
             <mat-icon [inline]="true" matPrefix>search</mat-icon>
           </mat-form-field>
-          <mat-option *ngFor="let customer of filteredCustomers" [value]="customer.idCliente">
-            {{customer.nomEmpresa}}
+          <mat-option
+            *ngFor="let customer of filteredCustomers"
+            [value]="customer.idCliente"
+          >
+            {{ customer.nomEmpresa }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>account_circle</mat-icon>
@@ -167,58 +229,66 @@
       </mat-form-field>
 
       <div class="col-md-2">
-        <button class="btn-sm" mat-raised-button color="primary" (click)="addCustomerToSurcharge(fNew.idCliente.value)"
-          [disabled]="newSurchForm.invalid || loaders.loadingSubmit">
+        <button
+          class="btn-sm"
+          mat-raised-button
+          color="primary"
+          (click)="addCustomerToSurcharge(fNew.idCliente.value)"
+          [disabled]="newSurchForm.invalid || loaders.loadingSubmit"
+        >
           Agregar
         </button>
       </div>
     </div>
   </form>
-  <br>
+  <br />
   <div class="form-row" *ngIf="isGeneral == false && !loaders.loadingSubmit">
     <div class="col">
       <h4>Clientes Asignados</h4>
-      <hr>
+      <hr />
       <div class="table-responsive">
-        <table id="dTable" class="display compact" style="width:100%">
+        <table id="dTable" class="display compact" style="width: 100%">
           <thead>
             <tr>
               <th scope="col">N°</th>
               <th scope="col">Cliente</th>
               <th scope="col" data-priority="1">Acción</th>
             </tr>
-
           </thead>
 
           <tbody>
             <tr *ngFor="let customer of surchargeCustomers; let i = index">
-              <td>{{i + 1}}</td>
-              <td>{{customer.nomEmpresa}}</td>
+              <td>{{ i + 1 }}</td>
+              <td>{{ customer.nomEmpresa }}</td>
               <td>
-                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(customer)"><i
-                    class="fa fa-trash-alt"></i>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="removeFromArray(customer)"
+                >
+                  <i class="fa fa-trash-alt"></i>
                   Quitar
                 </button>
               </td>
             </tr>
           </tbody>
-
         </table>
       </div>
     </div>
   </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="newSurchForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()"
-    mat-raised-button color="primary">
+  <button
+    type="button"
+    [disabled]="newSurchForm.invalid || loaders.loadingSubmit"
+    (click)="onFormNewSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
-
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->

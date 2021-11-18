@@ -5,7 +5,15 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit">
     <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/customers/edit-customer-dialog/edit-customer-dialog.component.html
       <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+=======
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+>>>>>>> origin/V5:src/app/admins/components/customers/edit-customer-dialog/edit-customer-dialog.component.html
       <p>Cargando información...</p>
     </div>
   </div>
@@ -14,25 +22,46 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Nombre de Empresa:</mat-label>
-        <input matInput id="nomEmpresa" type="text" formControlName="nomEmpresa" required
-          placeholder="Nombre de la empresa" maxlength="80">
+        <input
+          matInput
+          id="nomEmpresa"
+          type="text"
+          formControlName="nomEmpresa"
+          required
+          placeholder="Nombre de la empresa"
+          maxlength="80"
+        />
         <mat-icon matSuffix>business</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
-
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Nombre del Representante:</mat-label>
-        <input matInput id="nomRepresentante" type="text" formControlName="nomRepresentante" required
-          placeholder="Nombre del representante" maxlength="80">
+        <input
+          matInput
+          id="nomRepresentante"
+          type="text"
+          formControlName="nomRepresentante"
+          required
+          placeholder="Nombre del representante"
+          maxlength="80"
+        />
         <mat-icon matSuffix>person</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Número de Identificación:</mat-label>
-        <input matInput id="numIdentificacion" type="text" formControlName="numIdentificacion" minlength="13"
-          maxlength="14" placeholder="Ej. 1111333355555" required>
+        <input
+          matInput
+          id="numIdentificacion"
+          type="text"
+          formControlName="numIdentificacion"
+          minlength="13"
+          maxlength="14"
+          placeholder="Ej. 1111333355555"
+          required
+        />
         <mat-icon matSuffix>subtitles</mat-icon>
         <mat-error *ngIf="f.numIdentificacion.errors?.required">
           *Este campo es obligatorio
@@ -49,8 +78,18 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Número de Teléfono:</mat-label>
-        <input appPhoneMask matInput id="numTelefono" type="tel" formControlName="numTelefono" autocomplete="nope"
-          required placeholder="Ej. 9999-9999 (Guión automáticamente)" minlength="9" maxlength="9">
+        <input
+          appPhoneMask
+          matInput
+          id="numTelefono"
+          type="tel"
+          formControlName="numTelefono"
+          autocomplete="nope"
+          required
+          placeholder="Ej. 9999-9999 (Guión automáticamente)"
+          minlength="9"
+          maxlength="9"
+        />
         <mat-icon matSuffix>phone</mat-icon>
         <mat-error *ngIf="f.numTelefono.errors?.required">
           *Este campo es obligatorio
@@ -65,8 +104,16 @@
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>email:</mat-label>
-        <input matInput id="email" type="email" formControlName="email" required maxlength="50"
-          pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" placeholder="ejemplo@email.com">
+        <input
+          matInput
+          id="email"
+          type="email"
+          formControlName="email"
+          required
+          maxlength="50"
+          pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+          placeholder="ejemplo@email.com"
+        />
         <mat-icon matSuffix>alternate_email</mat-icon>
         <mat-error *ngIf="f.email.errors?.required">
           *Este campo es obligatorio
@@ -78,11 +125,18 @@
     </div>
 
     <div class="form-row">
-
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Monto de gracia:</mat-label>
-        <input matInput id="montoGracia" type="number" formControlName="montoGracia" autocomplete="nope" required
-          placeholder="Ej. 5" minlength="1">
+        <input
+          matInput
+          id="montoGracia"
+          type="number"
+          formControlName="montoGracia"
+          autocomplete="nope"
+          required
+          placeholder="Ej. 5"
+          minlength="1"
+        />
         <mat-icon matSuffix>attach_money</mat-icon>
         <mat-error *ngIf="f.montoGracia.errors?.required">
           *Este campo es obligatorio
@@ -94,8 +148,20 @@
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Instrucciones de Fotografías:</mat-label>
+<<<<<<< HEAD:src/app/admins/components/customers/edit-customer-dialog/edit-customer-dialog.component.html
         <textarea matInput id="instFotografias" type="text" formControlName="instFotografias"
         placeholder="Instrucciones de Fotografías" maxlength="80" rows="5"></textarea>
+=======
+        <textarea
+          matInput
+          id="instFotografias"
+          type="text"
+          formControlName="instFotografias"
+          placeholder="Instrucciones de Fotografías"
+          maxlength="80"
+          rows="5"
+        ></textarea>
+>>>>>>> origin/V5:src/app/admins/components/customers/edit-customer-dialog/edit-customer-dialog.component.html
         <mat-icon matSuffix>assignment</mat-icon>
         <mat-error *ngIf="f.instFotografias.errors?.required">
           *Este campo es obligatorio
@@ -104,25 +170,45 @@
           *Excede los caracteres permitidos
         </mat-error>
       </mat-form-field>
+<<<<<<< HEAD:src/app/admins/components/customers/edit-customer-dialog/edit-customer-dialog.component.html
 
+=======
+>>>>>>> origin/V5:src/app/admins/components/customers/edit-customer-dialog/edit-customer-dialog.component.html
     </div>
 
     <div class="form-row">
-      <mat-slide-toggle labelPosition="before" class="col-md" formControlName="enviarNotificaciones">Enviar
-        Notificaciones
+      <mat-slide-toggle
+        labelPosition="before"
+        class="col-md"
+        formControlName="enviarNotificaciones"
+        >Enviar Notificaciones
+      </mat-slide-toggle>
+
+      <mat-slide-toggle
+        labelPosition="before"
+        class="col-md"
+        formControlName="pagoTarjeta"
+        >Pago con Tarjeta
       </mat-slide-toggle>
     </div>
 
-    <br>
+    <br />
     <h4>Datos de Facturación</h4>
-    <hr>
+    <hr />
 
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Frecuencia de Facturación:</mat-label>
-        <mat-select matInput formControlName="idFrecuenciaFact" placeholder="- Seleccione una Frecuencia -">
-          <mat-option *ngFor="let bFrq of billingFrequencies" value="{{bFrq.idFrecuenciaFact}}">
-            {{bFrq.descripcion}}
+        <mat-select
+          matInput
+          formControlName="idFrecuenciaFact"
+          placeholder="- Seleccione una Frecuencia -"
+        >
+          <mat-option
+            *ngFor="let bFrq of billingFrequencies"
+            value="{{ bFrq.idFrecuenciaFact }}"
+          >
+            {{ bFrq.descripcion }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>schedule</mat-icon>
@@ -130,8 +216,14 @@
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Nombre o Razón Social:</mat-label>
-        <input matInput id="razonSocial" type="text" formControlName="razonSocial" placeholder="Razón Social"
-          maxlength="80" >
+        <input
+          matInput
+          id="razonSocial"
+          type="text"
+          formControlName="razonSocial"
+          placeholder="Razón Social"
+          maxlength="80"
+        />
         <mat-icon matSuffix>person</mat-icon>
         <mat-error *ngIf="f.razonSocial.errors?.required">
           *Este campo es obligatorio
@@ -140,8 +232,15 @@
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>RTN:</mat-label>
-        <input matInput id="rtn" type="text" formControlName="rtn" minlength="14" maxlength="14"
-          placeholder="Ej. 1111333355555" >
+        <input
+          matInput
+          id="rtn"
+          type="text"
+          formControlName="rtn"
+          minlength="14"
+          maxlength="14"
+          placeholder="Ej. 1111333355555"
+        />
         <mat-icon matSuffix>subtitles</mat-icon>
         <mat-error *ngIf="f.rtn.errors?.required">
           *Este campo es obligatorio
@@ -158,27 +257,33 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>e-mail de facturación:</mat-label>
-        <input matInput id="correosFact" type="email" formControlName="correosFact" maxlength="200"
-          placeholder="ejemplo@email.com,ejemplo2@mail.es" >
+        <input
+          matInput
+          id="correosFact"
+          type="email"
+          formControlName="correosFact"
+          maxlength="200"
+          placeholder="ejemplo@email.com,ejemplo2@mail.es"
+        />
         <mat-error *ngIf="f.correosFact.errors?.required">
           *Este campo es obligatorio
         </mat-error>
       </mat-form-field>
     </div>
-
   </form>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="edCustForm.invalid || loaders.loadingSubmit" (click)="onEditFormSubmit()"
-    mat-raised-button color="primary">
+  <button
+    type="button"
+    [disabled]="edCustForm.invalid || loaders.loadingSubmit"
+    (click)="onEditFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
-
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->

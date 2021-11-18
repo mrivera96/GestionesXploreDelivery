@@ -6,7 +6,15 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
     <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/customers/customer-work-lines/add-work-line/add-work-line.component.html
       <img src="../../../../../../assets/img/loading.svg" width="35%" alt="loading">
+=======
+      <img
+        src="../../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+>>>>>>> origin/V5:src/app/admins/components/customers/customer-work-lines/add-work-line/add-work-line.component.html
       <p>Procesando información...</p>
     </div>
   </div>
@@ -15,29 +23,36 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-12">
         <mat-label>Rubro:</mat-label>
-        <mat-select formControlName="idRubro" required placeholder="- Seleccione un Rubro -">
-          <mat-option *ngFor="let workline of workLines" value="{{workline.idRubro}}">
-            {{workline.nomRubro}}
+        <mat-select
+          formControlName="idRubro"
+          required
+          placeholder="- Seleccione un Rubro -"
+        >
+          <mat-option
+            *ngFor="let workline of workLines"
+            value="{{ workline.idRubro }}"
+          >
+            {{ workline.nomRubro }}
           </mat-option>
         </mat-select>
         <mat-icon matSuffix>business_center</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>
-
   </form>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="wlForm.invalid || loaders.loadingSubmit"
-          (click)="onFormSubmit()"
-          mat-raised-button color="primary">
+  <button
+    type="button"
+    [disabled]="wlForm.invalid || loaders.loadingSubmit"
+    (click)="onFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->

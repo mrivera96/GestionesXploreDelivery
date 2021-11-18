@@ -1,0 +1,71 @@
+<!-- INICIO CARD-->
+<script src="../labels/customer-labels.component.ts"></script>
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>Mis Direcciones</mat-card-title>
+  </mat-card-header>
+  <!-- INICIO CARD BODY -->
+  <mat-card-content>
+
+    <div class="row justify-content-end">
+      <div class="col">
+        <button mat-raised-button (click)="showNewForm()" type="button" color="primary" class="float-right mb-2">
+          <i class="fa fa-plus"></i>
+          Agregar Dirección
+        </button>
+      </div>
+    </div>
+    <!-- INICIO DATATABLE -->
+
+    <div class="table-responsive">
+      <table id="dTable" datatable [dtOptions]="bdtOptions" [dtTrigger]="bdtTrigger"
+             class="display compact" style="width:100%">
+        <thead>
+        <tr>
+          <th data-priority="1">Nombre de Dirección</th>
+          <th>Dirección</th>
+          <th>Instrucciones</th>
+          <th>Predeterminada</th>
+          <th>email</th>
+          <th>Celular</th>
+          <th data-priority="1">Editar</th>
+          <th data-priority="1">Eliminar</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr *ngFor="let branch of myBranchOffices" style="cursor: pointer">
+          <td>{{branch.nomSucursal}}</td>
+          <td>{{branch.direccion}}</td>
+          <td>{{branch.instrucciones || 'N/A'}}</td>
+          <td>{{branch.isDefault == true ? 'Sí' : 'No' }}</td>
+          <td>{{branch.cliente.email}}</td>
+          <td>{{branch.cliente.numTelefono}}</td>
+          <td>
+            <a (click)="showEditForm(branch.idSucursal)" style="color: #0071A2">
+              <i class="fa fa-edit"></i> Editar
+            </a>
+          </td>
+          <td>
+            <a (click)="showConfirmDelete(branch.idSucursal)" style="color: #0071A2">
+              <i class="fa fa-trash"></i> Eliminar
+            </a>
+          </td>
+        </tr>
+        </tbody>
+
+      </table>
+      <!-- FIN DATATABLE -->
+    </div>
+
+  </mat-card-content>
+  <!-- FIN CARD BODY -->
+
+</mat-card>
+<!-- FIN CARD -->
+
+
+
+
+
+

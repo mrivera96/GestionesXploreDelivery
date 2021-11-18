@@ -50,7 +50,7 @@ export class AppComponent {
 
   logout() {
     this.authenticationService.logout().subscribe(data => {
-      location.reload(true)
+      location.reload()
       if ($('#sidebar').hasClass('active')) {
         $('#sidebar').toggleClass('active')
       }
@@ -83,8 +83,16 @@ export class AppComponent {
     $('.userSubMenu').toggleClass('d-none')
   }
 
-  showCustomerBranchSubMenu() {
-    $('.branchSubMenu').toggleClass('d-none')
+  showCustomerAddDeliverySubMenu() {
+    $('.createDelMenu').toggleClass('d-none')
+  }
+
+  showCustomerDeliveriesSubMenu() {
+    $('.delOrdersMenu').toggleClass('d-none')
+  }
+
+  showCustomerConfigSubMenu() {
+    $('.custConfigMenu').toggleClass('d-none')
   }
 
 

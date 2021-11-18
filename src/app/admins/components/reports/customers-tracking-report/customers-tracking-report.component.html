@@ -1,14 +1,10 @@
 <!--CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Reportes Seguimiento de Clientes
-    </mat-card-title>
-
+    <mat-card-title> Reportes Seguimiento de Clientes </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
-
     <!-- CONTAINER START -->
     <div class="row">
       <div class="col">
@@ -16,7 +12,12 @@
           <div class="form-row">
             <mat-form-field appearance="outline" class="col-md">
               <mat-label>Número mínimo de envíos:</mat-label>
-              <input matInput placeholder="Número mínimo de envíos" required formControlName="numMinEnvios">
+              <input
+                matInput
+                placeholder="Número mínimo de envíos"
+                required
+                formControlName="numMinEnvios"
+              />
               <mat-icon matPrefix>local_shipping</mat-icon>
               <mat-error>*Este campo es obligatorio</mat-error>
             </mat-form-field>
@@ -29,18 +30,17 @@
           <div class="form-row">
             <mat-form-field appearance="outline" class="col-md">
               <mat-label>Fecha Inicial:</mat-label>
-              <input matInput type="date" formControlName="initDate" required>
+              <input matInput type="date" formControlName="initDate" required />
               <mat-icon matPrefix>today</mat-icon>
               <mat-error>*Este campo es obligatorio</mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="col-md">
               <mat-label>Fecha Final:</mat-label>
-              <input matInput type="date" formControlName="finDate" required>
+              <input matInput type="date" formControlName="finDate" required />
               <mat-icon matPrefix>today</mat-icon>
               <mat-error>*Este campo es obligatorio</mat-error>
             </mat-form-field>
-
           </div>
 
           <div class="form-row">
@@ -50,35 +50,57 @@
           <div class="form-row">
             <mat-form-field appearance="outline" class="col-md">
               <mat-label>Fecha Inicial:</mat-label>
-              <input matInput type="date" formControlName="initDateWO" required>
+              <input
+                matInput
+                type="date"
+                formControlName="initDateWO"
+                required
+              />
               <mat-icon matPrefix>today</mat-icon>
               <mat-error>*Este campo es obligatorio</mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="col-md">
               <mat-label>Fecha Final:</mat-label>
-              <input matInput type="date" formControlName="finDateWO" required>
+              <input
+                matInput
+                type="date"
+                formControlName="finDateWO"
+                required
+              />
               <mat-icon matPrefix>today</mat-icon>
               <mat-error>*Este campo es obligatorio</mat-error>
             </mat-form-field>
           </div>
 
           <div class="form-row">
-            <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
-                    (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+            <button
+              [disabled]="consultForm.invalid"
+              type="button"
+              mat-raised-button
+              color="primary"
+              (click)="onConsultFormSubmit()"
+              class="col-md mt-auto mb-auto"
+            >
               <mat-icon>search</mat-icon>
             </button>
           </div>
         </form>
       </div>
-
     </div>
 
     <div class="container-fluid mt-2">
-
       <div class="row" *ngIf="loaders.loadingSubmit">
         <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/reports/customers-tracking-report/customers-tracking-report.component.html
           <img src="../../../../../assets/img/loading.svg" width="5%" alt="loading">
+=======
+          <img
+            src="../../../../../assets/img/loading.svg"
+            width="5%"
+            alt="loading"
+          />
+>>>>>>> origin/V5:src/app/admins/components/reports/customers-tracking-report/customers-tracking-report.component.html
           <p>Cargando información...</p>
         </div>
       </div>
@@ -90,37 +112,36 @@
       </div>
 
       <div class="table-responsive">
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          [dtTrigger]="dtTrigger"
+          class="display compact"
+          style="width: 100%"
+        >
           <thead>
-          <tr>
-            <th>N°</th>
-            <th>Cliente</th>
-            <th>Último Envío</th>
-            <th>Correo Electrónico</th>
-            <th>Número de Teléfono</th>
-          </tr>
+            <tr>
+              <th>N°</th>
+              <th>Cliente</th>
+              <th>Último Envío</th>
+              <th>Correo Electrónico</th>
+              <th>Número de Teléfono</th>
+            </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let result of consultResults; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{result.customer.nomEmpresa}}</td>
-            <td>{{result.lastOrder}}</td>
-            <td>{{result.customer.email}}</td>
-            <td>{{result.customer.numTelefono}}</td>
-          </tr>
-
+            <tr *ngFor="let result of consultResults; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ result.customer.nomEmpresa }}</td>
+              <td>{{ result.lastOrder }}</td>
+              <td>{{ result.customer.email }}</td>
+              <td>{{ result.customer.numTelefono }}</td>
+            </tr>
           </tbody>
-
         </table>
       </div>
-
-
-    </div>  <!-- CONTAINER END -->
+    </div>
+    <!-- CONTAINER END -->
   </mat-card-content>
 </mat-card>
 
 <!-- CARD END -->
-
-
-
-

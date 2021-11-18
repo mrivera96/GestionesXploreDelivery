@@ -1,8 +1,13 @@
 import {Component, Inject, OnInit} from '@angular/core'
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog"
 import {RatesService} from "../../../../../services/rates.service"
+<<<<<<< HEAD:src/app/admins/components/rates/rate-customers-dialog/add-customer-rate-dialog/add-customer-rate-dialog.component.ts
 import {ErrorModalComponent} from "../../../../../components/shared/error-modal/error-modal.component"
 import {SuccessModalComponent} from "../../../../../components/shared/success-modal/success-modal.component"
+=======
+import {ErrorModalComponent} from "../../../../../shared/components/error-modal/error-modal.component"
+import {SuccessModalComponent} from "../../../../../shared/components/success-modal/success-modal.component"
+>>>>>>> origin/V5:src/app/admins/components/rates/rate-customers-dialog/add-customer-rate-dialog/add-customer-rate-dialog.component.ts
 import {Customer} from "../../../../../models/customer"
 import {UsersService} from "../../../../../services/users.service"
 import {FormBuilder, FormGroup, Validators} from "@angular/forms"

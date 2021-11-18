@@ -1,0 +1,190 @@
+<mat-card class="mx-auto w-lg-50">
+  <mat-card-header>
+    <mat-card-title>Registro</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="row" *ngIf="loading">
+      <div class="col text-center">
+        <img
+          src="../../../../../assets/img/loading.svg"
+          width="35%"
+          alt="loading"
+        />
+        <p>Cargando información...</p>
+      </div>
+    </div>
+    
+    <p *ngIf="!loading">
+      Ingresa tus datos para registrarte y comienza a utilizar nuestros
+      servicios.
+    </p>
+    <form [formGroup]="nCustomerForm" *ngIf="!loading">
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="col-sm" floatLabel="always">
+          <mat-label>Nombre:</mat-label>
+          <input
+            matInput
+            type="text"
+            placeholder="Ingresa tu nombre"
+            required
+            maxlength="80"
+            name="nomRepresentante"
+            formControlName="nomRepresentante"
+          />
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="controls.nomRepresentante.errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-sm" floatLabel="always">
+          <mat-label>Número de Identificación:</mat-label>
+          <input
+            matInput
+            id="numIdentificacion"
+            type="text"
+            formControlName="numIdentificacion"
+            minlength="13"
+            maxlength="14"
+            placeholder="Ej. 1111333355555"
+          />
+          <mat-icon matPrefix>fingerprint</mat-icon>
+          <mat-error *ngIf="controls.numIdentificacion.errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="controls.numIdentificacion.errors?.maxlength">
+            *Por favor ingrese el número de identificación sin espacios ni
+            guiones
+          </mat-error>
+          <mat-error *ngIf="controls.numIdentificacion.errors?.minlength">
+            *Por favor ingrese el número de identificación sin espacios ni
+            guiones
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="col-sm" floatLabel="always">
+          <mat-label>Número de Teléfono:</mat-label>
+          <input
+            matInput
+            appPhoneMask
+            type="tel"
+            inputmode="tel"
+            name="numTelefono"
+            placeholder="ej. 9999-9999"
+            formControlName="numTelefono"
+            required
+            minlength="9"
+            maxlength="9"
+            (change)="verifyNumber()"
+          />
+          <mat-icon matPrefix>call_outline</mat-icon>
+          <mat-error *ngIf="controls.numTelefono.errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="controls.numTelefono.errors?.maxlength">
+            *Ingresa un número telefónico válido
+          </mat-error>
+          <mat-error *ngIf="controls.numTelefono.errors?.minlength">
+            *Ingresa un número telefónico válido
+          </mat-error>
+          <mat-error *ngIf="controls.numTelefono.errors?.exists">
+            *El número de teléfono que ingresaste ya está registrado. Intenta
+            con otro.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="col-sm" floatLabel="always">
+          <mat-label>e-mail:</mat-label>
+          <input
+            matInput
+            name="email"
+            type="email"
+            formControlName="email"
+            required
+            maxlength="50"
+            (change)="verifyMail()"
+            pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+            placeholder="ejemplo@email.com"
+          />
+          <mat-icon matPrefix>mail</mat-icon>
+          <mat-error *ngIf="controls.email.errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="controls.email.errors?.pattern">
+            *Ingresa un email válido
+          </mat-error>
+          <mat-error *ngIf="controls.email.errors?.exists">
+            *El e-mail que ingresaste ya está registrado. Intenta con otro.
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="col-sm" floatLabel="always">
+          <mat-label>Contraseña:</mat-label>
+          <input
+            matInput
+            type="password"
+            placeholder="Ingresa tu contraseña"
+            minlength="8"
+            formControlName="newPass"
+          />
+          <mat-icon matPrefix>lock</mat-icon>
+          <mat-error *ngIf="controls.newPass.errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="controls.newPass.errors?.minlength">
+            *La contraseña debe tener al menos 8 caracteres
+          </mat-error>
+          <mat-error *ngIf="controls.newPass.errors?.mustCapital">
+            *Debe incluir 1 mayúscula
+          </mat-error>
+          <mat-error *ngIf="controls.newPass.errors?.mustNum">
+            *Debe incluir 1 número
+          </mat-error>
+          <mat-error *ngIf="controls.newPass.errors?.mustSpecial">
+            *Debe incluir 1 caracter especial
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="col-sm" floatLabel="always">
+          <mat-label>Confirmar Contraseña:</mat-label>
+          <input
+            matInput
+            type="password"
+            placeholder="Ingresa tu contraseña nuevamente"
+            minlength="8"
+            required
+            formControlName="confirmNewPass"
+          />
+          <mat-icon matPrefix>check_outline</mat-icon>
+          <mat-error *ngIf="controls.confirmNewPass.errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="controls.confirmNewPass.errors?.minlength">
+            *La contraseña debe tener al menos 8 caracteres
+          </mat-error>
+          <mat-error *ngIf="controls.confirmNewPass.errors?.mustMatch">
+            *Debe coincidir con la nueva contraseña
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <button
+            mat-raised-button
+            [disabled]="nCustomerForm.invalid"
+            color="primary"
+            type="button"
+            (click)="openConfirmDialog()"
+          >
+            Registrar
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

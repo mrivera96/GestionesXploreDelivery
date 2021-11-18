@@ -1,14 +1,10 @@
 <!--CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Reportes Envíos por Conductor Consolidado
-    </mat-card-title>
-
+    <mat-card-title> Reportes Envíos por Conductor Consolidado </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
-
     <!-- CONTAINER START -->
     <div class="container-fluid">
       <div class="row">
@@ -17,14 +13,25 @@
             <div class="form-row">
               <mat-form-field appearance="outline" class="col-md">
                 <mat-label>Conductor:</mat-label>
-                <mat-select formControlName="driverId" required placeholder="- Seleccione un conductor -">
+                <mat-select
+                  formControlName="driverId"
+                  required
+                  placeholder="- Seleccione un conductor -"
+                >
                   <mat-form-field>
-                    <input matInput placeholder="Buscar Conductor" (keyup)="onKey($event.target.value)">
+                    <input
+                      matInput
+                      placeholder="Buscar Conductor"
+                      (keyup)="onKey($event.target.value)"
+                    />
                     <mat-icon [inline]="true" matPrefix>search</mat-icon>
                   </mat-form-field>
                   <mat-option [value]="-1">Todos</mat-option>
-                  <mat-option *ngFor="let driver of filteredDrivers" value="{{driver.idUsuario}}">
-                    {{driver.nomUsuario}}
+                  <mat-option
+                    *ngFor="let driver of filteredDrivers"
+                    value="{{ driver.idUsuario }}"
+                  >
+                    {{ driver.nomUsuario }}
                   </mat-option>
                 </mat-select>
                 <mat-icon matPrefix>sports_motorsports</mat-icon>
@@ -33,30 +40,43 @@
 
               <mat-form-field appearance="outline" class="col-md">
                 <mat-label>Fecha Inicial:</mat-label>
-                <input matInput type="date" formControlName="initDate" required>
+                <input
+                  matInput
+                  type="date"
+                  formControlName="initDate"
+                  required
+                />
                 <mat-icon matPrefix>today</mat-icon>
                 <mat-error>*Este campo es obligatorio</mat-error>
               </mat-form-field>
-
             </div>
 
             <div class="form-row">
               <mat-form-field appearance="outline" class="col-md">
                 <mat-label>Fecha Final:</mat-label>
-                <input matInput type="date" formControlName="finDate" required>
+                <input
+                  matInput
+                  type="date"
+                  formControlName="finDate"
+                  required
+                />
                 <mat-icon matPrefix>today</mat-icon>
                 <mat-error>*Este campo es obligatorio</mat-error>
               </mat-form-field>
 
-
-              <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
-                      (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+              <button
+                [disabled]="consultForm.invalid"
+                type="button"
+                mat-raised-button
+                color="primary"
+                (click)="onConsultFormSubmit()"
+                class="col-md mt-auto mb-auto"
+              >
                 <mat-icon>search</mat-icon>
               </button>
             </div>
           </form>
         </div>
-
       </div>
 
       <div class="row mt-2">
@@ -70,11 +90,19 @@
               Exportar PDF
             </button> -->
 
-            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generateExcel()">
+            <button
+              [disabled]="consultResults.length == 0"
+              mat-menu-item
+              (click)="generateExcel()"
+            >
               Exportar a Excel
             </button>
 
-            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="printReport()">
+            <button
+              [disabled]="consultResults.length == 0"
+              mat-menu-item
+              (click)="printReport()"
+            >
               Imprimir
             </button>
           </mat-menu>
@@ -83,7 +111,15 @@
 
       <div class="row" *ngIf="loaders.loadingSubmit">
         <div class="col text-center">
+<<<<<<< HEAD:src/app/admins/components/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component.html
           <img src="../../../../../assets/img/loading.svg" width="5%" alt="loading">
+=======
+          <img
+            src="../../../../../assets/img/loading.svg"
+            width="5%"
+            alt="loading"
+          />
+>>>>>>> origin/V5:src/app/admins/components/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component.html
           <p>Cargando información...</p>
         </div>
       </div>
@@ -96,28 +132,38 @@
 
       <!-- CONTAINER BODY START datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" -->
       <div class="table-responsive" id="printTable">
-        <table class="table table-striped" style="width:100%">
+        <table class="table table-striped" style="width: 100%">
           <thead>
-          <tr>
-            <th></th>
-            <th style="text-align:center;width: 5%;" colspan="2" *ngFor="let date of dates; ">{{date}}</th>
-          </tr>
+            <tr>
+              <th></th>
+              <th
+                style="text-align: center; width: 5%"
+                colspan="2"
+                *ngFor="let date of dates"
+              >
+                {{ date }}
+              </th>
+            </tr>
 
-          <tr>
-            <th *ngFor="let header of headers" style="text-align:center; width: 5%;">{{header}}</th>
+            <tr>
+              <th
+                *ngFor="let header of headers"
+                style="text-align: center; width: 5%"
+              >
+                {{ header }}
+              </th>
 
-            <th style="text-align:center; width: 5%;">Total Envíos</th>
-            <th style="text-align:center; width: 5%;">Total Tiempo</th>
-            <th style="text-align:center; width: 5%;">Efectivo Recibido</th>
-          </tr>
-
+              <th style="text-align: center; width: 5%">Total Envíos</th>
+              <th style="text-align: center; width: 5%">Total Tiempo</th>
+              <th style="text-align: center; width: 5%">Efectivo Recibido</th>
+            </tr>
           </thead>
           <tbody>
-
-          <tr *ngFor="let result of consultResults; let idx = index">
-            <td style="text-align:center" *ngFor="let row of result">{{row}}</td>
-
-          </tr>
+            <tr *ngFor="let result of consultResults; let idx = index">
+              <td style="text-align: center" *ngFor="let row of result">
+                {{ row }}
+              </td>
+            </tr>
           </tbody>
 
           <!--          <tfoot style="display: table-footer-group;">-->
@@ -129,11 +175,10 @@
           <!--&lt;!&ndash;            </th>&ndash;&gt;-->
           <!--          </tr>-->
           <!--          </tfoot>-->
-
         </table>
       </div>
-
-    </div> <!-- CONTAINER END -->
+    </div>
+    <!-- CONTAINER END -->
   </mat-card-content>
 </mat-card>
 <!-- CARD END -->

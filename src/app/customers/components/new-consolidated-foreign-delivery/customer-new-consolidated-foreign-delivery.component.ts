@@ -22,13 +22,14 @@ import { BranchService } from "../../../services/branch.service";
 import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator";
 import { NoUrlValidator } from "../../../helpers/noUrl.validator";
 import { environment } from "../../../../environments/environment";
-import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component";
-import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component";
+import { ErrorModalComponent } from "../../../shared/components/error-modal/error-modal.component";
+import { SuccessModalComponent } from "../../../shared/components/success-modal/success-modal.component";
 import { ConfirmDialogComponent } from "../new-delivery/confirm-dialog/confirm-dialog.component";
 import { CustomerRestrictionsDialogComponent } from "../restrictions-dialog/customer-restrictions-dialog.component";
 import { animate, style, transition, trigger } from "@angular/animations";
 import { UsersService } from 'src/app/services/users.service';
-import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component';
+import { LockedUserDialogComponent } from '../../../shared/components/locked-user-dialog/locked-user-dialog.component';
+import { DateValidate } from 'src/app/helpers/date.validator';
 
 @Component({
   selector: 'app-customer-new-consolidated-foreign-delivery',
@@ -150,7 +151,7 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
         }, Validators.required],
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
-        fecha: ['', Validators.required],
+        fecha: ['', [Validators.required, DateValidate]],
         hora: ['', Validators.required],
         idTarifa: [null],
       }, {
@@ -207,7 +208,7 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
 
   loadData() {
     this.loaders.loadingData = true
-    const categoriesSubscription = this.categoriesService.getCustomerCategories().subscribe(response => {
+    const categoriesSubscription = this.categoriesService.getCustomerCategories(null, 4).subscribe(response => {
       this.categories = response.consolidatedForeignCategories
       this.categories.forEach(category =>{
         category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)

@@ -73,6 +73,22 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
+    } else if ($func == 'sendSMS') {
+
+        $handle = curl_init();
+        $numTel = $_GET["telefono"];
+        $sms = $_GET["sms"];
+
+        $url = "http://190.4.56.14/GoogleApi/send-sms.php?telefono=".$numTel."&mensaje=".str_replace(" ", '%20', $sms);
+
+        // Set the url
+		//curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($handle, CURLOPT_URL, $url);
+               
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
     }
 } else if (file_get_contents('php://input')) {
     $rest_json = file_get_contents("php://input");
@@ -99,31 +115,26 @@ if (isset($_GET['function'])) {
         $output = curl_exec($handle);
 
         curl_close($handle);
-    } else if ($_POST['function'] == 'searchPlace') {
+    }else if ($_POST['function'] == 'searchPlace') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
-
-        $handle = curl_init();
+		$handle = curl_init();
 
         $url = "https://calculadoradelivery.xplorerentacar.com/mod.ajax/places.php";
 
-
-
-        // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
         curl_setopt($handle, CURLOPT_POST, TRUE);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $array);
-        /* set the content type json */
+        curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:multipart/form-data'));
 
-        /* set return type json */
+        
         //curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
 
         $output = curl_exec($handle);
 
         curl_close($handle);
-
-        return json_encode($output);
     } else if ($_POST['function'] == 'calculateDistance') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
@@ -138,6 +149,9 @@ if (isset($_GET['function'])) {
         curl_setopt($handle, CURLOPT_URL, $url);
         curl_setopt($handle, CURLOPT_POST, TRUE);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $array);
+        curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, 0);
+		curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, 0);
+        
         /* set the content type json */
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:multipart/form-data'));
 
@@ -2140,6 +2154,26 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
+    } else if ($_POST['function'] == 'getDriverPending') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/drivers/getAssignedOrders";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
     } else if ($_POST['function'] == 'assignDriverCategory') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
@@ -2360,26 +2394,26 @@ if (isset($_GET['function'])) {
         $output = curl_exec($handle);
         curl_close($handle);
     } else if ($_POST['function'] == 'getBillingReport') {
-             $post = file_get_contents('php://input');
-             $array = json_decode($post);
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
 
-             $handle = curl_init();
+        $handle = curl_init();
 
-             $url = "http://190.4.56.14/" . $environment . "/api/admins/reports/billingReport";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/reports/billingReport";
 
-             $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
-             // Set the url
-             curl_setopt($handle, CURLOPT_URL, $url);
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
 
-             curl_setopt($handle, CURLOPT_POST, TRUE);
-             curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-             curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
-             /* set return type json */
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
 
-             $output = curl_exec($handle);
-             curl_close($handle);
-    }else if ($_POST['function'] == 'getRestrictions') {
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getRestrictions') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
@@ -2435,6 +2469,362 @@ if (isset($_GET['function'])) {
         curl_setopt($handle, CURLOPT_POST, TRUE);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
         curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getTermsConditions') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/termsConditions/get";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'createTermCondition') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/termsConditions/create";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'updateTermCondition') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/termsConditions/update";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getCustomerPaymentMethods') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/paymentMethods/get";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'createPaymentMethod') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/paymentMethods/create";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'editPaymentMethod') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/paymentMethods/update";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'deleteCard') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/paymentMethods/delete";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }  else if ($_POST['function'] == 'tokenizeCard') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+        $idCust = $_POST['idCliente'];
+        $card = $_POST['tarjeta'];
+        $expire = $_POST['expira'];
+        $cvv = $_POST['cvv'];
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreRestApiDesa/bac/tokenizar?idcliente=" . $idCust . "&tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv;
+        $authorization = 'Authorization: Basic ' . base64_encode("Webapi:Xplore19$");
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('api_key:Xplore19$', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'autorizePayment') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+        $card = $_POST['tarjeta'];
+        $expire = $_POST['expira'];
+        $cvv = $_POST['cvv'];
+        $amount = $_POST['monto'];
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/XploreRestApiDesa/bac/autorizar?tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv . "&monto=" . $amount;
+        $authorization = 'Authorization: Basic ' . base64_encode("Webapi:Xplore19$");
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('api_key:Xplore19$', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'saveFailTransaction') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/customers/paymentMethods/saveFailTransaction";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }  else if ($_POST['function'] == 'getQueryUsers') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/queryUsers/read";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }  else if ($_POST['function'] == 'addQueryUser') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/queryUsers/create";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }  else if ($_POST['function'] == 'updateQueryUser') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/queryUsers/update";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }  else if ($_POST['function'] == 'removeOrder') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/delete";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }  else if ($_POST['function'] == 'addOrder') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/add";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'signUp') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/auth/signUp";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'verifyMail') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/auth/verifyMail";
+
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'verifyNumber') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/auth/verifyNumber";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
         /* set return type json */
 
         $output = curl_exec($handle);

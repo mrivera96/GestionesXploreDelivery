@@ -1,5 +1,6 @@
 <!-- MODAL START -->
 <h2 mat-dialog-title class="text-info">
+<<<<<<< HEAD
     <mat-icon [inline]="true">list</mat-icon> Envíos Asignadas al Conductor
   </h2>
   <mat-dialog-content>
@@ -49,3 +50,53 @@
   
   <!-- MODAL END -->
   
+=======
+  <mat-icon [inline]="true">list</mat-icon> Envíos Asignadas al Conductor
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loading">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <div class="row d-block" *ngIf="!loading">
+    <div class="col">
+      <div class="table-responsive">
+        <table id="dTable" class="table table-striped" style="width: 100%">
+          <thead>
+            <tr>
+              <th scope="col">N° de Reserva</th>
+              <th scope="col">N° de Envío</th>
+              <th scope="col">Cliente</th>
+              <th scope="col">Destinatario</th>
+              <th scope="col">Dirección</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let res of pendingDeliveries; let i = index">
+              <td>{{ res.idDelivery }}</td>
+              <td>{{ res.idDetalle }}</td>
+              <td>{{ res.delivery.cliente.nomEmpresa }}</td>
+              <td>{{ res.nomDestinatario }}</td>
+              <td>{{ res.direccion }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" mat-raised-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+>>>>>>> origin/V5

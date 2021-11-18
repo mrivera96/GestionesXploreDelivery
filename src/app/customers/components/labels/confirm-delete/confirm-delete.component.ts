@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ErrorModalComponent } from 'src/app/components/shared/error-modal/error-modal.component';
-import { SuccessModalComponent } from 'src/app/components/shared/success-modal/success-modal.component';
+import { ErrorModalComponent } from 'src/app/shared/components/error-modal/error-modal.component';
+import { SuccessModalComponent } from 'src/app/shared/components/success-modal/success-modal.component';
 import { LabelsService } from 'src/app/services/labels.service';
 
 @Component({

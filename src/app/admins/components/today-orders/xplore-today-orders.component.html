@@ -1,20 +1,17 @@
 <!--CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Envíos del Día
-    </mat-card-title>
-
+    <mat-card-title> Envíos del Día </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
     <!-- DATATABLE START -->
-    <app-orders-data-table [orders]="'admin-hoy'" (loadingData)="setLoading($event)" ></app-orders-data-table>
+    <app-orders-data-table
+      [orders]="'admin-hoy'"
+      (loadingData)="setLoading($event)"
+    ></app-orders-data-table>
     <!-- DATATABLE END -->
   </mat-card-content>
 </mat-card>
 
 <!-- CARD END -->
-
-
-

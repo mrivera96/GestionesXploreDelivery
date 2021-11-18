@@ -1,0 +1,42 @@
+<div class="row">
+    <!--ORDERS TABLE START-->
+    <div class="col">
+      <div class="table-responsive">
+        <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact"
+          style="width:100%">
+          <thead>
+            <tr>
+              <th scope="col">N°</th>
+              <th scope="col">Detalle de Envío</th>
+              <th scope="col">Nombre del Destinatario</th>
+              <th scope="col">Número Celular del Destinatario</th>
+              <th scope="col">Instrucciones</th>
+              <th scope="col">Dirección del Destinatario</th>
+              <th scope="col" data-priority="1">Acción</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let order of orders; let i = index">
+              <td>{{i + 1}}</td>
+              <td>{{order.nFactura}}</td>
+              <td>{{order.nomDestinatario}}</td>
+              <td>{{order.numCel}}</td>
+              <td>{{order.instrucciones}}</td>
+              <td>{{order.direccion}}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArrayFun(order)"><i
+                    class="fa fa-trash-alt"></i>
+                  Quitar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+
+    <!--ORDERS TABLE END-->
+  </div>

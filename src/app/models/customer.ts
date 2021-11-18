@@ -24,4 +24,5 @@ export interface Customer {
   correosFact?: string
   razonSocial?: string
   rtn?: string
+  pagoTarjeta?: boolean
 }

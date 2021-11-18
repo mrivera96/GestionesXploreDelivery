@@ -11,4 +11,5 @@ export interface ItemDetail {
   isv?: number
   tasaTuris?: number
   gastosReembolsables?: number
+  transportePersonas?: number
 }

@@ -25,6 +25,18 @@
         <button type="button" mat-menu-item (click)="optimizeRoutes()">
           Generar Ruta Optimizada
         </button>
+
+        <button type="button" mat-menu-item *ngIf="currentDelivery?.refNumber" (click)="openInvoiceDialog(currentDelivery?.refNumber)">
+          Ver Factura
+        </button>
+
+        <button type="button" mat-menu-item *ngIf="+currentDelivery?.isRuteo" (click)="openAddOrder()">
+          Agregar envío
+        </button>
+<!--
+        <button type="button" mat-menu-item (click)="optimizeRoutes()">
+          Generar Ruta Optimizada Múltiple
+        </button>-->
       </mat-menu>
 
     </div>
@@ -38,6 +50,10 @@
         currentDelivery.idEstado != 39 && currentDelivery.isConsolidada == false" [disabled]="!allowHourChange"
                 (click)="openCustomerChangeHourDialog()">
           Cambiar Hora de Recogida
+        </button>
+
+        <button type="button" mat-menu-item *ngIf="currentDelivery?.refNumber" (click)="openInvoiceDialog(currentDelivery?.refNumber)">
+          Ver Factura
         </button>
 
         <!-- <button type="button" mat-menu-item *ngIf="allowCancel &&
@@ -232,6 +248,11 @@
                   <mat-icon>visibility</mat-icon>
                   Ver Detalles
                 </button>
+
+                <button mat-menu-item type="button" *ngIf="+currentDelivery?.isRuteo" (click)="confirmDelete(detail)">
+                  <mat-icon>delete</mat-icon>
+                  Quitar Envío
+                </button>
               </mat-menu>
             </td>
           </tr>
@@ -239,7 +260,7 @@
         </table>
       </div>
 
-      <div class="table-responsive" *ngIf="currUser.idPerfil == 8">
+      <div class="table-responsive" *ngIf="currUser.idPerfil == 8 || currUser.idPerfil == 12">
         <table class="display compact" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
                style="width: 100%">
           <thead>
