@@ -122,6 +122,15 @@ export class CustomerNewDeliveryComponent implements OnInit {
   priorityCharge;
   acceptTerms = false;
   reserv;
+  detailTitle = 'Detalle de envíos';
+  nameLabel = 'Nombre del destinatario';
+  nameHolder = '¿Quién recibirá el pedido?';
+  dliveryHolder = '¿Dónde entregaremos tu pedido?';
+  instHolder = '¿Necesitamos instrucciones para la entrega de éste envío?';
+  nFactValue = '1';
+  numValue = '1';
+  nowHourError = false;
+  allowPriority = false;
 
   constructor(
     private categoriesService: CategoriesService,
@@ -139,40 +148,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.currCustomer = this.authService.currentUserValue;
     this.hourOption = 1;
     this.reserv = false;
-  }
 
-  ngOnInit(): void {
-    this.todaySchedule = JSON.parse(localStorage.getItem('todaySchedule'));
-    this.hInit = formatDate(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        null,
-        Number(this.todaySchedule?.inicio.split(':')[0]),
-        Number(this.todaySchedule?.inicio.split(':')[1])
-      ),
-      'hh:mm a',
-      'en'
-    );
-
-    this.hFin = formatDate(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth(),
-        null,
-        Number(this.todaySchedule?.final.split(':')[0]),
-        Number(this.todaySchedule?.final.split(':')[1])
-      ),
-      'hh:mm a',
-      'en'
-    );
-
-    this.initialize();
-    this.checkCustomer();
-  }
-
-  //INICIALIZACIÓN DE VARIABLES
-  initialize() {
     this.geocoder = new google.maps.Geocoder();
     this.directionsRenderer = new google.maps.DirectionsRenderer();
     this.directionsService = new google.maps.DirectionsService();
@@ -287,6 +263,35 @@ export class CustomerNewDeliveryComponent implements OnInit {
     };
   }
 
+  ngOnInit(): void {
+    this.todaySchedule = JSON.parse(localStorage.getItem('todaySchedule'));
+    this.hInit = formatDate(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        null,
+        Number(this.todaySchedule?.inicio.split(':')[0]),
+        Number(this.todaySchedule?.inicio.split(':')[1])
+      ),
+      'hh:mm a',
+      'en'
+    );
+
+    this.hFin = formatDate(
+      new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        null,
+        Number(this.todaySchedule?.final.split(':')[0]),
+        Number(this.todaySchedule?.final.split(':')[1])
+      ),
+      'hh:mm a',
+      'en'
+    );
+    this.checkCustomer();
+    this.setCurrentDate();
+  }
+
   //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
   loadData() {
     const categoriesSubscription = this.categoriesService
@@ -314,7 +319,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
           });
 
           this.demandMSG = response.demand;
-          this.priorityCharge = response.priority;
+          //this.priorityCharge = response.priority;
           this.dialog.closeAll();
           categoriesSubscription.unsubscribe();
         },
@@ -364,6 +369,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
         item.direccion ==
         this.deliveryForm.get('deliveryHeader.dirRecogida').value
     );
+
     this.operationsService.checkCustomerInstructions(
       bOffice,
       this.deliveryForm.get('deliveryHeader.instrucciones')
@@ -427,7 +433,13 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   //MÉTODO QUE EJECUTA LA ADICIÓN DE UN NUEVO ENVÍO
   onOrderAdd() {
-    if (this.deliveryForm.get('order').valid) {
+    if (this.reserv) {
+      this.validateHour();
+    } else {
+      this.validateNowHour();
+    }
+
+    if (this.deliveryForm.valid) {
       this.openLoader();
 
       this.currOrder.nFactura = this.newForm.get('order.nFactura').value;
@@ -457,7 +469,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   //COMUNICACIÓN CON LA API PARA REGISTRAR EL DELIVERY
   onFormSubmit() {
-    console.log(this.selectedRate)
     this.newForm.get('deliveryHeader.idCategoria').enable();
     this.newForm.get('deliveryHeader.dirRecogida').enable();
 
@@ -468,7 +479,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       this.deliveryForm
         .get('deliveryHeader.idTarifa')
         .setValue(this.selectedRate);
-      this.deliveryForm.get('deliveryHeader.prioridad').setValue(this.priority);
+      //this.deliveryForm.get('deliveryHeader.prioridad').setValue(this.priority);
 
       this.openLoader();
       const deliveriesSubscription = this.deliveriesService
@@ -663,7 +674,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.selectedRate = this.rates.find(
       (rate) =>
         ordersCount >= rate?.entregasMinimas &&
-        ordersCount <= rate?.entregasMaximas 
+        ordersCount <= rate?.entregasMaximas
     );
     if (this.selectedRate != null) {
       this.pago.baseRate = this.selectedRate.precio;
@@ -1127,6 +1138,44 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.selectedCategory = category;
     this.surcharges = this.selectedCategory.surcharges;
     this.rates = this.selectedCategory.ratesToShow;
+    /*if (this.selectedCategory.idTipoServicio == 2) {
+      this.detailTitle = 'Detalle de transporte';
+      this.nameLabel = 'Nombre del pasajero';
+      this.nameHolder = '¿Quien será la persona a transportar?';
+      this.dliveryHolder = '¿Hacia donde realizaremos este transporte?';
+      this.instHolder =
+        '¿Necesitamos instrucciones para realizar este transporte?';
+      this.numValue = '0000-0000';
+      this.nFactValue = 'Transporte';
+
+      this.newForm.get('order.nFactura').setValidators(null);
+      this.newForm.get('order.nFactura').updateValueAndValidity();
+      this.newForm.get('order.numCel').setValidators(null);
+      this.newForm.get('order.numCel').updateValueAndValidity();
+    } else {
+      this.newForm
+        .get('order.nFactura')
+        .setValidators([
+          Validators.required,
+          Validators.maxLength(250),
+          Validators.pattern(/^((?!\s{2,}).)*$/),
+        ]);
+      this.newForm
+        .get('order.numCel')
+        .setValidators([
+          Validators.required,
+          Validators.minLength(9),
+          Validators.maxLength(9),
+        ]);
+    }*/
+    const allowPriority = this.selectedCategory.categoryExtraCharges.find(
+      (item) => item.idCargoExtra == 16
+    );
+    if (allowPriority != null && allowPriority != undefined) {
+      this.allowPriority = true;
+    } else {
+      this.allowPriority = false;
+    }
   }
 
   //AÑADE UN CARGO EXTRA
@@ -1141,35 +1190,19 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   //SETEAR EL VALOR DE LA FECHA Y HORA A LA FECHA ACTUAL Y UNA HORA DESPUES DE LA ACTUAL
   setCurrentDate() {
-    if (this.hourOption == 1) {
-      this.reserv = false;
-      this.newForm
-        .get('deliveryHeader.hora')
-        .setValue(
-          formatDate(
-            new Date().setHours(
-              new Date().getHours(),
-              new Date().getMinutes() + 5
-            ),
-            'HH:mm',
-            'en'
-          )
-        );
-    } else {
-      this.reserv = true;
-      this.newForm
-        .get('deliveryHeader.hora')
-        .setValue(
-          formatDate(
-            new Date().setHours(
-              new Date().getHours() + 1,
-              new Date().getMinutes() + 1
-            ),
-            'HH:mm',
-            'en'
-          )
-        );
-    }
+    this.reserv = false;
+    this.newForm
+      .get('deliveryHeader.fecha')
+      .setValue(formatDate(new Date(), 'yyyy-MM-dd', 'en'));
+    this.newForm
+      .get('deliveryHeader.hora')
+      .setValue(
+        formatDate(
+          new Date().setHours(new Date().getHours(), new Date().getMinutes()),
+          'HH:mm',
+          'en'
+        )
+      );
   }
 
   removeExtraCharges(extracharge) {
@@ -1286,15 +1319,59 @@ export class CustomerNewDeliveryComponent implements OnInit {
       if (datetime < oneHourMore) {
         control.setErrors({ mustAfterHour: true });
       }
+      if (h < tSSHour || h > tSFHour) {
+        control.setErrors({ mustAfterHour: true });
+      }
     } else {
       // @ts-ignore
       if (datetime < currentDateTime) {
         control.setErrors({ mustAfterHour: true });
       }
+      if (h < tSSHour || h > tSFHour) {
+        control.setErrors({ mustAfterHour: true });
+      }
+    }
+  }
+
+  validateNowHour() {
+    const control = this.deliveryForm.get('deliveryHeader.hora');
+    let h = this.newForm.get('deliveryHeader.hora').value;
+    const todaySchedule: Schedule = JSON.parse(
+      localStorage.getItem('todaySchedule')
+    );
+    const tSSHour = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      null,
+      Number(todaySchedule?.inicio.split(':')[0]),
+      Number(todaySchedule?.inicio.split(':')[1])
+    );
+    const tSFHour = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      null,
+      Number(todaySchedule?.final.split(':')[0]),
+      Number(todaySchedule?.final.split(':')[1])
+    );
+
+    const shour = h.split(':')[0];
+    const smin = h.split(':')[1];
+    h = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      null,
+      shour,
+      smin
+    );
+
+    if (control.errors && !control.errors.mustAfterHour) {
+      // return if another validator has already found an error on the matchingControl
+      return;
     }
 
     if (h < tSSHour || h > tSFHour) {
       control.setErrors({ mustAfterHour: true });
+      this.nowHourError = true;
     }
   }
 }

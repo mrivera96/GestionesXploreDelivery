@@ -5,9 +5,8 @@ import { CustomerGuard } from '../guards/customer.guard';
 import { HomeCustomerComponent } from './components/home-customer/home-customer.component';
 import { TodosDeliveriesComponent } from './components/all-deliveries/todos-deliveries.component';
 import { DeliveriesManianaComponent } from './components/tomorrow-deliveries/deliveries-maniana.component';
-import { CustomerBranchOfficesComponent } from './components/branch-offices/customer-branch-offices.component';
-import { CustomerNewBranchComponent } from './components/new-branch/customer-new-branch.component';
-import { CustomerDeliveryDetailComponent } from './components/delivery-detail/customer-delivery-detail.component';
+import { CustomerBranchOfficesComponent } from './components/address/customer-branch-offices.component';
+import { CustomerNewBranchComponent } from './components/address/new-address/customer-new-branch.component';
 import { CustomerTodayOrdersComponent } from './components/today-orders/customer-today-orders.component';
 import { CustomerAllOrdersComponent } from './components/all-orders/customer-all-orders.component';
 import { CustomerProfileComponent } from './components/profile/customer-profile.component';
@@ -134,6 +133,7 @@ const routes: Routes = [
     component: DeliveryInvoiceComponent,
     canActivate: [CustomerGuard],
   },
+
 ];
 
 @NgModule({

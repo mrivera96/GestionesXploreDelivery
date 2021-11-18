@@ -6,14 +6,14 @@ import { TodosDeliveriesComponent } from './components/all-deliveries/todos-deli
 import { DeliveriesManianaComponent } from './components/tomorrow-deliveries/deliveries-maniana.component';
 import { CustomerDatatableComponent } from './components/datatable/customer-datatable.component';
 import { CustomerNewDeliveryComponent } from './components/new-delivery/customer-new-delivery.component';
-import { CustomerBranchOfficesComponent } from './components/branch-offices/customer-branch-offices.component';
-import { CustomerNewBranchComponent } from './components/new-branch/customer-new-branch.component';
+import { CustomerBranchOfficesComponent } from './components/address/customer-branch-offices.component';
+import { CustomerNewBranchComponent } from './components/address/new-address/customer-new-branch.component';
 import { CustomerDeliveryDetailComponent } from './components/delivery-detail/customer-delivery-detail.component';
 import { CustomerAllOrdersComponent } from './components/all-orders/customer-all-orders.component';
 import { CustomerTodayOrdersComponent } from './components/today-orders/customer-today-orders.component';
 import { CustomerProfileComponent } from './components/profile/customer-profile.component';
-import { ConfirmDialogComponent } from './components/branch-offices/confirm-dialog/confirm-dialog.component';
-import { EditDialogComponent } from './components/branch-offices/edit-dialog/edit-dialog.component';
+import { ConfirmDialogComponent } from './components/address/confirm-dialog/confirm-dialog.component';
+import { EditDialogComponent } from './components/address/edit-dialog/edit-dialog.component';
 import { ConfirmDialogComponent as DeliveryConfirm } from './components/new-delivery/confirm-dialog/confirm-dialog.component';
 import { HomeCustomerComponent } from './components/home-customer/home-customer.component';
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
@@ -75,7 +75,8 @@ import { BalancePaymentComponent } from './components/balance-payment/balance-pa
     ReadCardsComponent,
     CreateCardComponent,
     UpdateCardComponent,
-    BalancePaymentComponent
+    BalancePaymentComponent,
+
   ],
   imports: [
     CommonModule,

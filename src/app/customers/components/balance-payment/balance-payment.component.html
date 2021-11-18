@@ -24,6 +24,7 @@
           name="selectedCard"
           required
           placeholder="Seleccione una forma de pago"
+          (change)="validateDate()"
         >
           <mat-option *ngFor="let card of myCards" [value]="card">
             {{ card.alias }}</mat-option
@@ -31,6 +32,9 @@
         </mat-select>
         <mat-icon matSuffix>credit_card</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="expiredCard">
+          *Esta tarjeta ya ha expirado
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
@@ -65,6 +69,14 @@
           required
         />
       </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>CVC/CVV:</mat-label>
+        <input matInput required type="number" name="cvv" [(ngModel)]="cvv" 
+            onKeyPress="if(this.value.length==3) return false;" placeholder="000">
+        <mat-icon matSuffix>lock</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
     </div>
 
     <div class="form-row text-center" *ngIf="!loaders.loadingSubmit">

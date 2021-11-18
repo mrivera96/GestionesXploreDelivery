@@ -53,6 +53,7 @@
         <tfoot>
           <tr>
             <th></th>
+            <th *ngIf="currentUser.idPerfil == 12"></th>
             <th></th>
             <th></th>
             <th></th>
@@ -72,6 +73,7 @@
         <thead>
           <tr>
             <th data-priority="1">N°</th>
+            <th *ngIf="currentUser.idPerfil == 12">Cliente</th>
             <th data-order="2020-06-01 16:30" data-priority="1">
               Fecha y hora de recogida
             </th>
@@ -86,6 +88,7 @@
         <tbody>
           <tr *ngFor="let delivery of deliveries">
             <td class="id">{{ delivery.idDelivery }}</td>
+            <td *ngIf="currentUser.idPerfil == 12">{{delivery.nomCliente}}</td>
             <td>{{ delivery.fechaReserva }}</td>
             <td class="fId">{{ delivery.dirRecogida }}</td>
             <td>{{ delivery.entregas }}</td>

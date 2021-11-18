@@ -3,11 +3,13 @@ import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
 import {LoginComponent} from "./shared/components/login/login.component";
 import {RootComponent} from "./shared/components/root/root.component";
 import {PasswordRecoveryComponent} from "./shared/components/password-recovery/password-recovery.component";
+import { SignUpComponent } from './shared/components/sign-up/sign-up.component';
 
 const routes: Routes = [
   //RUTAS COMUNES
   {path: '', component: RootComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'registro', component: SignUpComponent},
   {path: 'password-recovery', component: PasswordRecoveryComponent},
   {
     path:'customers',

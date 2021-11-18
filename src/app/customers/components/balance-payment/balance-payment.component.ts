@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import {
   MatDialog,
@@ -26,6 +27,8 @@ export class BalancePaymentComponent implements OnInit {
   paymentType: number;
   currentBalance: number;
   paymentError = false;
+  cvv;
+  expiredCard = false;
 
   constructor(
     private cardsService: CardsService,
@@ -69,7 +72,7 @@ export class BalancePaymentComponent implements OnInit {
     const paymentObject = {
       cardNumber: this.selectedCard.token_card,
       expDate: this.selectedCard.vencimiento,
-      cvv: this.selectedCard.cvv,
+      cvv: this.cvv,
       amount: this.amountToPay,
     };
 
@@ -157,5 +160,18 @@ export class BalancePaymentComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       this.dialogRef.close(true);
     });
+  }
+
+  validateDate() {
+    this.expiredCard = false;
+    const currentDate = formatDate(new Date(), 'M/yy', 'en').split('/');
+    const month = this.selectedCard.mes;
+    const year = this.selectedCard.anio;
+
+    if (year < +currentDate[1]) {
+      this.expiredCard = true;
+    } else if (year == +currentDate[1] && month < +currentDate[0]) {
+      this.expiredCard = true;
+    }
   }
 }

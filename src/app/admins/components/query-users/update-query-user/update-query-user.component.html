@@ -1,0 +1,122 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-create"></i> {{ currentUser.nomUsuario }}
+</h2>
+
+<mat-dialog-content>
+  <div class="row" *ngIf="loading">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="upUsrForm" *ngIf="!loading">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Nombre:</mat-label>
+        <input
+          matInput
+          required
+          type="text"
+          formControlName="userName"
+          maxlength="60"
+          placeholder="Nombre del usuario"
+        />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Nombre de usuario:</mat-label>
+        <input
+          matInput
+          required
+          type="text"
+          formControlName="nickName"
+          maxlength="35"
+          placeholder="Se utilizará para iniciar sesión"
+        />
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error *ngIf="upUsrForm.get('nickName')?.errors?.required"
+          >*Este campo es obligatorio</mat-error
+        >
+        <mat-error *ngIf="upUsrForm.get('nickName')?.errors?.hasSpace"
+          >*No se admiten espacios en el nombre de usuario</mat-error
+        >
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-slide-toggle class="col-md" formControlName="isActivo"
+        >Activo</mat-slide-toggle
+      >
+    </div>
+    <br /><br />
+  </form>
+
+  <h4>Clientes asignados para consulta</h4>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table table-stripped">
+      <thead>
+        <th>No.</th>
+        <th>Nombre Cliente</th>
+        <th>Eliminar</th>
+      </thead>
+      <tbody>
+        <tr *ngIf="currentUser?.query_customers?.length == 0">
+          No hay registros
+        </tr>
+        <tr
+          *ngFor="let customer of currentUser?.query_customers; let idx = index"
+        >
+          <td>
+            {{ idx + 1 }}
+          </td>
+          <td>{{ customer?.customer?.nomEmpresa }}</td>
+          <td>
+            <button mat-button (click)="removeCustomer(customer)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 *ngIf="!loading">Agregar Cliente</h4>
+  <div class="row" *ngIf="!loading">
+    <mat-form-field class="col" appearance="outline">
+      <mat-label>Seleccione un cliente</mat-label>
+      <mat-select>
+        <mat-option
+          *ngFor="let customer of customers"
+          [value]="customer"
+          (click)="addCustomer(customer)"
+        >
+          {{ customer.nomEmpresa }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    [disabled]="upUsrForm.invalid || loading"
+    (click)="onFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

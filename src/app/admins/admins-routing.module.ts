@@ -33,6 +33,7 @@ import { BillingReportComponent } from './components/reports/billing-report/bill
 import { DeliveryDetailComponent } from '../shared/components/delivery-detail/delivery-detail.component';
 import { TermsConditionsComponent } from './components/terms-conditions/terms-conditions.component';
 import { DeliveryInvoiceComponent } from '../shared/components/delivery-invoice/delivery-invoice.component';
+import { QueryUsersComponent } from './components/query-users/query-users.component';
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -206,6 +207,11 @@ const routes: Routes = [
   {
     path: 'ver-factura/:refNumber',
     component: DeliveryInvoiceComponent,
+    canActivate: [XploreGuard],
+  },
+  {
+    path: 'usuarios-de-consulta',
+    component: QueryUsersComponent,
     canActivate: [XploreGuard],
   },
 ];

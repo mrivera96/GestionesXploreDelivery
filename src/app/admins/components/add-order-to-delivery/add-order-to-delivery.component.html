@@ -1,0 +1,316 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+    <i class="fa fa-create"></i> Nuevo envio
+  </h2>
+  <mat-dialog-content>
+    <!--ORDER ADD FORM START-->
+    <h3 class="card-title">Detalles de envíos</h3>
+    <hr />
+
+    <div class="row" *ngIf="loaders.loadingAdd">
+      <div class="col text-center">
+        <img
+          src="../../../../../assets/img/loading.svg"
+          width="35%"
+          alt="loading"
+        />
+        <p>Cargando información...</p>
+      </div>
+    </div>
+  
+    <form [formGroup]="nOrdrForm" role="form" (ngSubmit)="onFormSubmit()" *ngIf="!loaders.loadingAdd">
+      <div class="form-row">
+        <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+          <mat-label>Detalle de envío:</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="nFactura"
+            id="nFactura"
+            required
+            maxlength="250"
+            placeholder="¿Qué deseas enviar?"
+          />
+          <mat-icon matPrefix>receipt</mat-icon>
+          <mat-error *ngIf="nOrdrForm.get('nFactura').errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="nOrdrForm.get('nFactura').errors?.maxlength">
+            *Excede la longitud máxima permitida
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+          <mat-label>Nombre del destinatario:</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="nomDestinatario"
+            id="nomDestinatario"
+            required
+            maxlength="150"
+            placeholder="¿Quién recibirá el pedido?"
+          />
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="nOrdrForm.get('nomDestinatario').errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+          <mat-error *ngIf="nOrdrForm.get('nomDestinatario').errors?.maxlength">
+            *Excede la longitud máxima permitida
+          </mat-error>
+        </mat-form-field>
+      </div>
+  
+      <div class="form-row">
+        <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+          <mat-label>Número celular del destinatario:</mat-label>
+          <input
+            matInput
+            type="tel"
+            id="numCel"
+            formControlName="numCel"
+            required
+            minlength="9"
+            autocomplete="off"
+            maxlength="9"
+            appPhoneMask
+            placeholder="Ej. 9999-9999(Guión Automático)"
+          />
+          <mat-icon matPrefix>phone</mat-icon>
+          <mat-error
+            *ngIf="
+              nOrdrForm.get('numCel').errors?.minlength ||
+              nOrdrForm.get('numCel').errors?.maxlength
+            "
+          >
+            *Por favor ingresa un número válido
+          </mat-error>
+          <mat-error *ngIf="nOrdrForm.get('numCel').errors?.required">
+            *Este campo es obligatorio
+          </mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline" floatLabel="always" class="col-md-6">
+          <mat-label>Instrucciones de Entrega:</mat-label>
+          <textarea
+            matInput
+            id="instEspecificas"
+            formControlName="instrucciones"
+            maxlength="150"
+            class="form-control"
+            placeholder="¿Necesitamos instrucciones para la entrega de éste envío?"
+          ></textarea>
+          <mat-icon matPrefix>assignment</mat-icon>
+          <mat-error>*Excede la longitud máxima permitida</mat-error>
+        </mat-form-field>
+  
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Punto de entrega:</mat-label>
+            <input
+              type="text"
+              (input)="searchPlace($event)"
+              autocomplete="off"
+              [matAutocomplete]="autoDest"
+              matInput
+              name="direccion"
+              formControlName="direccion"
+              id="direccion"
+              required
+              placeholder="¿Dónde entregaremos tu pedido?"
+            />
+            <mat-autocomplete #autoDest="matAutocomplete">
+              <mat-option
+                *ngFor="let s of placesDestination"
+                [value]="s.text"
+                (click)="calculatedistanceBefore()"
+              >
+                {{ s.text }}
+              </mat-option>
+            </mat-autocomplete>
+            <mat-icon matPrefix>location_on</mat-icon>
+            <div
+              matSuffix
+              *ngIf="searchingDest == true"
+              class="spinner-border spinner-border-sm text-secondary"
+              role="status"
+            >
+              <span class="sr-only">Loading...</span>
+            </div>
+            <mat-error *ngIf="nOrdrForm.get('direccion')?.errors?.required"
+              >*Este campo es obligatorio
+            </mat-error>
+            <mat-error *ngIf="nOrdrForm.get('direccion')?.errors?.isUrl"
+              >*Valor no válido</mat-error
+            >
+            <mat-hint>
+              <a href="javascript:void(0)" (click)="gcordsDestination = true">
+                Ingresar Geocordenadas
+              </a>
+            </mat-hint>
+          </mat-form-field>
+  
+          <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            *ngIf="gcordsDestination"
+          >
+            <input
+              #destinationCords
+              matInput
+              type="text"
+              placeholder=" Ej. 10.1508684, -87.61982"
+            />
+            <button
+              mat-button
+              mat-icon-button
+              (click)="setCordsDestination()"
+              matSuffix
+            >
+              <mat-icon>done</mat-icon>
+            </button>
+          </mat-form-field>
+          <br />
+          <mat-checkbox
+            #checkboxDest
+            (change)="setCurrentLocationDest(!checkboxDest.checked)"
+          >
+            Ubicación actual
+          </mat-checkbox>
+        </div>
+      </div>
+  
+      <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
+        {{ prohibitedDistanceMsg }}
+      </div>
+  
+      <h3
+        class="card-title"
+        *ngIf="selectedCategory?.categoryExtraCharges?.length > 0"
+      >
+        Servicios Adicionales
+      </h3>
+      <hr *ngIf="selectedCategory?.categoryExtraCharges?.length > 0" />
+  
+      <div class="row">
+        <div
+          class="col-lg-4 col-sm-6"
+          formGroupName="order"
+          *ngFor="let extracharge of selectedCategory.categoryExtraCharges"
+        >
+          <p class="card-title">
+            {{ extracharge.extra_charge.nombre }}
+          </p>
+  
+          <mat-radio-group formControlName="extracharge">
+            <mat-radio-button
+              class="col"
+              *ngFor="let option of extracharge.extra_charge.options"
+              [value]="option.idCargoExtra"
+              (change)="
+                addExtraCharge(extracharge.extra_charge.idCargoExtra, option)
+              "
+            >
+              <span style="white-space: normal"
+                >{{ option.descripcion }} (L.
+                {{ option.costo | number: ".2" }} )</span
+              >
+            </mat-radio-button>
+            <mat-radio-button
+              class="col"
+              (change)="removeExtraCharges(extracharge.idCargoExtra)"
+            >
+              <span style="white-space: normal">Ninguno</span>
+            </mat-radio-button>
+          </mat-radio-group>
+  
+          <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            *ngIf="extracharge.idCargoExtra == 13"
+          >
+            <mat-label>Valor a Asegurar:</mat-label>
+            <input
+              matInput
+              (change)="addCare()"
+              formControlName="montoCobertura"
+              [required]="nOrdrForm.get('extracharge').value == 13"
+              type="number"
+              placeholder="Valor a Asegurar"
+            />
+            <mat-error *ngIf="nOrdrForm.get('montoCobertura')?.errors?.required"
+              >*Este campo es obligatorio
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  
+    <!-- FIN LADO DE FORMULARIO -->
+  
+    <!-- INICIO LADO DE RUTA -->
+    <div class="col-md" *ngIf="!loaders.loadingAdd">
+      <h3 class="card-title">Ruta de Entrega</h3>
+      <hr />
+      <div class="row">
+        <div class="col">
+          <google-map
+            #googleMap
+            height="380px"
+            width="100%"
+            id="map"
+            [center]="center"
+          ></google-map>
+        </div>
+      </div>
+    </div>
+    <!-- FIN LADO DE RUTA -->
+  
+    <!-- INICIO DATOS EN TIEMPO REAL -->
+    <div class="form-row text-center">
+      <div class="col">
+        <span
+          ><i class="fa fa-clock"></i> Tiempo:
+          <span
+            *ngIf="loaders.loadingDistBef"
+            class="spinner-border spinner-border-sm mr-1"
+          >
+          </span>
+          {{ befTime }}</span
+        >
+      </div>
+      <div class="col">
+        <span
+          ><i class="fa fa-ruler"></i> Distancia:
+          <span
+            *ngIf="loaders.loadingDistBef"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          {{ befDistance }}</span
+        >
+      </div>
+      <div class="col">
+        <span>
+          <i class="fa fa-dollar-sign"></i>
+          Costo:
+          <span
+            *ngIf="loaders.loadingDistBef"
+            class="spinner-border spinner-border-sm mr-1"
+          >
+          </span>
+          L. {{ befCost }}
+        </span>
+      </div>
+    </div>
+  
+    <!-- FIN DATOS EN TIEMPO REAL -->
+  </mat-dialog-content>
+  
+  <mat-dialog-actions>
+    <button mat-raised-button type="button" color="primary" (click)="onOrderAdd()" [disabled]="nOrdrForm.invalid || loaders.loadingAdd">
+      Agregar
+    </button>
+    <button mat-raised-button [mat-dialog-close]="false">Cancelar</button>
+  </mat-dialog-actions>
+  <!-- MODAL END -->
+  

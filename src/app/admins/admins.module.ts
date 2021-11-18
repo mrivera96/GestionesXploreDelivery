@@ -90,6 +90,10 @@ import {CreateRestrictionDialogComponent} from "./components/restrictions/create
 import {EditTermsDialogComponent} from "./components/terms-conditions/edit-terms-dialog/edit-terms-dialog.component";
 import {CreateTermsDialogComponent} from "./components/terms-conditions/create-terms-dialog/create-terms-dialog.component";
 import { DriverOrdersComponent } from './components/drivers/driver-orders/driver-orders.component';
+import { AddOrderToDeliveryComponent } from './components/add-order-to-delivery/add-order-to-delivery.component';
+import { QueryUsersComponent } from './components/query-users/query-users.component';
+import { AddQueryUserComponent } from './components/query-users/add-query-user/add-query-user.component';
+import { UpdateQueryUserComponent } from './components/query-users/update-query-user/update-query-user.component';
 
 @NgModule({
   declarations: [
@@ -173,6 +177,10 @@ import { DriverOrdersComponent } from './components/drivers/driver-orders/driver
     EditTermsDialogComponent,
     CreateTermsDialogComponent,
     DriverOrdersComponent,
+    AddOrderToDeliveryComponent,
+    QueryUsersComponent,
+    AddQueryUserComponent,
+    UpdateQueryUserComponent
   ],
   entryComponents: [
     ConfirmModalComponent,

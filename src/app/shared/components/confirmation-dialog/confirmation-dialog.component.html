@@ -1,0 +1,15 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-warning">
+    <mat-icon>{{icon}}</mat-icon> Confirmación
+</h2>
+<mat-dialog-content>
+  <p>{{question}}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" [mat-dialog-close]="true">
+    Confirmar
+  </button>
+  <button mat-raised-button [mat-dialog-close]="false">Cancelar</button>
+</mat-dialog-actions>
+<!-- MODAL END -->

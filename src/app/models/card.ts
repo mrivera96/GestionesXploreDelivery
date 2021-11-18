@@ -10,4 +10,5 @@ export interface Card {
     cliente?: Customer
     vencimiento?: string
     alias?: string
+    visibleNumber?: string
 }

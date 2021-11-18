@@ -355,7 +355,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     this.newForm.get('deliveryHeader.fecha').enable()
     this.newForm.get('deliveryHeader.hora').enable()
 
-    if (this.deliveryForm.get('deliveryHeader').valid && this.orders.length > 0) {
+    if (this.deliveryForm.get('deliveryHeader').valid) {
       this.deliveryForm.get('deliveryHeader.idTarifa').setValue(this.selectedRate)
 
       this.openLoader()
@@ -385,7 +385,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         })
     } else if (this.deliveryForm.invalid) {
       let invalidFields = [].slice.call(document.getElementsByClassName('ng-invalid'))
-      invalidFields[1].focus()
+      invalidFields[0].focus()
     }
 
   }
@@ -961,6 +961,35 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent)
+  }
+
+  checkRate(){
+    if(this.orders.length > 0){
+      this.pago.baseRate = this.selectedRate.precio
+      
+      this.orders.forEach(value => {
+        if (value.tarifaBase != this.selectedRate.precio ) {
+          const nPay = this.calculateOrderPayment(Number(value.distancia.split(" ")[0]))
+          let i = this.orders.indexOf(value)
+          value.tarifaBase = this.pago.baseRate
+          value.cargosExtra = nPay.cargosExtra
+          value.recargo = nPay.surcharges
+          value.cTotal = nPay.total
+          this.pagos[i].baseRate = nPay.baseRate
+          if (this.pagos[i]?.cargosExtra) {
+            this.pagos[i].cargosExtra = nPay.cargosExtra
+          }
+          this.pagos[i].surcharges = nPay.surcharges
+          this.pagos[i].total = nPay.total  
+        }
+        
+      })
+      this.pago.recargos = this.pagos.reduce(function(a,b){return a.surcharges + b.surcharges})
+      this.pago.cargosExtra = this.pagos.reduce(function(a,b){ return a.cargosExtra + b.cargosExtra})
+      this.pago.total = this.pagos.reduce(function(a,b){ return a.total + b.total})
+      
+    }
+    
   }
 
 }

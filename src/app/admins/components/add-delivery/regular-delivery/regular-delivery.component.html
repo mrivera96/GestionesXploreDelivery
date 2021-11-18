@@ -45,12 +45,17 @@
                 <mat-tab label="Transporte">
                   <div class="col" formGroupName="deliveryHeader">
                     <br />
+                    <mat-radio-group
+                      (change)="calculatedistanceBefore()"
+                      formControlName="idCategoria"
+                    >
                     <app-category-selection
                       (setSelectedCategory)="setSelectedCategory($event)"
                       [newForm]="newForm"
                       [categories]="transportationCategories"
                     >
                     </app-category-selection>
+                  </mat-radio-group>
                   </div>
                 </mat-tab>
               </mat-tab-group>
@@ -85,21 +90,17 @@
                     [(ngModel)]="hourOption"
                     [disabled]="orders.length > 0"
                     [ngModelOptions]="{ standalone: true }"
-                    (ngModelChange)="setCurrentDate()"
                   >
-                    <mat-option [value]="1"> Solicitar Ahora </mat-option>
-                    <mat-option [value]="2">Programar </mat-option>
+                    <mat-option [value]="1" (click)="setCurrentDate()"> Solicitar Ahora </mat-option>
+                    <mat-option [value]="2" (click)="reserv = !reserv; nowHourError = false">Programar </mat-option>
                   </mat-select>
                   <mat-icon matPrefix>schedule</mat-icon>
-                  <mat-error
-                    *ngIf="
-                      newForm.get('deliveryHeader.hora')?.errors
-                        ?.mustAfterHour && hourOption == 1
-                    "
-                  >
-                    *Ups! Parece que esa hora no es válida
-                  </mat-error>
+                  <mat-hint>Horario: {{ hInit }} - {{ hFin }}</mat-hint>                 
                 </mat-form-field>
+                <div *ngIf="nowHourError" class="alert alert-danger">
+                  *Ups! Parece que estás fuera de horario de servicio. Puedes
+                  programar tu envío para un horario vigente.
+                </div>
               </div>
 
               <div
@@ -157,10 +158,17 @@
                   >
                     *Este campo es obligatorio
                   </mat-error>
+                  <mat-error
+                    *ngIf="
+                      newForm.get('deliveryHeader.hora')?.errors?.mustAfterHour
+                    "
+                  >
+                    *Ups! Parece que esa hora no es válida
+                  </mat-error>
                 </mat-form-field>
               </div>
 
-              <div class="form-row" *ngIf="reserv">
+              <!-- <div class="form-row" *ngIf="reserv">
                 <div class="col-sm">
                   <mat-checkbox
                     [(ngModel)]="priority"
@@ -179,7 +187,7 @@
                     </span>
                   </mat-checkbox>
                 </div>
-              </div>
+              </div> -->
 
               <div class="form-row" formGroupName="deliveryHeader">
                 <mat-form-field
@@ -370,6 +378,7 @@
                     >
                       {{ label.descEtiqueta }}
                     </mat-option>
+                    <mat-option value="{{ null }}">Sin etiqueta</mat-option>
                   </mat-select>
                   <mat-icon matPrefix>label</mat-icon>
                 </mat-form-field>
@@ -778,8 +787,6 @@
                 (click)="onOrderAdd()"
                 color="primary"
                 [disabled]="
-                  !deliveryForm.get('order').valid ||
-                  !deliveryForm.get('deliveryHeader').valid ||
                   loaders.loadingAdd ||
                   !selectedCategory?.idCategoria
                 "

@@ -19,4 +19,5 @@ export interface User {
   state?: string
   permiteConsolidada?: boolean
   permiteConsolidadaForanea?: boolean
+  query_customers?: any[]
 }

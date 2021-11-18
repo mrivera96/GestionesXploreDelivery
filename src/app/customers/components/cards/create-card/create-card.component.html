@@ -44,7 +44,10 @@
           required
         />
         <mat-icon matSuffix>event</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="newCardForm.controls.expDate?.errors?.required">*Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="newCardForm.controls.expDate?.errors?.mustAfterDate">
+          *Esta tarjeta ya ha expirado
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -60,21 +63,6 @@
           placeholder="000"
         />
         <mat-icon matSuffix>lock</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Alias para esta tarjeta:</mat-label>
-        <input
-          matInput
-          required
-          type="text"
-          formControlName="alias"
-          maxlength="30"
-          [value]="newCardForm.get('cardNumber').value"
-          placeholder="Alias con que desea guardar su tarjeta"
-        />
-        <mat-icon matSuffix>credit_card</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>

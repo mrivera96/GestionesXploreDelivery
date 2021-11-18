@@ -120,6 +120,8 @@ export class RegularDeliveryComponent implements OnInit {
   priorityCharge;
   acceptTerms = false;
   reserv;
+  nowHourError = false;
+  allowPriority = false;
 
   constructor(
     private categoriesService: CategoriesService,
@@ -422,6 +424,11 @@ export class RegularDeliveryComponent implements OnInit {
 
   //MÉTODO QUE EJECUTA LA ADICIÓN DE UN NUEVO ENVÍO
   onOrderAdd() {
+    if (this.reserv) {
+      this.validateHour();
+    } else {
+      this.validateNowHour();
+    }
     if (this.deliveryForm.get('order').valid) {
       this.openLoader();
 
@@ -463,7 +470,7 @@ export class RegularDeliveryComponent implements OnInit {
       this.deliveryForm
         .get('deliveryHeader.idTarifa')
         .setValue(this.selectedRate);
-      this.deliveryForm.get('deliveryHeader.prioridad').setValue(this.priority);
+      //this.deliveryForm.get('deliveryHeader.prioridad').setValue(this.priority);
 
       this.openLoader();
       const deliveriesSubscription = this.deliveriesService
@@ -678,9 +685,7 @@ export class RegularDeliveryComponent implements OnInit {
     this.selectedRate = this.rates.find(
       (rate) =>
         ordersCount >= rate?.entregasMinimas &&
-        ordersCount <= rate?.entregasMaximas &&
-        this.deliveryForm.get('deliveryHeader.idCategoria').value ==
-          rate?.idCategoria
+        ordersCount <= rate?.entregasMaximas 
     );
     if (this.selectedRate != null) {
       this.pago.baseRate = this.selectedRate.precio;
@@ -1142,35 +1147,19 @@ export class RegularDeliveryComponent implements OnInit {
 
   //SETEAR EL VALOR DE LA FECHA Y HORA A LA FECHA ACTUAL Y UNA HORA DESPUES DE LA ACTUAL
   setCurrentDate() {
-    if (this.hourOption == 1) {
-      this.reserv = false;
-      this.newForm
-        .get('deliveryHeader.hora')
-        .setValue(
-          formatDate(
-            new Date().setHours(
-              new Date().getHours(),
-              new Date().getMinutes() + 5
-            ),
-            'HH:mm',
-            'en'
-          )
-        );
-    } else {
-      this.reserv = true;
-      this.newForm
-        .get('deliveryHeader.hora')
-        .setValue(
-          formatDate(
-            new Date().setHours(
-              new Date().getHours() + 1,
-              new Date().getMinutes() + 1
-            ),
-            'HH:mm',
-            'en'
-          )
-        );
-    }
+    this.reserv = false;
+    this.newForm
+      .get('deliveryHeader.fecha')
+      .setValue(formatDate(new Date(), 'yyyy-MM-dd', 'en'));
+    this.newForm
+      .get('deliveryHeader.hora')
+      .setValue(
+        formatDate(
+          new Date().setHours(new Date().getHours(), new Date().getMinutes()),
+          'HH:mm',
+          'en'
+        )
+      );
   }
 
   removeExtraCharges(extracharge) {
@@ -1257,11 +1246,59 @@ export class RegularDeliveryComponent implements OnInit {
       if (datetime < oneHourMore) {
         control.setErrors({ mustAfterHour: true });
       }
+      if (h < tSSHour || h > tSFHour) {
+        control.setErrors({ mustAfterHour: true });
+      }
     } else {
       // @ts-ignore
       if (datetime < currentDateTime) {
         control.setErrors({ mustAfterHour: true });
       }
+      if (h < tSSHour || h > tSFHour) {
+        control.setErrors({ mustAfterHour: true });
+      }
+    }
+  }
+
+  validateNowHour() {
+    const control = this.deliveryForm.get('deliveryHeader.hora');
+    let h = this.newForm.get('deliveryHeader.hora').value;
+    const todaySchedule: Schedule = JSON.parse(
+      localStorage.getItem('todaySchedule')
+    );
+    const tSSHour = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      null,
+      Number(todaySchedule?.inicio.split(':')[0]),
+      Number(todaySchedule?.inicio.split(':')[1])
+    );
+    const tSFHour = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      null,
+      Number(todaySchedule?.final.split(':')[0]),
+      Number(todaySchedule?.final.split(':')[1])
+    );
+
+    const shour = h.split(':')[0];
+    const smin = h.split(':')[1];
+    h = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      null,
+      shour,
+      smin
+    );
+
+    if (control.errors && !control.errors.mustAfterHour) {
+      // return if another validator has already found an error on the matchingControl
+      return;
+    }
+
+    if (h < tSSHour || h > tSFHour) {
+      control.setErrors({ mustAfterHour: true });
+      this.nowHourError = true;
     }
   }
 }

@@ -1,15 +1,42 @@
-<mat-radio-button [id]="category?.idCategoria" [value]="category.idCategoria" disableRipple="true" (click)="setSelectedCategoryFun(category)"
-    *ngFor="let category of categories; let  i = index"  [ngStyle]="{'color': category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
-                                      ? '#FF8C00': '#000'}" class="cat-rb">
-    <span class="fa d-block text-center" style="font-size: 24px" [ngClass]="{
-            'fa-motorcycle': category.idCategoria == 6,
-            'fa-car': category.idCategoria == 1 || category.idCategoria == 7 || category.idCategoria == 14 || category.idCategoria == 15, 
-            'fa-bus': category.idCategoria == 3 || category.idCategoria == 5 || category.idCategoria == 16,
-            'fas fa-truck-pickup': category.idCategoria == 2 || category.idCategoria == 4 || category.idCategoria == 11 || category.idCategoria == 12, 
-            'fa-truck': category.idCategoria == 8,
-            'fas fa-heart': category.idCategoria == 9, 
-            'fas fa-calendar-plus': category.idCategoria == 10, 
-            'fas fa-calendar-day': category.idCategoria == 13
-                                    }"></span>
-    {{category.descCategoria}}
+<mat-radio-button
+  [id]="category?.idCategoria"
+  [value]="category.idCategoria"
+  disableRipple="true"
+  (click)="setSelectedCategoryFun(category)"
+  *ngFor="let category of categories; let i = index"
+  [ngStyle]="{
+    color:
+      category?.idCategoria === newForm.get('deliveryHeader.idCategoria').value
+        ? '#FF8C00'
+        : '#000'
+  }"
+  class="cat-rb"
+>
+  <span
+    class="fa d-block text-center"
+    style="font-size: 24px"
+    [ngClass]="{
+      'fa-motorcycle': category.idCategoria == 6,
+      'fa-car':
+        category.idCategoria == 1 ||
+        category.idCategoria == 7 ||
+        category.idCategoria == 14 ||
+        category.idCategoria == 15,
+      'fa-bus':
+        category.idCategoria == 3 ||
+        category.idCategoria == 5 ||
+        category.idCategoria == 16 ||
+        category.idCategoria == 17,
+      'fas fa-truck-pickup':
+        category.idCategoria == 2 ||
+        category.idCategoria == 4 ||
+        category.idCategoria == 11 ||
+        category.idCategoria == 12,
+      'fa-truck': category.idCategoria == 8,
+      'fas fa-heart': category.idCategoria == 9,
+      'fas fa-calendar-plus': category.idCategoria == 10,
+      'fas fa-calendar-day': category.idCategoria == 13
+    }"
+  ></span>
+  {{ category.descCategoria }}
 </mat-radio-button>

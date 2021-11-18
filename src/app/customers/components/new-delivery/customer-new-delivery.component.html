@@ -24,7 +24,6 @@
             <div class="col-md">
               <h3 class="card-title">Categoría a Reservar</h3>
               <hr />
-
               <mat-tab-group>
                 <mat-tab label="Delivery">
                   <div class="col" formGroupName="deliveryHeader">
@@ -46,14 +45,17 @@
                 <mat-tab label="Transporte">
                   <div class="col" formGroupName="deliveryHeader">
                     <br />
-                    <mat-radio-group (change)="calculatedistanceBefore()" formControlName="idCategoria">
-                    <app-category-selection
-                      (setSelectedCategory)="setSelectedCategory($event)"
-                      [newForm]="newForm"
-                      [categories]="transportationCategories"
+                    <mat-radio-group
+                      (change)="calculatedistanceBefore()"
+                      formControlName="idCategoria"
                     >
-                    </app-category-selection>
-                  </mat-radio-group>
+                      <app-category-selection
+                        (setSelectedCategory)="setSelectedCategory($event)"
+                        [newForm]="newForm"
+                        [categories]="transportationCategories"
+                      >
+                      </app-category-selection>
+                    </mat-radio-group>
                   </div>
                 </mat-tab>
               </mat-tab-group>
@@ -88,20 +90,23 @@
                     [(ngModel)]="hourOption"
                     [disabled]="orders.length > 0"
                     [ngModelOptions]="{ standalone: true }"
-                    (ngModelChange)="setCurrentDate()"
                   >
-                    <mat-option [value]="1"> Solicitar Ahora </mat-option>
-                    <mat-option [value]="2">Programar </mat-option>
+                    <mat-option [value]="1" (click)="setCurrentDate()"
+                      >Solicitar Ahora</mat-option
+                    >
+                    <mat-option
+                      [value]="2"
+                      (click)="reserv = !reserv; nowHourError = false"
+                      >Programar
+                    </mat-option>
                   </mat-select>
                   <mat-icon matPrefix>schedule</mat-icon>
-                  <mat-error
-                    *ngIf="
-                      newForm.get('deliveryHeader.hora')?.errors?.mustAfterHour
-                    "
-                  >
-                    *Ups! Parece que esa hora no es válida
-                  </mat-error>
+                  <mat-hint>Horario: {{ hInit }} - {{ hFin }}</mat-hint>
                 </mat-form-field>
+              </div>
+              <div *ngIf="nowHourError" class="alert alert-danger">
+                *Ups! Parece que estás fuera de horario de servicio. Puedes
+                programar tu envío para un horario vigente.
               </div>
 
               <div
@@ -170,9 +175,13 @@
                 </mat-form-field>
               </div>
 
-              <div
+              <!-- <div
                 class="form-row"
-                *ngIf="reserv && newForm.get('deliveryHeader.hora').valid"
+                *ngIf="
+                  allowPriority &&
+                  reserv &&
+                  newForm.get('deliveryHeader.hora').valid
+                "
               >
                 <div class="col-sm">
                   <mat-checkbox
@@ -188,7 +197,7 @@
                     </span>
                   </mat-checkbox>
                 </div>
-              </div>
+              </div> -->
 
               <div class="form-row" formGroupName="deliveryHeader">
                 <mat-form-field
@@ -376,6 +385,7 @@
                     >
                       {{ label.descEtiqueta }}
                     </mat-option>
+                    <mat-option value="{{ null }}">Sin etiqueta</mat-option>
                   </mat-select>
                   <mat-icon matPrefix>label</mat-icon>
                 </mat-form-field>
@@ -385,7 +395,7 @@
 
               <!--ORDER ADD FORM START-->
               <h3 *ngIf="files.length == 0" class="card-title">
-                Detalles de envíos
+                {{ detailTitle }}
               </h3>
               <hr *ngIf="files.length == 0" />
 
@@ -398,6 +408,7 @@
                   appearance="outline"
                   floatLabel="always"
                   class="col-md-6"
+                  
                 >
                   <mat-label>Detalle de envío:</mat-label>
                   <input
@@ -405,7 +416,7 @@
                     type="text"
                     formControlName="nFactura"
                     id="nFactura"
-                    required
+                    [required]="selectedCategory?.idTipoServicio == 1"
                     maxlength="250"
                     placeholder="¿Qué deseas enviar?"
                   />
@@ -427,7 +438,7 @@
                   floatLabel="always"
                   class="col-md-6"
                 >
-                  <mat-label>Nombre del destinatario:</mat-label>
+                  <mat-label>{{ nameLabel }}:</mat-label>
                   <input
                     matInput
                     type="text"
@@ -435,7 +446,7 @@
                     id="nomDestinatario"
                     required
                     maxlength="150"
-                    placeholder="¿Quién recibirá el pedido?"
+                    [placeholder]="nameHolder"
                   />
                   <mat-icon matPrefix>person</mat-icon>
                   <mat-error
@@ -471,7 +482,7 @@
                     type="tel"
                     id="numCel"
                     formControlName="numCel"
-                    required
+                    [required]="selectedCategory?.idTipoServicio == 1"
                     minlength="9"
                     autocomplete="off"
                     maxlength="9"
@@ -506,7 +517,7 @@
                     formControlName="instrucciones"
                     maxlength="150"
                     class="form-control"
-                    placeholder="¿Necesitamos instrucciones para la entrega de éste envío?"
+                    [placeholder]="instHolder"
                   ></textarea>
                   <mat-icon matPrefix>assignment</mat-icon>
                   <mat-error>*Excede la longitud máxima permitida</mat-error>
@@ -525,7 +536,7 @@
                       formControlName="direccion"
                       id="direccion"
                       required
-                      placeholder="¿Dónde entregaremos tu pedido?"
+                      [placeholder]="dliveryHolder"
                     />
                     <mat-autocomplete #autoDest="matAutocomplete">
                       <mat-option
@@ -784,13 +795,11 @@
                 type="button"
                 (click)="onOrderAdd()"
                 color="primary"
+                class="float-left"
                 [disabled]="
-                  !deliveryForm.get('order').valid ||
-                  !deliveryForm.get('deliveryHeader').valid ||
                   loaders.loadingAdd ||
                   !selectedCategory?.idCategoria
                 "
-                class="float-left"
               >
                 <span
                   *ngIf="loaders.loadingAdd"

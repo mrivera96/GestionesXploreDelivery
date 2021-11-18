@@ -31,6 +31,10 @@ import { OrdersTableComponent } from './components/delivery-form/orders-table/or
 import { ReportViewerModule } from 'ngx-ssrs-reportviewer';
 import { DeliveryDetailComponent } from './components/delivery-detail/delivery-detail.component';
 import { DeliveryInvoiceComponent } from './components/delivery-invoice/delivery-invoice.component';
+import { ConfirmRemoveComponent } from './components/delivery-detail/confirm-remove/confirm-remove.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { VerificationDialogComponent } from './components/verification-dialog/verification-dialog.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +52,10 @@ import { DeliveryInvoiceComponent } from './components/delivery-invoice/delivery
     OrdersTableComponent,
     DeliveryDetailComponent,
     DeliveryInvoiceComponent,
+    ConfirmRemoveComponent,
+    SignUpComponent,
+    ConfirmationDialogComponent,
+    VerificationDialogComponent,
   ],
   imports: [
     CommonModule,

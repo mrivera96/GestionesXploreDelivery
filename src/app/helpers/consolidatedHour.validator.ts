@@ -42,14 +42,10 @@ export function ConsolidatedHourValidate(controlName: string, control2Name?: str
           }
     
           // @ts-ignore
-          if (datetime < currentDateTime) {
+          if (datetime <= currentDateTime) {
             control2.setErrors({mustAfterHour: true})
           }
     
-          if (hour < tSSHour
-            || hour > tSFHour) {
-            control2.setErrors({mustAfterHour: true})
-          }
         }
     }
     

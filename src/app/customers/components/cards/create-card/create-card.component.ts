@@ -5,6 +5,7 @@ import { ErrorModalComponent } from 'src/app/shared/components/error-modal/error
 import { SuccessModalComponent } from 'src/app/shared/components/success-modal/success-modal.component';
 import { AuthService } from 'src/app/services/auth.service';
 import { CardsService } from 'src/app/services/cards.service';
+import { CardExpirationValidate } from 'src/app/helpers/cardExp.validator';
 
 @Component({
   selector: 'app-create-card',
@@ -31,13 +32,15 @@ export class CreateCardComponent implements OnInit {
   }
 
   initialize() {
-    this.newCardForm = this.formBuilder.group({
-      idCliente: this.authService?.currentUserValue?.idCliente,
-      cardNumber: [null, Validators.required],
-      expDate: [null, Validators.required],
-      cvv: [null, Validators.required],
-      alias: ['', [Validators.required, Validators.maxLength(30)]],
-    });
+    this.newCardForm = this.formBuilder.group(
+      {
+        idCliente: this.authService?.currentUserValue?.idCliente,
+        cardNumber: [null, Validators.required],
+        expDate: [null, Validators.required],
+        cvv: [null, Validators.required],
+      },
+      { validators: [CardExpirationValidate('expDate')] }
+    );
   }
 
   onFormSubmit() {
@@ -45,7 +48,6 @@ export class CreateCardComponent implements OnInit {
       cardNumber: this.token,
       expDate: this.newCardForm.get('expDate').value,
       cvv: this.newCardForm.get('cvv').value,
-      alias: this.newCardForm.get('alias').value,
     };
     this.loaders.loadingSubmit = true;
     const cardSubs = this.cardsService

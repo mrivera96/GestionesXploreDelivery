@@ -1,0 +1,180 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <i class="fa fa-plus"></i> Nuevo Usuario de Consulta
+</h2>
+
+<mat-dialog-content>
+  <div class="row" *ngIf="loading">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="nUsrForm" *ngIf="!loading">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Nombre:</mat-label>
+        <input
+          matInput
+          required
+          type="text"
+          formControlName="userName"
+          maxlength="60"
+          placeholder="Nombre del usuario"
+        />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Nombre de usuario:</mat-label>
+        <input
+          matInput
+          required
+          type="text"
+          formControlName="nickName"
+          maxlength="35"
+          placeholder="Se utilizará para iniciar sesión"
+        />
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error *ngIf="nUsrForm.get('nickName')?.errors?.required"
+          >*Este campo es obligatorio</mat-error
+        >
+        <mat-error *ngIf="nUsrForm.get('nickName')?.errors?.hasSpace"
+          >*No se admiten espacios en el nombre de usuario</mat-error
+        >
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <div class="col-lg">
+        <p>Nota: La contraseña debe complir con lo siguiente:</p>
+        <ul>
+          <li>1 Mayúscula</li>
+          <li>1 Número</li>
+          <li>1 Caracter Especial</li>
+          <li>Longitud mínima de 8 caracteres</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Contraseña:</mat-label>
+        <input
+          type="password"
+          id="newPass"
+          required
+          formControlName="secret"
+          placeholder="Ingresa la contraseña para el usuario"
+          minlength="8"
+          matInput
+        />
+        <mat-icon matSuffix>lock</mat-icon>
+        <mat-error *ngIf="nUsrForm.get('secret').errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="nUsrForm.get('secret').errors?.minlength">
+          *La contraseña debe tener al menos 8 caracteres
+        </mat-error>
+        <mat-error *ngIf="nUsrForm.get('secret').errors?.mustCapital">
+          *Debe incluir 1 mayúscula
+        </mat-error>
+        <mat-error *ngIf="nUsrForm.get('secret').errors?.mustNum">
+          *Debe incluir 1 número
+        </mat-error>
+        <mat-error *ngIf="nUsrForm.get('secret').errors?.mustSpecial">
+          *Debe incluir 1 caracter especial
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Confirmar Contraseña:</mat-label>
+        <input
+          id="confirmNewPass"
+          type="password"
+          required
+          formControlName="confirmSecret"
+          placeholder="Confirma la contraseña"
+          minlength="8"
+          matInput
+        />
+        <mat-icon matSuffix>check_circle</mat-icon>
+
+        <mat-error *ngIf="nUsrForm.get('confirmSecret').errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="nUsrForm.get('confirmSecret').errors?.minlength">
+          *La contraseña debe tener al menos 8 caracteres
+        </mat-error>
+        <mat-error *ngIf="nUsrForm.get('confirmSecret').errors?.mustMatch">
+          *Debe coincidir con la contraseña
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <h4>Clientes asignados para consulta</h4>
+
+  <div class="table-responsive" *ngIf="!loading">
+    <table class="table table-stripped">
+      <thead>
+        <th>No.</th>
+        <th>Nombre Cliente</th>
+        <th>Eliminar</th>
+      </thead>
+      <tbody>
+        <tr *ngIf="assignedCustomers.length == 0">
+          No hay registros
+        </tr>
+        <tr *ngFor="let customer of assignedCustomers; let idx = index">
+          <td>
+            {{ idx + 1 }}
+          </td>
+          <td>{{ customer?.customer?.nomEmpresa }}</td>
+          <td>
+            <button mat-button (click)="removeCustomer(customer)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h4 *ngIf="!loading">Agregar Cliente</h4>
+  <div class="row" *ngIf="!loading">
+    <mat-form-field class="col" appearance="outline">
+      <mat-label>Seleccione un cliente</mat-label>
+      <mat-select>
+        <mat-option
+          *ngFor="let customer of customers"
+          [value]="customer"
+          (click)="addCustomer(customer)"
+        >
+          {{ customer.nomEmpresa }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    [disabled]="nUsrForm.invalid || loading"
+    (click)="onFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

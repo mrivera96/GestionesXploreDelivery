@@ -44,4 +44,25 @@ export class AuthService {
   setCurrUser(user){
     this.currentUserSubject.next(user);
   }
+
+  signUp(form){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function:'signUp',
+      form
+    })
+  }
+
+  verifyMail(mail){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function:'verifyMail',
+      mail
+    })
+  }
+
+  verifyNumber(number){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function:'verifyNumber',
+      number
+    })
+  }
 }

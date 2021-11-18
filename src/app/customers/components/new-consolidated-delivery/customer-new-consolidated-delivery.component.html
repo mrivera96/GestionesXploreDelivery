@@ -72,7 +72,7 @@
                   <mat-label>Hora de recogida:</mat-label>
                   <mat-select required formControlName="hora" placeholder="- Selecciona una hora -">
                     <mat-option *ngFor="let hour of hoursToShow" value="{{hour.hour}}"
-                      (click)="setSelectedRate(hour.rate)">
+                      (click)="setSelectedRate(hour.rate); checkRate();">
                       {{hour.label}} <span class="badge badge-info">L. {{hour.rate.precio | number: '.2'}} </span>
                     </mat-option>
                   </mat-select>
@@ -80,7 +80,8 @@
                   <mat-error *ngIf="newForm.get('deliveryHeader.hora')?.errors?.required">* Este campo es obligatorio
                   </mat-error>
                   <mat-error *ngIf="newForm.get('deliveryHeader.hora')?.errors?.mustAfterHour">
-                    *Ups! Parece que esa hora no es válida
+                    *Ups! Parece que el horario seleccionado ha expirado.
+                    Favor selecciona un horario de recogida vigente
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -439,7 +440,7 @@
 
     <div class="col">
       <button mat-raised-button type="button" *ngIf="paymentMethod == 1 && orders.length>0"
-        [disabled]="this.orders.length == 0 || !deliveryForm.get('deliveryHeader').valid || !acceptTerms"
+        [disabled]="this.orders.length == 0 || !acceptTerms"
         color="primary" (click)="openConfirmDialog()">
         Registrar Reservación <span class="badge badge-warning">
           {{ 'L. ' + pago.total }}

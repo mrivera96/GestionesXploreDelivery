@@ -148,4 +148,29 @@ export class UsersService {
     })
   }
 
+  getQueryUsers(){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'getQueryUsers',
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  addQueryUser(form, customers){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'addQueryUser',
+      form,
+      customers,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
+  updateQueryUser(form, customers){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'updateQueryUser',
+      form,
+      customers,
+      tkn: this.authService.currentUserValue.access_token
+    })
+  }
+
 }

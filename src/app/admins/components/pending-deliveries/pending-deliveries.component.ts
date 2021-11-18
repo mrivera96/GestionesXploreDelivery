@@ -60,12 +60,12 @@ export class PendingDeliveriesComponent implements OnInit {
   initialize() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 100,
+      pageLength: 10,
       serverSide: false,
       processing: true,
       info: true,
       rowReorder: false,
-      order: [2, 'desc'],
+      order: [],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -91,7 +91,7 @@ export class PendingDeliveriesComponent implements OnInit {
       processing: true,
       info: true,
       rowReorder: false,
-      order: [1, 'asc'],
+      order: [],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',

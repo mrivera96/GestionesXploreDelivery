@@ -1,13 +1,13 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {animate, style, transition, trigger} from "@angular/animations";
-import {BranchService} from "../../../services/branch.service";
-import {environment} from "../../../../environments/environment";
+import {BranchService} from "../../../../services/branch.service";
+import {environment} from "../../../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
-import {ErrorModalComponent} from "../../../shared/components/error-modal/error-modal.component";
+import {ErrorModalComponent} from "../../../../shared/components/error-modal/error-modal.component";
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {SuccessModalComponent} from "../../../shared/components/success-modal/success-modal.component";
-import {BlankSpacesValidator} from "../../../helpers/blankSpaces.validator";
+import {SuccessModalComponent} from "../../../../shared/components/success-modal/success-modal.component";
+import {BlankSpacesValidator} from "../../../../helpers/blankSpaces.validator";
 
 
 @Component({

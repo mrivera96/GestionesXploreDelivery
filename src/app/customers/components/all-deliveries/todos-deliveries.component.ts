@@ -10,6 +10,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DeliveriesService } from '../../../services/deliveries.service';
 import { formatDate } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { User } from 'src/app/models/user';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-todos-deliveries',
@@ -34,13 +36,17 @@ export class TodosDeliveriesComponent implements OnInit {
   finDate: any = null;
   states: State[];
   consultForm: FormGroup;
+  currentUser: User;
   constructor(
     public dialog: MatDialog,
     private router: Router,
     private deliveriesService: DeliveriesService,
     private formBuilder: FormBuilder,
-    private activatedRoute: ActivatedRoute
-  ) {}
+    private activatedRoute: ActivatedRoute,
+    private authService: AuthService
+  ) {
+    this.currentUser = this.authService.currentUserValue;
+  }
 
   ngOnInit(): void {
     this.initialize();

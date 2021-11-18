@@ -1,5 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { ErrorModalComponent } from 'src/app/shared/components/error-modal/error-modal.component';
@@ -8,39 +8,39 @@ import { Card } from 'src/app/models/card';
 import { CardsService } from 'src/app/services/cards.service';
 import { CreateCardComponent } from '../create-card/create-card.component';
 import { UpdateCardComponent } from '../update-card/update-card.component';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { SuccessModalComponent } from 'src/app/shared/components/success-modal/success-modal.component';
+import { DataTableDirective } from 'angular-datatables';
 
 @Component({
   selector: 'app-read-cards',
   templateUrl: './read-cards.component.html',
-  styles: [
-  ], animations: [
+  styles: [],
+  animations: [
     trigger('fade', [
       transition('void => *', [
         style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 }))
-      ])
-    ])
-  ]
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class ReadCardsComponent implements OnInit {
-  myCards: Card[]
-  dtOptions
-  dtTrigger: Subject<any>
+  myCards: Card[];
+  dtOptions;
+  dtTrigger: Subject<any>;
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
 
-
-
-  constructor(
-    private cardsService: CardsService,
-    public dialog: MatDialog
-  ) { }
+  constructor(private cardsService: CardsService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   initialize() {
-    this.dtTrigger = new Subject<any>()
+    this.dtTrigger = new Subject<any>();
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -63,75 +63,128 @@ export class ReadCardsComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
-
+    };
   }
 
   loadData() {
-    this.openLoader()
-    const cardsSubsc = this.cardsService.getMyPaymetMethods()
-      .subscribe(response => {
-        this.myCards = response.data
-        this.dtTrigger.next()
-        this.myCards.forEach(card => {
-          card.mes = +card.vencimiento.substring(0, 2)
-          card.anio = +card.vencimiento.substring(2, 4)
-        })
-        this.dialog.closeAll()
-        cardsSubsc.unsubscribe()
-      })
+    this.openLoader();
+    const cardsSubsc = this.cardsService
+      .getMyPaymetMethods()
+      .subscribe((response) => {
+        this.myCards = response.data;
+        this.dtTrigger.next();
+        this.myCards.forEach((card) => {
+          card.mes = +card.vencimiento.substring(0, 2);
+          card.anio = +card.vencimiento.substring(2, 4);
+          const visibleDigits = 4;
+          let maskedSection = card.token_card.slice(0, -visibleDigits);
+          let visibleSection = card.token_card.slice(-visibleDigits);
+          card.visibleNumber = maskedSection.replace(/./g, '*') + visibleSection;
+        });
+        this.dialog.closeAll();
+        cardsSubsc.unsubscribe();
+      });
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
 
     if (reload) {
-      dialog.afterClosed().subscribe(result => {
-        this.dialog.closeAll()
-        this.ngOnInit
-      })
+      dialog.afterClosed().subscribe((result) => {
+        this.dialog.closeAll();
+        this.ngOnInit;
+      });
     }
   }
 
-  editCard(card){
-    const dialRef = this.dialog.open(UpdateCardComponent, {
-      data:{
-        card: card
-      }
-    })
+  openSuccessDialog(succsTitle, succssMsg) {
+    const dialogRef = this.dialog.open(SuccessModalComponent, {
+      data: {
+        succsTitle: succsTitle,
+        succsMsg: succssMsg,
+      },
+    });
 
-    dialRef.afterClosed().subscribe(res=>{
-      if(res){
-        location.reload()
-      }
-    })
+    dialogRef.afterClosed().subscribe((result) => {
+      this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+        dtInstance.destroy();
+        this.loadData();
+      });
+    });
   }
 
-  createCard(){
-    const dialRef = this.dialog.open(CreateCardComponent)
-    dialRef.afterClosed().subscribe(res=>{
-      if(res){
-        location.reload()
+  editCard(card) {
+    const dialRef = this.dialog.open(UpdateCardComponent, {
+      data: {
+        card: card,
+      },
+    });
+
+    dialRef.afterClosed().subscribe((res) => {
+      if (res) {
+        location.reload();
       }
-    })
+    });
+  }
+
+  deleteCard(card) {
+    this.openLoader();
+    const cardsSubsc = this.cardsService.deleteCard(card.idFormaPago).subscribe(
+      (response) => {
+        this.dialog.closeAll();
+        this.openSuccessDialog(
+          'Operacion Realizada Correctamente',
+          response.message
+        );
+        cardsSubsc.unsubscribe();
+      },
+      (error) => {
+        error.subscribe((err) => {
+          this.openErrorDialog(err.statusText, false);
+          cardsSubsc.unsubscribe();
+        });
+      }
+    );
+  }
+
+  openConfirmDelete(card) {
+    const dialRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        icon: 'warning',
+        question: '¿Está seguro de eliminar esta tarjeta?',
+      },
+    });
+
+    dialRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.deleteCard(card);
+      }
+    });
+  }
+
+  createCard() {
+    const dialRef = this.dialog.open(CreateCardComponent);
+    dialRef.afterClosed().subscribe((res) => {
+      if (res) {
+        location.reload();
+      }
+    });
   }
 
   openLoader() {
-    const dialRef = this.dialog.open(LoadingDialogComponent)
+    const dialRef = this.dialog.open(LoadingDialogComponent);
 
-    dialRef.afterClosed().subscribe(res=>{
-      if(res){
-        location.reload()
+    dialRef.afterClosed().subscribe((res) => {
+      if (res) {
+        location.reload();
       }
-    })
+    });
   }
-
-
 }
