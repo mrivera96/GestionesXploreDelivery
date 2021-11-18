@@ -23,13 +23,14 @@ export class UpdateQueryUserComponent implements OnInit {
   upUsrForm: FormGroup;
   customers: Customer[];
   assignedCustomers: any[];
+  filteredCustomers: Customer[];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private usersService: UsersService,
     private dialogRef: MatDialogRef<UpdateQueryUserComponent>,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) {
     this.dialogRef.disableClose = true;
     this.currentUser = this.data.currUser;
@@ -59,6 +60,7 @@ export class UpdateQueryUserComponent implements OnInit {
   ngOnInit(): void {
     const custSubsc = this.usersService.getCustomers().subscribe((response) => {
       this.customers = response.data;
+      this.filteredCustomers = response.data;
       custSubsc.unsubscribe();
     });
   }
@@ -111,20 +113,40 @@ export class UpdateQueryUserComponent implements OnInit {
 
   addCustomer(customer) {
     const obj = {
-      customer: customer
+      customer: customer,
     };
-    const exists = this.assignedCustomers.find(x=> x.customer.idCliente == obj.customer.idCliente);
-    if(!exists){
+    const exists = this.assignedCustomers.find(
+      (x) => x.customer.idCliente == obj.customer.idCliente
+    );
+    if (!exists) {
       this.assignedCustomers.push(obj);
     }
-    
   }
 
-  removeCustomer(customer){
+  removeCustomer(customer) {
     const obj = {
-      customer: customer
+      customer: customer,
     };
     const idx = this.assignedCustomers.indexOf(obj.customer);
     this.assignedCustomers.splice(idx, 1);
+  }
+
+  onKey(value) {
+    this.filteredCustomers = this.search(value);
+  }
+
+  search(value: string) {
+    let filter = value.toLowerCase();
+    filter = filter.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (filter != '') {
+      return this.customers.filter((option) =>
+        option.nomEmpresa
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .includes(filter)
+      );
+    }
+    return this.customers;
   }
 }
