@@ -1,3 +1,12 @@
-<app-regular-delivery [currCustomer]="customer" *ngIf="delType == 1"></app-regular-delivery>
-<app-consolidated-delivery [currCustomer]="customer" *ngIf="delType == 2"></app-consolidated-delivery>
-<app-routing-shipping [currCustomer]="customer" *ngIf="delType == 3"></app-routing-shipping>
+<app-regular-delivery
+  [currCustomer]="customer"
+  *ngIf="delType == 1"
+></app-regular-delivery>
+<app-consolidated-delivery
+  [currCustomer]="customer"
+  *ngIf="delType == 2"
+></app-consolidated-delivery>
+<app-routing-shipping
+  [currCustomer]="customer"
+  *ngIf="delType == 3"
+></app-routing-shipping>

@@ -760,8 +760,6 @@ export class CustomerNewConsolidatedForeignDeliveryComponent implements OnInit {
         this.selectedCategory = category
         this.surcharges = this.selectedCategory.surcharges
         this.rates = this.selectedCategory.ratesToShow
-        this.newForm.get('deliveryHeader.fecha').setValue('')
-        this.newForm.get('deliveryHeader.hora').setValue('')
       }
     })
 

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {Subject} from "rxjs";
-import {Order} from "../../../models/order";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {animate, style, transition, trigger} from "@angular/animations";
+import { Subject } from 'rxjs';
+import { Order } from '../../../models/order';
+import { DeliveriesService } from '../../../services/deliveries.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
-declare var $: any
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
+declare var $: any;
 @Component({
   selector: 'app-xplore-today-orders',
   templateUrl: './xplore-today-orders.component.html',
@@ -13,31 +13,28 @@ declare var $: any
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class XploreTodayOrdersComponent implements OnInit {
   loaders = {
-    'loadingData': false
-  }
+    loadingData: false,
+  };
 
-  constructor(
-    public dialog: MatDialog
-  ) { }
+  constructor(public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.openLoader()
+    this.openLoader();
   }
 
-  setLoading(event){
-    this.dialog.closeAll()
+  setLoading(event) {
+    this.dialog.closeAll();
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }

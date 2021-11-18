@@ -1,21 +1,21 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { animate, style, transition, trigger } from "@angular/animations";
-import { Order } from "../../../models/order";
-import { Subject } from "rxjs";
-import { DataTableDirective } from "angular-datatables";
-import { User } from "../../../models/user";
-import { State } from "../../../models/state";
-import { DeliveriesService } from "../../../services/deliveries.service";
-import { AuthService } from "../../../services/auth.service";
-import { ErrorModalComponent } from "../../../components/shared/error-modal/error-modal.component";
-import { ViewPhotosDialogComponent } from "../../../components/shared/view-photos-dialog/view-photos-dialog.component";
-import { OrderDetailDialogComponent } from "../../../components/shared/order-detail-dialog/order-detail-dialog.component";
-import { MatDialog } from "@angular/material/dialog";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { formatDate } from "@angular/common";
-import { ActivatedRoute, Router } from "@angular/router";
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
-declare var $: any
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Order } from '../../../models/order';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { User } from '../../../models/user';
+import { State } from '../../../models/state';
+import { DeliveriesService } from '../../../services/deliveries.service';
+import { AuthService } from '../../../services/auth.service';
+import { ErrorModalComponent } from '../../../shared/components/error-modal/error-modal.component';
+import { ViewPhotosDialogComponent } from '../../../shared/components/view-photos-dialog/view-photos-dialog.component';
+import { OrderDetailDialogComponent } from '../../../shared/components/order-detail-dialog/order-detail-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { formatDate } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
+declare var $: any;
 @Component({
   selector: 'app-xplore-all-orders',
   templateUrl: './xplore-all-orders.component.html',
@@ -24,27 +24,27 @@ declare var $: any
     trigger('fade', [
       transition('void => *', [
         style({ opacity: 0 }),
-        animate(1000, style({ opacity: 1 }))
-      ])
-    ])
-  ]
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class XploreAllOrdersComponent implements OnInit {
-  consultForm: FormGroup
-  orders: Order[]
-  dtTrigger: Subject<any> = new Subject<any>()
-  dtOptions: DataTables.Settings
-  msgError = ''
+  consultForm: FormGroup;
+  orders: Order[];
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions: DataTables.Settings;
+  msgError = '';
   @ViewChild(DataTableDirective, { static: false })
-  datatableElement: DataTableDirective
-  initDate: any = null
-  finDate: any = null
+  datatableElement: DataTableDirective;
+  initDate: any = null;
+  finDate: any = null;
 
-  currUser: User
-  states: State[]
+  currUser: User;
+  states: State[];
   loaders = {
-    'loadingData': false
-  }
+    loadingData: false,
+  };
 
   constructor(
     private deliveriesService: DeliveriesService,
@@ -53,13 +53,13 @@ export class XploreAllOrdersComponent implements OnInit {
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private route: Router
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.currUser = this.authService.currentUserValue
+    this.initialize();
+    this.currUser = this.authService.currentUserValue;
 
-    this.loadData()
+    this.loadData();
   }
 
   initialize() {
@@ -84,107 +84,120 @@ export class XploreAllOrdersComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
+    };
 
     this.consultForm = this.formBuilder.group({
-      initDate: [formatDate(new Date().setDate(new Date().getDate() - 7), 'yyyy-MM-dd', 'en'), Validators.required],
-      finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
-    })
+      initDate: [
+        formatDate(
+          new Date().setDate(new Date().getDate() - 7),
+          'yyyy-MM-dd',
+          'en'
+        ),
+        Validators.required,
+      ],
+      finDate: [
+        formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+        Validators.required,
+      ],
+    });
   }
 
   loadData() {
-
-    this.activatedRoute.paramMap.subscribe(params => {
-      if (params.get("initDate") && params.get("finDate")) {
-        this.initDate = true
-        this.consultForm.get('initDate').setValue(params.get("initDate"))
-        this.consultForm.get('finDate').setValue(params.get("finDate"))
+    this.activatedRoute.paramMap.subscribe((params) => {
+      if (params.get('initDate') && params.get('finDate')) {
+        this.initDate = true;
+        this.consultForm.get('initDate').setValue(params.get('initDate'));
+        this.consultForm.get('finDate').setValue(params.get('finDate'));
       }
-    })
+    });
 
     if (this.initDate == true) {
-      this.openLoader()
-      const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
-        this.states = response.data.xploreDeliveryEntregas
-        deliveriesSubscription.unsubscribe()
-      })
-      const serviceSubscription = this.deliveriesService.getFilteredOrders(this.consultForm.value).subscribe(response => {
-        this.orders = response.data
-        this.orders.forEach(order => {
-          order.delivery.fechaReserva = formatDate(new Date(order.delivery.fechaReserva), 'yyyy-MM-dd', 'en')
-        })
+      this.openLoader();
+      const deliveriesSubscription = this.deliveriesService
+        .getStates()
+        .subscribe((response) => {
+          this.states = response.data.xploreDeliveryEntregas;
+          deliveriesSubscription.unsubscribe();
+        });
+      const serviceSubscription = this.deliveriesService
+        .getFilteredOrders(this.consultForm.value)
+        .subscribe(
+          (response) => {
+            this.orders = response.data;
+            this.orders.forEach((order) => {
+              order.delivery.fechaReserva = formatDate(
+                new Date(order.delivery.fechaReserva),
+                'yyyy-MM-dd',
+                'en'
+              );
+            });
 
-        this.dtTrigger.next()
-        this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-          dtInstance.columns().every(function () {
-            const that = this;
-            $('select', this.footer()).on('change', function () {
-              if (that.search() !== this['value']) {
-                that
-                  .search(this['value'])
-                  .draw();
+            this.dtTrigger.next();
+            this.datatableElement.dtInstance.then(
+              (dtInstance: DataTables.Api) => {
+                dtInstance.columns().every(function () {
+                  const that = this;
+                  $('select', this.footer()).on('change', function () {
+                    if (that.search() !== this['value']) {
+                      that.search(this['value']).draw();
+                    }
+                  });
+                });
               }
-            })
-          })
-        })
-        this.dialog.closeAll()
+            );
+            this.dialog.closeAll();
 
-        serviceSubscription.unsubscribe()
-
-      }, error => {
-        this.dialog.closeAll()
-        this.msgError = 'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.'
-        this.openErrorDialog(this.msgError, true)
-        serviceSubscription.unsubscribe()
-      })
+            serviceSubscription.unsubscribe();
+          },
+          (error) => {
+            this.dialog.closeAll();
+            this.msgError =
+              'Ha ocurrido un error al cargar los datos. Intenta de nuevo recargando la página.';
+            this.openErrorDialog(this.msgError, true);
+            serviceSubscription.unsubscribe();
+          }
+        );
     }
-
-
   }
 
   reloadData() {
-    this.ngOnInit()
+    this.ngOnInit();
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
 
     if (reload) {
-      dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = false
-        this.reloadData()
-      })
+      dialog.afterClosed().subscribe((result) => {
+        this.loaders.loadingData = false;
+        this.reloadData();
+      });
     }
-
   }
-
 
   openPhotosDialog(photos) {
     const dialogRef = this.dialog.open(ViewPhotosDialogComponent, {
       data: {
-        photos: photos
-      }
-    })
-
+        photos: photos,
+      },
+    });
   }
 
   showDetailDialog(order) {
-    const dialogRef = this.dialog.open(OrderDetailDialogComponent,
-      {
-        data: {
-          currentOrder: order,
-          currentDelivery: order.delivery,
-          currentUser: this.currUser
-        }
-      }
-    )
+    const dialogRef = this.dialog.open(OrderDetailDialogComponent, {
+      data: {
+        currentOrder: order,
+        currentDelivery: order.delivery,
+        currentUser: this.currUser,
+      },
+    });
 
     /*dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -198,15 +211,16 @@ export class XploreAllOrdersComponent implements OnInit {
   }
 
   onConsultFormSubmit() {
-
     if (this.consultForm.valid) {
-      this.route.navigate(['/admins/envios-todos', this.consultForm.get('initDate').value,
-        this.consultForm.get('finDate').value])
+      this.route.navigate([
+        '/admins/envios-todos',
+        this.consultForm.get('initDate').value,
+        this.consultForm.get('finDate').value,
+      ]);
     }
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }

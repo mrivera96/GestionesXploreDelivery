@@ -23,17 +23,6 @@ import { AuthService } from "../../../../services/auth.service";
 import { UsersService } from "../../../../services/users.service";
 import { OperationsService } from "../../../../services/operations.service";
 import { formatDate } from "@angular/common";
-<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
-import { DateValidate } from "../../../../helpers/admin.date.validator";
-import { BlankSpacesValidator } from "../../../../helpers/blankSpaces.validator";
-import { NoUrlValidator } from "../../../../helpers/noUrl.validator";
-import { environment } from "../../../../../environments/environment";
-import { ErrorModalComponent } from "../../../../components/shared/error-modal/error-modal.component";
-import { SuccessModalComponent } from "../../../../components/shared/success-modal/success-modal.component";
-import { ConfirmDialogComponent } from "../../../../components/customer/new-delivery/confirm-dialog/confirm-dialog.component";
-import { LockedUserDialogComponent } from "../../../../components/shared/locked-user-dialog/locked-user-dialog.component";
-import { LoadingDialogComponent } from "../../../../components/shared/loading-dialog/loading-dialog.component";
-=======
 import { DateValidate } from "../../../../helpers/date.validator";
 import { BlankSpacesValidator } from "../../../../helpers/blankSpaces.validator";
 import { NoUrlValidator } from "../../../../helpers/noUrl.validator";
@@ -43,7 +32,6 @@ import { SuccessModalComponent } from "../../../../shared/components/success-mod
 import { ConfirmDialogComponent } from "../../../../customers/components/new-delivery/confirm-dialog/confirm-dialog.component";
 import { LockedUserDialogComponent } from "../../../../shared/components/locked-user-dialog/locked-user-dialog.component";
 import { LoadingDialogComponent } from "../../../../shared/components/loading-dialog/loading-dialog.component";
->>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
 import { animate, style, transition, trigger } from "@angular/animations";
 
 @Component({
@@ -181,12 +169,8 @@ export class RoutingShippingComponent implements OnInit {
         instrucciones: ['', Validators.maxLength(150)],
         coordsOrigen: [''],
         distancia: [0],
-<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
-        idTarifa: [null]
-=======
         idTarifa: [null],
         prioridad: [false]
->>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
       }, {
         validators: [
           DateValidate('fecha', 'hora'),
@@ -248,10 +232,7 @@ export class RoutingShippingComponent implements OnInit {
     const categoriesSubscription = this.categoriesService
       .getCustomerCategories(this.currCustomer.idCliente, 3)
       .subscribe(response => {
-<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
-=======
 
->>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
         this.demandMSG = response.demand
         response.routingCategories.forEach(element => {
           if (element.idTipoServicio == 2) {
@@ -262,7 +243,6 @@ export class RoutingShippingComponent implements OnInit {
         });
 
         this.deliveryCategories.forEach(category => {
-<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
           category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
         })
 
@@ -270,15 +250,6 @@ export class RoutingShippingComponent implements OnInit {
           category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
         })
 
-=======
-          category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
-        })
-
-        this.transportationCategories.forEach(category => {
-          category.categoryExtraCharges.sort((a, b) => (a.extra_charge.nombre > b.extra_charge.nombre) ? 1 : -1)
-        })
-
->>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
         this.dialog.closeAll()
         categoriesSubscription.unsubscribe()
       }, error => {
@@ -496,28 +467,17 @@ export class RoutingShippingComponent implements OnInit {
             tarifa: tarifa
           }).subscribe((response) => {
             this.loaders.loadingDistBef = false
-            if (response.distancia == '') {
-              this.prohibitedDistanceMsg = 'No se ha podido procesar alguna de sus direcciones,'
-                + ' si ingresó coordenadas, verifique que sean correctas. El tipo de coordenada ej. 14°07\'32.5"N 87°07\'18.5"W no está soportada actualmente';
-              this.prohibitedDistance = true;
-              this.newForm.get('order.direccion').setValue(null)
-              setTimeout(() => {
-                this.prohibitedDistance = false;
-              }, 2000);
-              distanceSubscription.unsubscribe();
-            } else {
-              this.befDistance = response.distancia
+            this.befDistance = response.distancia
 
-              const calculatedPayment = this.calculateOrderPayment()
-              this.befTime = response.tiempo
-              this.befCost = calculatedPayment.total
-              this.placesOrigin = []
-              this.placesDestination = []
+            const calculatedPayment = this.calculateOrderPayment()
+            this.befTime = response.tiempo
+            this.befCost = calculatedPayment.total
+            this.placesOrigin = []
+            this.placesDestination = []
 
-              this.directionsRenderer.setMap(this.googleMap._googleMap)
-              this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer)
-              distanceSubscription.unsubscribe()
-            }
+            this.directionsRenderer.setMap(this.googleMap._googleMap)
+            this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer)
+            distanceSubscription.unsubscribe()
           }, error => {
             if (error.subscribe()) {
               error.subscribe(error => {
@@ -776,7 +736,6 @@ export class RoutingShippingComponent implements OnInit {
     if (final) {
       this.openLoader()
       let returnDistance = 0
-
       const distSubs = this.http.post<any>(`${environment.apiUrl}`, {
         function: 'calculateDistance',
         salida: this.orders[this.orders.length - 1].direccion,
@@ -791,27 +750,24 @@ export class RoutingShippingComponent implements OnInit {
           entrega: this.orders[this.orders.length - 1].direccion,
           tarifa: this.pago.baseRate
         }).subscribe((res) => {
-
+          let initFinishD = 0
           let initFinishT = 0
-
+          initFinishD = Number(res.distancia.split(' ')[0])
           if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
             initFinishT = (+res.tiempo.split(' ')[0] * 60) + Number(res.tiempo.split(' ')[2])
           } else {
             initFinishT = Number(res.tiempo.split(' ')[0])
           }
 
-          let avgDistance = 0
-          if (returnDistance >= 12.01) {
-            this.totalDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value) + returnDistance
-            avgDistance = this.totalDistance / (this.orders.length + 1)
-          } else {
-            this.totalDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value)
-            avgDistance = this.totalDistance / this.orders.length
+          this.totalDistance = Number(this.deliveryForm.get('deliveryHeader.distancia').value) + returnDistance
+
+          if (initFinishD >= 20.01) {
+            this.totalDistance += initFinishD
           }
 
           this.totalTime = initFinishT
           let avgTime = Number(initFinishT / this.orders.length)
-
+          let avgDistance = this.totalDistance / (this.orders.length + 1)
           this.avgDistance = +avgDistance.toPrecision(2)
 
           let appSurcharge = null
@@ -853,6 +809,7 @@ export class RoutingShippingComponent implements OnInit {
           this.dialog.closeAll()
           distSubs.unsubscribe()
         })
+
       })
 
     } else {
@@ -1168,11 +1125,6 @@ export class RoutingShippingComponent implements OnInit {
     this.selectedCategory = category
     this.surcharges = this.selectedCategory.surcharges
     this.rates = this.selectedCategory.ratesToShow
-<<<<<<< HEAD:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
-
-
-=======
->>>>>>> origin/V5:src/app/admins/components/add-delivery/routing-shipping/routing-shipping.component.ts
   }
 
   //AÑADE UN CARGO EXTRA
@@ -1278,11 +1230,6 @@ export class RoutingShippingComponent implements OnInit {
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent)
-  }
-
-  onTabChanged($event) {
-    this.selectedCategory = {}
-    this.newForm.get('deliveryHeader.idCategoria').setValue(null)
   }
 
 }

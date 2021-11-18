@@ -5,13 +5,8 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 import { WorkLine } from 'src/app/models/work-line';
 import { WorkLinesService } from 'src/app/services/work-lines.service';
-<<<<<<< HEAD:src/app/admins/components/work-lines/xplore-work-lines.component.ts
-import { ErrorModalComponent } from '../../../components/shared/error-modal/error-modal.component';
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
-=======
 import { ErrorModalComponent } from '../../../shared/components/error-modal/error-modal.component';
 import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
->>>>>>> origin/V5:src/app/admins/components/work-lines/xplore-work-lines.component.ts
 import { EditWorklineDialogComponent } from './edit-workline-dialog/edit-workline-dialog.component';
 import { NewWorklineDialogComponent } from './new-workline-dialog/new-workline-dialog.component';
 

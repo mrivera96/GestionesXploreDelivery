@@ -1,26 +1,29 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {CategoriesService} from "../../../../services/categories.service";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {SuccessModalComponent} from "../../../../components/shared/success-modal/success-modal.component";
-import {ErrorModalComponent} from "../../../../components/shared/error-modal/error-modal.component";
-import {Category} from "../../../../models/category";
-import {ServiceTypeService} from "../../../../services/service-type.service";
-import {ServiceType} from "../../../../models/service-type";
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { CategoriesService } from '../../../../services/categories.service';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { SuccessModalComponent } from '../../../../shared/components/success-modal/success-modal.component';
+import { ErrorModalComponent } from '../../../../shared/components/error-modal/error-modal.component';
+import { Category } from '../../../../models/category';
+import { ServiceTypeService } from '../../../../services/service-type.service';
+import { ServiceType } from '../../../../models/service-type';
 
 @Component({
   selector: 'app-edit-category-dialog',
   templateUrl: './edit-category-dialog.component.html',
-  styleUrls: ['./edit-category-dialog.component.css']
+  styleUrls: ['./edit-category-dialog.component.css'],
 })
 export class EditCategoryDialogComponent implements OnInit {
-  currCategory: Category
-  edCatForm: FormGroup
+  currCategory: Category;
+  edCatForm: FormGroup;
   loaders = {
-    loadingSubmit: false
-  }
-  serviceTypes: ServiceType[]
-
+    loadingSubmit: false,
+  };
+  serviceTypes: ServiceType[];
 
   constructor(
     private categoriesService: CategoriesService,
@@ -29,52 +32,67 @@ export class EditCategoryDialogComponent implements OnInit {
     public dialog: MatDialog,
     private servTypesService: ServiceTypeService
   ) {
-    this.currCategory = this.data.category
-    this.dialogRef.disableClose = true
+    this.currCategory = this.data.category;
+    this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {
-    this.loadData()
-    this.edCatForm = new FormGroup(
-      {
-        idCategoria: new FormControl(this.currCategory.idCategoria),
-        descCategoria: new FormControl(this.currCategory.descCategoria, [Validators.required, Validators.maxLength(60)]),
-        descripcion: new FormControl(this.currCategory.descripcion,[Validators.required, Validators.maxLength(250)]),
-        isActivo: new FormControl(this.currCategory.isActivo, Validators.required),
-        idTipoServicio: new FormControl(this.currCategory?.idTipoServicio || null)
-      }
-    )
-
+    this.loadData();
+    this.edCatForm = new FormGroup({
+      idCategoria: new FormControl(this.currCategory.idCategoria),
+      descCategoria: new FormControl(this.currCategory.descCategoria, [
+        Validators.required,
+        Validators.maxLength(60),
+      ]),
+      descripcion: new FormControl(this.currCategory.descripcion, [
+        Validators.required,
+        Validators.maxLength(250),
+      ]),
+      isActivo: new FormControl(
+        this.currCategory.isActivo,
+        Validators.required
+      ),
+      idTipoServicio: new FormControl(
+        this.currCategory?.idTipoServicio || null
+      ),
+    });
   }
 
   get f() {
-    return this.edCatForm.controls
+    return this.edCatForm.controls;
   }
 
   loadData() {
-    const servTypeSubs = this.servTypesService.getServiceTypes()
-      .subscribe(response => {
-        this.serviceTypes = response.data
-        servTypeSubs.unsubscribe()
-      })
+    const servTypeSubs = this.servTypesService
+      .getServiceTypes()
+      .subscribe((response) => {
+        this.serviceTypes = response.data;
+        servTypeSubs.unsubscribe();
+      });
   }
 
   onFormEditSubmit() {
     if (this.edCatForm.valid) {
-      this.loaders.loadingSubmit = true
-      const categoriesSubscription = this.categoriesService.editCategory(this.edCatForm.value)
-        .subscribe(response => {
-            this.loaders.loadingSubmit = false
-            this.openSuccessDialog('Operación Realizada Correctamente', response.message)
-            categoriesSubscription.unsubscribe()
+      this.loaders.loadingSubmit = true;
+      const categoriesSubscription = this.categoriesService
+        .editCategory(this.edCatForm.value)
+        .subscribe(
+          (response) => {
+            this.loaders.loadingSubmit = false;
+            this.openSuccessDialog(
+              'Operación Realizada Correctamente',
+              response.message
+            );
+            categoriesSubscription.unsubscribe();
           },
-          error => {
-            error.subscribe(error => {
-              this.loaders.loadingSubmit = false
-              this.openErrorDialog(error.statusText)
-              categoriesSubscription.unsubscribe()
-            })
-          })
+          (error) => {
+            error.subscribe((error) => {
+              this.loaders.loadingSubmit = false;
+              this.openErrorDialog(error.statusText);
+              categoriesSubscription.unsubscribe();
+            });
+          }
+        );
     }
   }
 
@@ -82,29 +100,28 @@ export class EditCategoryDialogComponent implements OnInit {
     const dialogRef = this.dialog.open(SuccessModalComponent, {
       data: {
         succsTitle: succsTitle,
-        succsMsg: succssMsg
-      }
-    })
+        succsMsg: succssMsg,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.dialogRef.close(true)
-    })
+    dialogRef.afterClosed().subscribe((result) => {
+      this.dialogRef.close(true);
+    });
   }
 
   openErrorDialog(error: string): void {
     this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
   }
 
-  changeActive(checked){
-    if(checked){
-      this.f.isActivo.setValue(true)
-    }else{
-      this.f.isActivo.setValue(false)
+  changeActive(checked) {
+    if (checked) {
+      this.f.isActivo.setValue(true);
+    } else {
+      this.f.isActivo.setValue(false);
     }
   }
-
 }

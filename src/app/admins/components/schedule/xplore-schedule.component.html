@@ -2,16 +2,12 @@
 <!--CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Parametrización de Horarios
-    </mat-card-title>
-
+    <mat-card-title> Parametrización de Horarios </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
-
     <!-- CONTAINER START -->
-<!--
+    <!--
     <div class="row justify-content-end">
       <div class="col">
         <button mat-raised-button  type="button" color="primary" class="float-right mb-2">
@@ -24,32 +20,36 @@
     <!-- CONTAINER BODY START -->
 
     <div class="table-responsive">
-      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-             class="display compact" style="width:100%">
+      <table
+        id="dTable"
+        datatable
+        [dtOptions]="dtOptions"
+        [dtTrigger]="dtTrigger"
+        class="display compact"
+        style="width: 100%"
+      >
         <thead>
-        <tr>
-          <th>N°</th>
-          <th>Día</th>
-          <th>Hora de Inicio</th>
-          <th>Hora Final</th>
-          <th data-priority="1">Acción</th>
-        </tr>
+          <tr>
+            <th>N°</th>
+            <th>Día</th>
+            <th>Hora de Inicio</th>
+            <th>Hora Final</th>
+            <th data-priority="1">Acción</th>
+          </tr>
         </thead>
         <tbody>
-
-        <tr *ngFor="let schedule of schedules">
-          <td>{{schedule.idHorario}}</td>
-          <td>{{schedule.dia}}</td>
-          <td>{{schedule.inicio}}</td>
-          <td>{{schedule.final}}</td>
-          <td>
-            <a (click)="showEditDialog(schedule)" style="color: #0071A2">
-              <i class="fa fa-edit"></i> Editar
-            </a>
-          </td>
-        </tr>
+          <tr *ngFor="let schedule of schedules">
+            <td>{{ schedule.idHorario }}</td>
+            <td>{{ schedule.dia }}</td>
+            <td>{{ schedule.inicio }}</td>
+            <td>{{ schedule.final }}</td>
+            <td>
+              <a (click)="showEditDialog(schedule)" style="color: #0071a2">
+                <i class="fa fa-edit"></i> Editar
+              </a>
+            </td>
+          </tr>
         </tbody>
-
       </table>
     </div>
 
@@ -58,8 +58,3 @@
 </mat-card>
 
 <!-- CARD END -->
-
-
-
-
-

@@ -1,22 +1,21 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {Category} from "../../../models/category";
-import {Subject} from "rxjs";
-import {FormBuilder} from "@angular/forms";
-import {CategoriesService} from "../../../services/categories.service";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {RatesService} from "../../../services/rates.service";
-import {Rate} from "../../../models/rate";
-import {Customer} from "../../../models/customer";
-import {UsersService} from "../../../services/users.service";
-import {ErrorModalComponent} from "../../../components/shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {EditRateDialogComponent} from "./edit-rate-dialog/edit-rate-dialog.component";
-import {NewRateDialogComponent} from "./new-rate-dialog/new-rate-dialog.component";
-import {DataTableDirective} from "angular-datatables";
-import {RateCustomersDialogComponent} from "./rate-customers-dialog/rate-customers-dialog.component";
-import {ConsolidatedRateDetailsComponent} from "./consolidated-rate-details/consolidated-rate-details.component";
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
-
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Category } from '../../../models/category';
+import { Subject } from 'rxjs';
+import { FormBuilder } from '@angular/forms';
+import { CategoriesService } from '../../../services/categories.service';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { RatesService } from '../../../services/rates.service';
+import { Rate } from '../../../models/rate';
+import { Customer } from '../../../models/customer';
+import { UsersService } from '../../../services/users.service';
+import { ErrorModalComponent } from '../../../shared/components/error-modal/error-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { EditRateDialogComponent } from './edit-rate-dialog/edit-rate-dialog.component';
+import { NewRateDialogComponent } from './new-rate-dialog/new-rate-dialog.component';
+import { DataTableDirective } from 'angular-datatables';
+import { RateCustomersDialogComponent } from './rate-customers-dialog/rate-customers-dialog.component';
+import { ConsolidatedRateDetailsComponent } from './consolidated-rate-details/consolidated-rate-details.component';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-rates',
@@ -25,24 +24,25 @@ import { LoadingDialogComponent } from '../../../components/shared/loading-dialo
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class XploreRatesComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
-  dtOptions
-  rates: Rate[]
-  dtTrigger: Subject<any>
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions;
+  rates: Rate[];
+  dtTrigger: Subject<any>;
   loaders = {
     loadingData: false,
-    loadingSubmit: false
-  }
+    loadingSubmit: false,
+  };
 
-  categories: Category[]
-  customers: Customer[]
+  categories: Category[];
+  customers: Customer[];
 
   constructor(
     private ratesService: RatesService,
@@ -50,16 +50,15 @@ export class XploreRatesComponent implements OnInit {
     private formBuilder: FormBuilder,
     private usersService: UsersService,
     public dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   initialize() {
-    this.dtTrigger = new Subject<any>()
+    this.dtTrigger = new Subject<any>();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 25,
@@ -67,7 +66,7 @@ export class XploreRatesComponent implements OnInit {
       processing: true,
       info: true,
       rowReorder: false,
-      order: [6, 'desc'],
+      order: [[1, 'asc'],[2,'asc'],[3,'asc']],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -81,124 +80,124 @@ export class XploreRatesComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
-
+    };
   }
 
   loadData() {
-    this.openLoader()
-    const ratesSubscription = this.ratesService.getRates().subscribe(response => {
-      this.rates = response.data
-      this.dialog.closeAll()
-      this.dtTrigger.next()
-      ratesSubscription.unsubscribe()
-    })
+    this.openLoader();
+    const ratesSubscription = this.ratesService
+      .getRates()
+      .subscribe((response) => {
+        this.rates = response.data;
+        this.dialog.closeAll();
+        this.dtTrigger.next();
+        ratesSubscription.unsubscribe();
+      });
 
-    const categoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
-      this.categories = response.data
-      categoriesSubscription.unsubscribe()
-    })
+    const categoriesSubscription = this.categoriesService
+      .getAllCategories()
+      .subscribe((response) => {
+        this.categories = response.data;
+        categoriesSubscription.unsubscribe();
+      });
 
-    const usersSubscription = this.usersService.getCustomers().subscribe(response => {
-      this.customers = response.data
-      usersSubscription.unsubscribe()
-    })
+    const usersSubscription = this.usersService
+      .getCustomers()
+      .subscribe((response) => {
+        this.customers = response.data;
+        usersSubscription.unsubscribe();
+      });
   }
 
   reloadData() {
-    this.ngOnInit()
+    this.ngOnInit();
   }
 
   showEditForm(id) {
-    let currRate: Rate = {}
-    this.rates.forEach(value => {
+    let currRate: Rate = {};
+    this.rates.forEach((value) => {
       if (value.idTarifaDelivery === id) {
-        currRate = value
+        currRate = value;
       }
-    })
-    this.openEditDialog(currRate)
+    });
+    this.openEditDialog(currRate);
   }
 
   showNewForm() {
-    const dialogRef = this.dialog.open(NewRateDialogComponent)
+    const dialogRef = this.dialog.open(NewRateDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   showRateCustomers(id) {
     this.dialog.open(RateCustomersDialogComponent, {
       data: {
-        rateId: id
-      }
-    })
+        rateId: id,
+      },
+    });
   }
 
   openEditDialog(currRate): void {
     const dialogRef = this.dialog.open(EditRateDialogComponent, {
       data: {
-        rate: currRate
-      }
-    })
+        rate: currRate,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
 
     if (reload) {
-      dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
-        this.reloadData()
-      })
+      dialog.afterClosed().subscribe((result) => {
+        this.loaders.loadingData = true;
+        this.reloadData();
+      });
     }
-
   }
 
-  showRateDetail(detail, schedules, typeId){
+  showRateDetail(detail, schedules, typeId) {
     const dialogRef = this.dialog.open(ConsolidatedRateDetailsComponent, {
       data: {
         RateDetail: detail,
         RateSchedules: schedules,
-        rateType: typeId
-      }
-    })
+        rateType: typeId,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.reloadData()
-      }else{
-        dialogRef.close()
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.reloadData();
+      } else {
+        dialogRef.close();
       }
-
-    })
+    });
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }

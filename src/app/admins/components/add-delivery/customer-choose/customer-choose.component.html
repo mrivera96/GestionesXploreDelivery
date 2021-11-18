@@ -9,23 +9,43 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
     <div class="col text-center">
-      <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
       <p>Procesando información...</p>
     </div>
   </div>
 
-  <form #customerForm="ngForm" (ngSubmit)="validateCustomer(customerForm.value)" *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
+  <form
+    #customerForm="ngForm"
+    (ngSubmit)="validateCustomer(customerForm.value)"
+    *ngIf="!loaders.loadingSubmit && !loaders.loadingData"
+  >
     <mat-form-field appearance="outline" floatLabel="always">
       <mat-label>Cliente:</mat-label>
-      <mat-select [(ngModel)]="selectedCustomer" name="selectedCustomer" required
-        placeholder="- Seleccione un cliente -" (ngModelChange)="checkDelTypes(selectedCustomer)" >
+      <mat-select
+        [(ngModel)]="selectedCustomer"
+        name="selectedCustomer"
+        required
+        placeholder="- Seleccione un cliente -"
+        (ngModelChange)="checkDelTypes(selectedCustomer)"
+      >
         <mat-form-field>
-          <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)">
+          <input
+            matInput
+            placeholder="Buscar Cliente"
+            (keyup)="onKey($event.target.value)"
+          />
           <mat-icon [inline]="true" matPrefix>search</mat-icon>
         </mat-form-field>
 
-        <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
-          {{customer.nomEmpresa}}
+        <mat-option
+          *ngFor="let customer of filteredCustomers"
+          value="{{ customer.idCliente }}"
+        >
+          {{ customer.nomEmpresa }}
         </mat-option>
       </mat-select>
       <mat-icon matSuffix>account_circle</mat-icon>
@@ -34,22 +54,38 @@
 
     <mat-form-field appearance="outline" floatLabel="always">
       <mat-label>Tipo de Envío:</mat-label>
-      <mat-select [(ngModel)]="selectedDeliveryType" name="selectedDeliveryType" required
-        placeholder="- Seleccione un tipo de envío -">
-        <mat-option *ngFor="let delType of deliveryTypes" value="{{delType.id}}">
-          {{delType.desc}}
+      <mat-select
+        [(ngModel)]="selectedDeliveryType"
+        name="selectedDeliveryType"
+        required
+        placeholder="- Seleccione un tipo de envío -"
+      >
+        <mat-option
+          *ngFor="let delType of deliveryTypes"
+          value="{{ delType.id }}"
+        >
+          {{ delType.desc }}
         </mat-option>
       </mat-select>
       <mat-icon matSuffix>dashboard</mat-icon>
       <mat-error>*Este campo es obligatorio</mat-error>
     </mat-form-field>
 
-    <button [disabled]="loaders.loadingSubmit || loaders.loadingData || !customerForm.valid" mat-raised-button
-      class="btn-block" color="primary" type="submit" [mat-dialog-close]="true">
+    <button
+      [disabled]="
+        loaders.loadingSubmit || loaders.loadingData || !customerForm.valid
+      "
+      mat-raised-button
+      class="btn-block"
+      color="primary"
+      type="submit"
+      [mat-dialog-close]="true"
+    >
       Aceptar
-      <span *ngIf="loaders.loadingSubmit" class="spinner-border spinner-border-sm mr-1 "></span>
+      <span
+        *ngIf="loaders.loadingSubmit"
+        class="spinner-border spinner-border-sm mr-1"
+      ></span>
     </button>
   </form>
-
 </mat-dialog-content>
-

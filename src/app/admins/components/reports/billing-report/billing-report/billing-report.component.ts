@@ -1,13 +1,3 @@
-<<<<<<< HEAD:src/app/admins/components/reports/billing-report/billing-report/billing-report.component.ts
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {DataTableDirective} from "angular-datatables";
-import {Subject} from "rxjs";
-import {MatDialog} from "@angular/material/dialog";
-import {LoadingDialogComponent} from "../../../../../components/shared/loading-dialog/loading-dialog.component";
-import {BillingService} from "../../../../../services/billing.service";
-import {Workbook} from "exceljs";
-=======
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { DataTableDirective } from 'angular-datatables';
@@ -16,7 +6,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoadingDialogComponent } from '../../../../../shared/components/loading-dialog/loading-dialog.component';
 import { BillingService } from '../../../../../services/billing.service';
 import { Workbook } from 'exceljs';
->>>>>>> origin/V5:src/app/admins/components/reports/billing-report/billing-report/billing-report.component.ts
 import * as fs from 'file-saver';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';

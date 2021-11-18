@@ -1,166 +1,217 @@
 <!-- INICIO ALERTA POR SALDO PENDIENTE -->
 <div *ngIf="lockedUser" class="alert alert-danger" role="alert">
-  Hola <strong>{{currentCustomer.nomRepresentante}}</strong>, informamos que tienes un balance abierto de <strong>L. {{actualBalance }}</strong> .
-  Te solicitamos poner tu cuenta al día o solicitar una ampliación de tu crédito para continuar gozando de nuestro servicio.
-  Para más información, favor contactarnos al <a href="tel:94397234">+504 9439-7234</a>.
+  Hola <strong>{{ currentCustomer.nomRepresentante }}</strong
+  >, informamos que tienes un balance abierto de
+  <strong>L. {{ actualBalance }}</strong> . Te solicitamos poner tu cuenta al
+  día o solicitar una ampliación de tu crédito para continuar gozando de nuestro
+  servicio. Para más información, favor contactarnos al
+  <a href="tel:94397234">+504 9439-7234</a>.
 </div>
 <!-- FIN ALERTA POR SALDO PENDIENTE -->
 
 <mat-card-title class="mb-3">
-<h1 style="font-size: 35px;"><strong> Dashboard</strong></h1>
+  <h1 style="font-size: 35px"><strong> Dashboard</strong></h1>
 </mat-card-title>
 
 <!-- INICIO CONTAINER -->
 <div class="container-fluid">
   <!-- INICIO FILA -->
-<div class="row">
-  <!-- INICIO COLUMNA -->
-  <div class="col-md">
-    <div class="row mb-3 mx-auto">
-      <mat-card class="col">
-        <mat-card-content>
+  <div class="row">
+    <!-- INICIO COLUMNA -->
+    <div class="col-md" *ngIf="currentUser.idPerfil == 8">
+      <div class="row mb-3 mx-auto">
+        <mat-card class="col">
+          <mat-card-content>
+            <div class="row">
+              <div class="col-3">
+                <mat-icon class="display-2" style="color: grey"
+                  >fact_check</mat-icon
+                >
+              </div>
+              <div class="col-9 text-center">
+                <h2>Envíos Entregados</h2>
+                <h1 class="display-5">
+                  <strong>{{ finishedOrders }}</strong>
+                </h1>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <button
+                  [routerLink]="['/customers/envio-normal']"
+                  class="btn-block"
+                  mat-raised-button
+                  color="primary"
+                >
+                  Agregar envío
+                </button>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="row mb-3 mx-auto">
+        <mat-card class="col">
+          <mat-card-content>
+            <div class="row">
+              <div class="col-3">
+                <mat-icon class="display-2" style="color: grey"
+                  >account_balance_wallet</mat-icon
+                >
+              </div>
+              <div class="col-9 text-center">
+                <h2>Balance Actual</h2>
+                <h1 class="display-5">
+                  <strong>L. {{ actualBalance }}</strong>
+                </h1>
+              </div>
+            </div>
+            <div class="row" *ngIf="currentUser.idPerfil == 8">
+              <div class="col">
+                <button
+                  [routerLink]="['/customers/balance']"
+                  class="btn-block"
+                  mat-raised-button
+                  color="primary"
+                >
+                  Ver Detalles
+                </button>
+              </div>
+            </div>
+            <!-- <br />
+
+            <div class="row" *ngIf="currentCustomer?.pagoTarjeta && currentUser.idPerfil == 8">
+              <div class="col">
+                <button
+                  (click)="makePayment()"
+                  class="btn-block"
+                  mat-raised-button
+                  color="primary"
+                >
+                  Realizar Pago
+                </button>
+              </div>
+            </div> -->
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <!-- FIN COLUMNA -->
+
+    <!-- INICIO COLUMNA -->
+    <div class="col-md mb-3">
+      <mat-card>
+        <mat-card-header>
           <div class="row">
             <div class="col-3">
-              <mat-icon class="display-2" style="color: grey;">fact_check</mat-icon>
+              <mat-card-title class="text-justify" style="font-size: 35px">
+                {{ pendingOrdersCount }}
+              </mat-card-title>
             </div>
-            <div class="col-9 text-center">
-              <h2>Envíos Entregados</h2>
-              <h1 class="display-5"><strong>{{finishedOrders}}</strong></h1>
+            <div class="col-7">
+              <mat-card-title> Envíos pendientes para entrega </mat-card-title>
+            </div>
+            <div class="col-2">
+              <mat-icon
+                class="float-rigth"
+                style="font-size: 35px; color: #0277bd"
+                >pending_actions</mat-icon
+              >
             </div>
           </div>
-
-          <div class="row">
-            <div class="col">
-              <button [routerLink]="['/customers/inicio']" class="btn-block" mat-raised-button color="primary">
-                Agregar envío
-              </button>
-            </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="display compact"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>N° envío</th>
+                  <th *ngIf="currentUser.idPerfil == 12">Cliente</th>
+                  <th>Detalle</th>
+                  <th>Fecha/Hora Recogida</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let order of pendingOrders">
+                  <td>{{ order.idDetalle }}</td>
+                  <td *ngIf="currentUser.idPerfil == 12">{{order.delivery.cliente.nomEmpresa}}</td>
+                  <td>{{ order.nFactura }}</td>
+                  <td>{{ order.delivery.fechaReserva }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
+    <!-- FIN COLUMNA -->
 
-    <div class="row mb-3 mx-auto">
-      <mat-card class="col">
-        <mat-card-content>
+    <!-- INICIO COLUMNA -->
+    <div class="col-md">
+      <mat-card>
+        <mat-card-header>
           <div class="row">
             <div class="col-3">
-              <mat-icon class="display-2" style="color: grey;">account_balance_wallet</mat-icon>
+              <mat-card-title class="text-justify" style="font-size: 35px">
+                {{ assignedOrdersCount }}
+              </mat-card-title>
             </div>
-            <div class="col-9 text-center">
-              <h2> Balance Actual</h2>
-              <h1 class="display-5"><strong>L. {{actualBalance }}</strong></h1>
+            <div class="col-7">
+              <mat-card-title> Envíos asignados / En Tránsito </mat-card-title>
+            </div>
+            <div class="col-2">
+              <mat-icon
+                class="float-rigth"
+                style="font-size: 35px; color: #0277bd"
+                >list_alt</mat-icon
+              >
             </div>
           </div>
-          <div class="row">
-            <div class="col">
-              <button [routerLink]="['/customers/balance']" class="btn-block" mat-raised-button color="primary">
-                Ver Detalles
-              </button>
-            </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="display compact"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>N° envío</th>
+                  <th *ngIf="currentUser.idPerfil == 12">Cliente</th>
+                  <th>Detalle</th>
+                  <th>Conductor</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let order of assignedOrders">
+                  <td>{{ order.idDetalle }}</td>
+                  <td *ngIf="currentUser.idPerfil == 12">{{order.delivery.cliente.nomEmpresa}}</td>
+                  <td>{{ order.nFactura }}</td>
+                  <td>
+                    {{ order?.conductor?.nomUsuario }} -
+                    {{ order?.conductor?.numCelular }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </mat-card-content>
       </mat-card>
     </div>
+    <!-- FIN COLUMNA -->
   </div>
-  <!-- FIN COLUMNA -->
-
-  <!-- INICIO COLUMNA -->
-  <div class="col-md mb-3">
-    <mat-card>
-      <mat-card-header>
-        <div class="row">
-          <div class="col-3">
-            <mat-card-title class="text-justify" style="font-size: 35px;">
-              {{pendingOrdersCount}}
-            </mat-card-title>
-          </div>
-          <div class="col-7">
-            <mat-card-title>
-              Envíos pendientes para entrega
-            </mat-card-title>
-          </div>
-          <div class="col-2">
-            <mat-icon class="float-rigth" style="font-size: 35px; color: #0277bd;">pending_actions</mat-icon>
-          </div>
-        </div>
-
-      </mat-card-header>
-      <mat-card-content>
-        <div class="table-responsive">
-          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
-            <thead>
-              <tr>
-                <th>N° envío</th>
-                <th>Detalle</th>
-                <th>Fecha/Hora Recogida</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let order of pendingOrders">
-                <td>{{order.idDetalle}}</td>
-                <td>{{order.nFactura}}</td>
-                <td>{{order.delivery.fechaReserva}}</td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
-  <!-- FIN COLUMNA -->
-
-  <!-- INICIO COLUMNA -->
-  <div class="col-md ">
-    <mat-card>
-      <mat-card-header>
-        <div class="row">
-          <div class="col-3">
-            <mat-card-title class="text-justify" style="font-size: 35px;">
-              {{assignedOrdersCount}}
-            </mat-card-title>
-          </div>
-          <div class="col-7">
-            <mat-card-title>
-              Envíos asignados / En Tránsito
-            </mat-card-title>
-          </div>
-          <div class="col-2">
-            <mat-icon class="float-rigth" style="font-size: 35px; color: #0277bd;">list_alt</mat-icon>
-          </div>
-        </div>
-
-      </mat-card-header>
-      <mat-card-content>
-        <div class="table-responsive">
-          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
-            <thead>
-              <tr>
-                <th>N° envío</th>
-                <th>Detalle</th>
-                <th>Conductor</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr *ngFor="let order of assignedOrders">
-                <td>{{order.idDetalle}}</td>
-                <td>{{order.nFactura}}</td>
-                <td>{{order?.conductor?.nomUsuario}} - {{order?.conductor?.numCelular}}</td>
-              </tr>
-            </tbody>
-
-          </table>
-
-        </div>
-
-      </mat-card-content>
-    </mat-card>
-  </div>
-  <!-- FIN COLUMNA -->
-</div>
   <!-- FIN FILA -->
-
 </div>
 <!-- FIN CONTAINER -->

@@ -1,12 +1,12 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {DataTableDirective} from "angular-datatables";
-import {ReportRequest} from "../../../../models/report-request";
-import {ReportRequestsService} from "../../../../services/report-requests.service";
-import {Subject} from "rxjs";
-import {MatDialog} from "@angular/material/dialog";
-import {AddRequestsDialogComponent} from "./add-requests-dialog/add-requests-dialog.component";
-import {LoadingDialogComponent} from "../../../../components/shared/loading-dialog/loading-dialog.component";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { DataTableDirective } from 'angular-datatables';
+import { ReportRequest } from '../../../../models/report-request';
+import { ReportRequestsService } from '../../../../services/report-requests.service';
+import { Subject } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { AddRequestsDialogComponent } from './add-requests-dialog/add-requests-dialog.component';
+import { LoadingDialogComponent } from '../../../../shared/components/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-report-requests',
@@ -15,35 +15,35 @@ import {LoadingDialogComponent} from "../../../../components/shared/loading-dial
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class ReportRequestsComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective
-  dtOptions
-  reportRequests: ReportRequest[]
-  dtTrigger: Subject<any>
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions;
+  reportRequests: ReportRequest[];
+  dtTrigger: Subject<any>;
   loaders = {
     loadingData: false,
-    loadingSubmit: false
-  }
+    loadingSubmit: false,
+  };
 
   constructor(
     private reportRequestsService: ReportRequestsService,
     public dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   initialize() {
-    this.dtTrigger = new Subject<any>()
+    this.dtTrigger = new Subject<any>();
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -66,39 +66,38 @@ export class ReportRequestsComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
-
+    };
   }
 
   loadData() {
-    this.openLoader()
-    const rRequestSubscription = this.reportRequestsService.getReportRequests().subscribe(response => {
-      this.reportRequests = response.data
-      this.dialog.closeAll()
-      this.dtTrigger.next()
-      rRequestSubscription.unsubscribe()
-    })
+    this.openLoader();
+    const rRequestSubscription = this.reportRequestsService
+      .getReportRequests()
+      .subscribe((response) => {
+        this.reportRequests = response.data;
+        this.dialog.closeAll();
+        this.dtTrigger.next();
+        rRequestSubscription.unsubscribe();
+      });
   }
 
-  showAddDialog(){
-    const dialogRef = this.dialog.open(AddRequestsDialogComponent)
+  showAddDialog() {
+    const dialogRef = this.dialog.open(AddRequestsDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
-  openLoader(){
-    this.dialog.open(LoadingDialogComponent)
+  openLoader() {
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }

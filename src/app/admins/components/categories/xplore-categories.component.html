@@ -1,10 +1,7 @@
 <!--CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Parametrización de Categorías
-    </mat-card-title>
-
+    <mat-card-title> Parametrización de Categorías </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
@@ -12,53 +9,59 @@
 
     <div class="row justify-content-end">
       <div class="col">
-        <button mat-raised-button (click)="showNewCatForm()" type="button" color="primary" class="float-right mb-2">
+        <button
+          mat-raised-button
+          (click)="showNewCatForm()"
+          type="button"
+          color="primary"
+          class="float-right mb-2"
+        >
           <i class="fa fa-plus"></i>
           Agregar Categoría
         </button>
       </div>
-
     </div>
     <!-- CONTAINER BODY START -->
 
     <div class="table-responsive">
-      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-             class="compact display" style="width:100%">
+      <table
+        id="dTable"
+        datatable
+        [dtOptions]="dtOptions"
+        [dtTrigger]="dtTrigger"
+        class="compact display"
+        style="width: 100%"
+      >
         <thead>
-        <tr>
-          <th>N°</th>
-          <th>Nombre de categoría</th>
-          <th>Descripción de categoría</th>
-          <th>Activa</th>
-          <th data-priority="1">Acción</th>
-        </tr>
+          <tr>
+            <th>N°</th>
+            <th>Nombre de categoría</th>
+            <th>Descripción de categoría</th>
+            <th>Activa</th>
+            <th data-priority="1">Acción</th>
+          </tr>
         </thead>
         <tbody>
-
-        <tr *ngFor="let category of categories">
-          <td>{{category.idCategoria}}</td>
-          <td>{{category.descCategoria}}</td>
-          <td>{{category.descripcion || 'N/A'}}</td>
-          <td>{{category.isActivo == true ? 'Sí' : 'No'}}</td>
-          <td>
-            <a (click)="showEditForm(category.idCategoria)" style="color: #0071A2">
-              <i class="fa fa-edit"></i> Editar
-            </a>
-          </td>
-
-        </tr>
+          <tr *ngFor="let category of categories">
+            <td>{{ category.idCategoria }}</td>
+            <td>{{ category.descCategoria }}</td>
+            <td>{{ category.descripcion || "N/A" }}</td>
+            <td>{{ category.isActivo == true ? "Sí" : "No" }}</td>
+            <td>
+              <a
+                (click)="showEditForm(category.idCategoria)"
+                style="color: #0071a2"
+              >
+                <i class="fa fa-edit"></i> Editar
+              </a>
+            </td>
+          </tr>
         </tbody>
-
       </table>
     </div>
-
 
     <!-- CONTAINER END -->
   </mat-card-content>
 </mat-card>
 
 <!-- CARD END -->
-
-
-
-

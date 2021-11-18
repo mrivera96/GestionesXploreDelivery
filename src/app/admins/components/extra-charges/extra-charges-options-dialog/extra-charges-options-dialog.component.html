@@ -3,73 +3,87 @@
   <mat-icon [inline]="true">settings</mat-icon>
   Opciones de Cargo Extra
 </h2>
-<mat-dialog-content >
+<mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingData">
     <div class="col text-center">
-      <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
       <p>Cargando información...</p>
     </div>
   </div>
 
   <div class="row justify-content-end">
     <div class="col">
-      <button mat-raised-button (click)="showAddDialog()" type="button" color="primary" class="float-right mb-2">
+      <button
+        mat-raised-button
+        (click)="showAddDialog()"
+        type="button"
+        color="primary"
+        class="float-right mb-2"
+      >
         <i class="fa fa-plus"></i>
         Agregar Opción
       </button>
     </div>
   </div>
-  <br>
+  <br />
 
-  <div class="row d-block" *ngIf="!loaders.loadingData" >
+  <div class="row d-block" *ngIf="!loaders.loadingData">
     <div class="col">
       <div class="table-responsive">
-        <table id="dTable" class="display table table-striped" style="width:100%">
+        <table
+          id="dTable"
+          class="display table table-striped"
+          style="width: 100%"
+        >
           <thead>
-          <tr>
-            <th scope="col">N°</th>
-            <th scope="col">Descripción</th>
-            <th scope="col">Costo</th>
-            <th scope="col">Tiempo</th>
-            <th scope="col" data-priority="1">Acción</th>
-          </tr>
-
+            <tr>
+              <th scope="col">N°</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Costo</th>
+              <th scope="col">Tiempo</th>
+              <th scope="col" data-priority="1">Acción</th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr *ngFor="let option of extraChargeOptions; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{option.descripcion}}</td>
-            <td>L.{{option.costo}}</td>
-            <td>{{option.tiempo || 'N/A'}}</td>
-            <td>
-              <button class="float-right" mat-button [matMenuTriggerFor]="menu">
-                <mat-icon>more_vert</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <button type="button" mat-menu-item (click)="editExtraChargeOption(option)">
-                  <mat-icon>create</mat-icon>
-                  Editar
+            <tr *ngFor="let option of extraChargeOptions; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ option.descripcion }}</td>
+              <td>L.{{ option.costo }}</td>
+              <td>{{ option.tiempo || "N/A" }}</td>
+              <td>
+                <button
+                  class="float-right"
+                  mat-button
+                  [matMenuTriggerFor]="menu"
+                >
+                  <mat-icon>more_vert</mat-icon>
                 </button>
-              </mat-menu>
-            </td>
-          </tr>
+                <mat-menu #menu="matMenu">
+                  <button
+                    type="button"
+                    mat-menu-item
+                    (click)="editExtraChargeOption(option)"
+                  >
+                    <mat-icon>create</mat-icon>
+                    Editar
+                  </button>
+                </mat-menu>
+              </td>
+            </tr>
           </tbody>
-
         </table>
       </div>
     </div>
   </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cerrar
-  </button>
+  <button type="button" mat-raised-button mat-dialog-close>Cerrar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->
-
-

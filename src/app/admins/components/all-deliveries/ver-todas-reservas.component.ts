@@ -1,14 +1,14 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {Delivery} from "../../../models/delivery";
-import {Observable, Subject} from "rxjs";
-import {ActivatedRoute, Router} from "@angular/router";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {DataTableDirective} from "angular-datatables";
-import {State} from "../../../models/state";
-import {formatDate} from "@angular/common";
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DeliveriesService } from '../../../services/deliveries.service';
+import { Delivery } from '../../../models/delivery';
+import { Observable, Subject } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DataTableDirective } from 'angular-datatables';
+import { State } from '../../../models/state';
+import { formatDate } from '@angular/common';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -18,27 +18,26 @@ import { MatDialog } from '@angular/material/dialog';
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class VerTodasReservasComponent implements OnInit {
-
-  consultForm: FormGroup
-  deliveries: Delivery[]
-  dtTrigger: Subject<any> = new Subject<any>()
+  consultForm: FormGroup;
+  deliveries: Delivery[];
+  dtTrigger: Subject<any> = new Subject<any>();
   loaders = {
-    loadingData: false
-  }
-  @ViewChild(DataTableDirective, {static: false})
-  datatableElement: DataTableDirective
-  initDate: any = null
-  finDate: any = null
-  dtOptions: any
+    loadingData: false,
+  };
+  @ViewChild(DataTableDirective, { static: false })
+  datatableElement: DataTableDirective;
+  initDate: any = null;
+  finDate: any = null;
+  dtOptions: any;
 
-  states: State[]
+  states: State[];
 
   constructor(
     private router: Router,
@@ -46,53 +45,54 @@ export class VerTodasReservasComponent implements OnInit {
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     public dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   loadData() {
-    this.activatedRoute.paramMap.subscribe(params => {
-      if (params.get("initDate") && params.get("finDate")) {
-        this.initDate = true
-        this.consultForm.get('initDate').setValue(params.get("initDate"))
-        this.consultForm.get('finDate').setValue(params.get("finDate"))
+    this.activatedRoute.paramMap.subscribe((params) => {
+      if (params.get('initDate') && params.get('finDate')) {
+        this.initDate = true;
+        this.consultForm.get('initDate').setValue(params.get('initDate'));
+        this.consultForm.get('finDate').setValue(params.get('finDate'));
       }
-    })
+    });
 
     if (this.initDate == true) {
-      this.openLoader()
-      const deliveriesSubscription = this.deliveriesService.getStates().subscribe(response => {
-        this.states = response.data.xploreDelivery
-        deliveriesSubscription.unsubscribe()
-      })
-      const serviceSubscription = this.deliveriesService.getFilteredDeliveries(this.consultForm.value)
-        .subscribe(response => {
-          this.dialog.closeAll()
-          this.deliveries = response.data
-          this.deliveries.forEach(delivery => {
-            delivery.entregas = delivery.detalle.length
-          })
-          this.dtTrigger.next()
-          this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
-            dtInstance.columns().every(function () {
-              const that = this;
-              $('select', this.footer()).on('change', function () {
-                if (that.search() !== this['value']) {
-                  that
-                    .search(this['value'])
-                    .draw();
-                }
-              })
-            })
-          })
-          serviceSubscription.unsubscribe()
-        })
+      this.openLoader();
+      const deliveriesSubscription = this.deliveriesService
+        .getStates()
+        .subscribe((response) => {
+          this.states = response.data.xploreDelivery;
+          deliveriesSubscription.unsubscribe();
+        });
+      const serviceSubscription = this.deliveriesService
+        .getFilteredDeliveries(this.consultForm.value)
+        .subscribe((response) => {
+          this.dialog.closeAll();
+          this.deliveries = response.data;
+          this.deliveries.forEach((delivery) => {
+            delivery.entregas = delivery.detalle.length;
+          });
+          this.dtTrigger.next();
+          this.datatableElement.dtInstance.then(
+            (dtInstance: DataTables.Api) => {
+              dtInstance.columns().every(function () {
+                const that = this;
+                $('select', this.footer()).on('change', function () {
+                  if (that.search() !== this['value']) {
+                    that.search(this['value']).draw();
+                  }
+                });
+              });
+            }
+          );
+          serviceSubscription.unsubscribe();
+        });
     }
-
   }
 
   initialize() {
@@ -117,29 +117,42 @@ export class VerTodasReservasComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
+    };
 
     this.consultForm = this.formBuilder.group({
-      initDate: [formatDate(new Date().setDate(new Date().getDate() - 7), 'yyyy-MM-dd', 'en'), Validators.required],
-      finDate: [formatDate(new Date(), 'yyyy-MM-dd', 'en'), Validators.required]
-    })
+      initDate: [
+        formatDate(
+          new Date().setDate(new Date().getDate() - 7),
+          'yyyy-MM-dd',
+          'en'
+        ),
+        Validators.required,
+      ],
+      finDate: [
+        formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+        Validators.required,
+      ],
+    });
   }
 
   setLoading(event) {
-    this.loaders.loadingData = event
+    this.loaders.loadingData = event;
   }
 
   onConsultFormSubmit() {
     if (this.consultForm.valid) {
-      this.router.navigate(['/admins/reservas-todas', this.consultForm.get('initDate').value,
-        this.consultForm.get('finDate').value])
+      this.router.navigate([
+        '/admins/reservas-todas',
+        this.consultForm.get('initDate').value,
+        this.consultForm.get('finDate').value,
+      ]);
     }
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
 }

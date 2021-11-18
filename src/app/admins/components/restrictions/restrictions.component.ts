@@ -1,14 +1,14 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {RestrictionsService} from "../../../services/restrictions.service";
-import {ErrorModalComponent} from "../../../components/shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {LoadingDialogComponent} from "../../../components/shared/loading-dialog/loading-dialog.component";
-import {Restriction} from "../../../models/restriction";
-import {Subject} from "rxjs";
-import {DataTableDirective} from "angular-datatables";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {EditRestrictionDialogComponent} from "./edit-restriction-dialog/edit-restriction-dialog.component";
-import {CreateRestrictionDialogComponent} from "./create-restriction-dialog/create-restriction-dialog.component";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { RestrictionsService } from '../../../services/restrictions.service';
+import { ErrorModalComponent } from '../../../shared/components/error-modal/error-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
+import { Restriction } from '../../../models/restriction';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { EditRestrictionDialogComponent } from './edit-restriction-dialog/edit-restriction-dialog.component';
+import { CreateRestrictionDialogComponent } from './create-restriction-dialog/create-restriction-dialog.component';
 
 @Component({
   selector: 'app-restrictions',
@@ -17,33 +17,31 @@ import {CreateRestrictionDialogComponent} from "./create-restriction-dialog/crea
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class RestrictionsComponent implements OnInit {
-
-  restrictions: Restriction[]
-  dtTrigger: Subject<any>
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
-  dtOptions
-
+  restrictions: Restriction[];
+  dtTrigger: Subject<any>;
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions;
 
   constructor(
     private restrictionsService: RestrictionsService,
     public dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   initialize() {
-    this.dtTrigger = new Subject<any>()
+    this.dtTrigger = new Subject<any>();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 25,
@@ -65,81 +63,76 @@ export class RestrictionsComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
-
+    };
   }
 
   loadData() {
-    this.openLoader()
-    const restSubsc = this.restrictionsService.getRestrictions()
-      .subscribe(response => {
-        this.restrictions = response.data
+    this.openLoader();
+    const restSubsc = this.restrictionsService.getRestrictions().subscribe(
+      (response) => {
+        this.restrictions = response.data;
 
-        this.dialog.closeAll()
-        this.dtTrigger.next()
-        restSubsc.unsubscribe()
-
-      }, error => {
-        error.subscribe(err => {
-          this.openErrorDialog(err.statusText, false)
-          restSubsc.unsubscribe()
-        })
-      })
-
+        this.dialog.closeAll();
+        this.dtTrigger.next();
+        restSubsc.unsubscribe();
+      },
+      (error) => {
+        error.subscribe((err) => {
+          this.openErrorDialog(err.statusText, false);
+          restSubsc.unsubscribe();
+        });
+      }
+    );
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
 
     if (reload) {
-      dialog.afterClosed().subscribe(result => {
-        this.ngOnInit()
-      })
+      dialog.afterClosed().subscribe((result) => {
+        this.ngOnInit();
+      });
     }
-
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
 
   openEditDialog(currRestriction): void {
     const dialogRef = this.dialog.open(EditRestrictionDialogComponent, {
       data: {
-        restriction: currRestriction
-      }
-    })
+        restriction: currRestriction,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   openCreateDialog(): void {
-    const dialogRef = this.dialog.open(CreateRestrictionDialogComponent)
+    const dialogRef = this.dialog.open(CreateRestrictionDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
-
 }

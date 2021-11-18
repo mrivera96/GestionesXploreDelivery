@@ -1,61 +1,68 @@
 <!-- CONTAINER START -->
 <div class="table-responsive">
-  <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-         class="display compact" style="width:100%">
-
+  <table
+    id="dTable"
+    datatable
+    [dtOptions]="dtOptions"
+    [dtTrigger]="dtTrigger"
+    class="display compact"
+    style="width: 100%"
+  >
     <tfoot>
-    <tr>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th data-priority="1">
-        <select class="form-control-sm" name="search-last-name">
-          <option value="">- Filtrar por Estado -</option>
-          <option *ngFor="let state of states" [value]="state.descEstado">{{state.descEstado}}</option>
-        </select>
-      </th>
-      <th></th>
-    </tr>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th data-priority="1">
+          <select class="form-control-sm" name="search-last-name">
+            <option value="">- Filtrar por Estado -</option>
+            <option *ngFor="let state of states" [value]="state.descEstado">
+              {{ state.descEstado }}
+            </option>
+          </select>
+        </th>
+        <th></th>
+      </tr>
     </tfoot>
     <thead>
-    <tr>
-      <th data-priority="1">N°</th>
-      <th>Nombre de cliente</th>
-      <th data-order="2020-06-01 16:30" data-priority="1">Fecha y hora de recogida</th>
-      <th>Dirección de recogida</th>
-      <th>Entregas</th>
-      <th>Categoría</th>
-      <th>Total</th>
-      <th data-priority="1">Estado</th>
-      <th>Acción</th>
-    </tr>
+      <tr>
+        <th data-priority="1">N°</th>
+        <th>Nombre de cliente</th>
+        <th data-order="2020-06-01 16:30" data-priority="1">
+          Fecha y hora de recogida
+        </th>
+        <th>Dirección de recogida</th>
+        <th>Entregas</th>
+        <th>Categoría</th>
+        <th>Total</th>
+        <th data-priority="1">Estado</th>
+        <th>Acción</th>
+      </tr>
     </thead>
     <tbody>
-
-    <tr *ngFor="let delivery of deliveries">
-      <td class="id">{{delivery.idDelivery}}</td>
-      <td>{{delivery.nomCliente}}</td>
-      <td>{{delivery.fechaReserva}}</td>
-      <td class="fId">{{delivery.dirRecogida}}</td>
-      <td>{{delivery.entregas}}</td>
-      <td>{{delivery.category.descCategoria}}</td>
-      <td>L. {{delivery.total}}</td>
-      <td>{{delivery.estado.descEstado}}</td>
-      <td>
-        <a [routerLink]="['/admins/ver-reserva', delivery.idDelivery]" style="color: #0071A2">
-          <i class="fa fa-eye"></i> Ver Detalle
-        </a>
-      </td>
-    </tr>
-
+      <tr *ngFor="let delivery of deliveries">
+        <td class="id">{{ delivery.idDelivery }}</td>
+        <td>{{ delivery.nomCliente }}</td>
+        <td>{{ delivery.fechaReserva }}</td>
+        <td class="fId">{{ delivery.dirRecogida }}</td>
+        <td>{{ delivery.entregas }}</td>
+        <td>{{ delivery.category.descCategoria }}</td>
+        <td>L. {{ delivery.total }}</td>
+        <td>{{ delivery.estado.descEstado }}</td>
+        <td>
+          <a
+            [routerLink]="['/admins/ver-reserva', delivery.idDelivery]"
+            style="color: #0071a2"
+          >
+            <i class="fa fa-eye"></i> Ver Detalle
+          </a>
+        </td>
+      </tr>
     </tbody>
-
   </table>
 </div>
 <!-- CONTAINER  END -->
-
-

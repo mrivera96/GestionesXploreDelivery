@@ -6,17 +6,32 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
     <div class="col text-center">
-      <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
       <p>Cargando información...</p>
     </div>
   </div>
 
-  <form [formGroup]="consolidatedForm" *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
+  <form
+    [formGroup]="consolidatedForm"
+    *ngIf="!loaders.loadingSubmit && !loaders.loadingData"
+  >
     <div class="form-row mt-3">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Dirección de recogida:</mat-label>
-        <input matInput type="text" formControlName="dirRecogida" (input)="searchAddress($event)"
-               required placeholder="Punto de recogida" [matAutocomplete]="auto" autocomplete="nope">
+        <input
+          matInput
+          type="text"
+          formControlName="dirRecogida"
+          (input)="searchAddress($event)"
+          required
+          placeholder="Punto de recogida"
+          [matAutocomplete]="auto"
+          autocomplete="nope"
+        />
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option *ngFor="let s of places" [value]="s.text">
             {{ s.text }}
@@ -27,8 +42,13 @@
       </mat-form-field>
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Radio Máximo:</mat-label>
-        <input matInput type="number" formControlName="radioMaximo"
-               required placeholder="Radio Máximo desde punto de recogida">
+        <input
+          matInput
+          type="number"
+          formControlName="radioMaximo"
+          required
+          placeholder="Radio Máximo desde punto de recogida"
+        />
         <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
@@ -36,8 +56,16 @@
     <div class="form-row mt-3" *ngIf="rateType == 4">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Dirección de entrega:</mat-label>
-        <input matInput type="text" formControlName="dirEntrega" (input)="searchAddress($event)"
-               required placeholder="Punto de entrega" [matAutocomplete]="auto" autocomplete="nope">
+        <input
+          matInput
+          type="text"
+          formControlName="dirEntrega"
+          (input)="searchAddress($event)"
+          required
+          placeholder="Punto de entrega"
+          [matAutocomplete]="auto"
+          autocomplete="nope"
+        />
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option *ngFor="let s of places" [value]="s.text">
             {{ s.text }}
@@ -49,72 +77,108 @@
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Radio Máximo de Entrega:</mat-label>
-        <input matInput type="number" formControlName="radioMaximoEntrega"
-               required placeholder="Radio Máximo desde punto de entrega">
+        <input
+          matInput
+          type="number"
+          formControlName="radioMaximoEntrega"
+          required
+          placeholder="Radio Máximo desde punto de entrega"
+        />
         <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>
   </form>
 
-  <h4 *ngIf="!loaders.loadingSubmit && !loaders.loadingData">Administrar Horarios de la Tarifa </h4>
-  <hr *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
+  <h4 *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
+    Administrar Horarios de la Tarifa
+  </h4>
+  <hr *ngIf="!loaders.loadingSubmit && !loaders.loadingData" />
 
-  <div class="form-row" *ngIf="assignedSchedules.length > 0 && !loaders.loadingSubmit && !loaders.loadingData">
+  <div
+    class="form-row"
+    *ngIf="
+      assignedSchedules.length > 0 &&
+      !loaders.loadingSubmit &&
+      !loaders.loadingData
+    "
+  >
     <div class="col">
       <h4>Horarios asignados</h4>
       <div class="table-responsive">
-        <table class="table table-striped" style="width:100%">
+        <table class="table table-striped" style="width: 100%">
           <thead>
-          <tr>
-            <th scope="col">N°</th>
-            <th scope="col">Descripción Horario</th>
-            <th scope="col">Día</th>
-            <th scope="col">Hora Inicial</th>
-            <th scope="col">Hora Final</th>
-            <th scope="col" data-priority="1">Acción</th>
-          </tr>
-
+            <tr>
+              <th scope="col">N°</th>
+              <th scope="col">Descripción Horario</th>
+              <th scope="col">Día</th>
+              <th scope="col">Hora Inicial</th>
+              <th scope="col">Hora Final</th>
+              <th scope="col" data-priority="1">Acción</th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr *ngFor="let schedule of assignedSchedules; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{schedule.descHorario}}</td>
-            <td>{{schedule.dia}}</td>
-            <td>{{schedule.inicio}}</td>
-            <td>{{schedule.final}}</td>
-            <td>
-              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeScheduleFromRate(schedule)"><i
-                class="fa fa-trash-alt"></i>
-                Quitar
-              </button>
-            </td>
-          </tr>
+            <tr *ngFor="let schedule of assignedSchedules; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ schedule.descHorario }}</td>
+              <td>{{ schedule.dia }}</td>
+              <td>{{ schedule.inicio }}</td>
+              <td>{{ schedule.final }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="removeScheduleFromRate(schedule)"
+                >
+                  <i class="fa fa-trash-alt"></i>
+                  Quitar
+                </button>
+              </td>
+            </tr>
           </tbody>
-
         </table>
       </div>
     </div>
   </div>
 
-  <h4 *ngIf="!loaders.loadingSubmit && !loaders.loadingData">Asignar Nuevo Horario  a la Tarifa</h4>
-  <hr *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
+  <h4 *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
+    Asignar Nuevo Horario a la Tarifa
+  </h4>
+  <hr *ngIf="!loaders.loadingSubmit && !loaders.loadingData" />
 
-  <form [formGroup]="schdeduleForm" *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
+  <form
+    [formGroup]="schdeduleForm"
+    *ngIf="!loaders.loadingSubmit && !loaders.loadingData"
+  >
     <div class="form-row mt-3">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Descripción de horario:</mat-label>
-        <input matInput type="text" formControlName="descHorario" maxlength="60"
-               required placeholder="Descripción del horario">
+        <input
+          matInput
+          type="text"
+          formControlName="descHorario"
+          maxlength="60"
+          required
+          placeholder="Descripción del horario"
+        />
         <mat-icon matSuffix>subtitles</mat-icon>
-        <mat-error *ngIf="schForm.descHorario?.errors?.required">*Este campo es obligatorio</mat-error>
-        <mat-error *ngIf="schForm.descHorario?.errors?.maxlength">*Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="schForm.descHorario?.errors?.required"
+          >*Este campo es obligatorio</mat-error
+        >
+        <mat-error *ngIf="schForm.descHorario?.errors?.maxlength"
+          >*Este campo es obligatorio</mat-error
+        >
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Día:</mat-label>
-        <mat-select #day formControlName="cod" required (valueChange)="setDay(day.value)">
+        <mat-select
+          #day
+          formControlName="cod"
+          required
+          (valueChange)="setDay(day.value)"
+        >
           <mat-option [value]="0">Domingo</mat-option>
           <mat-option [value]="1">Lunes</mat-option>
           <mat-option [value]="2">Martes</mat-option>
@@ -131,83 +195,91 @@
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Hora Inicial:</mat-label>
-        <input formControlName="inicio" type="time" required matInput>
-        <mat-error>
-          *Este campo es obligatorio
-        </mat-error>
+        <input formControlName="inicio" type="time" required matInput />
+        <mat-error> *Este campo es obligatorio </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>Hora Final:</mat-label>
-        <input formControlName="final" type="time" required matInput>
-        <mat-error>
-          *Este campo es obligatorio
-        </mat-error>
+        <input formControlName="final" type="time" required matInput />
+        <mat-error> *Este campo es obligatorio </mat-error>
       </mat-form-field>
     </div>
 
     <div class="form-row">
-      <button class="col-md-2" mat-raised-button color="primary" (click)="addScheduleToRate(schdeduleForm.value)"
-              [disabled]="schdeduleForm.invalid || loaders.loadingSubmit">
+      <button
+        class="col-md-2"
+        mat-raised-button
+        color="primary"
+        (click)="addScheduleToRate(schdeduleForm.value)"
+        [disabled]="schdeduleForm.invalid || loaders.loadingSubmit"
+      >
         Agregar
       </button>
     </div>
   </form>
-  <br>
-  <div class="form-row" *ngIf="rateSchedules.length > 0 && !loaders.loadingSubmit && !loaders.loadingData">
+  <br />
+  <div
+    class="form-row"
+    *ngIf="
+      rateSchedules.length > 0 && !loaders.loadingSubmit && !loaders.loadingData
+    "
+  >
     <div class="col">
       <h4>Horarios a asignar</h4>
-      <hr>
+      <hr />
       <div class="table-responsive">
-        <table id="dTable1" class="table table-striped" style="width:100%">
+        <table id="dTable1" class="table table-striped" style="width: 100%">
           <thead>
-          <tr>
-            <th scope="col">N°</th>
-            <th scope="col">Descripción Horario</th>
-            <th scope="col">Día</th>
-            <th scope="col">Hora Inicial</th>
-            <th scope="col">Hora Final</th>
-            <th scope="col" data-priority="1">Acción</th>
-          </tr>
-
+            <tr>
+              <th scope="col">N°</th>
+              <th scope="col">Descripción Horario</th>
+              <th scope="col">Día</th>
+              <th scope="col">Hora Inicial</th>
+              <th scope="col">Hora Final</th>
+              <th scope="col" data-priority="1">Acción</th>
+            </tr>
           </thead>
 
           <tbody>
-          <tr *ngFor="let schedule of rateSchedules; let i = index">
-            <td>{{i + 1}}</td>
-            <td>{{schedule.descHorario}}</td>
-            <td>{{schedule.dia}}</td>
-            <td>{{schedule.inicio}}</td>
-            <td>{{schedule.final}}</td>
-            <td>
-              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeSchdeuleFromArray(schedule)"><i
-                class="fa fa-trash-alt"></i>
-                Quitar
-              </button>
-            </td>
-          </tr>
+            <tr *ngFor="let schedule of rateSchedules; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ schedule.descHorario }}</td>
+              <td>{{ schedule.dia }}</td>
+              <td>{{ schedule.inicio }}</td>
+              <td>{{ schedule.final }}</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  (click)="removeSchdeuleFromArray(schedule)"
+                >
+                  <i class="fa fa-trash-alt"></i>
+                  Quitar
+                </button>
+              </td>
+            </tr>
           </tbody>
-
         </table>
       </div>
     </div>
   </div>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="consolidatedForm.invalid || loaders.loadingSubmit || loaders.loadingData"
-          (click)="onFormSubmit()"
-          mat-raised-button color="primary">
+  <button
+    type="button"
+    [disabled]="
+      consolidatedForm.invalid || loaders.loadingSubmit || loaders.loadingData
+    "
+    (click)="onFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
 
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
-
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->
-
-

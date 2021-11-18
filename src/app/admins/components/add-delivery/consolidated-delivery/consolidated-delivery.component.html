@@ -1,26 +1,5 @@
 <!--CARD START -->
 <mat-card @fade>
-<<<<<<< HEAD
-  <mat-card-header>
-    <mat-card-title>
-      Delivery Consolidado para {{ currCustomer.nomEmpresa }}
-    </mat-card-title>
-  </mat-card-header>
-
-  <!-- CARD BODY START -->
-  <mat-card-content>
-    <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
-      <div class="col text-center">
-        <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading" />
-        <p>Procesando Información...</p>
-      </div>
-    </div>
-
-    <!--HEADER BLOCK END-->
-
-    <!--DELIVERY FORM BLOCK START-->
-    <div class="row" *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
-=======
   <app-form-title
     [title]="'Delivery Consolidado para ' + currCustomer.nomEmpresa"
   ></app-form-title>
@@ -29,7 +8,6 @@
   <mat-card-content>
     <!--DELIVERY FORM BLOCK START-->
     <div class="row">
->>>>>>> origin/V5
       <div class="col">
         <p *ngIf="!loaders.loadingSubmit">
           Ingresa los datos del Delivery en el siguiente formulario
@@ -37,10 +15,7 @@
         <p *ngIf="loaders.loadingSubmit">
           Espera mientras procesamos tu solicitud, no cierres esta ventana.
         </p>
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/V5
         <!--FORM START-->
         <form
           [formGroup]="deliveryForm"
@@ -51,82 +26,21 @@
           <div class="row">
             <div class="col-md">
               <div class="row">
-<<<<<<< HEAD
-                <div class="col">
-                  <p class="card-title">
-                    <strong>Categoría a Reservar:</strong>
-                  </p>
-                  <hr />
-                </div>
-                <div class="col">
-=======
                 <div class="col-9">
                   <h3 class="card-title">Categoría a Reservar:</h3>
                   <hr />
                 </div>
                 <div class="col-3">
->>>>>>> origin/V5
                   <span (click)="openRestrictionsDialog()" class="float-right">
                     <i class="fa fa-question-circle"></i> Restricciones
                   </span>
                 </div>
               </div>
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/V5
               <div class="form-row" formGroupName="deliveryHeader">
                 <div class="col">
                   <br />
                   <mat-radio-group
-<<<<<<< HEAD
-                    (change)="calculatedistanceBefore(); setSelectedCategory()"
-                    formControlName="idCategoria"
-                    [disabled]="orders.length > 0"
-                  >
-                    <mat-radio-button
-                      [id]="category?.idCategoria"
-                      [value]="category.idCategoria"
-                      disableRipple="true"
-                      *ngFor="let category of categories; let i = index"
-                      [matTooltip]="category.descripcion"
-                      [ngStyle]="{
-                        color:
-                          category?.idCategoria ===
-                          newForm.get('deliveryHeader.idCategoria').value
-                            ? '#FF8C00'
-                            : '#000'
-                      }"
-                      class="cat-rb"
-                    >
-                      <span
-                        class="fa d-block text-center"
-                        style="font-size: 24px"
-                        [ngClass]="{
-                          'fa-motorcycle': category.idCategoria == 6,
-                          'fa-car':
-                            category.idCategoria == 1 ||
-                            category.idCategoria == 7 ||
-                            category.idCategoria == 14 ||
-                            category.idCategoria == 15,
-                          'fa-bus':
-                            category.idCategoria == 3 ||
-                            category.idCategoria == 5 ||
-                            category.idCategoria == 16,
-                          'fas fa-truck-pickup':
-                            category.idCategoria == 2 ||
-                            category.idCategoria == 4 ||
-                            category.idCategoria == 11 ||
-                            category.idCategoria == 12,
-                          'fa-truck': category.idCategoria == 8,
-                          'fas fa-heart': category.idCategoria == 9,
-                          'fas fa-calendar-plus': category.idCategoria == 10,
-                          'fas fa-calendar-day': category.idCategoria == 13
-                        }"
-                      ></span>
-                      {{ category.descCategoria }}
-                    </mat-radio-button>
-=======
                     (change)="calculatedistanceBefore()"
                     formControlName="idCategoria"
                     [disabled]="orders.length > 0"
@@ -137,21 +51,10 @@
                       (setSelectedCategory)="setSelectedCategory($event)"
                     >
                     </app-consolidated-category-select>
->>>>>>> origin/V5
                   </mat-radio-group>
                 </div>
               </div>
 
-<<<<<<< HEAD
-              <div class="row">
-                <div class="col">
-                  <p class="card-title">
-                    <strong>Detalles de Recogida:</strong>
-                  </p>
-                  <hr />
-                </div>
-              </div>
-=======
               <app-category-description
                 *ngIf="selectedCategory.idCategoria"
                 [selectedCategory]="selectedCategory"
@@ -160,7 +63,6 @@
 
               <h3>Detalles de Recogida:</h3>
               <hr />
->>>>>>> origin/V5
 
               <div class="form-row" formGroupName="deliveryHeader">
                 <mat-form-field
@@ -188,12 +90,8 @@
                     *ngIf="
                       newForm.get('deliveryHeader.fecha')?.errors?.required
                     "
-<<<<<<< HEAD
-                    >* Este campo es obligatorio
-=======
                   >
                     * Este campo es obligatorio
->>>>>>> origin/V5
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -225,12 +123,8 @@
                   <mat-icon matPrefix>schedule</mat-icon>
                   <mat-error
                     *ngIf="newForm.get('deliveryHeader.hora')?.errors?.required"
-<<<<<<< HEAD
-                    >* Este campo es obligatorio
-=======
                   >
                     * Este campo es obligatorio
->>>>>>> origin/V5
                   </mat-error>
                   <mat-error
                     *ngIf="
@@ -260,32 +154,20 @@
                     <mat-option
                       [value]="1"
                       (click)="setCurrentLocationOrigin(); checkInsructions()"
-<<<<<<< HEAD
-                      >Ubicación Actual
-=======
                     >
                       Ubicación Actual
->>>>>>> origin/V5
                     </mat-option>
                     <mat-option
                       [value]="2"
                       (click)="clearLocationField(); checkInsructions()"
-<<<<<<< HEAD
-                      >Ingresar Ubicación
-=======
                     >
                       Ingresar Ubicación
->>>>>>> origin/V5
                     </mat-option>
                     <mat-option
                       [value]="3"
                       (click)="clearLocationField(); checkInsructions()"
-<<<<<<< HEAD
-                      >Dirección Existente
-=======
                     >
                       Dirección Existente
->>>>>>> origin/V5
                     </mat-option>
                   </mat-select>
                   <mat-icon matPrefix>location_on</mat-icon>
@@ -320,23 +202,15 @@
                         newForm.get('deliveryHeader.dirRecogida')?.errors
                           ?.required
                       "
-<<<<<<< HEAD
-                      >*Este campo es obligatorio
-=======
                     >
                       *Este campo es obligatorio
->>>>>>> origin/V5
                     </mat-error>
                     <mat-error
                       *ngIf="
                         newForm.get('deliveryHeader.dirRecogida')?.errors?.isUrl
                       "
-<<<<<<< HEAD
-                      >*Valor no válido
-=======
                     >
                       *Valor no válido
->>>>>>> origin/V5
                     </mat-error>
                     <mat-hint>
                       <a
@@ -437,19 +311,10 @@
               <!--DELIVERY HEADER GROUP END-->
 
               <!--ORDER ADD FORM START-->
-<<<<<<< HEAD
-              <div class="row" *ngIf="!files.length">
-                <div class="col">
-                  <p class="card-title"><strong>Detalles de envíos:</strong></p>
-                  <hr />
-                </div>
-              </div>
-=======
               <h3 *ngIf="!files.length" class="card-title">
                 Detalles de envíos:
               </h3>
               <hr />
->>>>>>> origin/V5
 
               <div class="form-row" formGroupName="order" *ngIf="!files.length">
                 <mat-form-field
@@ -561,12 +426,8 @@
                     maxlength="150"
                     class="form-control"
                     placeholder="¿Necesitamos instrucciones para la entrega de éste envío?"
-<<<<<<< HEAD
-                  ></textarea>
-=======
                   >
                   </textarea>
->>>>>>> origin/V5
                   <mat-icon matPrefix>assignment</mat-icon>
                   <mat-error>*Excede la longitud máxima permitida</mat-error>
                 </mat-form-field>
@@ -597,14 +458,6 @@
                     <mat-icon matPrefix>location_on</mat-icon>
                     <mat-error
                       *ngIf="newForm.get('order.direccion')?.errors?.required"
-<<<<<<< HEAD
-                      >*Este campo es obligatorio
-                    </mat-error>
-                    <mat-error
-                      *ngIf="newForm.get('order.direccion')?.errors?.isUrl"
-                      >*Valor no válido</mat-error
-                    >
-=======
                     >
                       *Este campo es obligatorio
                     </mat-error>
@@ -613,7 +466,6 @@
                     >
                       *Valor no válido
                     </mat-error>
->>>>>>> origin/V5
                     <mat-hint>
                       <a
                         href="javascript:void(0)"
@@ -696,21 +548,11 @@
               </div>-->
             </div>
 
-<<<<<<< HEAD
-            <div class="col-md" *ngIf="!files.length">
-              <mat-card class="shadow">
-                <mat-card-header>
-                  <mat-card-title> Ruta de Entrega </mat-card-title>
-                </mat-card-header>
-
-                <mat-card-content>
-=======
             <div class="col-md">
               <h3 class="card-title">Ruta de Entrega</h3>
               <hr />
               <div class="row">
                 <div class="col">
->>>>>>> origin/V5
                   <google-map
                     #googleMap
                     height="380px"
@@ -718,13 +560,8 @@
                     id="map"
                     [center]="center"
                   ></google-map>
-<<<<<<< HEAD
-                </mat-card-content>
-              </mat-card>
-=======
                 </div>
               </div>
->>>>>>> origin/V5
             </div>
           </div>
 
@@ -752,16 +589,6 @@
                   >
                 </ngx-dropzone-preview>
               </ngx-dropzone>
-<<<<<<< HEAD
-              <small
-                ><a href="../../../../../assets/helpers/archivo_prueba.txt" target="_blank"
-                  >Archivo de muestra</a
-                ></small
-              >
-            </div>
-          </div>
-          <br />
-=======
               <small>
                 <a
                   href="../../../../../assets/helpers/archivo_prueba.txt"
@@ -774,7 +601,6 @@
           </div>
           <br />
 
->>>>>>> origin/V5
           <div class="form-row text-center">
             <div class="col">
               <span>
@@ -802,12 +628,7 @@
                   !deliveryForm.get('deliveryHeader').valid ||
                   loaders.loadingAdd ||
                   prohibitedAddressCentinel ||
-<<<<<<< HEAD
-                  loaders.loadingDistBef ||
-                  prohibitedDistance
-=======
                   loaders.loadingDistBef
->>>>>>> origin/V5
                 "
                 class="float-left"
               >
@@ -922,139 +743,7 @@
         <p class="card-title"><strong>Forma de pago:</strong></p>
         <hr>
       </div>-->
-<<<<<<< HEAD
-
-      <div class="col-12">
-        <p><strong>NOTAS GENERALES:</strong></p>
-        <p style="color: blue">
-          Programar un servicio te permite seleccionar una ventana de 30 minutos
-          para conectar con un conductor.
-        </p>
-        <p style="color: blue">
-          Al comienzo de la ventana (30mins antes de la hora solicitada),
-          nuestro sistema mostrará tu solicitud a los conductores disponibles.
-        </p>
-        <p>
-          - Programar un servicio por adelantado no garantiza que serás
-          conectado con un Conductor o que el mismo llegará a la hora
-          solicitada.
-        </p>
-        <p>
-          - En el caso que no seas conectado con un Conductor, al final de tu
-          ventana de conexión (30mins después de la hora solicitada) tendrás la
-          opción de cancelar tu servicio sin cargo adicional.
-        </p>
-
-        <p>
-          <strong
-            >NOTAS PARA TRASLADO DE ARTICULOS DEL HOGAR Y LÍNEA BLANCA</strong
-          >
-        </p>
-        <p>
-          En caso de solicitar el servicio de Delivery para traslado de
-          artículos para el hogar favor tener en consideración lo siguiente:
-        </p>
-        <p>
-          - A excepción de haberlo seleccionado, el servicio contratado no
-          incluye seguro de transporte.
-        </p>
-        <p>
-          - Se considerarán como artículos medianos aquellos artículos con peso
-          entre 100-200 libras y/o voluminosos como ser: Refrigeradora, Estufa,
-          Lavadora, Secadora, Roperos Medianos, Camas Matrimoniales-King, Centro
-          de Entretenimiento, Elípticas, Caminadoras o similares. (un juego de
-          muebles será considerado como 2 artículos medianos)
-        </p>
-        <p>
-          - Se considerarán como artículos grandes aquellos artículos con peso
-          igual o mayor a 200libras como ser: Refrigeradora Side by Side, Centro
-          de Lavado, Freezers, Roperos Grandes o similares.
-        </p>
-        <p>
-          - Para el caso de los artículos grandes y muebles, se recomienda
-          verificar previamente si los mismos caben por los boquetes de las
-          puertas. No se realizan maniobras para ingresar los artículos sobre
-          techos o a través de ventanas; tampoco se desarman puertas ni marcos
-          de puertas.
-        </p>
-        <p>
-          - La tarifa base no incluye la entrega del artículo a una segunda
-          planta (excluye edificios con elevador de carga); en caso de
-          requerirlo, el servicio deberá ser agregado a la tarifa base del
-          envío.
-        </p>
-        <p>
-          - Para el traslado de artículos del hogar y línea blanca, se deberá
-          tomar en cuenta la siguiente “Guía de Tiempo Extra de Conductor en
-          Categoría de Pick Up + Auxiliar”. (Tomar en cuenta que la categoría de
-          Camión incluye 15 minutos adicionales a la categoría de Pick + Up
-          tanto para la carga como para la descarga de artículos)
-        </p>
-
-        <p>
-          <u
-            >Guía de Tiempo Extra de Conductor en Categoría de Pick Up +
-            Auxiliar</u
-          >
-        </p>
-        <p>&nbsp; Entrega de 1-2 artículos medianos = 0 mins</p>
-        <p>&nbsp; Entrega de 3 artículos medianos = 15mins</p>
-        <p>&nbsp; Entrega de 1 artículo grande = 15mins</p>
-        <p>&nbsp; Entrega de 2-3 artículos grandes = 30mins</p>
-        <p>
-          &nbsp; Entrega de 1-2 artículos grandes + 1-2 artículos medianos =
-          30mins
-        </p>
-        <p>
-          &nbsp; Entrega en edificios o peatonales / 1-2 artículos medianos = 15
-          mins
-        </p>
-        <p>
-          &nbsp; Entrega en edificios o peatonales / 3 artículos medianos =
-          30mins
-        </p>
-        <p>
-          &nbsp; Entrega en edificios o peatonales / 1 artículo grande = 30mins
-        </p>
-        <p>
-          &nbsp; Entrega en edificios o peatonales / 2-3 artículos grandes =
-          60mins
-        </p>
-        <p>
-          &nbsp; Entrega en edificios o peatonales / 1-2 artículos grandes + 1-2
-          artículos medianos = 60mins
-        </p>
-
-        <p><strong>NOTAS PARA MUDANZAS:</strong></p>
-        <p>
-          En el caso de solicitar el servicio de Delivery para una mudanza favor
-          tener en consideración lo siguiente:
-        </p>
-        <p>
-          - El servicio incluye carga y descarga de los bienes a trasladar de
-          acuerdo a la categoría de vehículo solicitada.
-        </p>
-        <p>
-          - Una mudanza puede durar mas del tiempo incluido en el envío, por lo
-          que se sugiere estimar o incluir de 30 a 60 minutos de tiempo
-          adicional de carga.
-        </p>
-        <p>
-          - El servicio contratado no incluye seguro de transporte, por lo que
-          en caso de ser requerido, el mismo deberá ser solicitado a través de
-          nuestro departamento de servicio al cliente.
-        </p>
-        <p>
-          - El servicio contratado no incluye embalaje, empaque, montaje ni
-          desmontaje de los bienes a trasladar. Se recomienda desmontar, embalar
-          y tener listo previo a la hora de recogida todos los artículos
-          frágiles y mueblería para evitar incurrir en costos por daños a los
-          bienes o en costos por tiempo de carga/espera adicional.
-        </p>
-      </div>
-=======
      
->>>>>>> origin/V5
     </div>
     <!--CARD BLOCK PAYMENT OPTION end-->
   </mat-card-content>
@@ -1076,10 +765,7 @@
         {{ "L. " + pago.total }}
       </span>
     </button>
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/V5
     <button
       type="button"
       *ngIf="paymentMethod == 2 && orders.length > 0"

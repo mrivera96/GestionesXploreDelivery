@@ -14,15 +14,9 @@ import * as fs from 'file-saver';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-<<<<<<< HEAD:src/app/admins/components/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component.ts
-import { Cell, Columns, PdfMakeWrapper, Txt } from 'pdfmake-wrapper'
-import { ErrorModalComponent } from "../../../../components/shared/error-modal/error-modal.component";
-import { MatDialog } from "@angular/material/dialog";
-=======
 import { Cell, Columns, PdfMakeWrapper, Txt } from 'pdfmake-wrapper';
 import { ErrorModalComponent } from '../../../../shared/components/error-modal/error-modal.component';
 import { MatDialog } from '@angular/material/dialog';
->>>>>>> origin/V5:src/app/admins/components/reports/orders-by-driver-consolidated/orders-by-driver-consolidated.component.ts
 import { ConsolidatedReportResult } from 'src/app/models/consolidated-report-result';
 @Component({
   selector: 'app-orders-by-driver-consolidated',

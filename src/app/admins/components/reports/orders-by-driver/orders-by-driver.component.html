@@ -1,14 +1,10 @@
 <!--CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Reportes Envíos por Conductor
-    </mat-card-title>
-
+    <mat-card-title> Reportes Envíos por Conductor </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
-
     <!-- CONTAINER START -->
     <div class="container-fluid">
       <div class="row">
@@ -17,14 +13,25 @@
             <div class="form-row">
               <mat-form-field appearance="outline" class="col-md">
                 <mat-label>Conductor:</mat-label>
-                <mat-select formControlName="driverId" required placeholder="- Seleccione un conductor -">
+                <mat-select
+                  formControlName="driverId"
+                  required
+                  placeholder="- Seleccione un conductor -"
+                >
                   <mat-form-field>
-                    <input matInput placeholder="Buscar Conductor" (keyup)="onKey($event.target.value)">
+                    <input
+                      matInput
+                      placeholder="Buscar Conductor"
+                      (keyup)="onKey($event.target.value)"
+                    />
                     <mat-icon [inline]="true" matPrefix>search</mat-icon>
                   </mat-form-field>
                   <mat-option [value]="-1">Todos</mat-option>
-                  <mat-option *ngFor="let driver of filteredDrivers" value="{{driver.idUsuario}}">
-                    {{driver.nomUsuario}}
+                  <mat-option
+                    *ngFor="let driver of filteredDrivers"
+                    value="{{ driver.idUsuario }}"
+                  >
+                    {{ driver.nomUsuario }}
                   </mat-option>
                 </mat-select>
                 <mat-icon matPrefix>sports_motorsports</mat-icon>
@@ -33,30 +40,43 @@
 
               <mat-form-field appearance="outline" class="col-md">
                 <mat-label>Fecha Inicial:</mat-label>
-                <input matInput type="date" formControlName="initDate" required>
+                <input
+                  matInput
+                  type="date"
+                  formControlName="initDate"
+                  required
+                />
                 <mat-icon matPrefix>today</mat-icon>
                 <mat-error>*Este campo es obligatorio</mat-error>
               </mat-form-field>
-
             </div>
 
             <div class="form-row">
               <mat-form-field appearance="outline" class="col-md">
                 <mat-label>Fecha Final:</mat-label>
-                <input matInput type="date" formControlName="finDate" required>
+                <input
+                  matInput
+                  type="date"
+                  formControlName="finDate"
+                  required
+                />
                 <mat-icon matPrefix>today</mat-icon>
                 <mat-error>*Este campo es obligatorio</mat-error>
               </mat-form-field>
 
-
-              <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
-                (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+              <button
+                [disabled]="consultForm.invalid"
+                type="button"
+                mat-raised-button
+                color="primary"
+                (click)="onConsultFormSubmit()"
+                class="col-md mt-auto mb-auto"
+              >
                 <mat-icon>search</mat-icon>
               </button>
             </div>
           </form>
         </div>
-
       </div>
 
       <div class="row mt-2">
@@ -66,15 +86,27 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generatePDF()">
+            <button
+              [disabled]="consultResults.length == 0"
+              mat-menu-item
+              (click)="generatePDF()"
+            >
               Exportar PDF
             </button>
 
-            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generateExcel()">
+            <button
+              [disabled]="consultResults.length == 0"
+              mat-menu-item
+              (click)="generateExcel()"
+            >
               Exportar a Excel
             </button>
 
-            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="printReport()">
+            <button
+              [disabled]="consultResults.length == 0"
+              mat-menu-item
+              (click)="printReport()"
+            >
               Imprimir
             </button>
           </mat-menu>
@@ -83,7 +115,11 @@
 
       <div class="row" *ngIf="loaders.loadingSubmit">
         <div class="col text-center">
-          <img src="../../../../../assets/img/loading.svg" width="5%" alt="loading">
+          <img
+            src="../../../../../assets/img/loading.svg"
+            width="5%"
+            alt="loading"
+          />
           <p>Cargando información...</p>
         </div>
       </div>
@@ -96,204 +132,246 @@
 
       <!-- CONTAINER BODY START -->
       <div class="table-responsive" id="printTable">
-        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+        <table
+          datatable
+          [dtOptions]="dtOptions"
+          [dtTrigger]="dtTrigger"
+          class="display compact"
+          style="width: 100%"
+        >
           <thead>
             <tr>
               <th></th>
               <th></th>
-              <th style="text-align:center;" colspan="2">Transporte Turismo</th>
+              <th style="text-align: center" colspan="2">Transporte Turismo</th>
 
-              <th style="text-align:center; background-color: #e0e0e0" colspan="2">Moto</th>
+              <th
+                style="text-align: center; background-color: #e0e0e0"
+                colspan="2"
+              >
+                Moto
+              </th>
 
-              <th style="text-align:center;" colspan="2">Turismo</th>
+              <th style="text-align: center" colspan="2">Turismo</th>
 
-              <th style="text-align:center; background-color: #e0e0e0" colspan="2">Pick-Up</th>
+              <th
+                style="text-align: center; background-color: #e0e0e0"
+                colspan="2"
+              >
+                Pick-Up
+              </th>
 
-              <th style="text-align:center;" colspan="2">Panel</th>
+              <th style="text-align: center" colspan="2">Panel</th>
 
-              <th style="text-align:center; background-color: #e0e0e0" colspan="2">Pick-Up + Auxiliar</th>
+              <th
+                style="text-align: center; background-color: #e0e0e0"
+                colspan="2"
+              >
+                Pick-Up + Auxiliar
+              </th>
 
-              <th style="text-align:center;" colspan="2">Panel + Auxiliar</th>
+              <th style="text-align: center" colspan="2">Panel + Auxiliar</th>
 
-              <th style="text-align:center; background-color: #e0e0e0" colspan="2">Camión 11 pies</th>
+              <th
+                style="text-align: center; background-color: #e0e0e0"
+                colspan="2"
+              >
+                Camión 11 pies
+              </th>
 
-              <th style="text-align:center;" colspan="2">Next Day</th>
-
-              <th style="text-align:center; background-color: #e0e0e0" colspan="7">Totales</th>
-
+              <th style="text-align: center" colspan="7">Totales</th>
             </tr>
 
             <tr>
-              <th style="text-align:center">Conductor</th>
-              <th style="text-align:center">Fecha</th>
+              <th style="text-align: center">Conductor</th>
+              <th style="text-align: center">Fecha</th>
 
-              <th style="text-align:center; width: 5%; ">Entregas</th>
-              <th style="text-align:center; width: 5%; ">Tiempo</th>
+              <th style="text-align: center; width: 5%">Entregas</th>
+              <th style="text-align: center; width: 5%">Tiempo</th>
 
-              <th style="text-align:center; width: 5%; background-color: #e0e0e0">Entregas</th>
-              <th style="text-align:center; width: 5%; background-color: #e0e0e0">Tiempo</th>
+              <th
+                style="text-align: center; width: 5%; background-color: #e0e0e0"
+              >
+                Entregas
+              </th>
+              <th
+                style="text-align: center; width: 5%; background-color: #e0e0e0"
+              >
+                Tiempo
+              </th>
 
-              <th style="text-align:center; width: 5%;">Entregas</th>
-              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align: center; width: 5%">Entregas</th>
+              <th style="text-align: center; width: 5%">Tiempo</th>
 
-              <th style="text-align:center; width: 5%; background-color: #e0e0e0">Entregas</th>
-              <th style="text-align:center; width: 5%; background-color: #e0e0e0">Tiempo</th>
+              <th
+                style="text-align: center; width: 5%; background-color: #e0e0e0"
+              >
+                Entregas
+              </th>
+              <th
+                style="text-align: center; width: 5%; background-color: #e0e0e0"
+              >
+                Tiempo
+              </th>
 
-              <th style="text-align:center; width: 5%;">Entregas</th>
-              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align: center; width: 5%">Entregas</th>
+              <th style="text-align: center; width: 5%">Tiempo</th>
 
-              <th style="text-align:center; width: 5%; background-color: #e0e0e0">Entregas</th>
-              <th style="text-align:center; width: 5%; background-color: #e0e0e0">Tiempo</th>
+              <th
+                style="text-align: center; width: 5%; background-color: #e0e0e0"
+              >
+                Entregas
+              </th>
+              <th
+                style="text-align: center; width: 5%; background-color: #e0e0e0"
+              >
+                Tiempo
+              </th>
 
-              <th style="text-align:center; width: 5%;">Entregas</th>
-              <th style="text-align:center; width: 5%;">Tiempo</th>
+              <th style="text-align: center; width: 5%">Entregas</th>
+              <th style="text-align: center; width: 5%">Tiempo</th>
 
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Entregas</th>
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo</th>
+              <th
+                style="text-align: center; width: 5%; background-color: #e0e0e0"
+              >
+                Entregas
+              </th>
+              <th
+                style="text-align: center; width: 5%; background-color: #e0e0e0"
+              >
+                Tiempo
+              </th>
 
-              <th style="text-align:center; width: 5%;">Entregas</th>
-              <th style="text-align:center; width: 5%;">Tiempo</th>
-
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo Auxiliar</th>
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Entregas</th>
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Subtotal Tiempo</th>
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo > 14kms</th>
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo Extra</th>
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Tiempo Total</th>
-              <th style="text-align:center; width: 5%;background-color: #e0e0e0">Efectivo</th>
+              <th style="text-align: center; width: 5%">Tiempo Auxiliar</th>
+              <th style="text-align: center; width: 5%">Entregas</th>
+              <th style="text-align: center; width: 5%">Subtotal Tiempo</th>
+              <th style="text-align: center; width: 5%">Tiempo > 14kms</th>
+              <th style="text-align: center; width: 5%">Tiempo Extra</th>
+              <th style="text-align: center; width: 5%">Tiempo Total</th>
+              <th style="text-align: center; width: 5%">Efectivo</th>
             </tr>
-
           </thead>
           <tbody>
+            <tr *ngFor="let result of consultResults">
+              <td style="text-align: center">{{ result.driver }}</td>
+              <td style="text-align: center">{{ result.fecha }}</td>
 
-            <tr *ngFor="let result of consultResults;">
-              <td style="text-align:center">{{result.driver}}</td>
-              <td style="text-align:center">{{result.fecha}}</td>
+              <td style="text-align: center">{{ result.transTurism }}</td>
+              <td style="text-align: center">{{ result.transTurismTime }}</td>
 
-              <td style="text-align:center">{{result.transTurism}}</td>
-              <td style="text-align:center">{{result.transTurismTime}}</td>
+              <td style="text-align: center">{{ result.moto }}</td>
+              <td style="text-align: center">{{ result.motoTime }}</td>
 
-              <td style="text-align:center">{{result.moto}}</td>
-              <td style="text-align:center">{{result.motoTime}}</td>
+              <td style="text-align: center">{{ result.turismo }}</td>
+              <td style="text-align: center">{{ result.turismoTime }}</td>
 
-              <td style="text-align:center">{{result.turismo}}</td>
-              <td style="text-align:center">{{result.turismoTime}}</td>
+              <td style="text-align: center">{{ result.pickup }}</td>
+              <td style="text-align: center">{{ result.pickupTime }}</td>
 
-              <td style="text-align:center">{{result.pickup}}</td>
-              <td style="text-align:center">{{result.pickupTime}}</td>
+              <td style="text-align: center">{{ result.panel }}</td>
+              <td style="text-align: center">{{ result.panelTime }}</td>
 
-              <td style="text-align:center">{{result.panel}}</td>
-              <td style="text-align:center">{{result.panelTime}}</td>
+              <td style="text-align: center">{{ result.pickupAuxiliar }}</td>
+              <td style="text-align: center">
+                {{ result.pickupAuxiliarTime }}
+              </td>
 
-              <td style="text-align:center">{{result.pickupAuxiliar}}</td>
-              <td style="text-align:center">{{result.pickupAuxiliarTime}}</td>
+              <td style="text-align: center">{{ result.panelAuxiliar }}</td>
+              <td style="text-align: center">{{ result.panelAuxiliarTime }}</td>
 
-              <td style="text-align:center">{{result.panelAuxiliar}}</td>
-              <td style="text-align:center">{{result.panelAuxiliarTime}}</td>
+              <td style="text-align: center">{{ result.camion11 }}</td>
+              <td style="text-align: center">{{ result.camion11Time }}</td>
 
-              <td style="text-align:center">{{result.camion11}}</td>
-              <td style="text-align:center">{{result.camion11Time}}</td>
-
-              <td style="text-align:center">{{result.nextDay}}</td>
-              <td style="text-align:center">{{result.nextDayTime}}</td>
-
-              <td style="text-align:center">{{result.totalAuxTime}}</td>
-              <td style="text-align:center">{{result.totalOrders}}</td>
-              <td style="text-align:center">{{result.totalTime}}</td>
-              <td style="text-align:center">{{result.totalOver20kms}}</td>
-              <td style="text-align:center">{{result.totalExtraTime}}</td>
-              <td style="text-align:center">{{ result.tiempototal}}</td>
-              <td style="text-align:center">{{result.totalMoney}}</td>
+              <td style="text-align: center">{{ result.totalAuxTime }}</td>
+              <td style="text-align: center">{{ result.totalOrders }}</td>
+              <td style="text-align: center">{{ result.totalTime }}</td>
+              <td style="text-align: center">{{ result.totalOver20kms }}</td>
+              <td style="text-align: center">{{ result.totalExtraTime }}</td>
+              <td style="text-align: center">{{ result.tiempototal }}</td>
+              <td style="text-align: center">{{ result.totalMoney }}</td>
             </tr>
           </tbody>
 
-          <tfoot style="display: table-footer-group;">
+          <tfoot style="display: table-footer-group">
             <tr>
-              <th style="text-align:center"></th>
-              <th style="text-align:center">Subtotal:</th>
+              <th style="text-align: center"></th>
+              <th style="text-align: center">Subtotal:</th>
 
-              <th style="text-align:center">
-                {{totals.transTurismOrders}}
+              <th style="text-align: center">
+                {{ totals.transTurismOrders }}
               </th>
-              <th style="text-align:center">
-                {{totals.transTurismTime}}
+              <th style="text-align: center">
+                {{ totals.transTurismTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.motoOrders}}
+              <th style="text-align: center">
+                {{ totals.motoOrders }}
               </th>
-              <th style="text-align:center">
-                {{totals.motoTime}}
+              <th style="text-align: center">
+                {{ totals.motoTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.turismoOrders}}
+              <th style="text-align: center">
+                {{ totals.turismoOrders }}
               </th>
-              <th style="text-align:center">
-                {{totals.turismoTime}}
+              <th style="text-align: center">
+                {{ totals.turismoTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.pickupOrders}}
+              <th style="text-align: center">
+                {{ totals.pickupOrders }}
               </th>
-              <th style="text-align:center">
-                {{totals.pickupTime}}
+              <th style="text-align: center">
+                {{ totals.pickupTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.panelOrders}}
+              <th style="text-align: center">
+                {{ totals.panelOrders }}
               </th>
-              <th style="text-align:center">
-                {{totals.panelTime}}
+              <th style="text-align: center">
+                {{ totals.panelTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.pickupAuxiliarOrders}}
+              <th style="text-align: center">
+                {{ totals.pickupAuxiliarOrders }}
               </th>
-              <th style="text-align:center">
-                {{totals.pickupAuxiliarTime}}
+              <th style="text-align: center">
+                {{ totals.pickupAuxiliarTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.panelAuxiliarOrders}}
+              <th style="text-align: center">
+                {{ totals.panelAuxiliarOrders }}
               </th>
-              <th style="text-align:center">
-                {{totals.panelAuxiliarTime}}
+              <th style="text-align: center">
+                {{ totals.panelAuxiliarTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.camion11Orders}}
+              <th style="text-align: center">
+                {{ totals.camion11Orders }}
               </th>
-              <th style="text-align:center">
-                {{totals.camion11Time}}
+              <th style="text-align: center">
+                {{ totals.camion11Time }}
               </th>
-              <th style="text-align:center">
-                {{totals.nextDayOrders}}
+              <th style="text-align: center">
+                {{ totals.totalAuxTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.nextDayTime}}
+              <th style="text-align: center">
+                {{ totals.totalOrders }}
               </th>
-              <th style="text-align:center">
-                {{totals.totalAuxTime}}
+              <th style="text-align: center">
+                {{ totals.totalTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.totalOrders}}
+              <th style="text-align: center">
+                {{ totals.totalOver20kms }}
               </th>
-              <th style="text-align:center">
-                {{totals.totalTime}}
+              <th style="text-align: center">
+                {{ totals.totalExtraTime }}
               </th>
-              <th style="text-align:center">
-                {{totals.totalOver20kms}}
+              <th style="text-align: center">
+                {{ totals.tiempoTotal }}
               </th>
-              <th style="text-align:center">
-                {{totals.totalExtraTime}}
-              </th>
-              <th style="text-align:center">
-                {{totals.tiempoTotal}}
-              </th>
-              <th style="text-align:center">
-                {{totals.totalMoney}}
+              <th style="text-align: center">
+                {{ totals.totalMoney }}
               </th>
             </tr>
           </tfoot>
-
         </table>
       </div>
-
-    </div> <!-- CONTAINER END -->
+    </div>
+    <!-- CONTAINER END -->
   </mat-card-content>
 </mat-card>
 <!-- CARD END -->

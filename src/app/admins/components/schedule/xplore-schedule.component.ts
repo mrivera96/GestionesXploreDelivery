@@ -1,12 +1,12 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {DataTableDirective} from "angular-datatables";
-import {Subject} from "rxjs";
-import {SchedulesService} from "../../../services/schedules.service";
-import {Schedule} from "../../../models/schedule";
-import {MatDialog} from "@angular/material/dialog";
-import {EditScheduleDialogComponent} from "./edit-schedule-dialog/edit-schedule-dialog.component";
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { SchedulesService } from '../../../services/schedules.service';
+import { Schedule } from '../../../models/schedule';
+import { MatDialog } from '@angular/material/dialog';
+import { EditScheduleDialogComponent } from './edit-schedule-dialog/edit-schedule-dialog.component';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-schedule',
@@ -15,35 +15,35 @@ import { LoadingDialogComponent } from '../../../components/shared/loading-dialo
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class XploreScheduleComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective
-  dtOptions
-  dtTrigger: Subject<any>
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions;
+  dtTrigger: Subject<any>;
   loaders = {
     loadingData: false,
-    loadingSubmit: false
-  }
+    loadingSubmit: false,
+  };
 
-  schedules: Schedule[]
+  schedules: Schedule[];
   constructor(
     private schedulesService: SchedulesService,
     public dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
-  initialize(){
-    this.dtTrigger = new Subject<any>()
+  initialize() {
+    this.dtTrigger = new Subject<any>();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -65,40 +65,39 @@ export class XploreScheduleComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
+    };
   }
 
-  loadData(){
-    this.openLoader()
-    this.schedulesService.getSchedule().subscribe(response => {
-      this.schedules = response.data
-      this.dtTrigger.next()
-      this.dialog.closeAll()
-    })
+  loadData() {
+    this.openLoader();
+    this.schedulesService.getSchedule().subscribe((response) => {
+      this.schedules = response.data;
+      this.dtTrigger.next();
+      this.dialog.closeAll();
+    });
   }
 
-  showEditDialog(schedule){
-    const dialogRef = this.dialog.open(EditScheduleDialogComponent,{
-      data:{
-        schedule: schedule
-      }
-    })
+  showEditDialog(schedule) {
+    const dialogRef = this.dialog.open(EditScheduleDialogComponent, {
+      data: {
+        schedule: schedule,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result =>{
-      if(result){
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
 }

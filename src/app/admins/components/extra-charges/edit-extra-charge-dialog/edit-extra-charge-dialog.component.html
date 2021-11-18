@@ -5,58 +5,126 @@
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit">
     <div class="col text-center">
-      <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
       <p>Cargando información...</p>
     </div>
   </div>
 
-  <form [formGroup]="editECForm">
+  <form [formGroup]="editECForm" *ngIf="!loaders.loadingSubmit">
     <div class="form-row">
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Descripción de Cargo Extra:</mat-label>
-        <input matInput type="text" formControlName="nombre"
-               required maxlength="50">
+        <input
+          matInput
+          type="text"
+          formControlName="nombre"
+          required
+          maxlength="50"
+        />
         <mat-icon matSuffix>create</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Monto:</mat-label>
-        <input matInput type="number" min="1" formControlName="costo"
-               required>
+        <input
+          matInput
+          type="number"
+          min="1"
+          formControlName="costo"
+          required
+        />
         <mat-error>*Este campo es obligatorio</mat-error>
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="col-md">
         <mat-label>Tipo de Cargo:</mat-label>
-        <mat-select formControlName='tipoCargo' required>
+        <mat-select formControlName="tipoCargo" required>
           <mat-option value="F">Fijo</mat-option>
           <mat-option value="V">Variable</mat-option>
         </mat-select>
         <mat-error>*Este campo es obligatorio</mat-error>
         <mat-icon matSuffix>list</mat-icon>
       </mat-form-field>
-
     </div>
 
+    <div class="form-row">
+      <p class="card-title"><strong>Valores de Facturación</strong></p>
+    </div>
+    <hr />
 
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Tiempo y Kilometraje:</mat-label>
+        <input matInput type="number" formControlName="tYK" />
+        <mat-icon matSuffix>schedule</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Cobertura de Vehículo:</mat-label>
+        <input matInput type="number" formControlName="cobVehiculo" />
+        <mat-icon matSuffix>directions_car</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Servicio de Chofer:</mat-label>
+        <input matInput type="number" formControlName="servChofer" />
+        <mat-icon matSuffix>airline_seat_recline_normal</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Recuperación de Combustible:</mat-label>
+        <input matInput type="number" formControlName="recCombustible" />
+        <mat-icon matSuffix>local_gas_station</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Cobertura de Transporte:</mat-label>
+        <input matInput type="number" formControlName="cobTransporte" />
+        <mat-icon matSuffix>transfer_within_a_station</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>ISV:</mat-label>
+        <input matInput type="number" formControlName="isv" />
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Tasa Turística:</mat-label>
+        <input matInput type="number" formControlName="tasaTuris" />
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Gastos Reembolsables:</mat-label>
+        <input matInput type="number" formControlName="gastosReembolsables" />
+        <mat-icon matSuffix>attach_money</mat-icon>
+      </mat-form-field>
+    </div>
   </form>
-
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" [disabled]="editECForm.invalid || loaders.loadingSubmit" (click)="onFormEditSubmit()"
-          mat-raised-button color="primary">
+  <button
+    type="button"
+    [disabled]="editECForm.invalid || loaders.loadingSubmit"
+    (click)="onFormEditSubmit()"
+    mat-raised-button
+    color="primary"
+  >
     Confimar
   </button>
-  <button type="button" mat-raised-button mat-dialog-close>
-    Cancelar
-  </button>
-
+  <button type="button" mat-raised-button mat-dialog-close>Cancelar</button>
 </mat-dialog-actions>
 
 <!-- MODAL END -->
-
-
-

@@ -1,14 +1,14 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {CategoriesService} from "../../../services/categories.service";
-import {Category} from "../../../models/category";
-import {Subject} from "rxjs";
-import {ErrorModalComponent} from "../../../components/shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {EditCategoryDialogComponent} from "./edit-category-dialog/edit-category-dialog.component";
-import {NewCategoryDialogComponent} from "./new-category-dialog/new-category-dialog.component";
-import {DataTableDirective} from "angular-datatables";
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { CategoriesService } from '../../../services/categories.service';
+import { Category } from '../../../models/category';
+import { Subject } from 'rxjs';
+import { ErrorModalComponent } from '../../../shared/components/error-modal/error-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { EditCategoryDialogComponent } from './edit-category-dialog/edit-category-dialog.component';
+import { NewCategoryDialogComponent } from './new-category-dialog/new-category-dialog.component';
+import { DataTableDirective } from 'angular-datatables';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-categories',
@@ -17,36 +17,35 @@ import { LoadingDialogComponent } from '../../../components/shared/loading-dialo
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class XploreCategoriesComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective
-  dtOptions
-  categories: Category[]
-  dtTrigger: Subject<any>
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions;
+  categories: Category[];
+  dtTrigger: Subject<any>;
   loaders = {
     loadingData: false,
-    loadingSubmit: false
-  }
+    loadingSubmit: false,
+  };
 
   constructor(
     private categoriesService: CategoriesService,
     public dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   initialize() {
-    this.dtTrigger = new Subject<any>()
+    this.dtTrigger = new Subject<any>();
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -69,84 +68,81 @@ export class XploreCategoriesComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
-
+    };
   }
 
   loadData() {
-    this.openLoader()
-    const categoriesSubscription = this.categoriesService.getAllCategories().subscribe(response => {
-      this.categories = response.data
-      this.dialog.closeAll()
-      this.dtTrigger.next()
-      categoriesSubscription.unsubscribe()
-    })
+    this.openLoader();
+    const categoriesSubscription = this.categoriesService
+      .getAllCategories()
+      .subscribe((response) => {
+        this.categories = response.data;
+        this.dialog.closeAll();
+        this.dtTrigger.next();
+        categoriesSubscription.unsubscribe();
+      });
   }
 
   reloadData() {
-    this.ngOnInit()
+    this.ngOnInit();
   }
 
   showEditForm(id) {
-    let currCat: Category = {}
-    this.categories.forEach(value => {
+    let currCat: Category = {};
+    this.categories.forEach((value) => {
       if (value.idCategoria == id) {
-        currCat = value
+        currCat = value;
       }
-    })
+    });
 
     const dialogRef = this.dialog.open(EditCategoryDialogComponent, {
       data: {
-        category: currCat
-      }
-    })
+        category: currCat,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   showNewCatForm() {
-    const dialogRef = this.dialog.open(NewCategoryDialogComponent)
+    const dialogRef = this.dialog.open(NewCategoryDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
 
     if (reload) {
-      dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
-        this.reloadData()
-      })
+      dialog.afterClosed().subscribe((result) => {
+        this.loaders.loadingData = true;
+        this.reloadData();
+      });
     }
-
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }

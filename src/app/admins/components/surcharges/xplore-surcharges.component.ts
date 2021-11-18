@@ -1,16 +1,15 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {Subject} from "rxjs";
-import {SurchargesService} from "../../../services/surcharges.service";
-import {Surcharge} from "../../../models/surcharge";
-import {ErrorModalComponent} from "../../../components/shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {EditSurchargeDialogComponent} from "./edit-surcharge-dialog/edit-surcharge-dialog.component";
-import {NewSurchargeDialogComponent} from "./new-surcharge-dialog/new-surcharge-dialog.component";
-import {DataTableDirective} from "angular-datatables";
-import {RateCustomersDialogComponent} from "../rates/rate-customers-dialog/rate-customers-dialog.component";
-import {SurchargeCustomersDialogComponent} from "./surcharge-customers-dialog/surcharge-customers-dialog.component";
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { Subject } from 'rxjs';
+import { SurchargesService } from '../../../services/surcharges.service';
+import { Surcharge } from '../../../models/surcharge';
+import { ErrorModalComponent } from '../../../shared/components/error-modal/error-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { EditSurchargeDialogComponent } from './edit-surcharge-dialog/edit-surcharge-dialog.component';
+import { NewSurchargeDialogComponent } from './new-surcharge-dialog/new-surcharge-dialog.component';
+import { DataTableDirective } from 'angular-datatables';
+import { SurchargeCustomersDialogComponent } from './surcharge-customers-dialog/surcharge-customers-dialog.component';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-xplore-surcharges',
@@ -19,35 +18,35 @@ import { LoadingDialogComponent } from '../../../components/shared/loading-dialo
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class XploreSurchargesComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective
-  dtOptions
-  dtTrigger: Subject<any>
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions;
+  dtTrigger: Subject<any>;
   loaders = {
     loadingData: false,
-    loadingSubmit: false
-  }
+    loadingSubmit: false,
+  };
 
-  surcharges: Surcharge[]
+  surcharges: Surcharge[];
   constructor(
     private surchargesService: SurchargesService,
     public dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
   initialize() {
-    this.dtTrigger = new Subject<any>()
+    this.dtTrigger = new Subject<any>();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -55,7 +54,7 @@ export class XploreSurchargesComponent implements OnInit {
       processing: true,
       info: true,
       rowReorder: false,
-      order: [0, 'asc'],
+      order: [[1, 'asc'],[2,'asc'],[3,'asc'],[4,'asc']],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -69,88 +68,88 @@ export class XploreSurchargesComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
+    };
   }
 
   loadData() {
-    this.openLoader()
-    this.surchargesService.getSurcharges().subscribe(response => {
-      this.surcharges = response.data
-      this.dialog.closeAll()
-      this.dtTrigger.next()
-    }, error => {
-      this.dialog.closeAll()
-      this.openErrorDialog("Lo sentimos, ha ocurrido un error al cargar los datos de recargos. Al dar clic en Aceptar, volveremos a intentarlo", true)
-    })
-
+    this.openLoader();
+    this.surchargesService.getSurcharges().subscribe(
+      (response) => {
+        this.surcharges = response.data;
+        this.dialog.closeAll();
+        this.dtTrigger.next();
+      },
+      (error) => {
+        this.dialog.closeAll();
+        this.openErrorDialog(
+          'Lo sentimos, ha ocurrido un error al cargar los datos de recargos. Al dar clic en Aceptar, volveremos a intentarlo',
+          true
+        );
+      }
+    );
   }
 
   reloadData() {
-    this.ngOnInit()
+    this.ngOnInit();
   }
 
   showEditForm(currSurcharge) {
-
     const dialogRef = this.dialog.open(EditSurchargeDialogComponent, {
       data: {
-        surcharge: currSurcharge
-      }
-    })
+        surcharge: currSurcharge,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result){
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   showNewForm() {
-    const dialogRef = this.dialog.open(NewSurchargeDialogComponent)
+    const dialogRef = this.dialog.open(NewSurchargeDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result){
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
 
-    if(reload){
-      dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
-        this.reloadData()
-      })
+    if (reload) {
+      dialog.afterClosed().subscribe((result) => {
+        this.loaders.loadingData = true;
+        this.reloadData();
+      });
     }
-
   }
 
   showSurchargeCustomers(id) {
     this.dialog.open(SurchargeCustomersDialogComponent, {
       data: {
-        surchargeId: id
-      }
-    })
+        surchargeId: id,
+      },
+    });
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }

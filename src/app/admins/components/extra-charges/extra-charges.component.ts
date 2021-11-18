@@ -1,16 +1,16 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {animate, style, transition, trigger} from "@angular/animations";
-import {DataTableDirective} from "angular-datatables";
-import {Subject} from "rxjs";
-import {ExtraCharge} from "../../../models/extra-charge";
-import {ExtraChargesService} from "../../../services/extra-charges.service";
-import {ErrorModalComponent} from "../../../components/shared/error-modal/error-modal.component";
-import {MatDialog} from "@angular/material/dialog";
-import {EditExtraChargeDialogComponent} from "./edit-extra-charge-dialog/edit-extra-charge-dialog.component";
-import {NewExtraChargeDialogComponent} from "./new-extra-charge-dialog/new-extra-charge-dialog.component";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { DataTableDirective } from 'angular-datatables';
+import { Subject } from 'rxjs';
+import { ExtraCharge } from '../../../models/extra-charge';
+import { ExtraChargesService } from '../../../services/extra-charges.service';
+import { ErrorModalComponent } from '../../../shared/components/error-modal/error-modal.component';
+import { MatDialog } from '@angular/material/dialog';
+import { EditExtraChargeDialogComponent } from './edit-extra-charge-dialog/edit-extra-charge-dialog.component';
+import { NewExtraChargeDialogComponent } from './new-extra-charge-dialog/new-extra-charge-dialog.component';
 import { ExtraChargeCategoriesComponent } from './extra-charge-categories/extra-charge-categories.component';
-import {ExtraChargesOptionsDialogComponent} from "./extra-charges-options-dialog/extra-charges-options-dialog.component";
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
+import { ExtraChargesOptionsDialogComponent } from './extra-charges-options-dialog/extra-charges-options-dialog.component';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 
 @Component({
   selector: 'app-extra-charges',
@@ -19,36 +19,35 @@ import { LoadingDialogComponent } from '../../../components/shared/loading-dialo
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class ExtraChargesComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false})
-  dtElement: DataTableDirective
-  dtOptions
-  dtTrigger: Subject<any>
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions;
+  dtTrigger: Subject<any>;
   loaders = {
     loadingData: false,
-    loadingSubmit: false
-  }
-  extraCharges: ExtraCharge[]
+    loadingSubmit: false,
+  };
+  extraCharges: ExtraCharge[];
 
   constructor(
     private extraChargesService: ExtraChargesService,
     public dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
 
-  initialize(){
-    this.dtTrigger = new Subject<any>()
+  initialize() {
+    this.dtTrigger = new Subject<any>();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -70,94 +69,92 @@ export class ExtraChargesComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
+    };
   }
 
-  loadData(){
-    this.openLoader()
-    const extraChargesSubscription = this.extraChargesService.getExtraCharges().subscribe(response => {
-      this.extraCharges = response.data
-      this.dialog.closeAll()
-      this.dtTrigger.next()
-      extraChargesSubscription.unsubscribe()
-    })
+  loadData() {
+    this.openLoader();
+    const extraChargesSubscription = this.extraChargesService
+      .getExtraCharges()
+      .subscribe((response) => {
+        this.extraCharges = response.data;
+        this.dialog.closeAll();
+        this.dtTrigger.next();
+        extraChargesSubscription.unsubscribe();
+      });
   }
 
   showEditForm(id) {
-    let currExtraCharge: ExtraCharge = {}
-    this.extraCharges.forEach(value => {
+    let currExtraCharge: ExtraCharge = {};
+    this.extraCharges.forEach((value) => {
       if (value.idCargoExtra === id) {
-        currExtraCharge = value
+        currExtraCharge = value;
       }
-    })
+    });
     const dialogRef = this.dialog.open(EditExtraChargeDialogComponent, {
       data: {
-        extraCharge: currExtraCharge
-      }
-    })
+        extraCharge: currExtraCharge,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result){
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   showNewForm() {
-    const dialogRef = this.dialog.open(NewExtraChargeDialogComponent)
+    const dialogRef = this.dialog.open(NewExtraChargeDialogComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result){
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
       }
-    })
+    });
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
+        msgError: error,
+      },
+    });
 
-    if(reload){
-      dialog.afterClosed().subscribe(result => {
-        this.loaders.loadingData = true
-        this.ngOnInit()
-      })
+    if (reload) {
+      dialog.afterClosed().subscribe((result) => {
+        this.loaders.loadingData = true;
+        this.ngOnInit();
+      });
     }
-
   }
 
   showExtraChargeCategories(id) {
     this.dialog.open(ExtraChargeCategoriesComponent, {
       data: {
-        extraChargeId: id
-      }
-    })
+        extraChargeId: id,
+      },
+    });
   }
 
   showExtraChargeOptions(id) {
     this.dialog.open(ExtraChargesOptionsDialogComponent, {
       data: {
-        extraChargeId: id
-      }
-    })
+        extraChargeId: id,
+      },
+    });
   }
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }

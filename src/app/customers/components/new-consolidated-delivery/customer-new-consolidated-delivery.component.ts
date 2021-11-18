@@ -19,28 +19,12 @@ import { AuthService } from "../../../services/auth.service"
 import { BlankSpacesValidator } from "../../../helpers/blankSpaces.validator"
 import { NoUrlValidator } from "../../../helpers/noUrl.validator"
 import { environment } from "../../../../environments/environment"
-<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
-import { ErrorModalComponent } from "../../shared/error-modal/error-modal.component"
-import { SuccessModalComponent } from "../../shared/success-modal/success-modal.component"
-=======
 import { ErrorModalComponent } from "../../../shared/components/error-modal/error-modal.component"
 import { SuccessModalComponent } from "../../../shared/components/success-modal/success-modal.component"
->>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
 import { ConfirmDialogComponent } from "../new-delivery/confirm-dialog/confirm-dialog.component"
 import { animate, style, transition, trigger } from "@angular/animations"
 import { BranchService } from "../../../services/branch.service"
 import { Branch } from "../../../models/branch"
-<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
-import { Schedule } from "../../../models/schedule"
-import { CustomerRestrictionsDialogComponent } from "../restrictions-dialog/customer-restrictions-dialog.component"
-import { LockedUserDialogComponent } from '../../shared/locked-user-dialog/locked-user-dialog.component'
-import { UsersService } from 'src/app/services/users.service'
-import { LabelsService } from 'src/app/services/labels.service'
-import { Label } from 'src/app/models/label'
-import { LoadingDialogComponent } from "../../shared/loading-dialog/loading-dialog.component"
-import { OperationsService } from 'src/app/services/operations.service'
-import { DateValidate } from 'src/app/helpers/date.validator'
-=======
 import { CustomerRestrictionsDialogComponent } from "../restrictions-dialog/customer-restrictions-dialog.component"
 import { LockedUserDialogComponent } from '../../../shared/components/locked-user-dialog/locked-user-dialog.component'
 import { UsersService } from 'src/app/services/users.service'
@@ -50,7 +34,6 @@ import { LoadingDialogComponent } from "../../../shared/components/loading-dialo
 import { OperationsService } from 'src/app/services/operations.service'
 import { DateValidate } from 'src/app/helpers/date.validator'
 import { ConsolidatedHourValidate } from 'src/app/helpers/consolidatedHour.validator'
->>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
 
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
@@ -234,11 +217,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
   loadData() {
     const categoriesSubscription = this.categoriesService
-<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
-      .getCustomerCategories().subscribe(response => {
-=======
       .getCustomerCategories(null, 2).subscribe(response => {
->>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
         this.categories = response.consolidatedCategories
         this.demandMSG = response.demand
         this.categories.forEach(category => {
@@ -246,11 +225,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         })
         categoriesSubscription.unsubscribe()
         this.dialog.closeAll()
-<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
-        this.setSelectedCategory()
-=======
         this.setSelectedCategory(this.categories[0])
->>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
         this.setCurrentLocationOrigin()
       }, error => {
         this.dialog.closeAll()
@@ -470,27 +445,16 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         tarifa: this.pago.baseRate
       }).subscribe((response) => {
         this.loaders.loadingDistBef = false
-        if (response.distancia == '') {
-          this.prohibitedDistanceMsg = 'No se ha podido procesar alguna de sus direcciones,'
-            + ' si ingresó coordenadas, verifique que sean correctas. El tipo de coordenada ej. 14°07\'32.5"N 87°07\'18.5"W no está soportada actualmente';
-          this.prohibitedDistance = true;
-          this.newForm.get('order.direccion').setValue(null)
-          setTimeout(() => {
-            this.prohibitedDistance = false;
-          }, 2000);
-          distanceSubscription.unsubscribe();
-        } else {
-          this.befDistance = response.distancia
-          const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
-          this.befTime = response.tiempo
-          this.befCost = calculatedPayment.total
-          this.placesOrigin = []
-          this.placesDestination = []
+        this.befDistance = response.distancia
+        const calculatedPayment = this.calculateOrderPayment(Number(response.distancia.split(" ")[0]))
+        this.befTime = response.tiempo
+        this.befCost = calculatedPayment.total
+        this.placesOrigin = []
+        this.placesDestination = []
 
-          this.directionsRenderer.setMap(this.googleMap._googleMap)
-          this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer)
-          distanceSubscription.unsubscribe()
-        }
+        this.directionsRenderer.setMap(this.googleMap._googleMap)
+        this.calculateAndDisplayRoute(this.directionsService, this.directionsRenderer)
+        distanceSubscription.unsubscribe()
       }, error => {
         if (error.subscribe()) {
           error.subscribe(error => {
@@ -834,21 +798,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   }
 
   //ESTABLECE LA CATEGORÍA A EMPLEAR
-<<<<<<< HEAD:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
-  setSelectedCategory() {
-    this.categories.forEach(category => {
-      if (category.idCategoria === +this.newForm.get('deliveryHeader.idCategoria').value) {
-        this.selectedCategory = category
-
-        this.datesToShow = this.selectedCategory.datesToShow
-
-        this.surcharges = this.selectedCategory.surcharges
-
-        this.newForm.get('deliveryHeader.fecha').setValue('')
-        this.newForm.get('deliveryHeader.hora').setValue('')
-      }
-    })
-=======
   setSelectedCategory(category) {
     this.selectedCategory = category
 
@@ -858,7 +807,6 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
 
     this.newForm.get('deliveryHeader.fecha').setValue('')
     this.newForm.get('deliveryHeader.hora').setValue('')
->>>>>>> origin/V5:src/app/customers/components/new-consolidated-delivery/customer-new-consolidated-delivery.component.ts
 
   }
 

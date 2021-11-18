@@ -1,70 +1,87 @@
 <!--CARD START -->
 <mat-card @fade>
   <mat-card-header>
-    <mat-card-title>
-      Parametrización de Cargos Extras
-    </mat-card-title>
-
+    <mat-card-title> Parametrización de Cargos Extras </mat-card-title>
   </mat-card-header>
 
   <mat-card-content>
-
     <!-- CONTAINER START -->
 
     <div class="row justify-content-end">
       <div class="col">
-        <button mat-raised-button (click)="showNewForm()" type="button" color="primary" class="float-right mb-2">
+        <button
+          mat-raised-button
+          (click)="showNewForm()"
+          type="button"
+          color="primary"
+          class="float-right mb-2"
+        >
           <i class="fa fa-plus"></i>
           Agregar Cargo Extra
         </button>
       </div>
-
     </div>
     <!-- CONTAINER BODY START -->
 
     <div class="table-responsive">
-      <table id="dTable" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"
-             class="display compact" style="width:100%">
+      <table
+        id="dTable"
+        datatable
+        [dtOptions]="dtOptions"
+        [dtTrigger]="dtTrigger"
+        class="display compact"
+        style="width: 100%"
+      >
         <thead>
-        <tr>
-          <th>N°</th>
-          <th>Descripción de Cargo Extra</th>
-          <th>Costo</th>
-          <th>Tipo de Cargo</th>
-          <th>Categorías asignadas</th>
-          <th>Opciones</th>
-          <th data-priority="1">Acción</th>
-        </tr>
+          <tr>
+            <th>N°</th>
+            <th>Descripción de Cargo Extra</th>
+            <th>Costo</th>
+            <th>Tipo de Cargo</th>
+            <th>Categorías asignadas</th>
+            <th>Opciones</th>
+            <th data-priority="1">Acción</th>
+          </tr>
         </thead>
         <tbody>
-
-        <tr *ngFor="let extraCharge of extraCharges">
-          <td>{{extraCharge.idCargoExtra}}</td>
-          <td>{{extraCharge.nombre}}</td>
-          <td>L. {{extraCharge.costo | number:'.2'}}</td>
-          <td>
-            <p *ngIf="extraCharge.tipoCargo">{{extraCharge.tipoCargo == 'F' ? 'Fijo' :  'Variable'}}</p>
-            <p *ngIf="!extraCharge.tipoCargo">N/A</p>
-          </td>
-          <td>
-            <a (click)="showExtraChargeCategories(extraCharge.idCargoExtra)" style="color: #0071A2">
-              <i class="fa fa-eye"></i> Ver Categorías
-            </a>
-          </td>
-          <td>
-            <a *ngIf="extraCharge.tipoCargo == 'F'" (click)="showExtraChargeOptions(extraCharge.idCargoExtra)" style="color: #0071A2">
-              <i class="fa fa-eye"></i> Ver Opciones
-            </a>
-            <p *ngIf="extraCharge.tipoCargo == 'V'">N/A</p>
-          </td>
-          <td>
-            <a (click)="showEditForm(extraCharge.idCargoExtra)" style="color: #0071A2">
-              <i class="fa fa-edit"></i> Editar
-            </a>
-          </td>
-        </tr>
+          <tr *ngFor="let extraCharge of extraCharges">
+            <td>{{ extraCharge.idCargoExtra }}</td>
+            <td>{{ extraCharge.nombre }}</td>
+            <td>L. {{ extraCharge.costo | number: ".2" }}</td>
+            <td>
+              <p *ngIf="extraCharge.tipoCargo">
+                {{ extraCharge.tipoCargo == "F" ? "Fijo" : "Variable" }}
+              </p>
+              <p *ngIf="!extraCharge.tipoCargo">N/A</p>
+            </td>
+            <td>
+              <a
+                (click)="showExtraChargeCategories(extraCharge.idCargoExtra)"
+                style="color: #0071a2"
+              >
+                <i class="fa fa-eye"></i> Ver Categorías
+              </a>
+            </td>
+            <td>
+              <a
+                *ngIf="extraCharge.tipoCargo == 'F'"
+                (click)="showExtraChargeOptions(extraCharge.idCargoExtra)"
+                style="color: #0071a2"
+              >
+                <i class="fa fa-eye"></i> Ver Opciones
+              </a>
+              <p *ngIf="extraCharge.tipoCargo == 'V'">N/A</p>
+            </td>
+            <td>
+              <a
+                (click)="showEditForm(extraCharge.idCargoExtra)"
+                style="color: #0071a2"
+              >
+                <i class="fa fa-edit"></i> Editar
+              </a>
+            </td>
+          </tr>
         </tbody>
-
       </table>
     </div>
 
@@ -73,8 +90,3 @@
 </mat-card>
 
 <!-- CARD END -->
-
-
-
-
-

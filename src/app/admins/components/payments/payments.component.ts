@@ -1,12 +1,12 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {PaymentsService} from "../../../services/payments.service";
-import {Payment} from "../../../models/payment";
-import {Subject} from "rxjs";
-import {DataTableDirective} from "angular-datatables";
-import {animate, style, transition, trigger} from "@angular/animations";
-import {MatDialog} from "@angular/material/dialog";
-import {AddPaymentDialogComponent} from "./add-payment-dialog/add-payment-dialog.component";
-import { LoadingDialogComponent } from '../../../components/shared/loading-dialog/loading-dialog.component';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { PaymentsService } from '../../../services/payments.service';
+import { Payment } from '../../../models/payment';
+import { Subject } from 'rxjs';
+import { DataTableDirective } from 'angular-datatables';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog';
+import { AddPaymentDialogComponent } from './add-payment-dialog/add-payment-dialog.component';
+import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { formatDate } from '@angular/common';
@@ -18,20 +18,21 @@ import { formatDate } from '@angular/common';
   animations: [
     trigger('fade', [
       transition('void => *', [
-        style({opacity: 0}),
-        animate(1000, style({opacity: 1}))
-      ])
-    ])
-  ]
+        style({ opacity: 0 }),
+        animate(1000, style({ opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class PaymentsComponent implements OnInit {
-  @ViewChild(DataTableDirective, {static: false}) dtElement: DataTableDirective
-  dtOptions
+  @ViewChild(DataTableDirective, { static: false })
+  dtElement: DataTableDirective;
+  dtOptions;
   loaders = {
-    'loadingData': false
-  }
-  dtTrigger: Subject<any>
-  payments: Payment[]
+    loadingData: false,
+  };
+  dtTrigger: Subject<any>;
+  payments: Payment[];
   consultForm: FormGroup;
   initDate: any = null;
   finDate: any = null;
@@ -42,14 +43,14 @@ export class PaymentsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.initialize()
-    this.loadData()
+    this.initialize();
+    this.loadData();
   }
-  initialize(){
-    this.dtTrigger = new Subject<any>()
+  initialize() {
+    this.dtTrigger = new Subject<any>();
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -72,7 +73,7 @@ export class PaymentsComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
     };
@@ -91,7 +92,6 @@ export class PaymentsComponent implements OnInit {
         Validators.required,
       ],
     });
-
   }
 
   loadData() {
@@ -128,6 +128,19 @@ export class PaymentsComponent implements OnInit {
     }
   }
 
+  showNewForm() {
+    const dialogRef = this.dialog.open(AddPaymentDialogComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+          dtInstance.destroy();
+          this.loadData();
+        });
+      }
+    });
+  }
+
   onConsultFormSubmit() {
     if (this.consultForm.valid) {
       this.router.navigate([
@@ -138,27 +151,9 @@ export class PaymentsComponent implements OnInit {
     }
   }
 
-  showNewForm(){
-    const dialogRef = this.dialog.open(AddPaymentDialogComponent)
-
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.dtElement.dtInstance.then(
-          (dtInstance: DataTables.Api) => {
-            dtInstance.destroy()
-            this.loadData()
-          })
-      }
-    })
-
-  }
-
-  showEditForm(id){
-
-  }
+  showEditForm(id) {}
 
   openLoader() {
-    this.dialog.open(LoadingDialogComponent)
+    this.dialog.open(LoadingDialogComponent);
   }
-
 }
