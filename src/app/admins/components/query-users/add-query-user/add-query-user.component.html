@@ -152,8 +152,17 @@
     <mat-form-field class="col" appearance="outline">
       <mat-label>Seleccione un cliente</mat-label>
       <mat-select>
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Buscar Cliente"
+            (keyup)="onKey($event.target.value)"
+          />
+          <mat-icon [inline]="true" matPrefix>search</mat-icon>
+        </mat-form-field>
+
         <mat-option
-          *ngFor="let customer of customers"
+          *ngFor="let customer of filteredCustomers"
           [value]="customer"
           (click)="addCustomer(customer)"
         >
