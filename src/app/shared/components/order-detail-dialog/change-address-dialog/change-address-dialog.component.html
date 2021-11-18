@@ -1,0 +1,164 @@
+<!-- DIALOG START -->
+<h2 mat-dialog-title class="text-primary">Cambiar dirección de entrega</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="../../../../assets/img/loading.svg" width="35%" alt="loading" />
+      <p>Procesando Información...</p>
+    </div>
+  </div>
+  <form [formGroup]="addressForm" role="form" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Punto de entrega:</mat-label>
+        <input
+          type="text"
+          (input)="searchDestination($event)"
+          autocomplete="off"
+          [matAutocomplete]="autoDest"
+          matInput
+          formControlName="direccion"
+          name="direccion"
+          id="direccion"
+          required
+          placeholder="¿Dónde entregaremos tu pedido?"
+        />
+        <mat-autocomplete #autoDest="matAutocomplete">
+          <mat-option (click)="calculatedistanceBefore()" *ngFor="let s of placesDestination" [value]="s.text">
+            {{ s.text }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon matSuffix>location_on</mat-icon>
+        <div
+          matSuffix
+          *ngIf="searchingDest == true"
+          class="spinner-border spinner-border-sm text-secondary"
+          role="status"
+        >
+          <span class="sr-only">Loading...</span>
+        </div>
+        <mat-error *ngIf="addForm.direccion?.errors?.required"
+          >*Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="addForm.direccion?.errors?.isUrl"
+          >*Valor no válido</mat-error
+        >
+        <mat-hint>
+          <a href="javascript:void(0)" (click)="gcordsDestination = true">
+            Ingresar Geocordenadas
+          </a>
+        </mat-hint>
+      </mat-form-field>
+
+      <mat-form-field
+        appearance="outline"
+        floatLabel="always"
+        *ngIf="gcordsDestination"
+      >
+        <input
+          #destinationCords
+          matInput
+          type="text"
+          placeholder=" Ej. 10.1508684, -87.61982"
+        />
+        <button
+          mat-button
+          mat-icon-button
+          (click)="setCordsDestination()"
+          matSuffix
+        >
+          <mat-icon>done</mat-icon>
+        </button>
+      </mat-form-field>
+      <br />
+      <mat-checkbox
+        #checkboxDest
+        (change)="setCurrentLocationDest(!checkboxDest.checked)"
+      >
+        Ubicación actual
+      </mat-checkbox>
+      <input type="text" formControlName="coordsDestino" hidden />
+
+      <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
+        {{ prohibitedDistanceMsg }}
+      </div>
+    </div>
+  </form>
+
+  <div class="col" *ngIf="!loaders.loadingSubmit">
+    <div class="row">
+      <div class="col">
+        <p class="card-title"><strong>Ruta de Entrega</strong></p>
+        <hr />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <google-map
+          #googleMap
+          height="250px"
+          width="100%"
+          id="map"
+          [center]="center"
+        ></google-map>
+      </div>
+    </div>
+  </div>
+
+  <br />
+
+  <!-- INICIO DATOS EN TIEMPO REAL -->
+  <div class="form-row text-center" *ngIf="!loaders.loadingSubmit">
+    <div class="col">
+      <span
+        ><i class="fa fa-clock"></i> Tiempo:
+        <span
+          *ngIf="loaders.loadingDistBef"
+          class="spinner-border spinner-border-sm mr-1"
+        >
+        </span>
+        {{ befTime }}</span
+      >
+    </div>
+    <div class="col">
+      <span
+        ><i class="fa fa-ruler"></i> Distancia:
+        <span
+          *ngIf="loaders.loadingDistBef"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        {{ befDistance }}</span
+      >
+    </div>
+    <div class="col">
+      <span>
+        <i class="fa fa-dollar-sign"></i>
+        Costo:
+        <span
+          *ngIf="loaders.loadingDistBef"
+          class="spinner-border spinner-border-sm mr-1"
+        >
+        </span>
+        L. {{ befCost }}
+      </span>
+    </div>
+  </div>
+
+  <!-- FIN DATOS EN TIEMPO REAL -->
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    mat-raised-button
+    [disabled]="addForm.direccion.invalid || loaders.loadingSubmit || prohibitedDistance"
+    (click)="calculateDistance()"
+    color="primary"
+  >
+    Cambiar
+  </button>
+  <button type="button" mat-raised-button [mat-dialog-close]="false">
+    Cancelar
+  </button>
+</mat-dialog-actions>

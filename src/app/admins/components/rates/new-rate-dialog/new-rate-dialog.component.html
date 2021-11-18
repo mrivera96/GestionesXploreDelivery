@@ -1,0 +1,320 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">note_add</mat-icon>
+  Nueva Tarifa
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+      <p>Cargando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="newRateForm" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Descripción de Tarifa:</mat-label>
+        <input matInput id="descTarifaN" type="text" formControlName="descTarifa"
+               required maxlength="60" placeholder="¿Cuál será la descripción de la nueva tarifa?">
+        <mat-icon matSuffix>create</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Categoría:</mat-label>
+        <mat-select id="nidCategoria" formControlName="idCategoria"
+                    placeholder="- Seleccione una categoría -" required>
+          <mat-option *ngFor="let category of categories"
+                      [value]="category.idCategoria">{{category.descCategoria}}</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>directions_car</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Entregas Mínimas:</mat-label>
+        <input matInput id="nentregasMinimas" type="number" formControlName="entregasMinimas"
+               required placeholder="Número mínimo de entregas">
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Entregas máximas:</mat-label>
+        <input matInput id="nentregasMaximas" type="number" formControlName="entregasMaximas"
+               required placeholder="Número máximo de entregas">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Monto:</mat-label>
+        <input matInput id="nprecio" type="text" formControlName="precio" required placeholder="Monto de la tarifa">
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Tipo de Tarifa:</mat-label>
+        <mat-select formControlName="idTipoTarifa"
+                    placeholder="- Seleccione un tipo de tarifa -" required>
+          <mat-option *ngFor="let rateType of rateTypes" (click)="updateValidator(rateType.idTipoTarifa)"
+                      [value]="rateType.idTipoTarifa" >{{rateType.descTipoTarifa}}</mat-option> <!--"-->
+        </mat-select>
+        <mat-icon matSuffix>attach_money</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <div class="form-row">
+      <div class="col-md">
+        <mat-slide-toggle #matSlideToggle (toggleChange)="changeGeneral(!matSlideToggle.checked)" required>Tarifa
+          General
+        </mat-slide-toggle>
+      </div>
+    </div>
+    <br>
+    <h4 *ngIf="isGeneral == false">Agregar Cliente</h4>
+    <hr>
+    <div class="form-row" *ngIf="isGeneral == false">
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md-10">
+        <mat-label>Cliente:</mat-label>
+        <mat-select id="idClienteN" formControlName="idCliente" required placeholder="- Seleccione un cliente -">
+          <mat-form-field>
+            <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)">
+            <mat-icon [inline]="true" matPrefix>search</mat-icon>
+          </mat-form-field>
+          <mat-option *ngFor="let customer of filteredCustomers" [value]="customer.idCliente">
+            {{customer.nomEmpresa}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <div class="col-md-2">
+        <button class="btn-sm" mat-raised-button color="primary" (click)="addCustomerToRate(fNew.idCliente.value)"
+                [disabled]="newRateForm.invalid || loaders.loadingSubmit">
+          Agregar
+        </button>
+      </div>
+
+
+    </div>
+  </form>
+  <br>
+  <div class="form-row" *ngIf="isGeneral == false && !loaders.loadingSubmit" >
+    <div class="col">
+      <h4>Clientes Asignados</h4>
+      <hr>
+      <div class="table-responsive">
+        <table id="dTable" class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th scope="col">N°</th>
+            <th scope="col">Cliente</th>
+            <th scope="col" data-priority="1">Acción</th>
+          </tr>
+
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let customer of rateCustomers; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{customer.nomEmpresa}}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeFromArray(customer)"><i
+                class="fa fa-trash-alt"></i>
+                Quitar
+              </button>
+            </td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <br>
+  <h4 *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit">Configuración de Tarifa de Carga Consolidada</h4> <!--||  -->
+  <hr *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit"> <!-- -->
+  <form [formGroup]="consolidatedForm" *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit"> <!-- -->
+    <div class="form-row mt-3">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Dirección de recogida:</mat-label>
+        <input matInput type="text" formControlName="dirRecogida" (input)="searchAddress($event)"
+               required placeholder="Punto de recogida" [matAutocomplete]="auto" autocomplete="nope">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let s of places" [value]="s.text">
+            {{ s.text }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon matSuffix>location_on</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Radio Máximo de Recogida:</mat-label>
+        <input matInput type="number" formControlName="radioMaximo"
+               required placeholder="Radio Máximo desde punto de recogida">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <div class="form-row mt-3" *ngIf="fNew.idTipoTarifa.value == 4">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Dirección de entrega:</mat-label>
+        <input matInput type="text" formControlName="dirEntrega" (input)="searchAddress($event)"
+               required placeholder="Punto de entrega" [matAutocomplete]="auto" autocomplete="nope">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let s of places" [value]="s.text">
+            {{ s.text }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon matSuffix>location_on</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Radio Máximo de Entrega:</mat-label>
+        <input matInput type="number" formControlName="radioMaximoEntrega"
+               required placeholder="Radio Máximo desde punto de entrega">
+        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <h4 *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit">Asignar Horario Tarifa de Carga Consolidada</h4>
+  <hr *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit">
+
+  <form [formGroup]="schdeduleForm" *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit">
+    <div class="form-row mt-3">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Descripción de horario:</mat-label>
+        <input matInput type="text" formControlName="descHorario" maxlength="60"
+               required placeholder="Descripción del horario">
+        <mat-icon matSuffix>subtitles</mat-icon>
+        <mat-error *ngIf="schForm.descHorario?.errors?.required">*Este campo es obligatorio</mat-error>
+        <mat-error *ngIf="schForm.descHorario?.errors?.maxlength">*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Día:</mat-label>
+        <mat-select #day formControlName="cod" required (valueChange)="setDay(day.value)">
+          <mat-option [value]="1">Lunes</mat-option>
+          <mat-option [value]="2">Martes</mat-option>
+          <mat-option [value]="3">Miércoles</mat-option>
+          <mat-option [value]="4">Jueves</mat-option>
+          <mat-option [value]="5">Viernes</mat-option>
+          <mat-option [value]="6">Sábado</mat-option>
+          <mat-option [value]="0">Domingo</mat-option>
+        </mat-select>
+        <mat-icon matSuffix>subtitles</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Hora Inicial:</mat-label>
+        <input formControlName="inicio" type="time" required matInput>
+        <mat-error>
+          *Este campo es obligatorio
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Hora Final:</mat-label>
+        <input formControlName="final" type="time" required matInput>
+        <mat-error>
+          *Este campo es obligatorio
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <button class="col-md-2" mat-raised-button color="primary" (click)="addScheduleToRate(schdeduleForm.value)"
+              [disabled]="schdeduleForm.invalid || loaders.loadingSubmit">
+        Agregar
+      </button>
+    </div>
+  </form>
+  <br>
+  <div class="form-row" *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit">
+    <div class="col">
+      <h4>Horarios Asignados</h4>
+      <hr>
+      <div class="table-responsive">
+        <table id="dTable1" class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th scope="col">N°</th>
+            <th scope="col">Descripción Horario</th>
+            <th scope="col">Día</th>
+            <th scope="col">Hora Inicial</th>
+            <th scope="col">Hora Final</th>
+            <th scope="col" data-priority="1">Acción</th>
+          </tr>
+
+          </thead>
+
+          <tbody>
+          <tr *ngFor="let schedule of rateSchedules; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{schedule.descHorario}}</td>
+            <td>{{schedule.dia}}</td>
+            <td>{{schedule.inicio}}</td>
+            <td>{{schedule.final}}</td>
+            <td>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeSchdeuleFromArray(schedule)"><i
+                class="fa fa-trash-alt"></i>
+                Quitar
+              </button>
+            </td>
+          </tr>
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+ <button *ngIf="fNew.idTipoTarifa.value == 2 || fNew.idTipoTarifa.value == 4" type="button"
+          [disabled]="newRateForm.invalid || consolidatedForm.invalid || loaders.loadingSubmit"
+          (click)="onFormNewSubmit()"
+          mat-raised-button color="primary">
+    Confimar
+  </button>
+  <!--<button *ngIf="fNew.idTipoTarifa.value == 2" type="button"
+          [disabled]="newRateForm.invalid || consolidatedForm.invalid || loaders.loadingSubmit"
+          (click)="onFormNewSubmit()"
+          mat-raised-button color="primary">
+    Confimar
+  </button>-->
+  <button *ngIf="fNew.idTipoTarifa.value != 2 && fNew.idTipoTarifa.value != 4" type="button" [disabled]="newRateForm.invalid || loaders.loadingSubmit"
+          (click)="onFormNewSubmit()"
+          mat-raised-button color="primary">
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close>
+    Cancelar
+  </button>
+
+</mat-dialog-actions>
+
+<!-- MODAL END -->
+
+

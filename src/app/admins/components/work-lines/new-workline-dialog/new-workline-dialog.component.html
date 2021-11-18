@@ -1,0 +1,45 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+    <mat-icon [inline]="true">note_add</mat-icon> Nuevo Rubro
+  </h2>
+  <mat-dialog-content>
+    <div class="row" *ngIf="loaders.loadingSubmit">
+      <div class="col text-center">
+        <img src="../../../../../assets/img/loading.svg" width="35%" alt="loading">
+        <p>Procesando información...</p>
+      </div>
+    </div>
+
+    <form [formGroup]="newWLForm" *ngIf="!loaders.loadingSubmit">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Nombre de Rubro:</mat-label>
+        <input matInput type="text" formControlName="nomRubro" maxlength="60"
+               placeholder="Nombre del nuevo rubro" required>
+        <mat-icon matSuffix>create</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Descripción de Rubro:</mat-label>
+        <input matInput id="descripcion" type="text" formControlName="descRubro" maxlength="250"
+               placeholder="¿Cuál será la descripción del nuevo rubro?" required>
+        <mat-icon matSuffix>subtitles</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button type="button" [disabled]="newWLForm.invalid || loaders.loadingSubmit" (click)="onFormNewSubmit()"
+            mat-raised-button color="primary">
+      Confimar
+    </button>
+    <button type="button" mat-raised-button mat-dialog-close>
+      Cancelar
+    </button>
+
+  </mat-dialog-actions>
+
+  <!-- MODAL END -->
+
+

@@ -1,0 +1,46 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+    <mat-icon [inline]="true">group_add</mat-icon>
+    Agregar Categoría a Cargo Extra
+  </h2>
+  <mat-dialog-content>
+    <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
+      <div class="col text-center">
+        <img src="../../../../../../assets/img/loading.svg" width="35%" alt="loading">
+        <p>Procesando información...</p>
+      </div>
+    </div>
+
+    <form [formGroup]="catForm" *ngIf="!loaders.loadingSubmit">
+      <div class="form-row">
+        <mat-form-field appearance="outline" floatLabel="always" class="col-12">
+          <mat-label>Categoría:</mat-label>
+          <mat-select formControlName="idCategoria" required placeholder="- Seleccione una categoría -">
+
+            <mat-option *ngFor="let category of categories" value="{{category.idCategoria}}">
+              {{category.descCategoria}}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix>list</mat-icon>
+          <mat-error>*Este campo es obligatorio</mat-error>
+        </mat-form-field>
+      </div>
+
+    </form>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <button type="button" [disabled]="catForm.invalid || loaders.loadingSubmit"
+            (click)="onFormSubmit()"
+            mat-raised-button color="primary">
+      Confimar
+    </button>
+    <button type="button" mat-raised-button mat-dialog-close>
+      Cancelar
+    </button>
+  </mat-dialog-actions>
+
+  <!-- MODAL END -->
+
+

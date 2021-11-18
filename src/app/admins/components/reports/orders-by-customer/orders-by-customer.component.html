@@ -1,0 +1,260 @@
+<!--CARD START -->
+<mat-card @fade>
+  <mat-card-header>
+    <mat-card-title>
+      Reportes Envíos por Cliente
+    </mat-card-title>
+
+  </mat-card-header>
+
+  <mat-card-content>
+
+    <!-- CONTAINER START -->
+    <div class="row">
+      <div class="col">
+        <form [formGroup]="consultForm">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Cliente:</mat-label>
+              <mat-select formControlName="customerId" required placeholder="- Seleccione un cliente -">
+                <mat-form-field>
+                  <input matInput placeholder="Buscar Cliente" (keyup)="onKey($event.target.value)">
+                  <mat-icon [inline]="true" matPrefix>search</mat-icon>
+                </mat-form-field>
+                <mat-option *ngFor="let customer of filteredCustomers" value="{{customer.idCliente}}">
+                  {{customer.nomEmpresa}}
+                </mat-option>
+              </mat-select>
+              <mat-icon matPrefix>group</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Inicial:</mat-label>
+              <input matInput type="date" formControlName="initDate" required>
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="col-md">
+              <mat-label>Fecha Final:</mat-label>
+              <input matInput type="date" formControlName="finDate" required>
+              <mat-icon matPrefix>today</mat-icon>
+              <mat-error>*Este campo es obligatorio</mat-error>
+            </mat-form-field>
+
+
+            <button [disabled]="consultForm.invalid" type="button" mat-raised-button color="primary"
+                    (click)="onConsultFormSubmit()" class="col-md mt-auto mb-auto">
+              <mat-icon>search</mat-icon>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+
+    <!-- REPORT CONTAINER START -->
+    <div class="container-fluid">
+      <div class="row" *ngIf="loaders.loadingSubmit">
+        <div class="col text-center">
+          <img src="../../../../../assets/img/loading.svg" width="5%" alt="loading">
+          <p>Cargando información...</p>
+        </div>
+      </div>
+
+      <div class="row mt-2">
+        <div class="col">
+          <button class="float-right" mat-button [matMenuTriggerFor]="menu">
+            Menú de Opciones
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generatePDF()">
+              Exportar PDF
+            </button>
+
+            <button [disabled]="consultResults.length == 0" mat-menu-item (click)="generateExcel()">
+              Exportar a Excel
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col">
+          <h2>Resumen - {{currenCustomer?.nomEmpresa}}</h2>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <p><strong>Envíos Totales: {{totalCustomerOrders}}</strong></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <h2>Envíos desde {{f.initDate.value}} hasta {{f.finDate.value}}</h2>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <h3>Envíos por categoría</h3>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+
+        <table datatable [dtOptions]="dtOptions1" [dtTrigger]="dtTrigger" class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th>N°</th>
+            <th>Categoría</th>
+            <th>Envíos Realizados</th>
+            <th>Recargos</th>
+            <th>Cargos Extra</th>
+            <th>Costos Totales</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr *ngFor="let res of ordersByCategory; let i = index">
+            <td>{{i + 1}}</td>
+            <td>{{res?.category}}</td>
+            <td>{{res?.orders}}</td>
+            <td>L. {{res?.totalSurcharges}}</td>
+            <td>L. {{res?.totalExtraCharges}}</td>
+            <td>L. {{res?.cTotal}}</td>
+          </tr>
+
+          </tbody>
+          <tfoot style="display: table-footer-group;">
+          <tr>
+            <th></th>
+            <th>Total:</th>
+            <th data-priority="1">
+              {{ordersInRange}}
+            </th>
+            <th>L. {{ totalSurcharges }}</th>
+            <th>L. {{ totalExtracharges }}</th>
+            <th>L. {{ totalCosts }}</th>
+          </tr>
+          </tfoot>
+
+        </table>
+      </div>
+      <div class="row">
+        <div class="col">
+          <h3>Envíos por fecha</h3>
+        </div>
+      </div>
+      <div class="table-responsive">
+
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger1" class="display compact" style="width:100%">
+          <thead>
+
+          <tr>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Envíos Realizados</th>
+          </tr>
+
+          </thead>
+          <tbody>
+
+          <tr *ngFor="let result of consultResults">
+            <td>{{result.customer}}</td>
+            <td>{{result.fecha}}</td>
+            <td>{{result.orders}}</td>
+          </tr>
+
+          </tbody>
+          <tfoot style="display: table-footer-group;">
+          <tr>
+            <th></th>
+            <th>Total:</th>
+            <th data-priority="1">
+              {{ordersInRange}}
+            </th>
+          </tr>
+          </tfoot>
+
+        </table>
+      </div>
+
+
+      <div class="row">
+        <div class="col">
+          <h3>Detalles de envíos</h3>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger2" class="display compact" style="width:100%">
+          <thead>
+          <tr>
+            <th>N° Envío</th>
+            <th>N° Reserva</th>
+            <th data-priority="1">Destinatario</th>
+            <th data-priority="1">Celular del Destinatario</th>
+            <th>Dirección</th>
+            <th>Detalle</th>
+            <th>Distancia</th>
+            <th>Tarifa Base</th>
+            <th>Recargo</th>
+            <th>Cargos Extra</th>
+            <th>Costo</th>
+            <th>Estado</th>
+            <th>Detalle Cargo Extra</th>
+            <th>Observaciones</th>
+            <th>Conductor</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          <tr *ngFor=" let i = index;let order of orders;">
+            <td>{{order.idDetalle}}</td>
+            <td>{{order.idDelivery}}</td>
+            <td>{{order.nomDestinatario}}</td>
+            <td>{{order.numCel}}</td>
+            <td>{{order.direccion}}</td>
+            <td>{{order.nFactura}}</td>
+            <td>{{order.distancia}}</td>
+            <td>L. {{order.tarifaBase }}</td>
+            <td>L. {{order.recargo }}</td>
+            <td>L. {{order.cargosExtra }}</td>
+            <td>L. {{order.cTotal }}</td>
+            <td>{{order.estado.descEstado + ' Fecha: ' + order.fechaEntrega}}
+            </td>
+            <td>
+              <p *ngFor="let extraCharge of order.extra_charges">{{extraCharge.extracharge.nombre}}</p>
+            </td>
+            <td>{{order.observaciones || 'N/A'}}</td>
+            <td>
+              <p *ngIf="order.conductor">{{order.conductor.nomUsuario + ' - ' + order?.conductor?.numCelular}}</p>
+              <p *ngIf="!order.conductor">Aún no asignada</p>
+            </td>
+
+          </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+      <!-- CONTAINER BODY START -->
+
+
+      <!-- CONTAINER END -->
+    </div>
+    <!-- REPORT CONTAINER END -->
+
+
+  </mat-card-content>
+</mat-card>
+
+<!-- CARD END -->
