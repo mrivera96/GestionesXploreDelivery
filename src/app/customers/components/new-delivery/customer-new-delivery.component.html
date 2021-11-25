@@ -170,7 +170,7 @@
                       newForm.get('deliveryHeader.hora')?.errors?.mustAfterHour
                     "
                   >
-                    *Ups! Parece que esa hora no es válida
+                    *La hora de recogida debe ser 1 hora mayor a la hora actual
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -408,7 +408,6 @@
                   appearance="outline"
                   floatLabel="always"
                   class="col-md-6"
-                  
                 >
                   <mat-label>Detalle de envío:</mat-label>
                   <input
@@ -416,7 +415,7 @@
                     type="text"
                     formControlName="nFactura"
                     id="nFactura"
-                    [required]="selectedCategory?.idTipoServicio == 1"
+                    required
                     maxlength="250"
                     placeholder="¿Qué deseas enviar?"
                   />
@@ -482,7 +481,7 @@
                     type="tel"
                     id="numCel"
                     formControlName="numCel"
-                    [required]="selectedCategory?.idTipoServicio == 1"
+                    required
                     minlength="9"
                     autocomplete="off"
                     maxlength="9"
@@ -797,8 +796,7 @@
                 color="primary"
                 class="float-left"
                 [disabled]="
-                  loaders.loadingAdd ||
-                  !selectedCategory?.idCategoria
+                  loaders.loadingAdd || !selectedCategory?.idCategoria
                 "
               >
                 <span

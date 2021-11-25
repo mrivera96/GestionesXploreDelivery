@@ -102,11 +102,13 @@ export class BalancePaymentComponent implements OnInit {
             tipoPago: 6,
             idCliente: this.authService.currentUserValue.idCliente,
             numAutorizacion: response.CreditCardTransactionResults.AuthCode,
+            idTransaccion: null
           };
 
           this.cardsService
             .saveFailTransaction(transactionDetails)
-            .subscribe(() => {
+            .subscribe((response) => {
+              transDetails.idTransaccion = response.transId;
               this.paymentsService.addPayment(transDetails).subscribe(
                 (response) => {
                   this.loaders.loadingSubmit = false;
@@ -170,7 +172,7 @@ export class BalancePaymentComponent implements OnInit {
 
     if (year < +currentDate[1]) {
       this.expiredCard = true;
-    } else if (year == +currentDate[1] && month < +currentDate[0]) {
+    } else if (year == +currentDate[1] && month <= +currentDate[0]) {
       this.expiredCard = true;
     }
   }

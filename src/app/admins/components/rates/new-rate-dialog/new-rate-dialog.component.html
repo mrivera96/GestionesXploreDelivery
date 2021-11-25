@@ -308,24 +308,82 @@
 
   <h4
     *ngIf="
-      fNew.idTipoTarifa.value == 2 ||
-      (fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit)
+      (fNew.idTipoTarifa.value == 5  && !loaders.loadingSubmit)
     "
   >
-    Asignar Horario Tarifa de Carga Consolidada
+    Configuración de Tarifa de XPLORE SHUTTLE
+  </h4>
+  <!--||  -->
+  <hr
+    *ngIf="
+      (fNew.idTipoTarifa.value == 5 && !loaders.loadingSubmit)
+    "
+  />
+  <!-- -->
+
+  <form
+  [formGroup]="shuttleForm"
+  *ngIf="
+    (fNew.idTipoTarifa.value == 5 && !loaders.loadingSubmit)
+  "
+>
+  <!-- -->
+  <div class="form-row mt-3">
+    <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+      <mat-label>Ruta a asignar:</mat-label>
+      <mat-select
+        formControlName="idRuta"
+        required
+        placeholder="-Seleccione una opción-"
+
+      >
+        <mat-option *ngFor="let route of routes" [value]="route.idRuta">
+          {{ route.nomRuta }}
+        </mat-option>
+      </mat-select>
+      <mat-icon matSuffix>location_on</mat-icon>
+      <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+      <mat-label>Tipo de vehículo:</mat-label>
+      <mat-select
+        formControlName="idTipoVehiculo"
+        required
+        placeholder="-Seleccione una opción-"
+      >
+        <mat-option value="1"> Turismo </mat-option>
+        <mat-option value="2"> Minivan </mat-option>
+      </mat-select>
+      <mat-icon matSuffix>directions_car</mat-icon>
+      <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
+
+  </div>
+</form>
+  <h4
+    *ngIf="
+      (fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit) ||
+      (fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit) ||
+      (fNew.idTipoTarifa.value == 5 && !loaders.loadingSubmit)
+    "
+  >
+    Asignar Horario Tarifa
   </h4>
   <hr
     *ngIf="
-      fNew.idTipoTarifa.value == 2 ||
-      (fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit)
+      (fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit) ||
+      (fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit) ||
+      (fNew.idTipoTarifa.value == 5 && !loaders.loadingSubmit)
     "
   />
 
   <form
     [formGroup]="schdeduleForm"
     *ngIf="
-      fNew.idTipoTarifa.value == 2 ||
-      (fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit)
+      (fNew.idTipoTarifa.value == 2 && !loaders.loadingSubmit) ||
+      (fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit) ||
+      (fNew.idTipoTarifa.value == 5 && !loaders.loadingSubmit)
     "
   >
     <div class="form-row mt-3">
@@ -384,6 +442,14 @@
     </div>
 
     <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Límite de envíos:</mat-label>
+        <input formControlName="limite" type="number" required matInput />
+        <mat-error> *Este campo es obligatorio </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
       <button
         class="col-md-2"
         mat-raised-button
@@ -400,7 +466,8 @@
     class="form-row"
     *ngIf="
       fNew.idTipoTarifa.value == 2 ||
-      (fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit)
+      (fNew.idTipoTarifa.value == 4 && !loaders.loadingSubmit) ||
+      (fNew.idTipoTarifa.value == 5 && !loaders.loadingSubmit)
     "
   >
     <div class="col">
@@ -457,6 +524,19 @@
   >
     Confimar
   </button>
+
+  <button
+    *ngIf="fNew.idTipoTarifa.value == 5"
+    type="button"
+    [disabled]="
+      newRateForm.invalid || shuttleForm.invalid || loaders.loadingSubmit
+    "
+    (click)="onFormNewSubmit()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
   <!--<button *ngIf="fNew.idTipoTarifa.value == 2" type="button"
           [disabled]="newRateForm.invalid || consolidatedForm.invalid || loaders.loadingSubmit"
           (click)="onFormNewSubmit()"
@@ -464,7 +544,7 @@
     Confimar
   </button>-->
   <button
-    *ngIf="fNew.idTipoTarifa.value != 2 && fNew.idTipoTarifa.value != 4"
+    *ngIf="fNew.idTipoTarifa.value != 2 && fNew.idTipoTarifa.value != 4 && fNew.idTipoTarifa.value != 5"
     type="button"
     [disabled]="newRateForm.invalid || loaders.loadingSubmit"
     (click)="onFormNewSubmit()"

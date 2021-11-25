@@ -72,11 +72,19 @@
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
         <mat-label>CVC/CVV:</mat-label>
-        <input matInput required type="number" name="cvv" [(ngModel)]="cvv" 
-            onKeyPress="if(this.value.length==3) return false;" placeholder="000">
+        <input
+          matInput
+          required
+          type="password"
+          name="cvv"
+          [(ngModel)]="cvv"
+          maxlength="4"
+          minlength="3"
+          placeholder="0000"
+        />
         <mat-icon matSuffix>lock</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
-    </mat-form-field>
+      </mat-form-field>
     </div>
 
     <div class="form-row text-center" *ngIf="!loaders.loadingSubmit">

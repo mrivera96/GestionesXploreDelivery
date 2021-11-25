@@ -27,17 +27,17 @@
               <mat-tab-group>
                 <mat-tab label="Delivery">
                   <div class="col" formGroupName="deliveryHeader">
-                    <br/>
+                    <br />
                     <mat-radio-group
                       (change)="calculatedistanceBefore()"
                       formControlName="idCategoria"
                     >
-                    <app-category-selection
-                      (setSelectedCategory)="setSelectedCategory($event)"
-                      [newForm]="newForm"
-                      [categories]="deliveryCategories"
-                    >
-                    </app-category-selection>
+                      <app-category-selection
+                        (setSelectedCategory)="setSelectedCategory($event)"
+                        [newForm]="newForm"
+                        [categories]="deliveryCategories"
+                      >
+                      </app-category-selection>
                     </mat-radio-group>
                   </div>
                 </mat-tab>
@@ -49,13 +49,13 @@
                       (change)="calculatedistanceBefore()"
                       formControlName="idCategoria"
                     >
-                    <app-category-selection
-                      (setSelectedCategory)="setSelectedCategory($event)"
-                      [newForm]="newForm"
-                      [categories]="transportationCategories"
-                    >
-                    </app-category-selection>
-                  </mat-radio-group>
+                      <app-category-selection
+                        (setSelectedCategory)="setSelectedCategory($event)"
+                        [newForm]="newForm"
+                        [categories]="transportationCategories"
+                      >
+                      </app-category-selection>
+                    </mat-radio-group>
                   </div>
                 </mat-tab>
               </mat-tab-group>
@@ -91,11 +91,17 @@
                     [disabled]="orders.length > 0"
                     [ngModelOptions]="{ standalone: true }"
                   >
-                    <mat-option [value]="1" (click)="setCurrentDate()"> Solicitar Ahora </mat-option>
-                    <mat-option [value]="2" (click)="reserv = !reserv; nowHourError = false">Programar </mat-option>
+                    <mat-option [value]="1" (click)="setCurrentDate()">
+                      Solicitar Ahora
+                    </mat-option>
+                    <mat-option
+                      [value]="2"
+                      (click)="reserv = !reserv; nowHourError = false"
+                      >Programar
+                    </mat-option>
                   </mat-select>
                   <mat-icon matPrefix>schedule</mat-icon>
-                  <mat-hint>Horario: {{ hInit }} - {{ hFin }}</mat-hint>                 
+                  <mat-hint>Horario: {{ hInit }} - {{ hFin }}</mat-hint>
                 </mat-form-field>
                 <div *ngIf="nowHourError" class="alert alert-danger">
                   *Ups! Parece que estás fuera de horario de servicio. Puedes
@@ -163,7 +169,7 @@
                       newForm.get('deliveryHeader.hora')?.errors?.mustAfterHour
                     "
                   >
-                    *Ups! Parece que esa hora no es válida
+                    *La hora de recogida debe ser 1 hora mayor a la hora actual
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -787,8 +793,7 @@
                 (click)="onOrderAdd()"
                 color="primary"
                 [disabled]="
-                  loaders.loadingAdd ||
-                  !selectedCategory?.idCategoria
+                  loaders.loadingAdd || !selectedCategory?.idCategoria
                 "
                 class="float-left"
               >
@@ -906,7 +911,6 @@
           </span>
         </mat-checkbox>
       </div>-->
-
     </div>
     <!--CARD BLOCK PAYMENT OPTION end-->
   </mat-card-content>

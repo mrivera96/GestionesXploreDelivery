@@ -300,7 +300,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
           response.routingCategories.forEach((element) => {
             if (element.idTipoServicio == 2) {
               this.transportationCategories.push(element);
-            } else {
+            } else if(element.idTipoServicio == 1){
               this.deliveryCategories.push(element);
             }
           });

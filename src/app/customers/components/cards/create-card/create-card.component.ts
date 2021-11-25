@@ -25,7 +25,9 @@ export class CreateCardComponent implements OnInit {
     private authService: AuthService,
     private dialog: MatDialog,
     public dialogRef: MatDialogRef<CreateCardComponent>
-  ) {}
+  ) {
+    this.dialogRef.disableClose = true;
+  }
 
   ngOnInit(): void {
     this.initialize();
@@ -37,7 +39,7 @@ export class CreateCardComponent implements OnInit {
         idCliente: this.authService?.currentUserValue?.idCliente,
         cardNumber: [null, Validators.required],
         expDate: [null, Validators.required],
-        cvv: [null, Validators.required],
+        cvv: [null, [Validators.required, Validators.maxLength(4), Validators.minLength(3)]],
       },
       { validators: [CardExpirationValidate('expDate')] }
     );

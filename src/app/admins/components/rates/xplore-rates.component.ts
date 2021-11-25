@@ -16,6 +16,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { RateCustomersDialogComponent } from './rate-customers-dialog/rate-customers-dialog.component';
 import { ConsolidatedRateDetailsComponent } from './consolidated-rate-details/consolidated-rate-details.component';
 import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
+import { ShuttleRateDetailsComponent } from './shuttle-rate-details/shuttle-rate-details.component';
 
 @Component({
   selector: 'app-xplore-rates',
@@ -185,6 +186,23 @@ export class XploreRatesComponent implements OnInit {
         RateDetail: detail,
         RateSchedules: schedules,
         rateType: typeId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.reloadData();
+      } else {
+        dialogRef.close();
+      }
+    });
+  }
+
+  showShuttleRateDetail(detail, schedules) {
+    const dialogRef = this.dialog.open(ShuttleRateDetailsComponent, {
+      data: {
+        RateDetail: detail,
+        RateSchedules: schedules,
       },
     });
 

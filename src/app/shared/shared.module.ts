@@ -35,7 +35,8 @@ import { ConfirmRemoveComponent } from './components/delivery-detail/confirm-rem
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { VerificationDialogComponent } from './components/verification-dialog/verification-dialog.component';
-
+import { XploreShuttleComponent } from './components/xplore-shuttle/xplore-shuttle.component';
+import {MatStepperModule} from '@angular/material/stepper';
 @NgModule({
   declarations: [
     OrdersDataTableComponent,
@@ -56,6 +57,7 @@ import { VerificationDialogComponent } from './components/verification-dialog/ve
     SignUpComponent,
     ConfirmationDialogComponent,
     VerificationDialogComponent,
+    XploreShuttleComponent,
   ],
   imports: [
     CommonModule,
@@ -76,7 +78,8 @@ import { VerificationDialogComponent } from './components/verification-dialog/ve
     MatTabsModule,
     MatRadioModule,
     GoogleMapsModule,
-    ReportViewerModule
+    ReportViewerModule,
+    MatStepperModule
   ],
   exports: [
     OrdersDataTableComponent,

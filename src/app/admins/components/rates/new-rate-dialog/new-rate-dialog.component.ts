@@ -18,6 +18,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Schedule } from '../../../../models/schedule';
 import { formatDate } from '@angular/common';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-new-rate-dialog',
@@ -43,6 +44,8 @@ export class NewRateDialogComponent implements OnInit {
   schedules: Schedule[];
   schdeduleForm: FormGroup;
   rateSchedules: Schedule[] = [];
+  shuttleForm: FormGroup;
+  routes: any[];
 
   constructor(
     private ratesService: RatesService,
@@ -51,12 +54,10 @@ export class NewRateDialogComponent implements OnInit {
     public dialog: MatDialog,
     private categoriesService: CategoriesService,
     public dialogRef: MatDialogRef<any>,
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService
   ) {
     this.dialogRef.disableClose = true;
-  }
-
-  ngOnInit(): void {
     this.newRateForm = this.formBuilder.group({
       descTarifa: ['', Validators.required],
       idCategoria: [null, Validators.required],
@@ -74,6 +75,11 @@ export class NewRateDialogComponent implements OnInit {
       dirEntrega: [''],
     });
 
+    this.shuttleForm = this.formBuilder.group({
+      idRuta: [null, Validators.required],
+      idTipoVehiculo:[null, Validators.required]
+    });
+
     this.schdeduleForm = this.formBuilder.group({
       cod: [1, Validators.required],
       dia: ['Lunes'],
@@ -86,6 +92,7 @@ export class NewRateDialogComponent implements OnInit {
         Validators.required,
       ],
       descHorario: ['', [Validators.required, Validators.maxLength(60)]],
+      limite:[20]
     });
 
     this.dtOptions = {
@@ -113,7 +120,10 @@ export class NewRateDialogComponent implements OnInit {
         },
       },
     };
+  }
 
+  ngOnInit(): void {
+    
     const usersSubscription = this.usersService
       .getCustomers()
       .subscribe((response) => {
@@ -136,6 +146,14 @@ export class NewRateDialogComponent implements OnInit {
         this.rateTypes = response.data;
         ratesSubscription.unsubscribe();
       });
+
+    const rutesSusbcription = this.http.post<any>(`${environment.apiUrl}`,{
+      tkn: this.authService.currentUserValue.access_token,
+      function: 'getRoutes'
+    }).subscribe(response=>{
+      this.routes = response.data;
+      rutesSusbcription.unsubscribe();
+    });
   }
 
   get fNew() {
@@ -162,6 +180,34 @@ export class NewRateDialogComponent implements OnInit {
             this.newRateForm.value,
             this.rateCustomers,
             this.consolidatedForm.value,
+            this.rateSchedules
+          )
+          .subscribe(
+            (response) => {
+              this.loaders.loadingSubmit = false;
+              this.openSuccessDialog(
+                'Operación Realizada Correctamente',
+                response.message
+              );
+            },
+            (error) => {
+              error.subscribe((error) => {
+                this.loaders.loadingSubmit = false;
+                this.openErrorDialog(error.statusText);
+              });
+            }
+          );
+      }
+    }else if (
+      this.fNew.idTipoTarifa.value == 5
+    ) {
+      if (this.newRateForm.valid && this.shuttleForm.valid) {
+        this.loaders.loadingSubmit = true;
+        this.ratesService
+          .createRate(
+            this.newRateForm.value,
+            this.rateCustomers,
+            this.shuttleForm.value,
             this.rateSchedules
           )
           .subscribe(
@@ -234,6 +280,7 @@ export class NewRateDialogComponent implements OnInit {
     scheduleToAdd.dia = schedule.dia;
     scheduleToAdd.inicio = schedule.inicio;
     scheduleToAdd.final = schedule.final;
+    scheduleToAdd.limite = schedule.limite;
 
     if (!this.rateSchedules.includes(scheduleToAdd)) {
       this.rateSchedules.push(scheduleToAdd);

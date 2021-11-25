@@ -19,7 +19,7 @@ export class PaymentsService {
       {
         function: 'createPayment',
         form,
-        tkn: this.authService.currentUserValue.access_token
+        tkn: this.authService.currentUserValue?.access_token || null
       }
     )
   }

@@ -94,6 +94,7 @@ import { AddOrderToDeliveryComponent } from './components/add-order-to-delivery/
 import { QueryUsersComponent } from './components/query-users/query-users.component';
 import { AddQueryUserComponent } from './components/query-users/add-query-user/add-query-user.component';
 import { UpdateQueryUserComponent } from './components/query-users/update-query-user/update-query-user.component';
+import { ShuttleRateDetailsComponent } from './components/rates/shuttle-rate-details/shuttle-rate-details.component';
 
 @NgModule({
   declarations: [
@@ -180,7 +181,8 @@ import { UpdateQueryUserComponent } from './components/query-users/update-query-
     AddOrderToDeliveryComponent,
     QueryUsersComponent,
     AddQueryUserComponent,
-    UpdateQueryUserComponent
+    UpdateQueryUserComponent,
+    ShuttleRateDetailsComponent,
   ],
   entryComponents: [
     ConfirmModalComponent,
