@@ -89,6 +89,20 @@
                   <mat-icon>tune</mat-icon>
                   <span>Configuraciones</span>
                 </button>
+
+                <button
+                  (click)="
+                  showShuttleRateDetail(
+                      rate.shuttle_detail,
+                      rate.schedules
+                    )
+                  "
+                  *ngIf="rate.idTipoTarifa == 5"
+                  mat-menu-item
+                >
+                  <mat-icon>tune</mat-icon>
+                  <span>Configuraciones</span>
+                </button>
               </mat-menu>
             </td>
           </tr>

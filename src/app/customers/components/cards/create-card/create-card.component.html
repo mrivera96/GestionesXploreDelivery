@@ -57,10 +57,11 @@
         <input
           matInput
           required
-          type="number"
+          type="password"
           formControlName="cvv"
-          onKeyPress="if(this.value.length==3) return false;"
-          placeholder="000"
+          maxlength="4"
+          minlength="3"
+          placeholder="0000"
         />
         <mat-icon matSuffix>lock</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>

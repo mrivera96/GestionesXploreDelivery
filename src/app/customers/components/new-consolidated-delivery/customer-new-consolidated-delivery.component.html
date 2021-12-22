@@ -92,10 +92,10 @@
                   <mat-select id="prevDirRecogida" [(ngModel)]="locationOption" required [disabled]="orders.length > 0"
                     [ngModelOptions]="{standalone: true}" placeholder="- Seleccione una opción -">
                     <mat-option [value]="1"
-                      (click)="setCurrentLocationOrigin();calculateRatio();calculatedistanceBefore();checkInsructions()">
+                      (click)="setCurrentLocationOrigin();calculateRatio();calculatedistanceBefore()">
                       Ubicación Actual
                     </mat-option>
-                    <mat-option [value]="2" (click)="clearLocationField();checkInsructions()">Ingresar Ubicación
+                    <mat-option [value]="2" (click)="clearLocationField()">Ingresar Ubicación
                     </mat-option>
                     <mat-option [value]="3" (click)="clearLocationField();checkInsructions()">Dirección Existente
                     </mat-option>

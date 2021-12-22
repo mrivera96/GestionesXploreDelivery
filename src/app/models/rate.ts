@@ -22,4 +22,6 @@ export interface Rate {
   rate_detail?: any[]
   datesToShow?: any[]
   item_detail?: ItemDetail
+  shuttle_detail?: any
+  precioDLS?: number
 }

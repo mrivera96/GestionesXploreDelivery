@@ -10,4 +10,5 @@ export interface Schedule {
   rate?: Rate
   finicio?: string
   ffinal?: string
+  limite?: number
 }

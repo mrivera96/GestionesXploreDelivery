@@ -138,6 +138,8 @@
                   <th>Monto</th>
                   <th>Tipo de Pago</th>
                   <th>Referencia</th>
+                  <th>No. Autorización</th>
+                  <th>No. Orden</th>
                   <th>Banco</th>
                 </tr>
               </thead>
@@ -148,6 +150,8 @@
                   <td>L. {{ payment.monto }}</td>
                   <td>{{ payment.payment_type.nomTipoPago }}</td>
                   <td>{{ payment.referencia || "N/A" }}</td>
+                  <td>{{ payment?.transaction?.authCode || "N/A" }}</td>
+                  <td>{{ payment?.transaction?.orderNumber || "N/A" }}</td>
                   <td>{{ payment.banco || "N/A" }}</td>
                 </tr>
               </tbody>

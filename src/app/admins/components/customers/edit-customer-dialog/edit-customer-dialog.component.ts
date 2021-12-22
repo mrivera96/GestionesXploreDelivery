@@ -84,6 +84,10 @@ export class EditCustomerDialogComponent implements OnInit {
         +this.currCustomer.enviarNotificaciones,
         Validators.required,
       ],
+      permiteEntregasConductor: [
+        +this.currCustomer.permiteEntregasConductor,
+        Validators.required,
+      ],
       pagoTarjeta: [+this.currCustomer.pagoTarjeta, Validators.required],
       instFotografias: [
         this.currCustomer.instFotografias,

@@ -298,4 +298,14 @@ export class DeliveriesService {
       tkn: this.authService.currentUserValue.access_token,
     });
   }
+
+  createShuttle( reservData,
+    passengerData, paymentData){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'createShuttle',
+      reservData,
+      passengerData,
+      paymentData
+    });
+  }
 }

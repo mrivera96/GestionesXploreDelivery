@@ -49,4 +49,12 @@ export class SchedulesService {
       tkn: this.authService.currentUserValue.access_token
     })
   }
+
+  getShuttleSchedules(rate, date){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'getShuttleSchedules',
+      rate,
+      date
+    })
+  }
 }

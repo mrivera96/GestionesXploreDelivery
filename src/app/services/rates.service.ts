@@ -1,66 +1,62 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
-import {environment} from "../../environments/environment";
-import {AuthService} from "./auth.service";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RatesService {
-
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) {
-  }
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   getRates() {
-    return this.http.get<any>(`${environment.apiUrl}`, {params: {function: 'getTarifas'}})
+    return this.http.get<any>(`${environment.apiUrl}`, {
+      params: { function: 'getTarifas' },
+    });
   }
 
   editRate(form) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'editRate',
       form,
-      tkn: this.authService.currentUserValue.access_token
-    })
+      tkn: this.authService.currentUserValue.access_token,
+    });
   }
 
   createRate(form, customers, detail?, schedules?) {
-    if(detail){
+    if (detail) {
       return this.http.post<any>(`${environment.apiUrl}`, {
         function: 'createRate',
         form,
-        detail:detail,
+        detail: detail,
         schedules,
         customers: customers,
-        tkn: this.authService.currentUserValue.access_token
-      })
-    }else{
+        tkn: this.authService.currentUserValue.access_token,
+      });
+    } else {
       return this.http.post<any>(`${environment.apiUrl}`, {
         function: 'createRate',
         form,
         customers: customers,
-        tkn: this.authService.currentUserValue.access_token
-      })
+        tkn: this.authService.currentUserValue.access_token,
+      });
     }
-
   }
 
   getCustomerRates(idCustomer = null) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getMyRates',
       idCustomer,
-      tkn: this.authService.currentUserValue.access_token
-    })
+      tkn: this.authService.currentUserValue.access_token,
+    });
   }
 
   getRateCustomers(rateId) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getRateCustomers',
       idTarifa: rateId,
-      tkn: this.authService.currentUserValue.access_token
-    })
+      tkn: this.authService.currentUserValue.access_token,
+    });
   }
 
   removeCustomerFromRate(rateId, customerId) {
@@ -68,8 +64,8 @@ export class RatesService {
       function: 'removeCustomerFromRate',
       idCliente: customerId,
       idTarifa: rateId,
-      tkn: this.authService.currentUserValue.access_token
-    })
+      tkn: this.authService.currentUserValue.access_token,
+    });
   }
 
   addCustomerToRate(rateId, customerId) {
@@ -77,41 +73,57 @@ export class RatesService {
       function: 'addCustomerToRate',
       idCliente: customerId,
       idTarifa: rateId,
-      tkn: this.authService.currentUserValue.access_token
-    })
+      tkn: this.authService.currentUserValue.access_token,
+    });
   }
 
-  getRateTypes(){
+  getRateTypes() {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getRateTypes',
-      tkn: this.authService.currentUserValue.access_token
-    })
+      tkn: this.authService.currentUserValue.access_token,
+    });
   }
 
-  updateConsolidatedRateDetail(form, schedules?){
-    if(schedules){
+  updateConsolidatedRateDetail(form, schedules?) {
+    if (schedules) {
       return this.http.post<any>(`${environment.apiUrl}`, {
         function: 'updateConsolidatedRateDetail',
         form,
         schedules,
-        tkn: this.authService.currentUserValue.access_token
-      })
-    }else{
+        tkn: this.authService.currentUserValue.access_token,
+      });
+    } else {
       return this.http.post<any>(`${environment.apiUrl}`, {
         function: 'updateConsolidatedRateDetail',
         form,
-        tkn: this.authService.currentUserValue.access_token
-      })
+        tkn: this.authService.currentUserValue.access_token,
+      });
     }
-
   }
 
-  getRateSchedules(rateId){
+  updateShuttleRateDetail(form, schedules?) {
+    if (schedules) {
+      return this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'updateShuttleRateDetail',
+        form,
+        schedules,
+        tkn: this.authService.currentUserValue.access_token,
+      });
+    } else {
+      return this.http.post<any>(`${environment.apiUrl}`, {
+        function: 'updateShuttleRateDetail',
+        form,
+        tkn: this.authService.currentUserValue.access_token,
+      });
+    }
+  }
+
+  getRateSchedules(rateId) {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'getRateSchedules',
       idTarifa: rateId,
-      tkn: this.authService.currentUserValue.access_token
-    })
+      tkn: this.authService.currentUserValue.access_token,
+    });
   }
 
   removeScheduleFromRate(rateId, scheduleId) {
@@ -119,9 +131,15 @@ export class RatesService {
       function: 'removeScheduleFromRate',
       idHorario: scheduleId,
       idTarifa: rateId,
-      tkn: this.authService.currentUserValue.access_token
-    })
+      tkn: this.authService.currentUserValue.access_token,
+    });
   }
 
-
+  findShuttleRate(vehType, route) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'findShuttleRate',
+      idTipoVehiculo: vehType,
+      idRuta: route,
+    });
+  }
 }

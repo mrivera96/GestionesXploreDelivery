@@ -16,4 +16,5 @@ export interface Payment {
   numAutorizacion?: string
   payment_type?: PaymentType
   montoShow?:string
+  transaction?: any
 }

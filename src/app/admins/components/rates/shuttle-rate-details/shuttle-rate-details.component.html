@@ -1,7 +1,7 @@
 <!-- MODAL START -->
 <h2 mat-dialog-title class="text-info">
   <mat-icon [inline]="true">create</mat-icon>
-  Detalles de Tarifa Consolidada
+  Detalles de Tarifa SHUTTLE
 </h2>
 <mat-dialog-content>
   <div class="row" *ngIf="loaders.loadingSubmit || loaders.loadingData">
@@ -16,75 +16,36 @@
   </div>
 
   <form
-    [formGroup]="consolidatedForm"
+    [formGroup]="shuttleForm"
     *ngIf="!loaders.loadingSubmit && !loaders.loadingData"
   >
     <div class="form-row mt-3">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Dirección de recogida:</mat-label>
-        <input
-          matInput
-          type="text"
-          formControlName="dirRecogida"
-          (input)="searchAddress($event)"
+        <mat-label>Ruta a asignar:</mat-label>
+        <mat-select
+          formControlName="idRuta"
           required
-          placeholder="Punto de recogida"
-          [matAutocomplete]="auto"
-          autocomplete="nope"
-        />
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let s of places" [value]="s.text">
-            {{ s.text }}
+          placeholder="-Seleccione una opción-"
+        >
+          <mat-option *ngFor="let route of routes" [value]="route.idRuta">
+            {{ route.nomRuta }}
           </mat-option>
-        </mat-autocomplete>
-        <mat-icon matSuffix>location_on</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Radio Máximo:</mat-label>
-        <input
-          matInput
-          type="number"
-          formControlName="radioMaximo"
-          required
-          placeholder="Radio Máximo desde punto de recogida"
-        />
-        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
-        <mat-error>*Este campo es obligatorio</mat-error>
-      </mat-form-field>
-    </div>
-    <div class="form-row mt-3" *ngIf="rateType == 4">
-      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Dirección de entrega:</mat-label>
-        <input
-          matInput
-          type="text"
-          formControlName="dirEntrega"
-          (input)="searchAddress($event)"
-          required
-          placeholder="Punto de entrega"
-          [matAutocomplete]="auto"
-          autocomplete="nope"
-        />
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let s of places" [value]="s.text">
-            {{ s.text }}
-          </mat-option>
-        </mat-autocomplete>
+        </mat-select>
         <mat-icon matSuffix>location_on</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-        <mat-label>Radio Máximo de Entrega:</mat-label>
-        <input
-          matInput
-          type="number"
-          formControlName="radioMaximoEntrega"
+        <mat-label>Tipo de vehículo:</mat-label>
+        <mat-select
+          formControlName="idTipoVehiculo"
           required
-          placeholder="Radio Máximo desde punto de entrega"
-        />
-        <mat-icon matSuffix>keyboard_arrow_up</mat-icon>
+          placeholder="-Seleccione una opción-"
+        >
+          <mat-option value="1"> Turismo </mat-option>
+          <mat-option value="2"> Minivan </mat-option>
+        </mat-select>
+        <mat-icon matSuffix>directions_car</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
     </div>
@@ -114,6 +75,7 @@
               <th scope="col">Día</th>
               <th scope="col">Hora Inicial</th>
               <th scope="col">Hora Final</th>
+              <th scope="col">Límite de envíos</th>
               <th scope="col" data-priority="1">Acción</th>
             </tr>
           </thead>
@@ -125,6 +87,7 @@
               <td>{{ schedule.dia }}</td>
               <td>{{ schedule.inicio }}</td>
               <td>{{ schedule.final }}</td>
+              <td>{{ schedule.limite || "N/A" }}</td>
               <td>
                 <button
                   type="button"
@@ -208,10 +171,10 @@
 
     <div class="form-row">
       <mat-form-field appearance="outline" floatLabel="always" class="col-md">
-          <mat-label>Límite de envíos:</mat-label>
-          <input formControlName="limite" type="number" required matInput />
-          <mat-error> *Este campo es obligatorio </mat-error>
-        </mat-form-field>
+        <mat-label>Límite de envíos:</mat-label>
+        <input formControlName="limite" type="number" required matInput />
+        <mat-error> *Este campo es obligatorio </mat-error>
+      </mat-form-field>
     </div>
 
     <div class="form-row">
@@ -278,7 +241,7 @@
   <button
     type="button"
     [disabled]="
-      consolidatedForm.invalid || loaders.loadingSubmit || loaders.loadingData
+      shuttleForm.invalid || loaders.loadingSubmit || loaders.loadingData
     "
     (click)="onFormSubmit()"
     mat-raised-button

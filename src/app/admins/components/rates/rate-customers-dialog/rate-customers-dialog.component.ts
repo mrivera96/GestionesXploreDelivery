@@ -40,7 +40,9 @@ export class RateCustomersDialogComponent implements OnInit {
     const ratesSubscription = this.ratesService
       .getRateCustomers(this.rateId)
       .subscribe((response) => {
+        response.data.sort((a: any,b:any) => (a.customer.nomEmpresa > b.customer.nomEmpresa ? 1 : -1 ))
         this.rateCustomers = response.data;
+        
         this.loaders.loadingData = false;
         ratesSubscription.unsubscribe();
       });

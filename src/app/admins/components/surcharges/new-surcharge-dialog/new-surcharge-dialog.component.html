@@ -181,7 +181,19 @@
         <input matInput type="number" formControlName="gastosReembolsables" />
         <mat-icon matSuffix>attach_money</mat-icon>
       </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-md">
+        <mat-label>Transporte de Personas:</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="transportePersonas"
+          min="0"
+        />
+        <mat-icon matSuffix>transfer_within_a_station</mat-icon>
+      </mat-form-field>
     </div>
+
 
     <br />
     <h4 *ngIf="isGeneral == false">Agregar Cliente</h4>

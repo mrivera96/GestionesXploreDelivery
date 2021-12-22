@@ -1,62 +1,53 @@
+import { formatDate } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RatesService } from '../../../../services/rates.service';
 import {
-  MAT_DIALOG_DATA,
   MatDialog,
   MatDialogRef,
+  MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { HttpClient } from '@angular/common/http';
-import { ConsolidatedRateDetail } from '../../../../models/consolidated-rate-detail';
-import { ErrorModalComponent } from '../../../../shared/components/error-modal/error-modal.component';
-import { SuccessModalComponent } from '../../../../shared/components/success-modal/success-modal.component';
-import { environment } from '../../../../../environments/environment';
-import { formatDate } from '@angular/common';
-import { Schedule } from '../../../../models/schedule';
+import { Schedule } from 'src/app/models/schedule';
+import { AuthService } from 'src/app/services/auth.service';
+import { RatesService } from 'src/app/services/rates.service';
+import { ErrorModalComponent } from 'src/app/shared/components/error-modal/error-modal.component';
+import { SuccessModalComponent } from 'src/app/shared/components/success-modal/success-modal.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-consolidated-rate-details',
-  templateUrl: './consolidated-rate-details.component.html',
-  styles: [],
+  selector: 'app-shuttle-rate-details',
+  templateUrl: './shuttle-rate-details.component.html',
+  styleUrls: ['./shuttle-rate-details.component.css'],
 })
-export class ConsolidatedRateDetailsComponent implements OnInit {
-  consolidatedForm: FormGroup;
-  places = [];
+export class ShuttleRateDetailsComponent implements OnInit {
   loaders = {
     loadingData: false,
     loadingSubmit: false,
   };
-  currRateDetail: ConsolidatedRateDetail;
+  currRateDetail: any;
   rateSchedules: Schedule[] = [];
   schdeduleForm: FormGroup;
   assignedSchedules: Schedule[] = [];
-  rateType: number;
+  shuttleForm: FormGroup;
+  routes: any[];
 
   constructor(
     private ratesService: RatesService,
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
-    public dialogRef: MatDialogRef<any>,
+    public dialogRef: MatDialogRef<ShuttleRateDetailsComponent>,
     private http: HttpClient,
-    @Inject(MAT_DIALOG_DATA) public data: any
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private authService: AuthService
   ) {
-    this.currRateDetail = this.data.RateDetail;
-    this.rateType = this.data.rateType;
     this.assignedSchedules = data.RateSchedules;
     this.dialogRef.disableClose = true;
-  }
+    this.currRateDetail = this.data.RateDetail;
 
-  ngOnInit(): void {
-    this.initialize();
-  }
-
-  initialize() {
-    this.consolidatedForm = this.formBuilder.group({
-      idTarifaDelivery: [this.currRateDetail.idTarifaDelivery],
-      radioMaximo: [this.currRateDetail.radioMaximo, Validators.required],
-      dirRecogida: [this.currRateDetail.dirRecogida, Validators.required],
-      radioMaximoEntrega: [this.currRateDetail.radioMaximoEntrega],
-      dirEntrega: [this.currRateDetail.dirEntrega],
+    this.shuttleForm = this.formBuilder.group({
+      idTarifa: [this.currRateDetail.idTarifa],
+      idRuta: [this.currRateDetail.idRuta, Validators.required],
+      idTipoVehiculo:[this.currRateDetail.idTipoVehiculo, Validators.required]
     });
 
     this.schdeduleForm = this.formBuilder.group({
@@ -71,7 +62,17 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
         Validators.required,
       ],
       descHorario: ['', [Validators.required, Validators.maxLength(60)]],
-      limite:[20]
+      limite: [20],
+    });
+  }
+
+  ngOnInit(): void {
+    const rutesSusbcription = this.http.post<any>(`${environment.apiUrl}`,{
+      tkn: this.authService.currentUserValue.access_token,
+      function: 'getRoutes'
+    }).subscribe(response=>{
+      this.routes = response.data;
+      rutesSusbcription.unsubscribe();
     });
   }
 
@@ -102,30 +103,12 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
     }
   }
 
-  searchAddress(event) {
-    let lugar = event.target.value;
-    if (lugar.trim().length >= 5) {
-      const placeSubscription = this.http
-        .post<any>(`${environment.apiUrl}`, {
-          lugar: lugar,
-          function: 'searchPlace',
-        })
-        .subscribe((response) => {
-          this.places = response;
-          placeSubscription.unsubscribe();
-        });
-    }
-  }
-
   onFormSubmit() {
-    if (this.consolidatedForm.valid) {
+    if (this.shuttleForm.valid) {
       this.loaders.loadingSubmit = true;
       if (this.rateSchedules.length > 0) {
         this.ratesService
-          .updateConsolidatedRateDetail(
-            this.consolidatedForm.value,
-            this.rateSchedules
-          )
+          .updateShuttleRateDetail(this.shuttleForm.value, this.rateSchedules)
           .subscribe(
             (response) => {
               this.loaders.loadingSubmit = false;
@@ -144,7 +127,7 @@ export class ConsolidatedRateDetailsComponent implements OnInit {
           );
       } else {
         this.ratesService
-          .updateConsolidatedRateDetail(this.consolidatedForm.value)
+          .updateShuttleRateDetail(this.shuttleForm.value)
           .subscribe(
             (response) => {
               this.loaders.loadingSubmit = false;

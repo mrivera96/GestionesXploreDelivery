@@ -1043,16 +1043,23 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/" . $environment . "/api/admins/payments/create";
+        if($_POST['tkn'] != null){
+            $url = "http://190.4.56.14/" . $environment . "/api/admins/payments/create";
+            $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+            curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        }else{
+            $url = "http://190.4.56.14/" . $environment . "/api/shared/shuttle/createPayment";
+            curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        }
 
-        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+       
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
 
         curl_setopt($handle, CURLOPT_POST, TRUE);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        
         /* set return type json */
 
         $output = curl_exec($handle);
@@ -2661,15 +2668,22 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/" . $environment . "/api/customers/paymentMethods/saveFailTransaction";
-        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
-
+        if($_POST['tkn'] != null){
+            $url = "http://190.4.56.14/" . $environment . "/api/customers/paymentMethods/saveFailTransaction";
+            $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+            curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        }else{
+            $url = "http://190.4.56.14/" . $environment . "/api/shared/shuttle/saveFailTransaction";
+            curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        }
+        
+        
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);
 
         curl_setopt($handle, CURLOPT_POST, TRUE);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        
         /* set return type json */
 
         $output = curl_exec($handle);
@@ -2818,6 +2832,117 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         $url = "http://190.4.56.14/" . $environment . "/api/auth/verifyNumber";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getRoutes') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/routes/read";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'updateShuttleRateDetail') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/rates/updateShuttleDetail";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'findShuttleRate') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/rates/findShuttleRate";
+
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getShuttleRoutes') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/routes/get";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getShuttleSchedules') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/schedule/getShuttleSchedules";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'createShuttle') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/shuttle/create";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);

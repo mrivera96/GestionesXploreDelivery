@@ -25,4 +25,5 @@ export interface Customer {
   razonSocial?: string
   rtn?: string
   pagoTarjeta?: boolean
+  permiteEntregasConductor?: number
 }

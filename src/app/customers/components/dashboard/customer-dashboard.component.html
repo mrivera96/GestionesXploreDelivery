@@ -80,9 +80,8 @@
                 </button>
               </div>
             </div>
-            <!-- <br />
-
-            <div class="row" *ngIf="currentCustomer?.pagoTarjeta && currentUser.idPerfil == 8">
+             <br />
+            <div class="row" *ngIf="+currentCustomer?.pagoTarjeta && currentUser.idPerfil == 8">
               <div class="col">
                 <button
                   (click)="makePayment()"
@@ -93,7 +92,7 @@
                   Realizar Pago
                 </button>
               </div>
-            </div> -->
+            </div> 
           </mat-card-content>
         </mat-card>
       </div>

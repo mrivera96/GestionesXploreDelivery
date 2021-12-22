@@ -64,7 +64,7 @@ export class CardsService {
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'saveFailTransaction',
       payDetails: payDetails,
-      tkn: this.authService.currentUserValue.access_token,
+      tkn: this.authService.currentUserValue?.access_token || null,
     });
   }
 }

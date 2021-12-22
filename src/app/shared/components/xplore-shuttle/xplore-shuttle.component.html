@@ -1,0 +1,351 @@
+<!-- INICIO CARD -->
+<mat-card @fade>
+  <!--  INICIO ENCABEZADO CARD-->
+  <mat-card-header>
+    <mat-card-title class="title"> XPLORE SHUTTLE </mat-card-title>
+  </mat-card-header>
+
+  <!--  FIN  ENCABEZADO CARD-->
+
+  <!-- INICIO CARD CONTENT -->
+  <mat-card-content>
+    <!-- INICIO DEL FORM DELIVERY CONTAINER-->
+
+    <mat-vertical-stepper>
+      <mat-step
+        [stepControl]="reservData"
+        [editable]="isEditable"
+        [linear]="true"
+        label="Datos de Reservación"
+      >
+        <form [formGroup]="reservData">
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Seleccione un tipo de vehículo</mat-label>
+            <mat-select
+              formControlName="idTipoVehiculo"
+              required
+              placeholder="Seleccione una opción"
+              (selectionChange)="getRate()"
+            >
+              <mat-option value="1">Turismo </mat-option>
+
+              <mat-option value="2">Minivan</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Seleccione una ruta</mat-label>
+            <mat-select
+              formControlName="idRuta"
+              required
+              placeholder="Seleccione una opción"
+              (selectionChange)="getRate()"
+            >
+              <mat-option
+                (click)="setRoute(route)"
+                *ngFor="let route of routes"
+                [value]="route.idRuta"
+                >- {{ route.nomRuta }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Fecha de recogida:</mat-label>
+            <input
+              matInput
+              required
+              formControlName="fecha"
+              placeholder="- Selecciona una fecha -"
+              type="date"
+              (change)="getSchedules()"
+            />
+            <mat-icon matPrefix>today</mat-icon>
+            <mat-error *ngIf="reservData.get('fecha').errors?.required"
+              >* Este campo es obligatorio
+            </mat-error>
+            <mat-error *ngIf="reservData.get('fecha').errors?.mustAfterDate"
+              >* La fecha ingresada no es válida
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Hora de recogida:</mat-label>
+            <mat-select
+              required
+              formControlName="hora"
+              placeholder="- Selecciona una hora -"
+            >
+              <mat-option *ngFor="let hour of schedules" [value]="hour.inicio">
+                {{ hour?.label }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>schedule</mat-icon>
+            <mat-error *ngIf="reservData.get('hora')?.errors?.required"
+              >* Este campo es obligatorio
+            </mat-error>
+            <mat-error *ngIf="reservData.get('hora')?.errors?.mustAfterHour">
+              *Ups! Parece que el horario seleccionado ha expirado. Favor
+              selecciona un horario de recogida vigente
+            </mat-error>
+          </mat-form-field>
+
+          <p>
+            Total: LPS. {{ currRate?.precio }} / USD.
+            {{ currRate?.precioDLS }} (Apróx.)
+          </p>
+
+          <div>
+            <button
+              [disabled]="!reservData.valid"
+              mat-stroked-button
+              matStepperNext
+              color="primary"
+            >
+              Avanzar
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step
+        [stepControl]="passengerData"
+        label="Datos de Pasajero Principal"
+      >
+        <form [formGroup]="passengerData">
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Nombre:</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="nomDestinatario"
+              id="nomDestinatario"
+              required
+              maxlength="150"
+              placeholder="¿A quién vamos a transportar?"
+            />
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error
+              *ngIf="passengerData.get('nomDestinatario').errors?.required"
+            >
+              *Este campo es obligatorio
+            </mat-error>
+            <mat-error
+              *ngIf="passengerData.get('nomDestinatario').errors?.maxlength"
+            >
+              *Excede la longitud máxima permitida
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Número celular:</mat-label>
+            <input
+              matInput
+              type="tel"
+              id="numCel"
+              formControlName="numCel"
+              required
+              minlength="9"
+              autocomplete="off"
+              maxlength="9"
+              appPhoneMask
+              placeholder="Ej. 9999-9999(Guión Automático)"
+            />
+            <mat-icon matPrefix>phone</mat-icon>
+            <mat-error
+              *ngIf="
+                passengerData.get('numCel').errors?.minlength ||
+                passengerData.get('numCel').errors?.maxlength
+              "
+            >
+              *Por favor ingresa un número válido
+            </mat-error>
+            <mat-error *ngIf="passengerData.get('numCel').errors?.required">
+              *Este campo es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>correo electrónico:</mat-label>
+            <input
+              matInput
+              id="email"
+              type="email"
+              formControlName="email"
+              required
+              maxlength="50"
+              pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+              placeholder="ejemplo@email.com"
+            />
+            <mat-icon matPrefix>alternate_email</mat-icon>
+            <mat-error *ngIf="passengerData.get('email').errors?.required">
+              *Este campo es obligatorio
+            </mat-error>
+            <mat-error *ngIf="passengerData.get('email').errors?.pattern">
+              *Por favor ingrese un email válido
+            </mat-error>
+          </mat-form-field>
+
+          <div>
+            <button mat-stroked-button color="primary" matStepperPrevious>
+              Regresar
+            </button>
+            <button
+              [disabled]="!passengerData.valid"
+              mat-stroked-button
+              color="primary"
+              matStepperNext
+            >
+              Avanzar
+            </button>
+          </div>
+        </form>
+      </mat-step>
+
+      <mat-step [stepControl]="paymentData" label="Datos de Pago">
+        <form [formGroup]="paymentData">
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Nombre del titular de la tarjeta:</mat-label>
+            <input
+              matInput
+              type="text"
+              formControlName="cardName"
+              required
+              placeholder="¿A quién pertenece la tarjeta?"
+            />
+            <mat-icon matSuffix>credit_card</mat-icon>
+            <mat-error>*Este campo es obligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Número de tarjeta:</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="cardNumber"
+              required
+              placeholder="1234 5678 9012 3456"
+              onKeyPress="if(this.value.length==16) return false;"
+            />
+            <mat-icon matSuffix>credit_card</mat-icon>
+            <mat-error>*Este campo es obligatorio</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Mes de expiración:</mat-label>
+            <mat-select
+              formControlName="expMonth"
+              placeholder="Seleccione un mes"
+              required
+              (selectionChange)="validateDate()"
+            >
+              <mat-option *ngFor="let month of months" value="{{ month }}">{{
+                month
+              }}</mat-option>
+            </mat-select>
+            <mat-icon matSuffix>event</mat-icon>
+            <mat-error *ngIf="paymentData.controls.expMonth?.errors?.required"
+              >*Este campo es obligatorio</mat-error
+            >
+            <mat-error
+              *ngIf="paymentData.controls.expMonth?.errors?.mustAfterDate"
+            >
+              *Esta tarjeta ya ha expirado
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>Año de expiración:</mat-label>
+            <mat-select
+              formControlName="expYear"
+              placeholder="Seleccione un año"
+              required
+              (selectionChange)="validateDate()"
+            >
+              <mat-option *ngFor="let year of years" value="{{ year }}">{{
+                year
+              }}</mat-option>
+            </mat-select>
+            <mat-icon matSuffix>event</mat-icon>
+            <mat-error *ngIf="paymentData.controls.expYear?.errors?.required"
+              >*Este campo es obligatorio</mat-error
+            >
+            <mat-error
+              *ngIf="paymentData.controls.expYear?.errors?.mustAfterDate"
+            >
+              *Esta tarjeta ya ha expirado
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>CVC/CVV:</mat-label>
+            <input
+              matInput
+              required
+              type="password"
+              formControlName="cvv"
+              minlength="3"
+              maxlength="4"
+              placeholder="0000"
+              autocomplete="nope"
+            />
+            <mat-icon matSuffix>lock</mat-icon>
+            <mat-error>*Este campo es obligatorio</mat-error>
+          </mat-form-field>
+
+          <div>
+            <button mat-stroked-button color="primary" matStepperPrevious>
+              Regresar
+            </button>
+            <button
+              [disabled]="
+                !reservData.valid || !passengerData.valid || !paymentData.valid
+              "
+              mat-stroked-button
+              color="primary"
+              (click)="openConfirmDialog()"
+            >
+              Reservar
+            </button>
+          </div>
+        </form>
+      </mat-step>
+    </mat-vertical-stepper>
+
+    <!--CARD BLOCK PAYMENT OPTION end-->
+  </mat-card-content>
+  <!--CARD BODY END -->
+
+  <mat-card-actions>
+    <!-- <div class="col">
+      <button
+        mat-raised-button
+        type="button"
+        *ngIf="paymentMethod == 1 && orders.length > 0"
+        class="mx-0"
+        [disabled]="this.orders.length == 0 || !acceptTerms"
+        color="primary"
+        (click)="openConfirmDialog()"
+      >
+        Registrar Reservación
+        <span class="badge badge-warning">
+          {{
+            priority == true
+              ? "L. " + (pago.total + priorityCharge?.costo * orders?.length)
+              : "L. " + pago.total
+          }}
+        </span>
+      </button>
+
+      <button
+        type="button"
+        *ngIf="paymentMethod == 2 && orders.length > 0"
+        disabled
+        class="btn btn-sm btn-outline-primary"
+      >
+        Registrar Reservación
+      </button>
+    </div> -->
+  </mat-card-actions>
+</mat-card>
+<!-- CARD END -->
