@@ -99,10 +99,11 @@ export class UsersService {
     })
   }
 
-  checkCustomerAvalability(){
+  checkCustomerAvalability(customer = null){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'checkAvalability',
-      tkn: this.authService.currentUserValue.access_token
+      tkn: this.authService.currentUserValue.access_token,
+      customer
     })
   }
 

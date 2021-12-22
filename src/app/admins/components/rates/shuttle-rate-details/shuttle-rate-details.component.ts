@@ -43,7 +43,6 @@ export class ShuttleRateDetailsComponent implements OnInit {
     this.assignedSchedules = data.RateSchedules;
     this.dialogRef.disableClose = true;
     this.currRateDetail = this.data.RateDetail;
-    console.log(this.currRateDetail);
 
     this.shuttleForm = this.formBuilder.group({
       idTarifa: [this.currRateDetail.idTarifa],

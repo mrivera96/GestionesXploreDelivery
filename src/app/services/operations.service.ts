@@ -28,7 +28,7 @@ export class OperationsService {
   }
 
   checkCustomerInstructions(bOffice, instField) {
-    if (bOffice.instrucciones != '' || bOffice.instrucciones != null) {
+    if (bOffice?.instrucciones != '' || bOffice?.instrucciones != null || bOffice?.instrucciones != undefined) {
       instField.setValue(bOffice.instrucciones);
     } else {
       instField.setValue('');

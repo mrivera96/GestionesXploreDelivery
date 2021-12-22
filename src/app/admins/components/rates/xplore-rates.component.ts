@@ -209,8 +209,6 @@ export class XploreRatesComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.reloadData();
-      } else {
-        dialogRef.close();
       }
     });
   }

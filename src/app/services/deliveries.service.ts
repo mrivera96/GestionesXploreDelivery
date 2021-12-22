@@ -300,11 +300,12 @@ export class DeliveriesService {
   }
 
   createShuttle( reservData,
-    passengerData,){
+    passengerData, paymentData){
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'createShuttle',
       reservData,
       passengerData,
+      paymentData
     });
   }
 }

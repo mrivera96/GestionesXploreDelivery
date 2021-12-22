@@ -40,6 +40,7 @@ export class SurchargeCustomersDialogComponent implements OnInit {
     const surchargeSubscription = this.surchargeService
       .getSurchargeCustomers(this.surchargeId)
       .subscribe((response) => {
+        response.data.sort((a,b)=>(a.customer.nomEmpresa > b.customer.nomEmpresa ? 1 : -1))
         this.surchargeCustomers = response.data;
         this.loaders.loadingData = false;
         surchargeSubscription.unsubscribe();

@@ -2,7 +2,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { Category } from '../../../../models/category';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { DeliveriesService } from '../../../../services/deliveries.service';
 import { HttpClient } from '@angular/common/http';
 import { formatDate } from '@angular/common';
@@ -32,6 +32,8 @@ import { LoadingDialogComponent } from '../../../../shared/components/loading-di
 import { Label } from '../../../../models/label';
 import { LabelsService } from '../../../../services/labels.service';
 import { OperationsService } from 'src/app/services/operations.service';
+import { LockedUserDialogComponent } from 'src/app/shared/components/locked-user-dialog/locked-user-dialog.component';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-regular-delivery',
@@ -122,6 +124,8 @@ export class RegularDeliveryComponent implements OnInit {
   reserv;
   nowHourError = false;
   allowPriority = false;
+  orderForm: FormGroup;
+  transportationForm: FormGroup;
 
   constructor(
     private categoriesService: CategoriesService,
@@ -133,7 +137,8 @@ export class RegularDeliveryComponent implements OnInit {
     private router: Router,
     private labelsService: LabelsService,
     public dialog: MatDialog,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private userService: UsersService
   ) {
     this.hourOption = 1;
     this.reserv = false;
@@ -166,7 +171,9 @@ export class RegularDeliveryComponent implements OnInit {
     );
 
     this.initialize();
-    this.loadData();
+    this.checkCustomer();
+
+    this.setCurrentDate();
   }
 
   initialize() {
@@ -176,85 +183,121 @@ export class RegularDeliveryComponent implements OnInit {
     this.locationOption = 1;
     this.paymentMethod = 1;
 
-    this.deliveryForm = this.formBuilder.group({
-      deliveryHeader: this.formBuilder.group(
-        {
-          fecha: [
-            formatDate(new Date(), 'yyyy-MM-dd', 'en'),
-            [Validators.required],
-          ],
-          hora: [
-            formatDate(
-              new Date().setHours(
-                new Date().getHours(),
-                new Date().getMinutes() + 5
-              ),
-              'HH:mm',
-              'en'
+    this.deliveryForm = this.formBuilder.group(
+      {
+        fecha: [
+          formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+          [Validators.required],
+        ],
+        hora: [
+          formatDate(
+            new Date().setHours(
+              new Date().getHours(),
+              new Date().getMinutes() + 5
             ),
-            Validators.required,
-          ],
-          dirRecogida: [{ value: '', disabled: false }, [Validators.required]],
-          idCategoria: [
-            { value: null, disabled: false },
-            [Validators.required],
-          ],
-          instrucciones: ['', Validators.maxLength(150)],
-          coordsOrigen: [''],
-          prioridad: [false],
-          idTarifa: [null],
-          idEtiqueta: [null],
-        },
-        {
-          validators: [
-            DateValidate('fecha'),
-            BlankSpacesValidator('dirRecogida'),
-            NoUrlValidator('dirRecogida'),
-          ],
-        }
-      ),
+            'HH:mm',
+            'en'
+          ),
+          Validators.required,
+        ],
+        dirRecogida: [{ value: '', disabled: false }, [Validators.required]],
+        idCategoria: [{ value: null, disabled: false }, [Validators.required]],
+        instrucciones: ['', Validators.maxLength(150)],
+        coordsOrigen: [''],
+        prioridad: [false],
+        idTarifa: [null],
+        idEtiqueta: [null],
+      },
+      {
+        validators: [
+          DateValidate('fecha'),
+          BlankSpacesValidator('dirRecogida'),
+          NoUrlValidator('dirRecogida'),
+        ],
+      }
+    );
 
-      order: this.formBuilder.group(
-        {
-          nFactura: [
-            '',
-            [
-              Validators.required,
-              Validators.maxLength(250),
-              Validators.pattern(/^((?!\s{2,}).)*$/),
-            ],
+    this.orderForm = this.formBuilder.group(
+      {
+        nFactura: [
+          '',
+          [
+            Validators.required,
+            Validators.maxLength(250),
+            Validators.pattern(/^((?!\s{2,}).)*$/),
           ],
-          nomDestinatario: [
-            '',
-            [
-              Validators.required,
-              Validators.maxLength(150),
-              Validators.pattern(/^((?!\s{2,}).)*$/),
-            ],
+        ],
+        nomDestinatario: [
+          '',
+          [
+            Validators.required,
+            Validators.maxLength(150),
+            Validators.pattern(/^((?!\s{2,}).)*$/),
           ],
-          numCel: [
-            '',
-            [
-              Validators.required,
-              Validators.minLength(9),
-              Validators.maxLength(9),
-            ],
+        ],
+        numCel: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(9),
+            Validators.maxLength(9),
           ],
-          direccion: ['', Validators.required],
-          instrucciones: ['', Validators.maxLength(150)],
-          extracharge: [null],
-          montoCobertura: [''],
-        },
-        {
-          validators: [
-            BlankSpacesValidator('nFactura'),
-            BlankSpacesValidator('nomDestinatario'),
-            BlankSpacesValidator('direccion'),
-            NoUrlValidator('direccion'),
+        ],
+        direccion: ['', Validators.required],
+        instrucciones: ['', Validators.maxLength(150)],
+        extracharge: [null],
+        montoCobertura: [''],
+      },
+      {
+        validators: [
+          BlankSpacesValidator('nFactura'),
+          BlankSpacesValidator('nomDestinatario'),
+          BlankSpacesValidator('direccion'),
+          NoUrlValidator('direccion'),
+        ],
+      }
+    );
+
+    this.transportationForm = this.formBuilder.group(
+      {
+        nFactura: [
+          'TRANSPORTE',
+          [
+            Validators.required,
+            Validators.maxLength(250),
+            Validators.pattern(/^((?!\s{2,}).)*$/),
           ],
-        }
-      ),
-    });
+        ],
+        nomDestinatario: [
+          '',
+          [
+            Validators.required,
+            Validators.maxLength(150),
+            Validators.pattern(/^((?!\s{2,}).)*$/),
+          ],
+        ],
+        numCel: [
+          '0000-0000',
+          [
+            Validators.required,
+            Validators.minLength(9),
+            Validators.maxLength(9),
+          ],
+        ],
+        direccion: ['', Validators.required],
+        instrucciones: ['', Validators.maxLength(150)],
+        extracharge: [null],
+        montoCobertura: [''],
+      },
+      {
+        validators: [
+          BlankSpacesValidator('nFactura'),
+          BlankSpacesValidator('nomDestinatario'),
+          BlankSpacesValidator('direccion'),
+          NoUrlValidator('direccion'),
+        ],
+      }
+    );
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -294,7 +337,7 @@ export class RegularDeliveryComponent implements OnInit {
           response.data.forEach((element) => {
             if (element.idTipoServicio == 2) {
               this.transportationCategories.push(element);
-            } else if(element.idTipoServicio == 1) {
+            } else if (element.idTipoServicio == 1) {
               this.deliveryCategories.push(element);
             }
           });
@@ -332,9 +375,7 @@ export class RegularDeliveryComponent implements OnInit {
         if (defOffice != null) {
           this.locationOption = 3;
           this.defaultBranch = defOffice.idSucursal;
-          this.deliveryForm
-            .get('deliveryHeader.dirRecogida')
-            .setValue(defOffice.direccion);
+          this.deliveryForm.get('dirRecogida').setValue(defOffice.direccion);
           this.getOriginCoords();
           this.checkInsructions();
         } else {
@@ -354,22 +395,19 @@ export class RegularDeliveryComponent implements OnInit {
   //VERIFICA SI EL CLIENTE TIENE INSTRUCCIONES REGISTRADAS
   checkInsructions() {
     const bOffice = this.myBranchOffices.find(
-      (item) =>
-        item.direccion ==
-        this.deliveryForm.get('deliveryHeader.dirRecogida').value
+      (item) => item.direccion == this.deliveryForm.get('dirRecogida').value
     );
-    if(bOffice){
+    if (bOffice) {
       this.operationsService.checkCustomerInstructions(
         bOffice,
-        this.deliveryForm.get('deliveryHeader.instrucciones')
+        this.deliveryForm.get('instrucciones')
       );
     }
-    
   }
 
   //LIMPIA EL PUNTO DE RECOGIDA
   clearLocationField() {
-    this.newForm.get('deliveryHeader.dirRecogida').setValue('');
+    this.newForm.get('dirRecogida').setValue('');
   }
 
   //ESTABLECE LA UBICACIÓN ACTUAL COMO PUNTO DE RECOGIDA
@@ -387,12 +425,12 @@ export class RegularDeliveryComponent implements OnInit {
             lng: position.coords.longitude,
           };
           this.deliveryForm
-            .get('deliveryHeader.dirRecogida')
+            .get('dirRecogida')
             .setValue(
               this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng
             );
           this.deliveryForm
-            .get('deliveryHeader.coordsOrigen')
+            .get('coordsOrigen')
             .setValue(
               this.myCurrentLocation.lat + ',' + this.myCurrentLocation.lng
             );
@@ -429,18 +467,28 @@ export class RegularDeliveryComponent implements OnInit {
     } else {
       this.validateNowHour();
     }
-    if (this.deliveryForm.get('order').valid) {
+    if (this.deliveryForm.valid) {
       this.openLoader();
 
-      this.currOrder.nFactura = this.newForm.get('order.nFactura').value;
-      this.currOrder.nomDestinatario = this.newForm.get(
-        'order.nomDestinatario'
-      ).value;
-      this.currOrder.numCel = this.newForm.get('order.numCel').value;
-      this.currOrder.direccion = this.newForm.get('order.direccion').value;
-      this.currOrder.instrucciones = this.newForm.get(
-        'order.instrucciones'
-      ).value;
+      if (this.selectedCategory.idTipoServicio == 1) {
+        this.currOrder.nFactura = this.orderForm.get('nFactura').value;
+        this.currOrder.nomDestinatario =
+          this.orderForm.get('nomDestinatario').value;
+        this.currOrder.numCel = this.orderForm.get('numCel').value;
+        this.currOrder.direccion = this.orderForm.get('direccion').value;
+        this.currOrder.instrucciones =
+          this.orderForm.get('instrucciones').value;
+      } else if (this.selectedCategory.idTipoServicio == 2) {
+        this.currOrder.nFactura = this.transportationForm.get('nFactura').value;
+        this.currOrder.nomDestinatario =
+          this.transportationForm.get('nomDestinatario').value;
+        this.currOrder.numCel = this.transportationForm.get('numCel').value;
+        this.currOrder.direccion =
+          this.transportationForm.get('direccion').value;
+        this.currOrder.instrucciones =
+          this.transportationForm.get('instrucciones').value;
+      }
+
       this.currOrder.coordsDestino = '';
       this.currOrder.distancia = '';
       this.currOrder.tiempo = '';
@@ -459,23 +507,18 @@ export class RegularDeliveryComponent implements OnInit {
 
   //COMUNICACIÓN CON LA API PARA REGISTRAR EL DELIVERY
   onFormSubmit() {
-    this.newForm.get('deliveryHeader.idCategoria').enable();
-    this.newForm.get('deliveryHeader.dirRecogida').enable();
-    this.newForm.get('deliveryHeader.fecha').enable();
+    this.newForm.get('idCategoria').enable();
+    this.newForm.get('dirRecogida').enable();
+    this.newForm.get('fecha').enable();
 
-    if (
-      this.deliveryForm.get('deliveryHeader').valid &&
-      this.orders.length > 0
-    ) {
-      this.deliveryForm
-        .get('deliveryHeader.idTarifa')
-        .setValue(this.selectedRate);
-      //this.deliveryForm.get('deliveryHeader.prioridad').setValue(this.priority);
+    if (this.deliveryForm.valid && this.orders.length > 0) {
+      this.deliveryForm.get('idTarifa').setValue(this.selectedRate);
+      //this.deliveryForm.get('prioridad').setValue(this.priority);
 
       this.openLoader();
       const deliveriesSubscription = this.deliveriesService
         .newCustomerDelivery(
-          this.deliveryForm.get('deliveryHeader').value,
+          this.deliveryForm.value,
           this.orders,
           this.pago,
           this.currCustomer.idCliente
@@ -521,8 +564,10 @@ export class RegularDeliveryComponent implements OnInit {
   calculatedistanceBefore() {
     this.directionsRenderer.setMap(null);
     if (
-      this.newForm.get('deliveryHeader.dirRecogida').value != '' &&
-      this.newForm.get('order.direccion').value != ''
+      (this.newForm.get('dirRecogida').value != '' &&
+        this.orderForm.get('direccion').value != '') ||
+      (this.newForm.get('dirRecogida').value != '' &&
+        this.transportationForm.get('direccion').value != '')
     ) {
       this.befDistance = 0;
       this.befTime = 0;
@@ -532,11 +577,17 @@ export class RegularDeliveryComponent implements OnInit {
       //
       this.calculateRate(ordersCount);
 
+      let entrega = '';
+      if (this.selectedCategory.idTipoServicio == 1) {
+        entrega = this.orderForm.get('direccion').value;
+      } else if (this.selectedCategory.idTipoServicio == 2) {
+        entrega = this.transportationForm.get('direccion').value;
+      }
       const distanceSubscription = this.http
         .post<any>(`${environment.apiUrl}`, {
           function: 'calculateDistance',
-          salida: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
-          entrega: this.newForm.get('order.direccion').value,
+          salida: this.deliveryForm.get('dirRecogida').value,
+          entrega: entrega,
           tarifa: this.pago.baseRate,
         })
         .subscribe(
@@ -547,7 +598,11 @@ export class RegularDeliveryComponent implements OnInit {
                 'No se ha podido procesar alguna de sus direcciones,' +
                 ' si ingresó coordenadas, verifique que sean correctas. El tipo de coordenada ej. 14°07\'32.5"N 87°07\'18.5"W no está soportada actualmente';
               this.prohibitedDistance = true;
-              this.newForm.get('order.direccion').setValue(null);
+              if (this.selectedCategory.idTipoServicio == 1) {
+                this.orderForm.get('direccion').setValue(null);
+              } else if (this.selectedCategory.idTipoServicio == 2) {
+                this.transportationForm.get('direccion').setValue(null);
+              }
               setTimeout(() => {
                 this.prohibitedDistance = false;
               }, 2000);
@@ -589,9 +644,14 @@ export class RegularDeliveryComponent implements OnInit {
 
   //CALCULA Y TRAZA LA RUTA EN EL MAPA
   calculateAndDisplayRoute(directionsService, directionsRenderer) {
-    const dirEntrega = this.newForm.get('order.direccion').value;
+    let dirEntrega = '';
+    if (this.selectedCategory.idTipoServicio == 1) {
+      dirEntrega = this.orderForm.get('direccion').value;
+    } else if (this.selectedCategory.idTipoServicio == 2) {
+      dirEntrega = this.transportationForm.get('direccion').value;
+    }
     const geocoder = new google.maps.Geocoder();
-    const originLL = this.deliveryForm.get('deliveryHeader.coordsOrigen').value;
+    const originLL = this.deliveryForm.get('coordsOrigen').value;
 
     geocoder.geocode({ address: dirEntrega }, (results) => {
       const destLL = results[0].geometry.location;
@@ -639,38 +699,26 @@ export class RegularDeliveryComponent implements OnInit {
   //OBTIENE LAS COORDENADAS DEL PUNTO DE ORIGEN PARA SER UTILIZADAS DURANTE  EL PROCESO
   getOriginCoords() {
     if (
-      this.deliveryForm
-        .get('deliveryHeader.dirRecogida')
-        .value.startsWith('15.') ||
-      this.deliveryForm
-        .get('deliveryHeader.dirRecogida')
-        .value.startsWith('14.') ||
-      this.deliveryForm
-        .get('deliveryHeader.dirRecogida')
-        .value.startsWith('13.')
+      this.deliveryForm.get('dirRecogida').value.startsWith('15.') ||
+      this.deliveryForm.get('dirRecogida').value.startsWith('14.') ||
+      this.deliveryForm.get('dirRecogida').value.startsWith('13.')
     ) {
       this.deliveryForm
-        .get('deliveryHeader.coordsOrigen')
-        .setValue(this.deliveryForm.get('deliveryHeader.dirRecogida').value);
+        .get('coordsOrigen')
+        .setValue(this.deliveryForm.get('dirRecogida').value);
       this.center = {
-        lat: +this.deliveryForm
-          .get('deliveryHeader.coordsOrigen')
-          .value.split(',')[0],
-        lng: +this.deliveryForm
-          .get('deliveryHeader.coordsOrigen')
-          .value.split(',')[1],
+        lat: +this.deliveryForm.get('coordsOrigen').value.split(',')[0],
+        lng: +this.deliveryForm.get('coordsOrigen').value.split(',')[1],
       };
     } else {
       this.geocoder.geocode(
-        { address: this.deliveryForm.get('deliveryHeader.dirRecogida').value },
+        { address: this.deliveryForm.get('dirRecogida').value },
         (results) => {
           const ll = {
             lat: results[0].geometry.location.lat(),
             lng: results[0].geometry.location.lng(),
           };
-          this.deliveryForm
-            .get('deliveryHeader.coordsOrigen')
-            .setValue(ll.lat + ',' + ll.lng);
+          this.deliveryForm.get('coordsOrigen').setValue(ll.lat + ',' + ll.lng);
           this.center = {
             lat: ll.lat,
             lng: ll.lng,
@@ -685,7 +733,7 @@ export class RegularDeliveryComponent implements OnInit {
     this.selectedRate = this.rates.find(
       (rate) =>
         ordersCount >= rate?.entregasMinimas &&
-        ordersCount <= rate?.entregasMaximas 
+        ordersCount <= rate?.entregasMaximas
     );
     if (this.selectedRate != null) {
       this.pago.baseRate = this.selectedRate.precio;
@@ -730,7 +778,7 @@ export class RegularDeliveryComponent implements OnInit {
 
   //CÁLCULO DE LA DISTANCIA PARA AGREGAR EL ENVÍO
   calculateDistance() {
-    const salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value;
+    const salida = this.deliveryForm.get('dirRecogida').value;
     const entrega = this.currOrder.direccion;
     const tarifa = this.pago.baseRate;
 
@@ -763,12 +811,12 @@ export class RegularDeliveryComponent implements OnInit {
             this.currOrder.cTotal = calculatedPayment.total;
             this.currOrder.idRecargo = calculatedPayment.idRecargo;
 
-            this.deliveryForm.get('order').reset();
+            this.orderForm.reset();
             this.orders.push(this.currOrder);
             this.pagos.push(calculatedPayment);
-            this.newForm.get('deliveryHeader.idCategoria').disable();
-            this.newForm.get('deliveryHeader.dirRecogida').disable();
-            this.newForm.get('deliveryHeader.fecha').disable();
+            this.newForm.get('idCategoria').disable();
+            this.newForm.get('dirRecogida').disable();
+            this.newForm.get('fecha').disable();
             this.currOrder = {
               extras: ([] = []),
             };
@@ -848,6 +896,7 @@ export class RegularDeliveryComponent implements OnInit {
     }, 0);
 
     this.dialog.closeAll();
+    this.loaders.loadingAdd = false;
   }
 
   removeFromArray(item) {
@@ -879,7 +928,11 @@ export class RegularDeliveryComponent implements OnInit {
         navigator.geolocation.getCurrentPosition((pos) => {
           const destCords =
             Number(pos.coords.latitude) + ',' + Number(pos.coords.longitude);
-          this.deliveryForm.get('order.direccion').setValue(destCords);
+          if (this.selectedCategory.idTipoServicio == 1) {
+            this.orderForm.get('direccion').setValue(destCords);
+          } else if (this.selectedCategory.idTipoServicio == 2) {
+            this.transportationForm.get('direccion').setValue(destCords);
+          }
           this.calculatedistanceBefore();
         });
       } else {
@@ -893,21 +946,29 @@ export class RegularDeliveryComponent implements OnInit {
   //ESTABLECE LAS COORDENADAS PARA EL PUNTO DE RECOGIDA
   setCordsOrigin() {
     this.deliveryForm
-      .get('deliveryHeader.dirRecogida')
+      .get('dirRecogida')
       .setValue(this.originCords.nativeElement.value);
     this.deliveryForm
-      .get('deliveryHeader.coordsOrigen')
+      .get('coordsOrigen')
       .setValue(this.originCords.nativeElement.value);
     this.gcordsOrigin = false;
 
-    if (this.deliveryForm.get('order.direccion').value != '') {
+    if (
+      this.selectedCategory.idTipoServicio == 1 &&
+      this.orderForm.get('direccion').value != ''
+    ) {
+      this.calculatedistanceBefore();
+    } else if (
+      this.selectedCategory.idTipoServicio == 2 &&
+      this.transportationForm.get('direccion').value != ''
+    ) {
       this.calculatedistanceBefore();
     }
   }
 
   setCordsDestination() {
-    this.deliveryForm
-      .get('order.direccion')
+    this.orderForm
+      .get('direccion')
       .setValue(this.destinationCords.nativeElement.value);
     this.gcordsDestination = false;
     this.calculatedistanceBefore();
@@ -968,13 +1029,13 @@ export class RegularDeliveryComponent implements OnInit {
     }
   }
 
-  onFileOrdersAdd() {
+  async onFileOrdersAdd() {
     this.loaders.loadingAdd = true;
 
-    this.fileContentArray.forEach((order) => {
+    for (const order of this.fileContentArray) {
       let myOrder = order.split('|');
 
-      let myDetail = {
+      let myDetail: any = {
         nFactura: myOrder[0],
         nomDestinatario: myOrder[1],
         numCel: myOrder[2].trim(),
@@ -984,7 +1045,18 @@ export class RegularDeliveryComponent implements OnInit {
         tarifaBase: 0,
         recargo: 0,
         cTotal: 0,
+        idx: +myOrder[5],
       };
+
+      myDetail.coordsDestino = await this.http
+        .post<any>(`${environment.apiUrl}`, {
+          function: 'getCoords',
+          lugar: myDetail.direccion,
+        })
+        .toPromise()
+        .then((response) => {
+          return response[0].lat + ',' + response[0].lng;
+        });
 
       let errs = 0;
 
@@ -1012,79 +1084,34 @@ export class RegularDeliveryComponent implements OnInit {
         return false;
       }
 
-      let ordersCount = this.orders.length + 1;
+      let ordersCount = this.fileContentArray.length;
       //
       this.calculateRate(ordersCount);
-      this.calculateFileDistance(myDetail);
-    });
-  }
 
-  calculateFileDistance(currOrder) {
-    const salida = this.deliveryForm.get('deliveryHeader.dirRecogida').value;
-    const entrega = currOrder.direccion;
-    const tarifa = this.pago.baseRate;
-
-    if (this.orders.length == 0) {
-      this.geocoder.geocode({ address: salida }, (results) => {
-        const ll = {
-          lat: results[0].geometry.location.lat(),
-          lng: results[0].geometry.location.lng(),
-        };
-        this.deliveryForm
-          .get('deliveryHeader.coordsOrigen')
-          .setValue(ll.lat + ',' + ll.lng);
-      });
-    }
-
-    this.geocoder.geocode({ address: entrega }, (results) => {
-      const ll = {
-        lat: results[0].geometry.location.lat(),
-        lng: results[0].geometry.location.lng(),
-      };
-      currOrder.coordsDestino = ll.lat + ',' + ll.lng;
-    });
-
-    const cDistanceSubscription = this.http
-      .post<any>(`${environment.apiUrl}`, {
-        function: 'calculateDistance',
-        salida: salida,
-        entrega: entrega,
-        tarifa: tarifa,
-      })
-      .subscribe(
+      this.calculateFileDistance(myDetail).subscribe(
         (response) => {
-          currOrder.distancia = response.distancia;
-          currOrder.tiempo = response.tiempo;
+          myDetail.distancia = response.distancia;
+          myDetail.tiempo = response.tiempo;
           const calculatedPayment = this.calculateOrderPayment(
             Number(response.distancia.split(' ')[0])
           );
-          currOrder.tarifaBase = calculatedPayment.baseRate;
-          currOrder.recargo = calculatedPayment.surcharges;
-          currOrder.cargosExtra = calculatedPayment.cargosExtra;
-          currOrder.cTotal = calculatedPayment.total;
-          currOrder.idRecargo = calculatedPayment.idRecargo;
+          myDetail.tarifaBase = calculatedPayment.baseRate;
+          myDetail.recargo = calculatedPayment.surcharges;
+          myDetail.cargosExtra = calculatedPayment.cargosExtra;
+          myDetail.cTotal = calculatedPayment.total;
+          myDetail.idRecargo = calculatedPayment.idRecargo;
 
-          this.deliveryForm.get('order').reset();
-          this.orders.push(currOrder);
+          this.orderForm.reset();
+          this.orders.push(myDetail);
+          this.orders.sort((a: any, b: any) => (+a.idx > +b.idx ? 1 : -1));
           this.pagos.push(calculatedPayment);
-          this.loaders.loadingAdd = false;
-          this.selectedExtraChargeOption = {};
-          this.selectedExtraCharge = null;
 
-          if (this.orders.length > 1) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
-              this.dtTrigger.next();
-            });
-          } else {
-            if (this.dtElement.dtInstance) {
-              this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-                dtInstance.destroy();
-                this.dtTrigger.next();
-              });
-            } else {
-              this.dtTrigger.next();
-            }
+          if (this.orders.length == this.fileContentArray.length) {
+            this.dtTrigger.next();
+            /*this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            dtInstance.destroy();
+            
+          });*/
           }
 
           this.agregado = true;
@@ -1103,26 +1130,49 @@ export class RegularDeliveryComponent implements OnInit {
               value.recargo = nPay.surcharges;
               value.cTotal = nPay.total;
               this.pagos[i].baseRate = nPay.baseRate;
-              this.pago[i].cargosExtra = nPay.cargosExtra;
+              if (this.pagos[i]?.cargosExtra) {
+                this.pagos[i].cargosExtra = nPay.cargosExtra;
+              }
               this.pagos[i].surcharges = nPay.surcharges;
               this.pagos[i].total = nPay.total;
             }
           });
-          cDistanceSubscription.unsubscribe();
           this.calculatePayment();
         },
         (error) => {
-          error.subscribe((error) => {
-            this.prohibitedDistanceMsg = error.statusText;
+          error.subscribe((err) => {
+            this.prohibitedDistanceMsg = 'Ocurrió un error al agregar';
             this.prohibitedDistance = true;
-            this.loaders.loadingAdd = false;
-            cDistanceSubscription.unsubscribe();
             setTimeout(() => {
               this.prohibitedDistance = false;
             }, 2000);
           });
         }
       );
+    }
+  }
+
+  calculateFileDistance(currOrder): Observable<any> {
+    const salida = this.deliveryForm.get('dirRecogida').value;
+    const entrega = currOrder.direccion;
+    const tarifa = this.pago.baseRate;
+
+    if (this.orders.length == 0) {
+      this.geocoder.geocode({ address: salida }, (results) => {
+        const ll = {
+          lat: results[0].geometry.location.lat(),
+          lng: results[0].geometry.location.lng(),
+        };
+        this.deliveryForm.get('coordsOrigen').setValue(ll.lat + ',' + ll.lng);
+      });
+    }
+
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'calculateDistance',
+      salida: salida,
+      entrega: entrega,
+      tarifa: tarifa,
+    });
   }
 
   onFileRemove(event) {
@@ -1132,7 +1182,7 @@ export class RegularDeliveryComponent implements OnInit {
   setSelectedCategory(category) {
     this.selectedCategory = category;
     this.surcharges = this.selectedCategory.surcharges;
-    this.rates = this.selectedCategory.ratesToShow
+    this.rates = this.selectedCategory.ratesToShow;
   }
 
   //AÑADE UN CARGO EXTRA
@@ -1149,10 +1199,10 @@ export class RegularDeliveryComponent implements OnInit {
   setCurrentDate() {
     this.reserv = false;
     this.newForm
-      .get('deliveryHeader.fecha')
+      .get('fecha')
       .setValue(formatDate(new Date(), 'yyyy-MM-dd', 'en'));
     this.newForm
-      .get('deliveryHeader.hora')
+      .get('hora')
       .setValue(
         formatDate(
           new Date().setHours(new Date().getHours(), new Date().getMinutes()),
@@ -1163,7 +1213,7 @@ export class RegularDeliveryComponent implements OnInit {
   }
 
   removeExtraCharges(extracharge) {
-    this.newForm.get('order.extracharge').setValue(null);
+    this.orderForm.get('extracharge').setValue(null);
     const ec = this.currOrder.extras.find((x) => x.idCargoExtra == extracharge);
     const id = this.currOrder.extras.indexOf(ec);
     this.currOrder.extras.splice(id, 1);
@@ -1171,9 +1221,9 @@ export class RegularDeliveryComponent implements OnInit {
 
   //AÑADE MONTO DE COBERTURA
   addCare() {
-    if (this.newForm.get('order.montoCobertura').value !== '') {
+    if (this.orderForm.get('montoCobertura').value !== '') {
       this.currOrder.extras.find((x) => x.idCargoExtra == 13).montoCobertura =
-        +this.newForm.get('order.montoCobertura').value;
+        +this.orderForm.get('montoCobertura').value;
     }
   }
 
@@ -1183,9 +1233,9 @@ export class RegularDeliveryComponent implements OnInit {
 
   //VALIDA LA HORA SEGUN EL TIPO DE SERVICIO RESERVA O SOLICITAR AHORA
   validateHour() {
-    const control = this.deliveryForm.get('deliveryHeader.hora');
-    let h = this.newForm.get('deliveryHeader.hora').value;
-    const date = this.newForm.get('deliveryHeader.fecha').value;
+    const control = this.deliveryForm.get('hora');
+    let h = this.newForm.get('hora').value;
+    const date = this.newForm.get('fecha').value;
     const currentDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
     const currentDateTime = new Date().setHours(
       new Date().getHours(),
@@ -1261,8 +1311,8 @@ export class RegularDeliveryComponent implements OnInit {
   }
 
   validateNowHour() {
-    const control = this.deliveryForm.get('deliveryHeader.hora');
-    let h = this.newForm.get('deliveryHeader.hora').value;
+    const control = this.deliveryForm.get('hora');
+    let h = this.newForm.get('hora').value;
     const todaySchedule: Schedule = JSON.parse(
       localStorage.getItem('todaySchedule')
     );
@@ -1300,5 +1350,34 @@ export class RegularDeliveryComponent implements OnInit {
       control.setErrors({ mustAfterHour: true });
       this.nowHourError = true;
     }
+  }
+
+  //VERIFICA SI EL CLIENTE TIENE SALDO PENDIENTE
+  checkCustomer() {
+    this.openLoader();
+    const usrsSubs = this.userService
+      .checkCustomerAvalability(this.currCustomer.idCliente)
+      .subscribe((response) => {
+        if (response.data == false) {
+          this.dialog.closeAll();
+          this.openLockedUserDialog(response.balance);
+        } else {
+          this.loadData();
+        }
+        usrsSubs.unsubscribe();
+      });
+  }
+
+  openLockedUserDialog(balance) {
+    const dialogRef = this.dialog.open(LockedUserDialogComponent, {
+      data: {
+        balance: balance,
+        customer: this.currCustomer,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.router.navigate(['/admins/reservas-pendientes']);
+    });
   }
 }

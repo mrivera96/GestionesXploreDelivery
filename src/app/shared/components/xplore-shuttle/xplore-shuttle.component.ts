@@ -3,6 +3,7 @@ import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/customers/components/new-delivery/confirm-dialog/confirm-dialog.component';
 import { BlankSpacesValidator } from 'src/app/helpers/blankSpaces.validator';
 import { ConsolidatedHourValidate } from 'src/app/helpers/consolidatedHour.validator';
 import { DateValidate } from 'src/app/helpers/date.validator';
@@ -305,11 +306,24 @@ export class XploreShuttleComponent implements OnInit {
           
               this.paymentsService.addPayment(transDetails).subscribe(
                 () => {
+
+                  const visibleDigits = 4;
+                  let maskedSection = paymentObject.cardNumber.toString().slice(0, -visibleDigits);
+                  let visibleSection = paymentObject.cardNumber.toString().slice(-visibleDigits);
+
+
+                  const paymentData = {
+                    cardNumber: maskedSection.replace(/./g, '*') + visibleSection,
+                    authCode: transactionDetails.authCode,
+                    orderNumber: transactionDetails.orderNumber,
+                    referenceNumber: transactionDetails.referenceNumber,
+                  };
                   
                   const shuttleSubsc = this.deliveriesService
                     .createShuttle(
                       this.reservData.value,
-                      this.passengerData.value
+                      this.passengerData.value,
+                      paymentData
                     )
                     .subscribe(
                       (response) => {
@@ -362,5 +376,16 @@ export class XploreShuttleComponent implements OnInit {
         });
       }
     );
+  }
+
+  openConfirmDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.autorizePayment();
+      } else {
+      }
+    });
   }
 }

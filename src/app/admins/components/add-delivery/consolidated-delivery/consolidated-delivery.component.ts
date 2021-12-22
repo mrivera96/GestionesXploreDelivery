@@ -12,7 +12,6 @@ import { DataTableDirective } from 'angular-datatables';
 import { ExtraCharge } from '../../../../models/extra-charge';
 import { ExtraChargeOption } from '../../../../models/extra-charge-option';
 import { Branch } from '../../../../models/branch';
-import { Schedule } from '../../../../models/schedule';
 import { CategoriesService } from '../../../../services/categories.service';
 import { DeliveriesService } from '../../../../services/deliveries.service';
 import { HttpClient } from '@angular/common/http';
@@ -30,6 +29,8 @@ import { CustomerRestrictionsDialogComponent } from '../../../../customers/compo
 import { OperationsService } from '../../../../services/operations.service';
 import { DateValidate } from 'src/app/helpers/date.validator';
 import { LoadingDialogComponent } from '../../../../shared/components/loading-dialog/loading-dialog.component';
+import { LockedUserDialogComponent } from 'src/app/shared/components/locked-user-dialog/locked-user-dialog.component';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-consolidated-delivery',
@@ -118,12 +119,13 @@ export class ConsolidatedDeliveryComponent implements OnInit {
     public dialog: MatDialog,
     private authService: AuthService,
     private branchService: BranchService,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private userService: UsersService
   ) {}
 
   ngOnInit(): void {
     this.initialize();
-    this.loadData();
+    this.checkCustomer();
   }
 
   initialize() {
@@ -654,24 +656,31 @@ export class ConsolidatedDeliveryComponent implements OnInit {
 
           this.deliveryForm.get('order').reset();
           this.orders.push(currOrder);
+          this.orders.sort((a: any, b: any) => (+a.idx > +b.idx ? 1 : -1));
           this.pagos.push(calculatedPayment);
           this.dialog.closeAll();
           this.selectedExtraChargeOption = {};
           this.selectedExtraCharge = null;
 
-          if (this.orders.length > 1) {
-            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-              dtInstance.destroy();
+          if(this.fileContentArray.length > 0){
+            if (this.orders.length == this.fileContentArray.length) {
               this.dtTrigger.next();
-            });
-          } else {
-            if (this.dtElement.dtInstance) {
+            }
+          }else{
+            if (this.orders.length > 1) {
               this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
                 dtInstance.destroy();
                 this.dtTrigger.next();
               });
             } else {
-              this.dtTrigger.next();
+              if (this.dtElement.dtInstance) {
+                this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                  dtInstance.destroy();
+                  this.dtTrigger.next();
+                });
+              } else {
+                this.dtTrigger.next();
+              }
             }
           }
 
@@ -725,6 +734,8 @@ export class ConsolidatedDeliveryComponent implements OnInit {
     this.pago.total = this.pagos.reduce(function (a, b) {
       return +a + +b['total'];
     }, 0);
+
+    this.loaders.loadingAdd = false;
   }
 
   removeFromArray(item) {
@@ -949,10 +960,10 @@ export class ConsolidatedDeliveryComponent implements OnInit {
   onFileOrdersAdd() {
     this.loaders.loadingAdd = true;
 
-    this.fileContentArray.forEach((order) => {
+    this.fileContentArray.forEach( order => {
       let myOrder = order.split('|');
 
-      let myDetail = {
+      let myDetail:any = {
         nFactura: myOrder[0],
         nomDestinatario: myOrder[1],
         numCel: myOrder[2].trim(),
@@ -962,6 +973,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
         tarifaBase: 0,
         recargo: 0,
         cTotal: 0,
+        idx: +myOrder[5],
       };
 
       let errs = 0;
@@ -1011,5 +1023,34 @@ export class ConsolidatedDeliveryComponent implements OnInit {
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent);
+  }
+
+  //VERIFICA SI EL CLIENTE TIENE SALDO PENDIENTE
+  checkCustomer() {
+    this.openLoader();
+    const usrsSubs = this.userService
+      .checkCustomerAvalability(this.currCustomer.idCliente)
+      .subscribe((response) => {
+        if (response.data == false) {
+          this.dialog.closeAll();
+          this.openLockedUserDialog(response.balance);
+        } else {
+          this.loadData();
+        }
+        usrsSubs.unsubscribe();
+      });
+  }
+
+  openLockedUserDialog(balance) {
+    const dialogRef = this.dialog.open(LockedUserDialogComponent, {
+      data: {
+        balance: balance,
+        customer: this.currCustomer,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      this.router.navigate(['/admins/reservas-pendientes']);
+    });
   }
 }

@@ -58,6 +58,7 @@ export class NewSurchargeDialogComponent implements OnInit {
       isv: [0],
       tasaTuris: [0],
       gastosReembolsables: [0],
+      transportePersonas: [0],
     });
 
     const usersSubscription = this.usersService
@@ -97,6 +98,7 @@ export class NewSurchargeDialogComponent implements OnInit {
       const isv = this.fNew.isv.value;
       const tasaTur = this.fNew.tasaTuris.value;
       const gastRe = this.fNew.gastosReembolsables.value;
+      const transPer = this.fNew.transportePersonas.value;
 
       if (
         tk != 0 ||
@@ -106,10 +108,11 @@ export class NewSurchargeDialogComponent implements OnInit {
         cobTrans != 0 ||
         isv != 0 ||
         tasaTur != 0 ||
-        gastRe != 0
+        gastRe != 0 ||
+        transPer != 0
       ) {
         const sum =
-          tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe;
+          tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe+ transPer;
 
         if (sum != this.fNew.monto.value) {
           this.openErrorDialog(
