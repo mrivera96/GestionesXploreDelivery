@@ -1282,8 +1282,11 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
   async onFileOrdersAdd() {
     this.loaders.loadingAdd = true;
+    let ordersCount = this.fileContentArray.length;
+    //
+    this.calculateRate(ordersCount);
 
-    for (const order of this.fileContentArray ) {
+    this.fileContentArray.forEach((order) => {
       let myOrder = order.split('|');
 
       let myDetail: any = {
@@ -1298,14 +1301,6 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         cTotal: 0,
         idx: +myOrder[5],
       };
-
-      myDetail.coordsDestino = await this.http
-      .post<any>(`${environment.apiUrl}`, {
-        function: 'getCoords',
-        lugar: myDetail.direccion,
-      }).toPromise().then(response=>{
-        return response[0].lat + ',' + response[0].lng;
-      });
 
       let errs = 0;
 
@@ -1333,87 +1328,115 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         return false;
       }
 
-      let ordersCount = this.fileContentArray.length;
-      //
-      this.calculateRate(ordersCount);
-      this.calculateFileDistance(myDetail).subscribe(
+      //push on array
+
+      const calculatedPayment = this.calculateOrderPayment();
+      myDetail.tarifaBase = calculatedPayment.baseRate;
+      myDetail.recargo = calculatedPayment.surcharges;
+      myDetail.cargosExtra = calculatedPayment.cargosExtra;
+      myDetail.cTotal = calculatedPayment.total;
+
+      this.orderForm.reset();
+      this.orders.push(myDetail);
+      this.pagos.push(calculatedPayment);
+
+      this.agregado = true;
+      setTimeout(() => {
+        this.agregado = false;
+      }, 2000);
+    });
+
+    for (const order of this.orders) {
+      order.coordsDestino = await this.http
+        .post<any>(`${environment.apiUrl}`, {
+          function: 'getCoords',
+          lugar: order.direccion,
+        })
+        .toPromise()
+        .then((response) => {
+          return response[0].lat + ',' + response[0].lng;
+        });
+
+      this.calculateFileDistance(order).subscribe(
         (response) => {
-          myDetail.distancia = response.distancia;
-          myDetail.tiempo = response.tiempo;
-          const calculatedPayment = this.calculateOrderPayment();
-          myDetail.tarifaBase = calculatedPayment.baseRate;
-          myDetail.recargo = calculatedPayment.surcharges;
-          myDetail.cargosExtra = calculatedPayment.cargosExtra;
-          myDetail.cTotal = calculatedPayment.total;
-          
-          this.orderForm.reset();
-          this.orders.push(myDetail);
-          this.pagos.push(calculatedPayment);
+          order.distancia = response.distancia;
+          order.tiempo = response.tiempo;
+
           const cumulativeDistance = Number(
             this.deliveryForm.get('distancia').value
           );
-          const currentDistance = Number(myDetail.distancia.split(' ')[0]);
+          const currentDistance = Number(order.distancia.split(' ')[0]);
           const nDistance = cumulativeDistance + currentDistance;
           this.deliveryForm.get('distancia').setValue(nDistance);
           this.loaders.loadingAdd = false;
           this.selectedExtraChargeOption = {};
           this.selectedExtraCharge = null;
-          
-          if (this.orders.length == this.fileContentArray.length) {
-            
-              this.dtTrigger.next();
-          }
 
-          this.agregado = true;
-          setTimeout(() => {
-            this.agregado = false;
-          }, 2000);
-          this.orders.forEach((value) => {
-            if (value.tarifaBase != this.pago.baseRate) {
-              const nPay = this.calculateOrderPayment();
-              let i = this.orders.indexOf(value);
-              value.tarifaBase = this.pago.baseRate;
-              value.cargosExtra = nPay.cargosExtra;
-              value.recargo = nPay.surcharges;
-              value.cTotal = nPay.total;
-              this.pagos[i].baseRate = nPay.baseRate;
-              this.pago[i].cargosExtra = nPay.cargosExtra;
-              this.pagos[i].surcharges = nPay.surcharges;
-              this.pagos[i].total = nPay.total;
-            }
-          });
-          
-          if (myDetail.idx == this.fileContentArray.length + 1) {
+          if (order.idx == this.fileContentArray.length + 1) {
             this.calculatePayment(true);
           } else {
             this.calculatePayment();
           }
+
+          if (this.dtElement.dtInstance) {
+            this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+              dtInstance.destroy();
+              this.dtTrigger.next();
+            });
+          } else {
+            this.dtTrigger.next();
+          }
         },
         (error) => {
-          error.subscribe((err) => {
-            this.prohibitedDistanceMsg = 'Ocurrió un error al agregar';
-            this.prohibitedDistance = true;
-            setTimeout(() => {
-              this.prohibitedDistance = false;
-            }, 2000);
-          });
+          if (order.direccion == this.orders[order.idx - 2].direccion) {
+            order.distancia = '0 km';
+            order.tiempo = '0 mins';
+
+            const cumulativeDistance = Number(
+              this.deliveryForm.get('distancia').value
+            );
+            const currentDistance = Number(order.distancia.split(' ')[0]);
+            const nDistance = cumulativeDistance + currentDistance;
+            this.deliveryForm.get('distancia').setValue(nDistance);
+            this.loaders.loadingAdd = false;
+            this.selectedExtraChargeOption = {};
+            this.selectedExtraCharge = null;
+
+            if (order.idx == this.fileContentArray.length + 1) {
+              this.calculatePayment(true);
+            } else {
+              this.calculatePayment();
+            }
+            if (this.dtElement.dtInstance) {
+              this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+                dtInstance.destroy();
+                this.dtTrigger.next();
+              });
+            } else {
+              this.dtTrigger.next();
+            }
+          } else {
+            error.subscribe((err) => {
+              this.prohibitedDistanceMsg = 'Ocurrió un error al agregar';
+              this.prohibitedDistance = true;
+              setTimeout(() => {
+                this.prohibitedDistance = false;
+              }, 2000);
+            });
+          }
         }
       );
     }
   }
 
-  calculateFileDistance(currOrder): Observable<any>  {
+  calculateFileDistance(currOrder): Observable<any> {
     let salida = '';
     let entrega = '';
     const tarifa = this.pago.baseRate;
 
-    if (this.orders.length > 0) {
-      salida = this.orders[this.orders.length - 1].direccion;
-      entrega = currOrder.direccion;
-    } else {
+    if (+currOrder.idx == 1) {
       salida = this.deliveryForm.get('dirRecogida').value;
       entrega = currOrder.direccion;
-
       const cordsSubscription = this.http
         .post<any>(`${environment.apiUrl}`, {
           function: 'getCoords',
@@ -1425,15 +1448,17 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
             .setValue(response[0].lat + ',' + response[0].lng);
           cordsSubscription.unsubscribe();
         });
+    } else {
+      salida = this.orders[currOrder.idx - 2].direccion;
+      entrega = currOrder.direccion;
     }
 
-    return this.http
-      .post<any>(`${environment.apiUrl}`, {
-        function: 'calculateDistance',
-        salida: salida,
-        entrega: entrega,
-        tarifa: tarifa,
-      });
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'calculateDistance',
+      salida: salida,
+      entrega: entrega,
+      tarifa: tarifa,
+    });
   }
 
   onFileRemove(event) {

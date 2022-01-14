@@ -12,4 +12,5 @@ export interface Category {
   surcharges?: Surcharge[]
   idTipoServicio?: number
   datesToShow?: any[]
+  rutaImagen?: string
 }

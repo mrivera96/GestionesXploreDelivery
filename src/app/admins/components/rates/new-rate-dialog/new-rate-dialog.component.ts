@@ -77,7 +77,6 @@ export class NewRateDialogComponent implements OnInit {
 
     this.shuttleForm = this.formBuilder.group({
       idRuta: [null, Validators.required],
-      idTipoVehiculo:[null, Validators.required]
     });
 
     this.schdeduleForm = this.formBuilder.group({

@@ -299,13 +299,21 @@ export class DeliveriesService {
     });
   }
 
-  createShuttle( reservData,
+  createShuttle(vehicleData, reservData,
     passengerData, paymentData){
     return this.http.post<any>(`${environment.apiUrl}`, {
       function: 'createShuttle',
+      vehicleData,
       reservData,
       passengerData,
       paymentData
+    });
+  }
+
+  getshuttleDetails(id) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'getShuttleById',
+      id: id,
     });
   }
 }

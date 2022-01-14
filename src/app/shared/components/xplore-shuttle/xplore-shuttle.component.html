@@ -1,351 +1,879 @@
-<!-- INICIO CARD -->
-<mat-card @fade>
-  <!--  INICIO ENCABEZADO CARD-->
-  <mat-card-header>
-    <mat-card-title class="title"> XPLORE SHUTTLE </mat-card-title>
-  </mat-card-header>
+<div
+  class="container-fluid containerShuttle"
+  @fade
+  [ngStyle]="{
+    'background-image': 'url(assets/img/airport.jpg)',
+    'background-size': 'cover',
+    'background-repeat': 'no-repeat',
+    'background-position': 'center center',
+    'background-color': 'rgba(0, 0, 0, 0.5)',
+    margin: '0px'
+  }"
+>
+  <div class="card reservationCard">
+    <mat-tab-group [selectedIndex]="idx">
+      <mat-tab label="VEHÍCULO" (click)="idx = 0">
+        <div class="container">
+          <br />
+          <div class="row text-left">
+            <div class="col">
+              <h3>Seleccione la categoría que necesita:</h3>
+            </div>
+          </div>
 
-  <!--  FIN  ENCABEZADO CARD-->
-
-  <!-- INICIO CARD CONTENT -->
-  <mat-card-content>
-    <!-- INICIO DEL FORM DELIVERY CONTAINER-->
-
-    <mat-vertical-stepper>
-      <mat-step
-        [stepControl]="reservData"
-        [editable]="isEditable"
-        [linear]="true"
-        label="Datos de Reservación"
-      >
-        <form [formGroup]="reservData">
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Seleccione un tipo de vehículo</mat-label>
-            <mat-select
-              formControlName="idTipoVehiculo"
-              required
-              placeholder="Seleccione una opción"
-              (selectionChange)="getRate()"
-            >
-              <mat-option value="1">Turismo </mat-option>
-
-              <mat-option value="2">Minivan</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Seleccione una ruta</mat-label>
-            <mat-select
-              formControlName="idRuta"
-              required
-              placeholder="Seleccione una opción"
-              (selectionChange)="getRate()"
-            >
-              <mat-option
-                (click)="setRoute(route)"
-                *ngFor="let route of routes"
-                [value]="route.idRuta"
-                >- {{ route.nomRuta }}</mat-option
+          <form [formGroup]="vehicleData" class="mt-3">
+            <div class="form-row">
+              <div
+                class="col-lg-3 col-md-4 col-sm-12"
+                *ngFor="let model of categories; let i = index"
               >
-            </mat-select>
-          </mat-form-field>
+                <div
+                  [ngStyle]="{
+                    'background-color':
+                      vehicleData.get('idCategoria').value == model.idCategoria
+                        ? '#FF8C00'
+                        : '#FFF'
+                  }"
+                  (click)="setModel(model)"
+                  class="card text-center categories-card"
+                >
+                  <img
+                    class="card-img-top"
+                    style="font-size: 14px"
+                    height="auto"
+                    width="auto"
+                    src="{{ imgBasePath + model?.rutaImagen }}"
+                    alt="imagen modelo"
+                  />
+                  <div class="card-body">
+                    <h4 class="card-title">{{ model.descCategoria }}</h4>
 
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Fecha de recogida:</mat-label>
-            <input
-              matInput
-              required
-              formControlName="fecha"
-              placeholder="- Selecciona una fecha -"
-              type="date"
-              (change)="getSchedules()"
-            />
-            <mat-icon matPrefix>today</mat-icon>
-            <mat-error *ngIf="reservData.get('fecha').errors?.required"
-              >* Este campo es obligatorio
-            </mat-error>
-            <mat-error *ngIf="reservData.get('fecha').errors?.mustAfterDate"
-              >* La fecha ingresada no es válida
-            </mat-error>
-          </mat-form-field>
+                    <p class="card-text">
+                      {{ model.descripcion }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Hora de recogida:</mat-label>
-            <mat-select
-              required
-              formControlName="hora"
-              placeholder="- Selecciona una hora -"
-            >
-              <mat-option *ngFor="let hour of schedules" [value]="hour.inicio">
-                {{ hour?.label }}
-              </mat-option>
-            </mat-select>
-            <mat-icon matPrefix>schedule</mat-icon>
-            <mat-error *ngIf="reservData.get('hora')?.errors?.required"
-              >* Este campo es obligatorio
-            </mat-error>
-            <mat-error *ngIf="reservData.get('hora')?.errors?.mustAfterHour">
-              *Ups! Parece que el horario seleccionado ha expirado. Favor
-              selecciona un horario de recogida vigente
-            </mat-error>
-          </mat-form-field>
+            <br />
+            <div class="form-row">
+              <div class="accordion w-100" id="accordion">
+                <div
+                  class="card"
+                  style="background-color: #0071a2; color: white"
+                >
+                  <div class="card-header" id="headingOne">
+                    <h2 class="mb-0 info">
+                      <button
+                        class="btn btn-link btn-block text-center info"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#collapseOne"
+                        aria-expanded="false"
+                        aria-controls="collapseOne"
+                      >
+                        Más información respecto al Covid-19 y al Shuttle
+                      </button>
+                    </h2>
+                  </div>
 
-          <p>
-            Total: LPS. {{ currRate?.precio }} / USD.
-            {{ currRate?.precioDLS }} (Apróx.)
+                  <div
+                    id="collapseOne"
+                    class="collapse w-100"
+                    aria-labelledby="headingOne"
+                    data-parent="#accordion"
+                  >
+                    <div class="card-body w-100">
+                      <strong>COVID-19 </strong>
+                      <ul
+                        style="list-style-type: none; margin: 0%; padding: 0%"
+                      >
+                        <li>✓ El conductor utilizará mascarilla.</li>
+                        <li>
+                          ✓ Todos los pasajeros deben utilizar mascarilla.
+                        </li>
+                        <li>
+                          ✓ Gel de manos disponible para uso de pasajeros.
+                        </li>
+                        <li>
+                          ✓ El vehículo es desinfectado antes y después de cada
+                          viaje.
+                        </li>
+                        <li>
+                          ✓ Se sugiere que los pasajeros viajen en los asientos
+                          traseros.
+                        </li>
+                      </ul>
+
+                      <strong>SHUTTLE</strong>
+                      <ul
+                        style="list-style-type: none; margin: 0%; padding: 0%"
+                      >
+                        <li>- Servicio privado de puerta a puerta.</li>
+                        <li>
+                          - Meet and Greet (servicio de bienvenida con rótulo)
+                          está incluido.
+                        </li>
+                        <li>
+                          - Punto de encuentro y contacto serán compartidos por
+                          correo electrónico.
+                        </li>
+                        <li>- 60 minutos de espera incluidos.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+
+            <div class="form-row">
+              <div class="col-sm my-auto">
+                <button
+                  [disabled]="!vehicleData.valid"
+                  mat-raised-button
+                  color="primary"
+                  (click)="next()"
+                >
+                  Siguiente
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <br />
+      </mat-tab>
+
+      <mat-tab
+        label="DATOS DE RESERVACIÓN"
+        (click)="idx = 1"
+        [disabled]="vehicleData.invalid"
+      >
+        <div class="container">
+          <form [formGroup]="reservData" class="mt-3">
+            <div class="form-row">
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-md"
+              >
+                <mat-label>Seleccione una ruta</mat-label>
+                <mat-select
+                  formControlName="idRuta"
+                  required
+                  placeholder="Seleccione una opción"
+                  (selectionChange)="getRate()"
+                  #route
+                >
+                  <mat-option
+                    (click)="setRoute(route)"
+                    *ngFor="let route of routes"
+                    [value]="route.idRuta"
+                    >- {{ route.nomRuta }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-md"
+              >
+                <mat-label>Fecha de recogida:</mat-label>
+                <input
+                  matInput
+                  required
+                  formControlName="fecha"
+                  placeholder="- Selecciona una fecha -"
+                  type="date"
+                  (change)="getSchedules()"
+                />
+                <mat-icon matPrefix>today</mat-icon>
+                <mat-error *ngIf="reservData.get('fecha').errors?.required"
+                  >* Este campo es obligatorio
+                </mat-error>
+                <mat-error *ngIf="reservData.get('fecha').errors?.mustAfterDate"
+                  >* La fecha ingresada no es válida
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-md"
+              >
+                <mat-label>Hora de recogida:</mat-label>
+                <mat-select
+                  required
+                  formControlName="hora"
+                  placeholder="- Selecciona una hora -"
+                >
+                  <mat-option
+                    *ngFor="let hour of schedules"
+                    [value]="hour.inicio"
+                  >
+                    {{ hour?.label }}
+                  </mat-option>
+                  <mat-option *ngIf="schedules?.length == 0" value="{{ null }}">
+                    Lo sentimos, ya no hay horarios disponibles para la fecha
+                    seleccionada.
+                  </mat-option>
+                </mat-select>
+                <mat-icon matPrefix>schedule</mat-icon>
+                <mat-error *ngIf="reservData.get('hora')?.errors?.required"
+                  >* Este campo es obligatorio
+                </mat-error>
+                <mat-error
+                  *ngIf="reservData.get('hora')?.errors?.mustAfterHour"
+                >
+                  *Ups! Parece que el horario seleccionado ha expirado. Favor
+                  selecciona un horario de recogida vigente
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-md"
+              >
+                <mat-label
+                  >Dirección específica de Recogida(si va hacia el
+                  Aeropuerto):</mat-label
+                >
+                <textarea
+                  matInput
+                  id="instRecogida"
+                  formControlName="instRecogida"
+                  class="form-control"
+                  maxlength="150"
+                  placeholder="¿Desde dónde desea que le traslademos?"
+                >
+                </textarea>
+                <mat-icon matPrefix>location_on</mat-icon>
+                <mat-error>*Excede la longitud máxima permitida</mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-md"
+              >
+                <mat-label
+                  >Dirección específica de Destino(si va desde el
+                  Aeropuerto):</mat-label
+                >
+                <textarea
+                  matInput
+                  id="instEntrega"
+                  formControlName="instEntrega"
+                  class="form-control"
+                  maxlength="150"
+                  placeholder="¿Hacia dónde desea que le traslademos?"
+                >
+                </textarea>
+                <mat-icon matPrefix>location_on</mat-icon>
+                <mat-error>*Excede la longitud máxima permitida</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <div class="col-md">
+                <p class="">
+                  Total: LPS. {{ currRate?.precio }} / USD.
+                  {{ currRate?.precioDLS }} (Apróx.)
+                </p>
+                <p style="text-decoration: underline">Precios incluyen:</p>
+                <p>
+                  ✓Renta de Vehículo ✓Servicio de Chofer ✓Combustible y Peajes
+                  ✓Meet and Greet (Recibimiento en Aeropuerto) ✓Cancelación
+                  Gratuita con 24 horas de anticipación
+                </p>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-sm my-auto">
+                <button
+                  mat-raised-button
+                  color="secondary"
+                  (click)="previous()"
+                  class="mr-1"
+                >
+                  <mat-icon>chevron_left</mat-icon>
+                  Anterior
+                </button>
+
+                <button
+                  [disabled]="!reservData.valid"
+                  mat-raised-button
+                  color="primary"
+                  (click)="next()"
+                >
+                  Siguiente
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <br />
+      </mat-tab>
+
+      <mat-tab
+        label="DATOS DE PASAJERO PRINCIPAL"
+        [disabled]="vehicleData.invalid || reservData.invalid"
+        (click)="idx = 2"
+      >
+        <div class="container">
+          <form [formGroup]="passengerData" class="mt-3">
+            <div class="form-row">
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>Nombre:</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="nomDestinatario"
+                  id="nomDestinatario"
+                  required
+                  maxlength="150"
+                  placeholder="¿A quién vamos a transportar?"
+                />
+                <mat-icon matPrefix>person</mat-icon>
+                <mat-error
+                  *ngIf="passengerData.get('nomDestinatario').errors?.required"
+                >
+                  *Este campo es obligatorio
+                </mat-error>
+                <mat-error
+                  *ngIf="passengerData.get('nomDestinatario').errors?.maxlength"
+                >
+                  *Excede la longitud máxima permitida
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>Número celular:</mat-label>
+                <div matPrefix>
+                  <ngx-flag-picker
+                    [selectedCountryCode]="selectedCountryCode"
+                    [countryCodes]="countryCodes"
+                    (changedCountryCode)="changeSelectedCountryCode($event)"
+                  >
+                  </ngx-flag-picker>
+                  <p>{{ phoneCode }}</p>
+                </div>
+                <input
+                  matInput
+                  type="text"
+                  id="numCel"
+                  formControlName="numCel"
+                  required
+                  minlength="9"
+                  autocomplete="off"
+                  [countryCode]="selectedCountryCode"
+                  maxlength="20"
+                  appInternationalPhoneMask
+                  placeholder="Ej. 9999-9999(Guión Automático)"
+                />
+                <mat-error
+                  *ngIf="
+                    passengerData.get('numCel').errors?.minlength ||
+                    passengerData.get('numCel').errors?.maxlength
+                  "
+                >
+                  *Por favor ingresa un número válido
+                </mat-error>
+                <mat-error *ngIf="passengerData.get('numCel').errors?.required">
+                  *Este campo es obligatorio
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>Correo electrónico:</mat-label>
+                <input
+                  matInput
+                  id="email"
+                  type="email"
+                  formControlName="email"
+                  required
+                  maxlength="50"
+                  pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                  placeholder="ejemplo@email.com"
+                />
+                <mat-icon matPrefix>alternate_email</mat-icon>
+                <mat-error *ngIf="passengerData.get('email').errors?.required">
+                  *Este campo es obligatorio
+                </mat-error>
+                <mat-error *ngIf="passengerData.get('email').errors?.pattern">
+                  *Por favor ingrese un email válido
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>Confirme su correo electrónico:</mat-label>
+                <input
+                  matInput
+                  id="confirmMail"
+                  type="email"
+                  formControlName="confirmMail"
+                  required
+                  maxlength="50"
+                  pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                  placeholder="ejemplo@email.com"
+                />
+                <mat-icon matPrefix>alternate_email</mat-icon>
+                <mat-error
+                  *ngIf="passengerData.get('confirmMail').errors?.required"
+                >
+                  *Este campo es obligatorio
+                </mat-error>
+                <mat-error
+                  *ngIf="passengerData.get('confirmMail').errors?.pattern"
+                >
+                  *Por favor ingrese un email válido
+                </mat-error>
+                <mat-error
+                  *ngIf="passengerData.get('confirmMail').errors?.mustMatch"
+                >
+                  *No coincide con el e-mail proporcionado
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <div class="col-sm my-auto">
+                <button
+                  mat-raised-button
+                  color="secondary"
+                  (click)="previous()"
+                  class="mr-1"
+                >
+                  <mat-icon>chevron_left</mat-icon>
+                  Anterior
+                </button>
+                <button
+                  [disabled]="!passengerData.valid"
+                  mat-raised-button
+                  color="primary"
+                  (click)="next()"
+                >
+                  Siguiente
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+            </div>
+          </form>
+          <br />
+        </div>
+      </mat-tab>
+      <!-- -->
+      <mat-tab
+        label="DATOS DE PAGO"
+        (click)="idx = 3"
+        [disabled]="
+          vehicleData.invalid || reservData.invalid || passengerData.invalid
+        "
+      >
+        <div class="container">
+          <form [formGroup]="paymentData" class="mt-3">
+            <div class="form-row">
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>Nombre del titular de la tarjeta:</mat-label>
+                <input
+                  matInput
+                  type="text"
+                  formControlName="cardName"
+                  required
+                  placeholder="¿A quién pertenece la tarjeta?"
+                />
+                <mat-icon matSuffix>credit_card</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>Número de tarjeta:</mat-label>
+                <input
+                  matInput
+                  type="number"
+                  formControlName="cardNumber"
+                  required
+                  placeholder="1234 5678 9012 3456"
+                  onKeyPress="if(this.value.length==16) return false;"
+                />
+                <mat-icon matSuffix>credit_card</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>Mes de expiración:</mat-label>
+                <mat-select
+                  formControlName="expMonth"
+                  placeholder="Seleccione un mes"
+                  required
+                  (selectionChange)="validateDate()"
+                >
+                  <mat-option
+                    *ngFor="let month of months"
+                    value="{{ month }}"
+                    >{{ month }}</mat-option
+                  >
+                </mat-select>
+                <mat-icon matSuffix>event</mat-icon>
+                <mat-error
+                  *ngIf="paymentData.controls.expMonth?.errors?.required"
+                  >*Este campo es obligatorio</mat-error
+                >
+                <mat-error
+                  *ngIf="paymentData.controls.expMonth?.errors?.mustAfterDate"
+                >
+                  *Esta tarjeta ya ha expirado
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>Año de expiración:</mat-label>
+                <mat-select
+                  formControlName="expYear"
+                  placeholder="Seleccione un año"
+                  required
+                  (selectionChange)="validateDate()"
+                >
+                  <mat-option *ngFor="let year of years" value="{{ year }}">{{
+                    year
+                  }}</mat-option>
+                </mat-select>
+                <mat-icon matSuffix>event</mat-icon>
+                <mat-error
+                  *ngIf="paymentData.controls.expYear?.errors?.required"
+                  >*Este campo es obligatorio</mat-error
+                >
+                <mat-error
+                  *ngIf="paymentData.controls.expYear?.errors?.mustAfterDate"
+                >
+                  *Esta tarjeta ya ha expirado
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                class="col-sm"
+              >
+                <mat-label>CVC/CVV:</mat-label>
+                <input
+                  matInput
+                  required
+                  type="number"
+                  formControlName="cvv"
+                  minlength="3"
+                  maxlength="4"
+                  placeholder="0000"
+                  autocomplete="nope"
+                />
+                <mat-icon matSuffix>lock</mat-icon>
+                <mat-error>*Este campo es obligatorio</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <div class="col-md" style="background-color: lightblue">
+                <h4 style="text-decoration: underline">Resumen</h4>
+                <p>
+                  Tipo de vehículo:
+                  <strong>{{ generateResume()?.vType }}</strong>
+                </p>
+                <p>
+                  Ruta: <strong>{{ generateResume()?.route }}</strong>
+                </p>
+                <p>
+                  Fecha y hora: <strong>{{ generateResume()?.date }}</strong>
+                </p>
+                <p>
+                  Total a pagar:
+                  <strong>L. {{ generateResume()?.total }}</strong>
+                </p>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col text-center">
+                <mat-checkbox
+                  [(ngModel)]="acceptTerms"
+                  [ngModelOptions]="{ standalone: true }"
+                  color="primary"
+                  >He leído y acepto los <a href="#">términos y condiciones</a>
+                </mat-checkbox>
+              </div>
+            </div>
+            <br />
+            <div class="form-row">
+              <div class="col-sm my-auto">
+                <button
+                  mat-raised-button
+                  color="secondary"
+                  (click)="previous()"
+                  class="mr-1"
+                >
+                  <mat-icon>chevron_left</mat-icon>
+                  Anterior
+                </button>
+
+                <button
+                  [disabled]="
+                    !vehicleData.valid ||
+                    !reservData.valid ||
+                    !passengerData.valid ||
+                    !paymentData.valid ||
+                    !acceptTerms
+                  "
+                  mat-raised-button
+                  color="primary"
+                  (click)="openConfirmDialog()"
+                >
+                  Realizar Pago
+                  <mat-icon>book_online</mat-icon>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <br />
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="container mt-5 text-center text-white">
+    <h4 style="font-size: 2rem; text-shadow: 2px 2px 4px rgb(0 0 0 / 35%)">
+      Reserva hoy con XPLORE tu servicio al aeropuerto
+    </h4>
+  </div>
+
+  <div class="container mt-5 text-center text-white">
+    <h4 style="font-size: 1rem; text-shadow: 2px 2px 4px rgb(0 0 0 / 35%)">
+      Contamos con ✓ el mejor servicio ✓ las mejores tarifas ✓ los mejores
+      vehículos
+    </h4>
+  </div>
+</div>
+
+<br />
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-sm-12 mb-3">
+      <div class="card">
+        <img
+          class="card-img-top"
+          src="assets/img/equipaje.png"
+          alt="Card image cap"
+          height="150px"
+        />
+        <div class="card-body">
+          <h3 class="card-title">Cancelación Gratuita</h3>
+          <p class="card-text">
+            Si tus planes cambian, puedes cancelar tu reservación sin cargos
+            adicionales hasta 24 horas antes de la hora de recogida.
           </p>
+        </div>
+      </div>
+    </div>
 
-          <div>
-            <button
-              [disabled]="!reservData.valid"
-              mat-stroked-button
-              matStepperNext
-              color="primary"
-            >
-              Avanzar
-            </button>
-          </div>
-        </form>
-      </mat-step>
+    <div class="col-md-4 col-sm-12 mb-3">
+      <div class="card">
+        <img
+          class="card-img-top"
+          src="assets/img/driver.jpg"
+          alt="Card image cap"
+          height="130px"
+        />
+        <div class="card-body">
+          <h3 class="card-title">Servicio Seguro y Fiable</h3>
+          <p class="card-text">
+            Nuestros conductores han pasado por un proceso cuidadoso de
+            selección, portan identificación y uniforme para brindarte el mejor
+            servicio
+          </p>
+        </div>
+      </div>
+    </div>
 
-      <mat-step
-        [stepControl]="passengerData"
-        label="Datos de Pasajero Principal"
-      >
-        <form [formGroup]="passengerData">
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Nombre:</mat-label>
-            <input
-              matInput
-              type="text"
-              formControlName="nomDestinatario"
-              id="nomDestinatario"
-              required
-              maxlength="150"
-              placeholder="¿A quién vamos a transportar?"
-            />
-            <mat-icon matPrefix>person</mat-icon>
-            <mat-error
-              *ngIf="passengerData.get('nomDestinatario').errors?.required"
-            >
-              *Este campo es obligatorio
-            </mat-error>
-            <mat-error
-              *ngIf="passengerData.get('nomDestinatario').errors?.maxlength"
-            >
-              *Excede la longitud máxima permitida
-            </mat-error>
-          </mat-form-field>
+    <div class="col-md-4 col-sm-12">
+      <div class="card">
+        <img
+          class="card-img-top"
+          src="assets/img/inside.jpg"
+          alt="Card image cap"
+          height="170px"
+        />
+        <div class="card-body">
+          <h3 class="card-title">Flota Reciente</h3>
+          <p class="card-text">
+            Cuidamos de tu imagen y seguridad al cuidar de nuestra flota.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br />
+<div class="container-fluid text-center" style="background-color: white">
+  <img src="assets/img/logo-marcas.jpg" width="250px" />
+  <img src="assets/img/pci-dss-compliant-logo-vector.png" width="250px" />
+</div>
 
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Número celular:</mat-label>
-            <input
-              matInput
-              type="tel"
-              id="numCel"
-              formControlName="numCel"
-              required
-              minlength="9"
-              autocomplete="off"
-              maxlength="9"
-              appPhoneMask
-              placeholder="Ej. 9999-9999(Guión Automático)"
-            />
-            <mat-icon matPrefix>phone</mat-icon>
-            <mat-error
-              *ngIf="
-                passengerData.get('numCel').errors?.minlength ||
-                passengerData.get('numCel').errors?.maxlength
-              "
-            >
-              *Por favor ingresa un número válido
-            </mat-error>
-            <mat-error *ngIf="passengerData.get('numCel').errors?.required">
-              *Este campo es obligatorio
-            </mat-error>
-          </mat-form-field>
+<br />
 
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>correo electrónico:</mat-label>
-            <input
-              matInput
-              id="email"
-              type="email"
-              formControlName="email"
-              required
-              maxlength="50"
-              pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-              placeholder="ejemplo@email.com"
-            />
-            <mat-icon matPrefix>alternate_email</mat-icon>
-            <mat-error *ngIf="passengerData.get('email').errors?.required">
-              *Este campo es obligatorio
-            </mat-error>
-            <mat-error *ngIf="passengerData.get('email').errors?.pattern">
-              *Por favor ingrese un email válido
-            </mat-error>
-          </mat-form-field>
+<div class="container-fluid p-0">
+  <div class="row" style="background-color: #f6841f">
+    <div class="col-lg-6 col-sm-12">
+      <img
+        class="img-fluid"
+        src="https://i2.wp.com/xplorerentacar.com/wp-content/uploads/2019/11/delivery-plataforma.jpg?w=1080&amp;ssl=1"
+        alt=""
+        data-recalc-dims="1"
+      />
+    </div>
 
-          <div>
-            <button mat-stroked-button color="primary" matStepperPrevious>
-              Regresar
-            </button>
-            <button
-              [disabled]="!passengerData.valid"
-              mat-stroked-button
-              color="primary"
-              matStepperNext
-            >
-              Avanzar
-            </button>
-          </div>
-        </form>
-      </mat-step>
-
-      <mat-step [stepControl]="paymentData" label="Datos de Pago">
-        <form [formGroup]="paymentData">
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Nombre del titular de la tarjeta:</mat-label>
-            <input
-              matInput
-              type="text"
-              formControlName="cardName"
-              required
-              placeholder="¿A quién pertenece la tarjeta?"
-            />
-            <mat-icon matSuffix>credit_card</mat-icon>
-            <mat-error>*Este campo es obligatorio</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Número de tarjeta:</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="cardNumber"
-              required
-              placeholder="1234 5678 9012 3456"
-              onKeyPress="if(this.value.length==16) return false;"
-            />
-            <mat-icon matSuffix>credit_card</mat-icon>
-            <mat-error>*Este campo es obligatorio</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Mes de expiración:</mat-label>
-            <mat-select
-              formControlName="expMonth"
-              placeholder="Seleccione un mes"
-              required
-              (selectionChange)="validateDate()"
-            >
-              <mat-option *ngFor="let month of months" value="{{ month }}">{{
-                month
-              }}</mat-option>
-            </mat-select>
-            <mat-icon matSuffix>event</mat-icon>
-            <mat-error *ngIf="paymentData.controls.expMonth?.errors?.required"
-              >*Este campo es obligatorio</mat-error
-            >
-            <mat-error
-              *ngIf="paymentData.controls.expMonth?.errors?.mustAfterDate"
-            >
-              *Esta tarjeta ya ha expirado
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>Año de expiración:</mat-label>
-            <mat-select
-              formControlName="expYear"
-              placeholder="Seleccione un año"
-              required
-              (selectionChange)="validateDate()"
-            >
-              <mat-option *ngFor="let year of years" value="{{ year }}">{{
-                year
-              }}</mat-option>
-            </mat-select>
-            <mat-icon matSuffix>event</mat-icon>
-            <mat-error *ngIf="paymentData.controls.expYear?.errors?.required"
-              >*Este campo es obligatorio</mat-error
-            >
-            <mat-error
-              *ngIf="paymentData.controls.expYear?.errors?.mustAfterDate"
-            >
-              *Esta tarjeta ya ha expirado
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" floatLabel="always">
-            <mat-label>CVC/CVV:</mat-label>
-            <input
-              matInput
-              required
-              type="password"
-              formControlName="cvv"
-              minlength="3"
-              maxlength="4"
-              placeholder="0000"
-              autocomplete="nope"
-            />
-            <mat-icon matSuffix>lock</mat-icon>
-            <mat-error>*Este campo es obligatorio</mat-error>
-          </mat-form-field>
-
-          <div>
-            <button mat-stroked-button color="primary" matStepperPrevious>
-              Regresar
-            </button>
-            <button
-              [disabled]="
-                !reservData.valid || !passengerData.valid || !paymentData.valid
-              "
-              mat-stroked-button
-              color="primary"
-              (click)="openConfirmDialog()"
-            >
-              Reservar
-            </button>
-          </div>
-        </form>
-      </mat-step>
-    </mat-vertical-stepper>
-
-    <!--CARD BLOCK PAYMENT OPTION end-->
-  </mat-card-content>
-  <!--CARD BODY END -->
-
-  <mat-card-actions>
-    <!-- <div class="col">
-      <button
-        mat-raised-button
-        type="button"
-        *ngIf="paymentMethod == 1 && orders.length > 0"
-        class="mx-0"
-        [disabled]="this.orders.length == 0 || !acceptTerms"
-        color="primary"
-        (click)="openConfirmDialog()"
-      >
-        Registrar Reservación
-        <span class="badge badge-warning">
-          {{
-            priority == true
-              ? "L. " + (pago.total + priorityCharge?.costo * orders?.length)
-              : "L. " + pago.total
-          }}
-        </span>
+    <div class="col-lg-6 col-sm-12 text-center my-auto">
+      <button mat-raised-button color="primary" class="mt-3">
+        Solicitar Tu Transporte
       </button>
 
-      <button
-        type="button"
-        *ngIf="paymentMethod == 2 && orders.length > 0"
-        disabled
-        class="btn btn-sm btn-outline-primary"
+      <p style="margin-top: 5%; color: white; font-size: 15px !important">
+        Contáctanos al <strong><a href="tel:94397234">+504 9439-7234</a></strong
+        >, o escríbenos a
+        <a href="mailto:shuttle@xplorerentacar.com"
+          ><strong>shuttle@xplorerentacar.com</strong></a
+        >
+      </p>
+    </div>
+
+    <div
+      class="col-12 text-center"
+      style="
+        color: white !important;
+        background-color: rgba(0, 0, 0, 0.65) !important;
+        background-image: url('assets/img/bg-work-with-us1.jpg') !important;
+      "
+    >
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <h3
+        style="
+          font-size: 1.5rem;
+          text-shadow: 2px 2px 4px rgb(0 0 0 / 35%);
+          text-align: center;
+        "
       >
-        Registrar Reservación
-      </button>
-    </div> -->
-  </mat-card-actions>
-</mat-card>
-<!-- CARD END -->
+        <strong>¡</strong>TRABAJA EN<strong> XPLORE!</strong> Y SÉ PARTE DE
+        NUESTRA FAMILIA.
+      </h3>
+      <p style="text-align: center">
+        Si crees que eres un candidato, envíanos tu curriculum a
+        <a href="mailto:talentohumano@xplorerentacar.com"
+          >talentohumano@xplorerentacar.com</a
+        >
+      </p>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+    </div>
+  </div>
+
+  <div class="row p-5" style="background-color: #414042; color: white">
+    <div class="col-lg-4 col-sm-12">
+      <h4>SERVICIOS DELIVERY</h4>
+      <ul>
+        <li>
+          <a href="https://xplorerentacar.com/delivery/"
+            >Delivery para Empresas</a
+          >
+        </li>
+        <li>
+          <a href="https://xplorerentacar.com/delivery/"
+            >Delivery para Personas</a
+          >
+        </li>
+        <li>
+          <a href="https://xplorerentacar.com/transporte/"
+            >Transportes para Colaboradores</a
+          >
+        </li>
+        <li>
+          <a href="https://xplorerentacar.com/transporte/"
+            >Transporte para Personas</a
+          >
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-lg-4 col-sm-12">
+      <h4>ACERCA DE XPLORE</h4>
+      <ul>
+        <li>
+          <a href="https://xplorerentacar.com/acerca-de-nosotros/">Historia</a>
+        </li>
+        <li><a href="https://xplorerentacar.com/valores/">Valores</a></li>
+        <li>
+          <a href="https://xplorerentacar.com/politica-de-calidad/"
+            >Política de Calidad</a
+          >
+        </li>
+      </ul>
+    </div>
+    <div class="col-lg-4 col-sm-12">
+      <h4>SERVICIO AL CLIENTE</h4>
+      <ul>
+        <li><a href="#">Contáctenos</a></li>
+        <li><a href="#">Preguntas Frecuentes</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

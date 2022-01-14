@@ -210,6 +210,64 @@
       </mat-card>
     </div>
     <!-- FIN COLUMNA -->
+
+    <!-- INICIO COLUMNA -->
+    <div class="col-md" *ngIf="currentUser.idPerfil == 12">
+      <mat-card>
+        <mat-card-header>
+          <div class="row">
+            <div class="col-3">
+              <mat-card-title class="text-justify" style="font-size: 35px">
+                {{ todayFinishedOrdersCount }}
+              </mat-card-title>
+            </div>
+            <div class="col-7">
+              <mat-card-title> Envíos entregados </mat-card-title>
+            </div>
+            <div class="col-2">
+              <mat-icon
+                class="float-rigth"
+                style="font-size: 35px; color: #0277bd"
+                >list_alt</mat-icon
+              >
+            </div>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="table-responsive">
+            <table
+              datatable
+              [dtOptions]="dtOptions"
+              [dtTrigger]="dtTrigger"
+              class="display compact"
+              style="width: 100%"
+            >
+              <thead>
+                <tr>
+                  <th>N° envío</th>
+                  <th *ngIf="currentUser.idPerfil == 12">Cliente</th>
+                  <th>Detalle</th>
+                  <th>Conductor</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let order of todayFinishedOrders">
+                  <td>{{ order.idDetalle }}</td>
+                  <td *ngIf="currentUser.idPerfil == 12">{{order.delivery.cliente.nomEmpresa}}</td>
+                  <td>{{ order.nFactura }}</td>
+                  <td>
+                    {{ order?.conductor?.nomUsuario }} -
+                    {{ order?.conductor?.numCelular }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <!-- FIN COLUMNA -->
   </div>
   <!-- FIN FILA -->
 </div>

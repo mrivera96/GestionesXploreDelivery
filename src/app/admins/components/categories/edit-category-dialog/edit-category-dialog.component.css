@@ -1,0 +1,6 @@
+ngx-dropzone{
+    height: 80px !important;
+    min-height: 40px !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }

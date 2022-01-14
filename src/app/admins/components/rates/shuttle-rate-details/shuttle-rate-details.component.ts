@@ -47,7 +47,6 @@ export class ShuttleRateDetailsComponent implements OnInit {
     this.shuttleForm = this.formBuilder.group({
       idTarifa: [this.currRateDetail.idTarifa],
       idRuta: [this.currRateDetail.idRuta, Validators.required],
-      idTipoVehiculo:[this.currRateDetail.idTipoVehiculo, Validators.required]
     });
 
     this.schdeduleForm = this.formBuilder.group({

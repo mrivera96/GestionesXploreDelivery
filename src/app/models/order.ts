@@ -36,4 +36,5 @@ export interface Order {
   efectivoRecibido?: number
   order?: number
   idRecargo?: number
+  idx?: any
 }

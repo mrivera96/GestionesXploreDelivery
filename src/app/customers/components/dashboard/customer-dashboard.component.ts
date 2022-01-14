@@ -44,6 +44,8 @@ export class CustomerDashboardComponent implements OnInit {
   lockedUser = false;
   dtTrigger: Subject<any>;
   currentUser: User;
+  todayFinishedOrdersCount: number = 0;
+  todayFinishedOrders: Order[];
 
   constructor(
     private deliveriesService: DeliveriesService,
@@ -103,6 +105,8 @@ export class CustomerDashboardComponent implements OnInit {
           this.pendingOrders = response.pendingOrders;
           this.assignedOrdersCount = response.assignedOrdersCount;
           this.assignedOrders = response.assignedOrders;
+          this.todayFinishedOrders = response.todayFinishedOrders;
+          this.todayFinishedOrdersCount = response.todayFinishedOrdersCount
 
           this.dtTrigger.next();
           this.matDialog.closeAll();

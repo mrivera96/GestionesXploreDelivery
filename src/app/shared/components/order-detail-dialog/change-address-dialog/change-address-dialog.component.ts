@@ -213,9 +213,9 @@ export class ChangeAddressDialogComponent implements OnInit {
   //CALCULA EL PAGO DEL ENVÍO SEGÚN LA DISTANCIA
   calculateOrderPayment(distance) {
     let orderPayment = {
-      'baseRate': this.currDelivery.tarifaBase,
-      'surcharges': 0.00,
-      'total': 0.00,
+      'baseRate': parseFloat(this.currDelivery.tarifaBase.toString()),
+      'surcharges': 0,
+      'total': 0,
       'idRecargo': null
     }
 
@@ -223,11 +223,11 @@ export class ChangeAddressDialogComponent implements OnInit {
       && distance <= Number(value.kilomMaximo))
 
     if (appSurcharge?.monto) {
-      orderPayment.surcharges = Number(appSurcharge?.monto)
+      orderPayment.surcharges = parseFloat(appSurcharge?.monto.toString())
       orderPayment.idRecargo = appSurcharge?.idRecargo
     }
 
-    orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges
+    orderPayment.total = orderPayment.baseRate + orderPayment.surcharges
 
     return orderPayment
   }

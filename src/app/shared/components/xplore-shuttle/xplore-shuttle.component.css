@@ -1,0 +1,29 @@
+.containerShuttle {
+    padding: 3% !important;
+}
+
+.reservationCard{
+    text-align: center !important;
+    
+}
+
+.categories-card :hover{
+    background-color:#ff8c00 !important;
+    color: white !important;
+    border-color: #ff8c00 !important;
+}
+
+#mainContainer{
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.info:hover, .info:focus{
+    color: white !important;
+}
+
+#accordion :hover{
+    background-color:#ff8c00 !important;
+}
+
+

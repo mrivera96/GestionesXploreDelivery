@@ -37,6 +37,10 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
 import { VerificationDialogComponent } from './components/verification-dialog/verification-dialog.component';
 import { XploreShuttleComponent } from './components/xplore-shuttle/xplore-shuttle.component';
 import {MatStepperModule} from '@angular/material/stepper';
+
+import { InternationalPhoneMaskDirective } from '../directives/international-phone-mask.directive';
+import { NgxFlagPickerModule } from 'ngx-flag-picker';
+import { ShuttleDetailsComponent } from './components/shuttle-details/shuttle-details.component';
 @NgModule({
   declarations: [
     OrdersDataTableComponent,
@@ -58,6 +62,8 @@ import {MatStepperModule} from '@angular/material/stepper';
     ConfirmationDialogComponent,
     VerificationDialogComponent,
     XploreShuttleComponent,
+    InternationalPhoneMaskDirective,
+    ShuttleDetailsComponent
   ],
   imports: [
     CommonModule,
@@ -79,7 +85,8 @@ import {MatStepperModule} from '@angular/material/stepper';
     MatRadioModule,
     GoogleMapsModule,
     ReportViewerModule,
-    MatStepperModule
+    MatStepperModule,
+    NgxFlagPickerModule,
   ],
   exports: [
     OrdersDataTableComponent,
@@ -105,6 +112,7 @@ import {MatStepperModule} from '@angular/material/stepper';
     ExpDateDirective,
     ConsolidatedCategorySelectComponent,
     OrdersTableComponent,
+    InternationalPhoneMaskDirective
 
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA]
