@@ -1,92 +1,100 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {Delivery} from "../../../models/delivery";
-import {Observable, Subject} from "rxjs";
-import {Router} from "@angular/router";
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { Delivery } from '../../../models/delivery';
+import { Observable, Subject } from 'rxjs';
+import { Router } from '@angular/router';
 
-import { DataTableDirective} from "angular-datatables";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {State} from "../../../models/state";
-declare var $: any
+import { DataTableDirective } from 'angular-datatables';
+import { DeliveriesService } from '../../../services/deliveries.service';
+import { State } from '../../../models/state';
+import { User } from 'src/app/models/user';
+import { AuthService } from 'src/app/services/auth.service';
+declare var $: any;
 
 @Component({
   selector: 'app-customer-datatable',
   templateUrl: './customer-datatable.component.html',
-  styleUrls: ['./customer-datatable.component.css']
+  styleUrls: ['./customer-datatable.component.css'],
 })
 export class CustomerDatatableComponent implements OnInit {
+  @Input('deliveries') tDeliveries: number;
+  deliveries: Delivery[];
+  dtTrigger: Subject<any> = new Subject<any>();
+  dtOptions: DataTables.Settings;
+  @Output('loadingData') stopLoading: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
+  @Output('subtotal') subtotal: EventEmitter<number> =
+    new EventEmitter<number>();
 
-  @Input('deliveries') tDeliveries: number
-  deliveries: Delivery[]
-  dtTrigger: Subject<any> = new Subject<any>()
-  dtOptions: DataTables.Settings
-  @Output('loadingData') stopLoading: EventEmitter<boolean> = new EventEmitter<boolean>()
-  @Output('subtotal') subtotal: EventEmitter<number> = new EventEmitter<number>()
+  @ViewChild(DataTableDirective, { static: false })
+  datatableElement: DataTableDirective;
 
-  @ViewChild(DataTableDirective, {static: false})
-  datatableElement: DataTableDirective
-
-  states: State[]
+  states: State[];
+  currentUser: User;
 
   constructor(
     private router: Router,
-    private deliveriesService: DeliveriesService
+    private deliveriesService: DeliveriesService,
+    private authService: AuthService
   ) {
-
+    this.currentUser = this.authService.currentUserValue;
   }
 
   ngOnInit(): void {
+    this.initialize();
 
-    this.initialize()
-
-    this.loadData()
+    this.loadData();
   }
 
-  loadData(){
-    const stateSubscription = this.deliveriesService.getStates().subscribe(response => {
-      this.states = response.data.xploreDelivery
-      stateSubscription.unsubscribe()
-    })
+  loadData() {
+    const stateSubscription = this.deliveriesService
+      .getStates()
+      .subscribe((response) => {
+        this.states = response.data.xploreDelivery;
+        stateSubscription.unsubscribe();
+      });
 
-    let service: Observable<any>
+    let service: Observable<any>;
     switch (this.tDeliveries) {
       case 1: {
-        service = this.deliveriesService.getTodayCustomerDeliveries()
-        break
+        service = this.deliveriesService.getTodayCustomerDeliveries();
+        break;
       }
       case 2: {
-        service = this.deliveriesService.getAllCustomerDeliveries()
-        break
+        service = this.deliveriesService.getAllCustomerDeliveries();
+        break;
       }
-
     }
 
-    const serviceSubscription = service.subscribe(response => {
-      this.stopLoading.emit(false)
-      this.deliveries = response.data
-      this.deliveries.forEach(delivery => {
-        delivery.entregas = delivery.detalle.length
-      })
+    const serviceSubscription = service.subscribe((response) => {
+      this.stopLoading.emit(false);
+      this.deliveries = response.data;
+      this.deliveries.forEach((delivery) => {
+        delivery.entregas = delivery.detalle.length;
+      });
 
-      this.dtTrigger.next()
+      this.dtTrigger.next();
       this.datatableElement.dtInstance.then((dtInstance: DataTables.Api) => {
         dtInstance.columns().every(function () {
           const that = this;
           $('select', this.footer()).on('change', function () {
             if (that.search() !== this['value']) {
-              that
-                .search(this['value'])
-                .draw()
+              that.search(this['value']).draw();
             }
-          })
-        })
-      })
-      serviceSubscription.unsubscribe()
-    })
-
-
+          });
+        });
+      });
+      serviceSubscription.unsubscribe();
+    });
   }
 
-  initialize(){
+  initialize() {
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -94,7 +102,7 @@ export class CustomerDatatableComponent implements OnInit {
       processing: true,
       info: true,
       autoWidth: true,
-      order:[1,'desc'],
+      order: [1, 'desc'],
       responsive: true,
       language: {
         emptyTable: 'No hay datos para mostrar en esta tabla',
@@ -108,10 +116,9 @@ export class CustomerDatatableComponent implements OnInit {
           first: 'Prim.',
           last: 'Últ.',
           next: 'Sig.',
-          previous: 'Ant.'
+          previous: 'Ant.',
         },
       },
-    }
+    };
   }
-
 }

@@ -6,7 +6,7 @@
     <tr>
       <th></th>
       <th></th>
-      <th *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9'"></th>
+      <th *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9' || currUser.idPerfil ==='12'"></th>
       <th></th>
       <th></th>
       <th></th>
@@ -31,7 +31,7 @@
     <tr>
       <th>N° Reserva</th>
       <th>N° Envío</th>
-      <th *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9'">Cliente</th>
+      <th *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9' || currUser.idPerfil ==='12'">Cliente</th>
       <th data-priority="1">Destinatario</th>
       <th >Celular del Destinatario</th>
       <th>Dirección</th>
@@ -51,7 +51,7 @@
     <tr *ngFor=" let i = index;let order of orders;">
       <td>{{order.idDelivery}}</td>
       <td>{{order.idDetalle}}</td>
-      <td *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9'">{{order.delivery.nomCliente}}</td>
+      <td *ngIf="currUser.idPerfil ==='1' || currUser.idPerfil ==='9' || currUser.idPerfil ==='12'">{{order.delivery.nomCliente}}</td>
       <td>{{order.nomDestinatario}}</td>
       <td>{{order.numCel}}</td>
       <td>{{order.direccion}}</td>

@@ -55,6 +55,7 @@ export class EditCategoryDialogComponent implements OnInit {
       idTipoServicio: new FormControl(
         this.currCategory?.idTipoServicio || null
       ),
+      file: new FormControl(null)
     });
   }
 
@@ -124,4 +125,23 @@ export class EditCategoryDialogComponent implements OnInit {
       this.f.isActivo.setValue(false);
     }
   }
+
+  onSelect(event) {
+    let reader = new FileReader();
+    if(event.target.files && event.target.files.length > 0) {
+      let file = event.target.files[0];
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.edCatForm.get('file').setValue({
+          filename: file.name,
+          filetype: file.type,
+          fileExtension: file.extension,
+          filepath: file.path,
+          //@ts-ignore
+          value: reader.result.split(',')[1]
+        })
+      };
+    }
+  }
+
 }

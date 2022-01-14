@@ -1,0 +1,92 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title>
+  <i class="fa fa-shuttle-van"></i> Detalles de Shuttle N°
+  {{ currentShuttle?.idDelivery }}
+
+  <button mat-raised-button color="primary"class="float-right" (click)="print()"> Imprimir</button>
+</h2>
+
+<mat-dialog-content>
+  <div class="row" *ngIf="loading">
+    <div class="col text-center">
+      <img src="../../../../assets/img/loading.svg" width="35%" alt="loading" />
+      <p>Cargando información...</p>
+    </div>
+  </div>
+  <div class="container-fluid text-center" *ngIf="!loading">
+    <img src="assets/img/logo-shuttle-azul.png" width="25%" />
+
+    <br />
+    <br />
+    <div class="row">
+      <div class="col-md-4 col-sm-12">
+        <p>
+          Nombre: <strong>{{ currentOrder.nomDestinatario }}</strong>
+        </p>
+      </div>
+
+      <div class="col-md-4 col-sm-12">
+        <p>
+          Número de celular: <strong> {{ currentOrder.numCel }}</strong>
+        </p>
+      </div>
+
+      <div class="col-md-4 col-sm-12">
+        <p>
+          Correo Electrónico: <strong> {{ currentShuttle.email }}</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 col-sm-12">
+        <p>
+          Fecha y hora de recogida:
+          <strong> {{ currentShuttle.fechaReserva }}</strong>
+        </p>
+      </div>
+      
+      <div class="col-md-4 col-sm-12">
+        <p>
+          Categoría a reservar:
+          <strong>{{ currentShuttle.category.descCategoria }}</strong>
+        </p>
+      </div>
+
+      <div class="col-md-4 col-sm-12">
+        <p>
+          Dirección de destino: <strong> {{ currentOrder.direccion }}</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3>Datos de Pago</h3>
+        <section class="details">
+          <p style="line-height: 1">
+            No. de Tarjeta: <strong> {{ paymentDetails.cardNumber }}</strong>
+          </p>
+          <p>
+            No. de Autorización: <strong>{{ paymentDetails.authCode }}</strong>
+          </p>
+          <p>
+            No. de Orden: <strong>{{ paymentDetails.orderNumber }}</strong>
+          </p>
+          <p>
+            No. de Referencia:
+            <strong>{{ paymentDetails.referenceNumber }}</strong>
+          </p>
+          <p>
+            Total:
+            <strong>L. {{ currentShuttle.total | number: "0.2" }}</strong>
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button mat-dialog-close>Cerrar</button>
+</mat-dialog-actions>

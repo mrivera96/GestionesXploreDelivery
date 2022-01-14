@@ -61,4 +61,13 @@ export class PaymentsService {
       }
     )
   }
+
+  addShuttlePayment(form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'addShuttlePayment',
+        form,
+      }
+    )
+  }
 }

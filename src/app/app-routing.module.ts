@@ -5,7 +5,6 @@ import { RootComponent } from './shared/components/root/root.component';
 import { PasswordRecoveryComponent } from './shared/components/password-recovery/password-recovery.component';
 import { SignUpComponent } from './shared/components/sign-up/sign-up.component';
 import { XploreShuttleComponent } from './shared/components/xplore-shuttle/xplore-shuttle.component';
-
 const routes: Routes = [
   //RUTAS COMUNES
   { path: '', component: RootComponent },
@@ -25,7 +24,7 @@ const routes: Routes = [
   { path: 'deliveries-manana', component: MisReservacionesManianaComponent , canActivate: [CustomerGuard] },
   { path: 'agregar-delivery', component: CrearDeliveryComponent , canActivate: [CustomerGuard] },*/
   // redirige a today-deliveries si no existe la ruta
-  { path: 'xplore-shuttle', component: XploreShuttleComponent },
+  { path: 'shuttle', component: XploreShuttleComponent },
   { path: '**', redirectTo: '' },
 ];
 

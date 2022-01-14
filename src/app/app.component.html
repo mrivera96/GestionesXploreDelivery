@@ -1,5 +1,5 @@
 <!-- NAVBAR START -->
-<mat-toolbar *ngIf="!currentUser" class="app-toolbar-alternative p-1" color="primary">
+<mat-toolbar *ngIf="!currentUser && currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle'" class="app-toolbar-alternative p-1" color="primary">
   <mat-toolbar-row>
     <a [routerLink]="['/']" class="mx-auto">
       <img alt="image" height="70px" src="assets/img/logo-delivery.png">
@@ -7,7 +7,7 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<mat-toolbar *ngIf="currentUser" class="app-toolbar" color="primary">
+<mat-toolbar *ngIf="currentUser && currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle'" class="app-toolbar" color="primary">
   <mat-toolbar-row>
     <a mat-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
@@ -16,7 +16,25 @@
       <img alt="image" height="50px" class="d-inline-block" src="assets/img/logo-delivery.png">
     </a>
   </mat-toolbar-row>
+</mat-toolbar>
 
+<mat-toolbar *ngIf="(!currentUser && currentRoute == '/shuttle') || (!currentUser && currentRoute == '/GestionesDelivery/shuttle')" class="app-toolbar-alternative p-1" color="primary">
+  <mat-toolbar-row>
+    <a [routerLink]="['/']" class="mx-auto">
+      <img alt="image" height="40px" src="assets/img/logo-shuttle.png">
+    </a>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<mat-toolbar *ngIf="(currentUser && currentRoute == '/shuttle') || (currentUser && currentRoute == '/GestionesDelivery/shuttle')" class="app-toolbar" color="primary">
+  <mat-toolbar-row>
+    <a mat-button>
+      <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
+    </a>
+    <a [routerLink]="['/']">
+      <img alt="image" height="40px" class="d-inline-block" src="assets/img/logo-shuttle.png">
+    </a>
+  </mat-toolbar-row>
 </mat-toolbar>
 
 <!-- NAVBAR END -->
@@ -372,13 +390,13 @@
     </mat-nav-list>
     <!-- ONLY CUSTOMERS -->
   </mat-sidenav>
-  <mat-sidenav-content [ngClass]="{'mt-3': currentUser, 'mt-0': !currentUser}">
-    <div class="row text-center" *ngIf="isMobile && !currentUser">
+  <mat-sidenav-content [ngClass]="{'mt-3': currentUser && currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle' , 'mt-0': !currentUser}">
+    <!-- <div class="row text-center" *ngIf="isMobile && !currentUser">
       <img width="100%" src="assets/img/Web-1_resized.jpg" alt="cargando imagen...">
     </div>
-    <br *ngIf="!currentUser">
-    <br *ngIf="!currentUser">
-    <div class="mx-3">
+    <br *ngIf="!currentUser"> -->
+    <br *ngIf="!currentUser && currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle'">
+    <div [ngClass]="{'mx-3': currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle' }" #mainContainer>
       <router-outlet></router-outlet>
     </div>
     <footer class="mt-5 mb-3">

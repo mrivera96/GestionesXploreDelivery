@@ -2,8 +2,8 @@
 date_default_timezone_set("America/Tegucigalpa");
 setlocale(LC_TIME, 'es_HN');
 
-$environment = 'XploreDeliveryAPIDesa';
-//$environment = 'XploreDeliveryAPI';
+//$environment = 'XploreDeliveryAPIDesa';
+$environment = 'XploreDeliveryAPI';
 
 if (isset($_GET['function'])) {
     $func = $_GET['function'];
@@ -2630,7 +2630,8 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/XploreRestApiDesa/bac/tokenizar?idcliente=" . $idCust . "&tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv;
+        //$url = "http://190.4.56.14/XploreRestApiDesa/bac/tokenizar?idcliente=" . $idCust . "&tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv;
+        $url = "http://190.4.56.14/XploreRestApi/bac/tokenizar?idcliente=" . $idCust . "&tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv;
         $authorization = 'Authorization: Basic ' . base64_encode("Webapi:Xplore19$");
 
         // Set the url
@@ -2651,7 +2652,8 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/XploreRestApiDesa/bac/autorizar?tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv . "&monto=" . $amount;
+        //$url = "http://190.4.56.14/XploreRestApiDesa/bac/autorizar?tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv . "&monto=" . $amount;
+        $url = "http://190.4.56.14/XploreRestApi/bac/autorizar?tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv . "&monto=" . $amount;
         $authorization = 'Authorization: Basic ' . base64_encode("Webapi:Xplore19$");
 
         // Set the url
@@ -2848,7 +2850,7 @@ if (isset($_GET['function'])) {
         $array = json_decode($post);
 
         $handle = curl_init();
-
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
         $url = "http://190.4.56.14/" . $environment . "/api/admins/routes/read";
 
         // Set the url
@@ -2856,7 +2858,7 @@ if (isset($_GET['function'])) {
 
         curl_setopt($handle, CURLOPT_POST, TRUE);
         curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
-        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
         /* set return type json */
 
         $output = curl_exec($handle);
@@ -2943,6 +2945,78 @@ if (isset($_GET['function'])) {
         $handle = curl_init();
 
         $url = "http://190.4.56.14/" . $environment . "/api/shared/shuttle/create";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getShuttleCategories') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/shuttle/getCategories";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    }else if ($_POST['function'] == 'uploadImage') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/categories/uploadImage";
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'getShuttleById') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        //$url = "http://190.4.56.14/XploreDeliveryAPI/api/deliveries/list";
+        $url = "http://190.4.56.14/" . $environment . "/api/shared/shuttle/getById";
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json'));
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'addShuttlePayment') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/shuttle/addPayment";
 
         // Set the url
         curl_setopt($handle, CURLOPT_URL, $url);

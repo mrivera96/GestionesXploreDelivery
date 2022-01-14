@@ -48,4 +48,11 @@ export class CategoriesService {
       tkn: this.authService.currentUserValue.access_token
     })
   }
+
+  getShuttleCategories(){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+      function:'getShuttleCategories',
+    })
+  }
+
 }

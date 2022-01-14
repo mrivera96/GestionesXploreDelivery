@@ -1,45 +1,53 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {AuthService} from "./services/auth.service";
-import {User} from "./models/user";
-import {SchedulesService} from "./services/schedules.service";
-import {Schedule} from "./models/schedule";
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
+import { User } from './models/user';
+import { SchedulesService } from './services/schedules.service';
+import { Schedule } from './models/schedule';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-
 })
 export class AppComponent {
-  title = 'Gestiones Xplore Delivery'
-  currentUser: User
-  isMobile: boolean = false
-  schedules: Schedule[]
+  title = 'Gestiones Xplore Delivery';
+  currentUser: User;
+  isMobile: boolean = false;
+  schedules: Schedule[];
+  currentRoute: any;
 
   constructor(
     private router: Router,
     private authenticationService: AuthService,
     private route: ActivatedRoute,
-    private schedulesService: SchedulesService,
+    private schedulesService: SchedulesService
   ) {
-    const today = new Date().getDay()
+    //router.events.subscribe((url:any) => {this.currentRoute = url; console.log(this.currentRoute);});
+    this.currentRoute = window.location.pathname;
 
-    this.authenticationService.currentUser.subscribe(x => this.currentUser = x)
+    if(this.currentRoute == '/xplore-shuttle') this.title = 'Xplore - Shuttle';
+    
+    
+    const today = new Date().getDay();
 
-    const scheduleSubscription = this.schedulesService.getSchedule().subscribe(response => {
+    this.authenticationService.currentUser.subscribe(
+      (x) => (this.currentUser = x)
+    );
 
-      localStorage.removeItem('todaySchedule')
+    const scheduleSubscription = this.schedulesService
+      .getSchedule()
+      .subscribe((response) => {
+        localStorage.removeItem('todaySchedule');
 
-      this.schedules = response.data
-      this.schedules.forEach(value => {
-        if (value.cod == today) {
-          localStorage.setItem('todaySchedule', JSON.stringify(value));
-        }
-      })
-      scheduleSubscription.unsubscribe()
-    })
-
+        this.schedules = response.data;
+        this.schedules.forEach((value) => {
+          if (value.cod == today) {
+            localStorage.setItem('todaySchedule', JSON.stringify(value));
+          }
+        });
+        scheduleSubscription.unsubscribe();
+      });
   }
 
   ngOnInit(): void {
@@ -49,51 +57,46 @@ export class AppComponent {
   }
 
   logout() {
-    this.authenticationService.logout().subscribe(data => {
-      location.reload()
+    this.authenticationService.logout().subscribe((data) => {
+      location.reload();
       if ($('#sidebar').hasClass('active')) {
-        $('#sidebar').toggleClass('active')
+        $('#sidebar').toggleClass('active');
       }
-    })
-
+    });
   }
-
 
   showLogout() {
-    $('#xploreUsrSubMenu').toggleClass('d-none')
+    $('#xploreUsrSubMenu').toggleClass('d-none');
   }
-
 
   //XPLORE'S FUNCTIONS
 
   showConfSubMenu() {
-    $('.confSubMenu').toggleClass('d-none')
+    $('.confSubMenu').toggleClass('d-none');
   }
 
   showCustomersSubMenu() {
-    $('.customerSubMenu').toggleClass('d-none')
+    $('.customerSubMenu').toggleClass('d-none');
   }
 
   showReportsSubMenu() {
-    $('.reportsSubMenu').toggleClass('d-none')
+    $('.reportsSubMenu').toggleClass('d-none');
   }
 
   //CUSTOMER'S FUNCTIONS
   showLogoutCustomer() {
-    $('.userSubMenu').toggleClass('d-none')
+    $('.userSubMenu').toggleClass('d-none');
   }
 
   showCustomerAddDeliverySubMenu() {
-    $('.createDelMenu').toggleClass('d-none')
+    $('.createDelMenu').toggleClass('d-none');
   }
 
   showCustomerDeliveriesSubMenu() {
-    $('.delOrdersMenu').toggleClass('d-none')
+    $('.delOrdersMenu').toggleClass('d-none');
   }
 
   showCustomerConfigSubMenu() {
-    $('.custConfigMenu').toggleClass('d-none')
+    $('.custConfigMenu').toggleClass('d-none');
   }
-
-
 }

@@ -1,20 +1,26 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { formatDate } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ConfirmDialogComponent } from 'src/app/customers/components/new-delivery/confirm-dialog/confirm-dialog.component';
 import { BlankSpacesValidator } from 'src/app/helpers/blankSpaces.validator';
 import { ConsolidatedHourValidate } from 'src/app/helpers/consolidatedHour.validator';
 import { DateValidate } from 'src/app/helpers/date.validator';
+import { MustMatch } from 'src/app/helpers/mustMatch.validator';
+import { Category } from 'src/app/models/category';
 import { Rate } from 'src/app/models/rate';
 import { Schedule } from 'src/app/models/schedule';
 import { CardsService } from 'src/app/services/cards.service';
+import { CategoriesService } from 'src/app/services/categories.service';
 import { DeliveriesService } from 'src/app/services/deliveries.service';
+import { GeoServiceService } from 'src/app/services/geo-service.service';
 import { PaymentsService } from 'src/app/services/payments.service';
 import { RatesService } from 'src/app/services/rates.service';
 import { RoutesService } from 'src/app/services/routes.service';
 import { SchedulesService } from 'src/app/services/schedules.service';
+import { ShuttleDetailsComponent } from '../../components/shuttle-details/shuttle-details.component';
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 import { SuccessModalComponent } from '../success-modal/success-modal.component';
@@ -22,7 +28,7 @@ import { SuccessModalComponent } from '../success-modal/success-modal.component'
 @Component({
   selector: 'app-xplore-shuttle',
   templateUrl: './xplore-shuttle.component.html',
-  styles: [],
+  styleUrls: ['./xplore-shuttle.component.css'],
   animations: [
     trigger('fade', [
       transition('void => *', [
@@ -37,8 +43,10 @@ export class XploreShuttleComponent implements OnInit {
   newShuttle: any;
   reservData: FormGroup;
   passengerData: FormGroup;
+  vehicleData: FormGroup;
   paymentData: FormGroup;
   isEditable = true;
+  paymentDetails;
   years = [];
   months = [
     '01',
@@ -57,6 +65,33 @@ export class XploreShuttleComponent implements OnInit {
   currRate: Rate;
   routes: any[];
   schedules: Schedule[];
+  idx = 0;
+  selectedCountryCode = 'hn';
+  phoneCode = '504';
+  countryCodes = [
+    'hn',
+    'us',
+    'es',
+    'mx',
+    'ca',
+    'pa',
+    'gt',
+    'sv',
+    'cr',
+    'br',
+    'co',
+    'pr',
+    'it',
+    'fr',
+    'jp',
+  ];
+  
+  @ViewChild('vType') vType;
+  @ViewChild('route') route;
+  acceptTerms = false;
+  categories: Category[];
+  imgBasePath = 'https://delivery.xplorerentacar.com/uploads/img/categories-img/';
+  currentCategoryText = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -66,7 +101,10 @@ export class XploreShuttleComponent implements OnInit {
     private dialog: MatDialog,
     private schedulesService: SchedulesService,
     private cardsService: CardsService,
-    private paymentsService: PaymentsService
+    private paymentsService: PaymentsService,
+    private geoService: GeoServiceService,
+    private categoriesService: CategoriesService,
+    private router: Router
   ) {
     this.years.push(new Date().getFullYear());
 
@@ -74,15 +112,19 @@ export class XploreShuttleComponent implements OnInit {
       this.years.push(this.years[i] + 1);
     }
 
+    this.vehicleData = this.formBuilder.group({
+      idCategoria: [null, Validators.required],
+    });
+
     this.reservData = this.formBuilder.group(
       {
-        idTipoVehiculo: [null],
         idRuta: [null],
         dirRecogida: ['', [Validators.required]],
         coordsOrigen: ['', [Validators.required]],
         tarifaBase: [0, Validators.required],
-        idCategoria: null,
         idTarifa: [null],
+        instRecogida: [''],
+        instEntrega: [''],
         fecha: [
           {
             value: formatDate(new Date(), 'yyyy-MM-dd', 'en'),
@@ -113,7 +155,7 @@ export class XploreShuttleComponent implements OnInit {
           [
             Validators.required,
             Validators.minLength(9),
-            Validators.maxLength(9),
+            Validators.maxLength(20),
           ],
         ],
         direccion: ['', Validators.required],
@@ -128,9 +170,20 @@ export class XploreShuttleComponent implements OnInit {
             Validators.maxLength(50),
           ],
         ],
+        confirmMail: [
+          '',
+          [
+            Validators.required,
+            Validators.pattern('^[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,4}$'),
+            Validators.maxLength(50),
+          ],
+        ],
       },
       {
-        validators: [BlankSpacesValidator('nomDestinatario')],
+        validators: [
+          BlankSpacesValidator('nomDestinatario'),
+          MustMatch('email', 'confirmMail'),
+        ],
       }
     );
 
@@ -153,6 +206,14 @@ export class XploreShuttleComponent implements OnInit {
       this.dialog.closeAll();
       routesSubsc.unsubscribe();
     });
+
+    const categoriesSubsc = this.categoriesService
+      .getShuttleCategories()
+      .subscribe((response) => {
+        this.categories = response.data;
+        categoriesSubsc.unsubscribe();
+        this.dialog.closeAll();
+      });
   }
 
   onFormSubmit() {}
@@ -166,7 +227,7 @@ export class XploreShuttleComponent implements OnInit {
   }
 
   getRate() {
-    const vehType = this.reservForm.idTipoVehiculo.value;
+    const vehType = this.vehicleData.get('idCategoria').value;
     const route = this.reservForm.idRuta.value;
 
     if (vehType !== null && route !== null) {
@@ -174,7 +235,9 @@ export class XploreShuttleComponent implements OnInit {
         .findShuttleRate(vehType, route)
         .subscribe((response) => {
           this.currRate = response.data;
-          this.reservForm.idCategoria.setValue(this.currRate.idCategoria);
+          this.vehicleData.controls.idCategoria.setValue(
+            this.currRate.idCategoria
+          );
           this.reservForm.idTarifa.setValue(this.currRate.idTarifaDelivery);
           this.reservForm.tarifaBase.setValue(this.currRate.precio);
           this.getSchedules();
@@ -199,7 +262,7 @@ export class XploreShuttleComponent implements OnInit {
 
   getSchedules() {
     const date = this.reservForm.fecha.value;
-    const vehType = this.reservForm.idTipoVehiculo.value;
+    const vehType = this.vehicleData.get('idCategoria').value;
     const route = this.reservForm.idRuta.value;
 
     if (
@@ -242,7 +305,7 @@ export class XploreShuttleComponent implements OnInit {
     });
   }
 
-  openSuccessDialog(succsTitle, succssMsg) {
+  openSuccessDialog(succsTitle, succssMsg, id, paymentData) {
     const dialogRef = this.dialog.open(SuccessModalComponent, {
       data: {
         succsTitle: succsTitle,
@@ -250,13 +313,12 @@ export class XploreShuttleComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      location.reload();
+    dialogRef.afterClosed().subscribe(() => {
+      this.openDetail(id, paymentData);
     });
   }
 
   autorizePayment() {
-   
     const paymentObject = {
       cardNumber: this.paymentData.controls.cardNumber.value,
       expDate:
@@ -296,47 +358,52 @@ export class XploreShuttleComponent implements OnInit {
             numAutorizacion: response.CreditCardTransactionResults.AuthCode,
             idTransaccion: null,
           };
-        
 
-          this.cardsService
-            .saveFailTransaction(transactionDetails)
-            .subscribe((response) => {
-             
+          this.cardsService.saveFailTransaction(transactionDetails).subscribe(
+            (response) => {
               transDetails.idTransaccion = response.transId;
-          
-              this.paymentsService.addPayment(transDetails).subscribe(
+
+              this.paymentsService.addShuttlePayment(transDetails).subscribe(
                 () => {
-
                   const visibleDigits = 4;
-                  let maskedSection = paymentObject.cardNumber.toString().slice(0, -visibleDigits);
-                  let visibleSection = paymentObject.cardNumber.toString().slice(-visibleDigits);
-
+                  let maskedSection = paymentObject.cardNumber
+                    .toString()
+                    .slice(0, -visibleDigits);
+                  let visibleSection = paymentObject.cardNumber
+                    .toString()
+                    .slice(-visibleDigits);
 
                   const paymentData = {
-                    cardNumber: maskedSection.replace(/./g, '*') + visibleSection,
+                    cardNumber:
+                      maskedSection.replace(/./g, '*') + visibleSection,
                     authCode: transactionDetails.authCode,
                     orderNumber: transactionDetails.orderNumber,
                     referenceNumber: transactionDetails.referenceNumber,
                   };
-                  
+
+                  const phone = this.passengerData.controls.numCel.value;
+                  this.passengerData.controls.numCel.setValue(
+                    '+' + this.phoneCode + ' ' + phone
+                  );
                   const shuttleSubsc = this.deliveriesService
                     .createShuttle(
+                      this.vehicleData.value,
                       this.reservData.value,
                       this.passengerData.value,
                       paymentData
                     )
                     .subscribe(
                       (response) => {
-                        
                         this.openSuccessDialog(
                           'Operación Realizada Correctamente',
-                          response.message
+                          response.message,
+                          response.nDelivery,
+                          paymentData
                         );
                         shuttleSubsc.unsubscribe();
                       },
                       (error) => {
                         error.subscribe((err) => {
-                        
                           this.openErrorDialog(err.statusText);
                         });
                       }
@@ -344,35 +411,29 @@ export class XploreShuttleComponent implements OnInit {
                 },
                 (error) => {
                   error.subscribe((err) => {
-                   
                     this.openErrorDialog(err.statusText);
-                    
                   });
                 }
               );
             },
             (error) => {
               error.subscribe((err) => {
-              
                 this.openErrorDialog(err.statusText);
-                
               });
-            });
+            }
+          );
         } else {
           this.openErrorDialog(transactionDetails.reasonCodeDescription);
           this.cardsService
             .saveFailTransaction(transactionDetails)
             .subscribe((response) => {
-             
               this.openErrorDialog(transactionDetails.reasonCodeDescription);
             });
         }
       },
       (error) => {
         error.subscribe((err) => {
-  
           this.openErrorDialog(err.statusText);
-          
         });
       }
     );
@@ -387,5 +448,56 @@ export class XploreShuttleComponent implements OnInit {
       } else {
       }
     });
+  }
+
+  next() {
+    this.idx++;
+  }
+
+  previous() {
+    this.idx--;
+  }
+
+  changeSelectedCountryCode(event): void {
+    this.selectedCountryCode = event.toString();
+    this.phoneCode = this.geoService.findCountryCodeByTwoLetterAbbreviation(
+      this.selectedCountryCode
+    );
+  }
+
+  generateResume() {
+    if (this.passengerData.valid) {
+      return {
+        vType: this.currentCategoryText,
+        route: this.route?._elementRef.nativeElement.innerText,
+        date:
+          this.reservForm.fecha?.value +
+          ' ' +
+          this.reservForm.hora?.value.substring(0, 5),
+        total: this.currRate?.precio,
+      };
+    }
+  }
+
+  setModel(model) {
+    this.vehicleData.controls.idCategoria.setValue(model.idCategoria);
+    this.currentCategoryText = model.descCategoria;
+  }
+
+  openDetail(id, paymentData) {
+    const ref = this.dialog.open(ShuttleDetailsComponent, {
+      data: {
+        shuttleId: id,
+        paymentData: paymentData,
+      },
+    });
+
+    ref.afterClosed().subscribe(() => {
+      this.exit();
+    });
+  }
+
+  exit() {
+    location.reload();
   }
 }
