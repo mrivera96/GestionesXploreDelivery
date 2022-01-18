@@ -1,63 +1,77 @@
-import {Component, Inject, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {User} from "../../../models/user";
-import {DeliveriesService} from "../../../services/deliveries.service";
-import {UsersService} from "../../../services/users.service";
-import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
-import {Observable} from "rxjs";
-import {SuccessModalComponent} from "../success-modal/success-modal.component";
-import {ErrorModalComponent} from "../error-modal/error-modal.component";
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { User } from '../../../models/user';
+import { DeliveriesService } from '../../../services/deliveries.service';
+import { UsersService } from '../../../services/users.service';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { SuccessModalComponent } from '../success-modal/success-modal.component';
+import { ErrorModalComponent } from '../error-modal/error-modal.component';
 
 @Component({
   selector: 'app-assign-auxiliar',
   templateUrl: './assign-auxiliar.component.html',
-  styleUrls: ['./assign-auxiliar.component.css']
+  styleUrls: ['./assign-auxiliar.component.css'],
 })
 export class AssignAuxiliarComponent implements OnInit {
-  asignForm: FormGroup
+  asignForm: FormGroup;
   loaders = {
-    'loadingData': false
-  }
-  orderId
-  conductores: User[]
+    loadingData: false,
+  };
+  orderId;
+  conductores: User[];
 
   constructor(
     private deliveriesService: DeliveriesService,
     private usersService: UsersService,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<AssignAuxiliarComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.orderId = data.order
+    this.orderId = data.order;
     this.dialogRef.disableClose = true;
   }
 
   ngOnInit(): void {
     this.asignForm = new FormGroup({
       idAuxiliar: new FormControl(null, [Validators.required]),
-    })
+    });
 
-    const usersSubscription = this.usersService.getDrivers().subscribe(response => {
-      this.conductores = response.data
-      usersSubscription.unsubscribe()
-    })
+    const usersSubscription = this.usersService
+      .getDrivers()
+      .subscribe((response) => {
+        this.conductores = response.data;
+        usersSubscription.unsubscribe();
+      });
   }
 
   assignOrder() {
     if (this.asignForm.valid) {
-      this.loaders.loadingData = true
+      this.loaders.loadingData = true;
 
-      const deliveriesSubscription = this.deliveriesService.assigOrderAuxiliar(this.orderId, this.asignForm.get('idAuxiliar').value).subscribe(response => {
-        this.loaders.loadingData = false
-        this.openSuccessDialog('Asignación de envío', response.data)
-        deliveriesSubscription.unsubscribe()
-      }, error => {
-        error.subscribe(error => {
-          this.openErrorDialog(error.statusText, false)
-        })
-        this.loaders.loadingData = false
-        deliveriesSubscription.unsubscribe()
-      })
+      const deliveriesSubscription = this.deliveriesService
+        .assigOrderAuxiliar(
+          this.orderId,
+          this.asignForm.get('idAuxiliar').value
+        )
+        .subscribe(
+          (response) => {
+            this.loaders.loadingData = false;
+            this.openSuccessDialog('Asignación de envío', response.data);
+            deliveriesSubscription.unsubscribe();
+          },
+          (error) => {
+            error.subscribe((error) => {
+              this.openErrorDialog(error.statusText, false);
+            });
+            this.loaders.loadingData = false;
+            deliveriesSubscription.unsubscribe();
+          }
+        );
     }
   }
 
@@ -65,23 +79,20 @@ export class AssignAuxiliarComponent implements OnInit {
     const dialogRef = this.dialog.open(SuccessModalComponent, {
       data: {
         succsTitle: succsTitle,
-        succsMsg: succssMsg
-      }
-    })
+        succsMsg: succssMsg,
+      },
+    });
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.dialog.closeAll()
-    })
+    dialogRef.afterClosed().subscribe(() => {
+      this.dialogRef.close(true);
+    });
   }
 
   openErrorDialog(error: string, reload: boolean): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
       data: {
-        msgError: error
-      }
-    })
-
-
+        msgError: error,
+      },
+    });
   }
-
 }
