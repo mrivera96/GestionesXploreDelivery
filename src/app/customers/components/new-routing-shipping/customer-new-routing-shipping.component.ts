@@ -1033,7 +1033,6 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         })
         .subscribe((response) => {
           returnDistance = Number(response.distancia.split(' ')[0]);
-
           this.http
             .post<any>(`${environment.apiUrl}`, {
               function: 'calculateDistance',
@@ -1056,10 +1055,17 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
 
               let avgDistance = 0;
 
-              this.totalDistance = Number(
-                this.deliveryForm.get('distancia').value
-              );
-              avgDistance = this.totalDistance / this.orders.length;
+              if (returnDistance > 12) {
+                this.totalDistance =
+                  Number(this.deliveryForm.get('distancia').value) +
+                  returnDistance;
+                avgDistance = this.totalDistance / (this.orders.length + 1);
+              } else {
+                this.totalDistance = Number(
+                  this.deliveryForm.get('distancia').value
+                );
+                avgDistance = this.totalDistance / this.orders.length;
+              }
 
               this.totalTime = initFinishT;
               let avgTime = Number(initFinishT / this.orders.length);

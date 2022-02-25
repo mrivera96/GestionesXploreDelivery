@@ -1025,7 +1025,6 @@ export class RoutingShippingComponent implements OnInit {
         })
         .subscribe((response) => {
           returnDistance = Number(response.distancia.split(' ')[0]);
-
           this.http
             .post<any>(`${environment.apiUrl}`, {
               function: 'calculateDistance',
@@ -1037,6 +1036,7 @@ export class RoutingShippingComponent implements OnInit {
               let initFinishD = 0;
               let initFinishT = 0;
               initFinishD = Number(res.distancia.split(' ')[0]);
+
               if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
                 initFinishT =
                   +res.tiempo.split(' ')[0] * 60 +
@@ -1045,20 +1045,26 @@ export class RoutingShippingComponent implements OnInit {
                 initFinishT = Number(res.tiempo.split(' ')[0]);
               }
 
-              this.totalDistance =
-                Number(this.deliveryForm.get('distancia').value) +
-                returnDistance;
+              let avgDistance = 0;
 
-              if (initFinishD >= 20.01) {
-                this.totalDistance += initFinishD;
+              if (returnDistance > 12) {
+                this.totalDistance =
+                  Number(this.deliveryForm.get('distancia').value) +
+                  returnDistance;
+                avgDistance = this.totalDistance / (this.orders.length + 1);
+              } else {
+                this.totalDistance = Number(
+                  this.deliveryForm.get('distancia').value
+                );
+                avgDistance = this.totalDistance / this.orders.length;
               }
 
               this.totalTime = initFinishT;
               let avgTime = Number(initFinishT / this.orders.length);
-              let avgDistance = this.totalDistance / this.orders.length;
+
               this.avgDistance = +avgDistance.toPrecision(2);
 
-              let appSurcharge = null;
+              let appSurcharge;
               this.surcharges.forEach((value) => {
                 if (
                   avgDistance >= Number(value.kilomMinimo) &&
@@ -1102,7 +1108,6 @@ export class RoutingShippingComponent implements OnInit {
 
               this.dialog.closeAll();
               this.loaders.loadingAdd = false;
-
               distSubs.unsubscribe();
             });
         });

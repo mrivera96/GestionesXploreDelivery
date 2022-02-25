@@ -381,6 +381,7 @@ export class OrdersByCustomerComponent implements OnInit {
       'Detalle Cargo Extra',
       'Observaciones',
       'Conductor',
+      'Modalidad de Envío'
     ];
     let ordersheaderRow = worksheet.addRow(ordersHeader);
 
@@ -407,6 +408,13 @@ export class OrdersByCustomerComponent implements OnInit {
         orderEC = orderEC + ' ' + value.extracharge.nombre;
       });
 
+      let delType = 'Envío normal';
+      if(d.delivery.isConsolidada == true){
+        delType = 'Envío Consolidado';
+      }else if(d.delivery.isRuteo == true){
+        delType = 'Envio por Ruteo';
+      }
+
       let array = [
         d.idDetalle,
         Number(d.idDelivery),
@@ -423,6 +431,7 @@ export class OrdersByCustomerComponent implements OnInit {
         orderEC,
         d.observaciones,
         d.conductor?.nomUsuario,
+        delType
       ];
       detailsRow.push(array);
     });
@@ -572,6 +581,7 @@ export class OrdersByCustomerComponent implements OnInit {
       'Detalle Cargo Extra',
       'Observaciones',
       'Conductor',
+      'Modalidad de Envío'
     ];
 
     pdf.add(new Columns(ordersHeader).bold().alignment('center').end);
@@ -582,6 +592,13 @@ export class OrdersByCustomerComponent implements OnInit {
       d.extra_charges.forEach((value) => {
         orderEC = orderEC + ' ' + value.extracharge.nombre;
       });
+
+      let delType = 'Envío normal';
+      if(d.delivery.isConsolidada == true){
+        delType = 'Envío Consolidado';
+      }else if(d.delivery.isRuteo == true){
+        delType = 'Envio por Ruteo';
+      }
 
       let array = [
         d.idDetalle,
@@ -599,6 +616,7 @@ export class OrdersByCustomerComponent implements OnInit {
         orderEC || 'N/A',
         d.observaciones || 'N/A',
         d.conductor?.nomUsuario,
+        delType
       ];
       detailsRow.push(array);
     });

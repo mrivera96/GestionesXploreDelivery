@@ -85,12 +85,13 @@ export class XploreShuttleComponent implements OnInit {
     'fr',
     'jp',
   ];
-  
+
   @ViewChild('vType') vType;
   @ViewChild('route') route;
   acceptTerms = false;
   categories: Category[];
-  imgBasePath = 'https://delivery.xplorerentacar.com/uploads/img/categories-img/';
+  imgBasePath =
+    'https://delivery.xplorerentacar.com/uploads/img/categories-img/';
   currentCategoryText = '';
 
   constructor(
@@ -196,6 +197,8 @@ export class XploreShuttleComponent implements OnInit {
         '',
         [Validators.required, Validators.minLength(3), Validators.maxLength(4)],
       ],
+      nomFacturacion: [''],
+      rtn: [''],
     });
   }
 
@@ -379,6 +382,9 @@ export class XploreShuttleComponent implements OnInit {
                     authCode: transactionDetails.authCode,
                     orderNumber: transactionDetails.orderNumber,
                     referenceNumber: transactionDetails.referenceNumber,
+                    nomFacturacion:
+                      this.paymentData.controls.nomFacturacion.value,
+                    rtn: this.paymentData.controls.rtn.value,
                   };
 
                   const phone = this.passengerData.controls.numCel.value;
@@ -404,6 +410,7 @@ export class XploreShuttleComponent implements OnInit {
                       },
                       (error) => {
                         error.subscribe((err) => {
+                          this.dialog.closeAll();
                           this.openErrorDialog(err.statusText);
                         });
                       }

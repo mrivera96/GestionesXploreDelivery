@@ -86,7 +86,7 @@ export class PendingDeliveriesComponent implements OnInit {
 
     this.dtOptions1 = {
       pagingType: 'full_numbers',
-      pageLength: 10,
+      pageLength: 5,
       serverSide: false,
       processing: true,
       info: true,
@@ -132,7 +132,7 @@ export class PendingDeliveriesComponent implements OnInit {
           this.dtTrigger2.next();
 
           this.dtElement.forEach((dtElement: DataTableDirective) => {
-            if (dtElement.dtOptions.pageLength == 10) {
+            if (dtElement.dtOptions.pageLength == 5) {
               dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
                 dtInstance.columns().every(function () {
                   const that = this;

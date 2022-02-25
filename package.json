@@ -1,5 +1,8 @@
 {
   "name": "gestiones-xplore-delivery",
+  "author":"Melvin Rivera",
+  "description": "Proyecto para el servicio de Delivery de Xplore Rent A Car",
+  "license": "ALCARSA 2020",
   "version": "5.0.0",
   "scripts": {
     "ng": "ng",
