@@ -1,0 +1,93 @@
+<!-- MODAL START -->
+<h2 mat-dialog-title class="text-info">
+  <mat-icon [inline]="true">note_add</mat-icon> Nueva Tasa de Cambio
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img
+        src="../../../../../assets/img/loading.svg"
+        width="35%"
+        alt="loading"
+      />
+      <p>Procesando información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="newExRate" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Compra:</mat-label>
+        <input
+          matInput
+          id="compra"
+          type="number"
+          formControlName="compra"
+          min="0.01"
+          placeholder="Precio de compra"
+          required
+        />
+        <mat-icon matSuffix>currency_exchange</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Venta:</mat-label>
+        <input
+          matInput
+          id="venta"
+          type="number"
+          formControlName="venta"
+          min="0.01"
+          placeholder="Precio de venta"
+          required
+        />
+        <mat-icon matSuffix>currency_exchange</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Fecha Inicial:</mat-label>
+        <input
+          matInput
+          id="fechaI"
+          type="date"
+          formControlName="fechaI"
+          placeholder="Fecha Inicial"
+          required
+        />
+        <mat-icon matSuffix>today</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Fecha Final:</mat-label>
+        <input
+          matInput
+          id="fechaF"
+          type="date"
+          formControlName="fechaF"
+          placeholder="Fecha Final"
+          required
+        />
+        <mat-icon matSuffix>today</mat-icon>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    [disabled]="newExRate.invalid || loaders.loadingSubmit"
+    (click)="onFormSubmit()"
+    mat-raised-button
+    color="primary"
+  >
+    Confimar
+  </button>
+  <button type="button" mat-raised-button mat-dialog-close="false">Cancelar</button>
+</mat-dialog-actions>
+
+<!-- MODAL END -->

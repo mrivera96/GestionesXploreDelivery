@@ -95,6 +95,9 @@ import { QueryUsersComponent } from './components/query-users/query-users.compon
 import { AddQueryUserComponent } from './components/query-users/add-query-user/add-query-user.component';
 import { UpdateQueryUserComponent } from './components/query-users/update-query-user/update-query-user.component';
 import { ShuttleRateDetailsComponent } from './components/rates/shuttle-rate-details/shuttle-rate-details.component';
+import { ReadExchangeRatesComponent } from './components/exchage-rates/read-exchange-rates/read-exchange-rates.component';
+import { CreateExchangeRateComponent } from './components/exchage-rates/create-exchange-rate/create-exchange-rate.component';
+import { UpdateExchangeRateComponent } from './components/exchage-rates/update-exchange-rate/update-exchange-rate.component';
 
 @NgModule({
   declarations: [
@@ -183,6 +186,9 @@ import { ShuttleRateDetailsComponent } from './components/rates/shuttle-rate-det
     AddQueryUserComponent,
     UpdateQueryUserComponent,
     ShuttleRateDetailsComponent,
+    ReadExchangeRatesComponent,
+    CreateExchangeRateComponent,
+    UpdateExchangeRateComponent,
   ],
   entryComponents: [
     ConfirmModalComponent,

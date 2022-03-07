@@ -178,6 +178,11 @@
           Tarifas
         </a>
 
+        <a [routerLink]="['admins/parametrizar-tasa-cambio']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>currency_exchange</mat-icon>
+          Tasa de Cambio
+        </a>
+
         <a [routerLink]="['admins/parametrizar-recargos']" (click)="sidenav.close()" mat-list-item class="ml-3">
           <mat-icon>attach_money</mat-icon>
           Recargos
@@ -253,7 +258,8 @@
       </a>
 
       <mat-list class="d-none ml-2 createDelMenu">
-        <a (click)="sidenav.close()" [routerLink]="['customers/envio-normal']" mat-list-item>
+        <a (click)="sidenav.close()" [routerLink]="['customers/envio-normal']" mat-list-item *ngIf="currentUser.idCliente != 358 &&
+        currentUser.idCliente != 359 && currentUser.idCliente !=381">
           <mat-icon>add</mat-icon>
           Delivery Express
         </a>
@@ -264,7 +270,8 @@
           Agregar delivery Foráneo (Carga Consolidada)
         </a> -->
   
-        <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item>
+        <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item *ngIf="currentUser.idCliente != 358 &&
+        currentUser.idCliente != 359 && currentUser.idCliente !=381">
           <mat-icon>add</mat-icon>
           Delivery en Ruta
         </a>

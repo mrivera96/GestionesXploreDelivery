@@ -66,6 +66,15 @@ export class NewRateDialogComponent implements OnInit {
       precio: ['', Validators.required],
       idCliente: [null],
       idTipoTarifa: [null, Validators.required],
+      tYK: [0, Validators.min(0)],
+      cobVehiculo: [0, Validators.min(0)],
+      servChofer: [0, Validators.min(0)],
+      recCombustible: [0, Validators.min(0)],
+      cobTransporte: [0, Validators.min(0)],
+      isv: [0, Validators.min(0)],
+      tasaTuris: [0, Validators.min(0)],
+      gastosReembolsables: [0, Validators.min(0)],
+      transportePersonas: [0, Validators.min(0)],
     });
 
     this.consolidatedForm = this.formBuilder.group({
@@ -91,7 +100,7 @@ export class NewRateDialogComponent implements OnInit {
         Validators.required,
       ],
       descHorario: ['', [Validators.required, Validators.maxLength(60)]],
-      limite:[20]
+      limite: [20],
     });
 
     this.dtOptions = {
@@ -122,7 +131,6 @@ export class NewRateDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
     const usersSubscription = this.usersService
       .getCustomers()
       .subscribe((response) => {
@@ -146,13 +154,15 @@ export class NewRateDialogComponent implements OnInit {
         ratesSubscription.unsubscribe();
       });
 
-    const rutesSusbcription = this.http.post<any>(`${environment.apiUrl}`,{
-      tkn: this.authService.currentUserValue.access_token,
-      function: 'getRoutes'
-    }).subscribe(response=>{
-      this.routes = response.data;
-      rutesSusbcription.unsubscribe();
-    });
+    const rutesSusbcription = this.http
+      .post<any>(`${environment.apiUrl}`, {
+        tkn: this.authService.currentUserValue.access_token,
+        function: 'getRoutes',
+      })
+      .subscribe((response) => {
+        this.routes = response.data;
+        rutesSusbcription.unsubscribe();
+      });
   }
 
   get fNew() {
@@ -168,83 +178,118 @@ export class NewRateDialogComponent implements OnInit {
   }
 
   onFormNewSubmit() {
+    const tk = parseFloat(this.newRateForm.controls.tYK?.value) ?? 0;
+    const cobVeh =
+      parseFloat(this.newRateForm.controls.cobVehiculo?.value) ?? 0;
+    const servChof =
+      parseFloat(this.newRateForm.controls.servChofer?.value) ?? 0;
+    const recComb =
+      parseFloat(this.newRateForm.controls.recCombustible?.value) ?? 0;
+    const cobTrans =
+      parseFloat(this.newRateForm.controls.cobTransporte?.value) ?? 0;
+    const isv = parseFloat(this.newRateForm.controls.isv?.value) ?? 0;
+    const tasaTur = parseFloat(this.newRateForm.controls.tasaTuris?.value) ?? 0;
+    const gastRe =
+      parseFloat(this.newRateForm.controls.gastosReembolsables?.value) ?? 0;
+    const transPer =
+      parseFloat(this.newRateForm.controls.transportePersonas?.value) ?? 0;
+
+    const sum =
+      tk +
+      cobVeh +
+      servChof +
+      recComb +
+      cobTrans +
+      isv +
+      tasaTur +
+      gastRe +
+      transPer;
+
     if (
-      this.fNew.idTipoTarifa.value == 2 ||
-      this.fNew.idTipoTarifa.value == 4
+      sum > +this.newRateForm.controls.precio.value ||
+      sum < +this.newRateForm.controls.precio.value
     ) {
-      if (this.newRateForm.valid && this.consolidatedForm.valid) {
-        this.loaders.loadingSubmit = true;
-        this.ratesService
-          .createRate(
-            this.newRateForm.value,
-            this.rateCustomers,
-            this.consolidatedForm.value,
-            this.rateSchedules
-          )
-          .subscribe(
-            (response) => {
-              this.loaders.loadingSubmit = false;
-              this.openSuccessDialog(
-                'Operación Realizada Correctamente',
-                response.message
-              );
-            },
-            (error) => {
-              error.subscribe((error) => {
-                this.loaders.loadingSubmit = false;
-                this.openErrorDialog(error.statusText);
-              });
-            }
-          );
-      }
-    }else if (
-      this.fNew.idTipoTarifa.value == 5
-    ) {
-      if (this.newRateForm.valid && this.shuttleForm.valid) {
-        this.loaders.loadingSubmit = true;
-        this.ratesService
-          .createRate(
-            this.newRateForm.value,
-            this.rateCustomers,
-            this.shuttleForm.value,
-            this.rateSchedules
-          )
-          .subscribe(
-            (response) => {
-              this.loaders.loadingSubmit = false;
-              this.openSuccessDialog(
-                'Operación Realizada Correctamente',
-                response.message
-              );
-            },
-            (error) => {
-              error.subscribe((error) => {
-                this.loaders.loadingSubmit = false;
-                this.openErrorDialog(error.statusText);
-              });
-            }
-          );
-      }
+      this.openErrorDialog(
+        'Los valores ingresados para facturación, no coinciden con el monto de la tarifa'
+      );
+      this.loaders.loadingSubmit = false;
     } else {
-      if (this.newRateForm.valid) {
-        this.loaders.loadingSubmit = true;
-        this.ratesService
-          .createRate(this.newRateForm.value, this.rateCustomers)
-          .subscribe(
-            (response) => {
-              this.loaders.loadingSubmit = false;
-              this.openSuccessDialog(
-                'Operación Realizada Correctamente',
-                response.message
-              );
-            },
-            (error) => {
-              error.subscribe((error) => {
+      if (
+        this.fNew.idTipoTarifa.value == 2 ||
+        this.fNew.idTipoTarifa.value == 4
+      ) {
+        if (this.newRateForm.valid && this.consolidatedForm.valid) {
+          this.loaders.loadingSubmit = true;
+          this.ratesService
+            .createRate(
+              this.newRateForm.value,
+              this.rateCustomers,
+              this.consolidatedForm.value,
+              this.rateSchedules
+            )
+            .subscribe(
+              (response) => {
                 this.loaders.loadingSubmit = false;
-                this.openErrorDialog(error.statusText);
-              });
-            }
-          );
+                this.openSuccessDialog(
+                  'Operación Realizada Correctamente',
+                  response.message
+                );
+              },
+              (error) => {
+                error.subscribe((error) => {
+                  this.loaders.loadingSubmit = false;
+                  this.openErrorDialog(error.statusText);
+                });
+              }
+            );
+        }
+      } else if (this.fNew.idTipoTarifa.value == 5) {
+        if (this.newRateForm.valid && this.shuttleForm.valid) {
+          this.loaders.loadingSubmit = true;
+          this.ratesService
+            .createRate(
+              this.newRateForm.value,
+              this.rateCustomers,
+              this.shuttleForm.value,
+              this.rateSchedules
+            )
+            .subscribe(
+              (response) => {
+                this.loaders.loadingSubmit = false;
+                this.openSuccessDialog(
+                  'Operación Realizada Correctamente',
+                  response.message
+                );
+              },
+              (error) => {
+                error.subscribe((error) => {
+                  this.loaders.loadingSubmit = false;
+                  this.openErrorDialog(error.statusText);
+                });
+              }
+            );
+        }
+      } else {
+        if (this.newRateForm.valid) {
+          this.loaders.loadingSubmit = true;
+          this.ratesService
+            .createRate(this.newRateForm.value, this.rateCustomers)
+            .subscribe(
+              (response) => {
+                this.loaders.loadingSubmit = false;
+                this.openSuccessDialog(
+                  'Operación Realizada Correctamente',
+                  response.message
+                );
+              },
+              (error) => {
+                error.subscribe((error) => {
+                  this.loaders.loadingSubmit = false;
+                  this.openErrorDialog(error.statusText);
+                });
+              }
+            );
+        }
       }
     }
   }

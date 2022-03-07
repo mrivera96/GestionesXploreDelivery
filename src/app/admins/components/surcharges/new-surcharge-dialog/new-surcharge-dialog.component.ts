@@ -112,7 +112,7 @@ export class NewSurchargeDialogComponent implements OnInit {
         transPer != 0
       ) {
         const sum =
-          tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe+ transPer;
+          tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe + transPer;
 
         if (sum != this.fNew.monto.value) {
           this.openErrorDialog(

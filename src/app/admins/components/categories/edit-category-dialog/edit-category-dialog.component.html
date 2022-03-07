@@ -15,8 +15,8 @@
   </div>
 
   <form [formGroup]="edCatForm" *ngIf="!loaders.loadingSubmit">
-    <div class="form-group">
-      <mat-form-field appearance="outline" floatLabel="always">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Descripción de Categoría:</mat-label>
         <input
           matInput
@@ -30,7 +30,7 @@
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" floatLabel="always">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Descripción de categoría:</mat-label>
         <input
           matInput
@@ -44,8 +44,10 @@
         <mat-icon matSuffix>subtitles</mat-icon>
         <mat-error>*Este campo es obligatorio</mat-error>
       </mat-form-field>
+    </div>
 
-      <mat-form-field appearance="outline" floatLabel="always">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
         <mat-label>Tipo de Servicio:</mat-label>
         <mat-select
           formControlName="idTipoServicio"
@@ -58,8 +60,22 @@
           >
         </mat-select>
       </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Restricción de Kilometraje:</mat-label>
+        <input
+          matInput
+          id="restKm"
+          type="number"
+          formControlName="restKm"
+          placeholder="40 Kms"
+          required
+        />
+        <mat-icon matSuffix>block</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
     </div>
-    <div class="form-group">
+    <div class="form-row">
       <div class="col">
         <mat-slide-toggle
           #matSlideToggle

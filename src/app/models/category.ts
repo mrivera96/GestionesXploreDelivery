@@ -13,4 +13,5 @@ export interface Category {
   idTipoServicio?: number
   datesToShow?: any[]
   rutaImagen?: string
+  restKm?: number
 }

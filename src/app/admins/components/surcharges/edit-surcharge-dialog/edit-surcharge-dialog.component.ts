@@ -82,6 +82,10 @@ export class EditSurchargeDialogComponent implements OnInit {
         this.currSurch?.item_detail?.gastosReembolsables || 0,
         Validators.min(0),
       ],
+      transportePersonas: [
+        this.currSurch?.item_detail?.transportePersonas || 0,
+        Validators.min(0),
+      ],
     });
 
     const usersSubscription = this.usersService
@@ -130,6 +134,7 @@ export class EditSurchargeDialogComponent implements OnInit {
       const isv = parseFloat(this.f.isv.value) ?? 0;
       const tasaTur = parseFloat(this.f.tasaTuris.value) ?? 0;
       const gastRe = parseFloat(this.f.gastosReembolsables.value) ?? 0;
+      const transPer = parseFloat(this.f.transportePersonas.value) ?? 0;
 
       if (
         tk != 0 ||
@@ -139,10 +144,11 @@ export class EditSurchargeDialogComponent implements OnInit {
         cobTrans != 0 ||
         isv != 0 ||
         tasaTur != 0 ||
-        gastRe != 0
+        gastRe != 0 || 
+        transPer != 0
       ) {
         const sum =
-          tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe;
+          tk + cobVeh + servChof + recComb + cobTrans + isv + tasaTur + gastRe + transPer;
 
         if (+sum != +this.f.monto.value) {
           this.openErrorDialog(
