@@ -119,6 +119,17 @@
         </mat-error>
       </mat-form-field>
     </div>
+
+    <div class="row">
+      <div class="col">
+        <mat-slide-toggle
+          #matSlideToggle
+          [checked]="currDriver.isActivo == true"
+          formControlName="isActivo"
+          >Activo</mat-slide-toggle
+        >
+      </div>
+    </div>
   </form>
 </mat-dialog-content>
 
