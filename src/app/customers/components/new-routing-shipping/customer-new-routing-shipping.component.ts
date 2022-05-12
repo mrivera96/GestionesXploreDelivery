@@ -1023,7 +1023,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
   calculatePayment(final?: boolean) {
     if (final) {
       this.openLoader();
-      let returnDistance = 0;
+      /*let returnDistance = 0;
       const distSubs = this.http
         .post<any>(`${environment.apiUrl}`, {
           function: 'calculateDistance',
@@ -1034,84 +1034,80 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         .subscribe((response) => {
           returnDistance = Number(response.distancia.split(' ')[0]);
 
-          this.http
-            .post<any>(`${environment.apiUrl}`, {
-              function: 'calculateDistance',
-              salida: this.deliveryForm.get('dirRecogida').value,
-              entrega: this.orders[this.orders.length - 1].direccion,
-              tarifa: this.pago.baseRate,
-            })
-            .subscribe((res) => {
-              let initFinishD = 0;
-              let initFinishT = 0;
-              initFinishD = Number(res.distancia.split(' ')[0]);
+          
+        });*/
+      const distSubs = this.http
+        .post<any>(`${environment.apiUrl}`, {
+          function: 'calculateDistance',
+          salida: this.deliveryForm.get('dirRecogida').value,
+          entrega: this.orders[this.orders.length - 1].direccion,
+          tarifa: this.pago.baseRate,
+        })
+        .subscribe((res) => {
+          let initFinishD = 0;
+          let initFinishT = 0;
+          initFinishD = Number(res.distancia.split(' ')[0]);
+          if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
+            initFinishT =
+              +res.tiempo.split(' ')[0] * 60 + Number(res.tiempo.split(' ')[2]);
+          } else {
+            initFinishT = Number(res.tiempo.split(' ')[0]);
+          }
 
-              if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
-                initFinishT =
-                  +res.tiempo.split(' ')[0] * 60 +
-                  Number(res.tiempo.split(' ')[2]);
-              } else {
-                initFinishT = Number(res.tiempo.split(' ')[0]);
-              }
+          this.totalDistance = Number(this.deliveryForm.get('distancia').value);
 
-              let avgDistance = 0;
+          /*if (initFinishD >= 12.01) {
+                this.totalDistance += initFinishD;
+              }*/
 
-              this.totalDistance = Number(
-                this.deliveryForm.get('distancia').value
-              );
-              avgDistance = this.totalDistance / this.orders.length;
+          this.totalTime = initFinishT;
+          let avgTime = Number(initFinishT / this.orders.length);
+          let avgDistance = this.totalDistance / this.orders.length;
+          this.avgDistance = +avgDistance.toPrecision(2);
 
-              this.totalTime = initFinishT;
-              let avgTime = Number(initFinishT / this.orders.length);
+          let appSurcharge = null;
+          this.surcharges.forEach((value) => {
+            if (
+              avgDistance >= Number(value.kilomMinimo) &&
+              avgDistance <= Number(value.kilomMaximo)
+            ) {
+              appSurcharge = value;
+            }
+          });
 
-              this.avgDistance = +avgDistance.toPrecision(2);
+          this.orders.forEach((order) => {
+            if (appSurcharge != null) {
+              order.recargo = Number(appSurcharge?.monto);
+              order.idRecargo = appSurcharge?.idRecargo;
+            } else {
+              order.recargo = 0;
+              order.idRecargo = null;
+            }
+            let ordrTime = 0;
+            if (order.tiempo.includes('hour') || order.tiempo.includes('h')) {
+              ordrTime =
+                +order.tiempo.split(' ')[0] * 60 +
+                Number(order.tiempo.split(' ')[2]) +
+                avgTime;
+            } else {
+              ordrTime = Number(order.tiempo.split(' ')[0]) + avgTime;
+            }
+            order.tiempo = ordrTime.toFixed() + ' mins';
+            order.cTotal = +order.tarifaBase + +order.recargo;
+          });
 
-              let appSurcharge;
-              this.surcharges.forEach((value) => {
-                if (
-                  avgDistance >= Number(value.kilomMinimo) &&
-                  avgDistance <= Number(value.kilomMaximo)
-                ) {
-                  appSurcharge = value;
-                }
-              });
+          if (appSurcharge != null) {
+            this.pago.recargos = appSurcharge.monto * this.orders.length;
+          } else {
+            this.pago.recargos = 0;
+          }
 
-              this.orders.forEach((order) => {
-                if (appSurcharge != null) {
-                  order.recargo = Number(appSurcharge?.monto);
-                  order.idRecargo = appSurcharge?.idRecargo;
-                } else {
-                  order.recargo = 0;
-                  order.idRecargo = null;
-                }
-                let ordrTime = 0;
-                if (
-                  order.tiempo.includes('hour') ||
-                  order.tiempo.includes('h')
-                ) {
-                  ordrTime =
-                    +order.tiempo.split(' ')[0] * 60 +
-                    Number(order.tiempo.split(' ')[2]) +
-                    avgTime;
-                } else {
-                  ordrTime = Number(order.tiempo.split(' ')[0]) + avgTime;
-                }
-                order.tiempo = ordrTime.toFixed() + ' mins';
-                order.cTotal = +order.tarifaBase + +order.recargo;
-              });
+          this.pago.total = this.pago.total + this.pago.recargos;
 
-              if (appSurcharge != null) {
-                this.pago.recargos = appSurcharge.monto * this.orders.length;
-              } else {
-                this.pago.recargos = 0;
-              }
+          this.dialog.closeAll();
+          this.loaders.loadingAdd = false;
 
-              this.pago.total = this.pago.total + this.pago.recargos;
-
-              this.dialog.closeAll();
-              this.loaders.loadingAdd = false;
-              distSubs.unsubscribe();
-            });
+          distSubs.unsubscribe();
         });
     } else {
       this.pago.cargosExtra = this.pagos.reduce(function (a, b) {

@@ -253,7 +253,8 @@
       </a>
 
       <mat-list class="d-none ml-2 createDelMenu">
-        <a (click)="sidenav.close()" [routerLink]="['customers/envio-normal']" mat-list-item>
+        <a (click)="sidenav.close()" [routerLink]="['customers/envio-normal']" mat-list-item *ngIf="currentUser.idCliente != 358 &&
+        currentUser.idCliente != 359 && currentUser.idCliente !=381">
           <mat-icon>add</mat-icon>
           Delivery Express
         </a>
@@ -264,7 +265,8 @@
           Agregar delivery Foráneo (Carga Consolidada)
         </a> -->
   
-        <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item>
+        <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item *ngIf="currentUser.idCliente != 358 &&
+        currentUser.idCliente != 359 && currentUser.idCliente !=381">
           <mat-icon>add</mat-icon>
           Delivery en Ruta
         </a>

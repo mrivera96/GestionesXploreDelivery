@@ -245,6 +245,7 @@
               <th>Detalle Cargo Extra</th>
               <th>Observaciones</th>
               <th>Conductor</th>
+              <th>Modalidad de Envío</th>
             </tr>
           </thead>
           <tbody>
@@ -278,6 +279,11 @@
                   }}
                 </p>
                 <p *ngIf="!order.conductor">Aún no asignada</p>
+              </td>
+              <td>
+                <p *ngIf="order.delivery.isConsolidada == 1">Envío Consolidado</p>
+                <p *ngIf="order.delivery.isRuteo == 1">Envío por Ruteo</p>
+                <p *ngIf="order.delivery.isRuteo == 0 && order.delivery.isConsolidada == 0">Envío Normal</p>
               </td>
             </tr>
           </tbody>

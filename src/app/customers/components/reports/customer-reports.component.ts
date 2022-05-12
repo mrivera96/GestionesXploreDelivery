@@ -298,7 +298,8 @@ export class CustomerReportsComponent implements OnInit {
       "Estado",
       "Detalle Cargo Extra",
       "Observaciones",
-      "Conductor"
+      "Conductor",
+      'Modalidad de Envío'
     ]
     let ordersheaderRow = worksheet.addRow(ordersHeader);
 
@@ -318,7 +319,14 @@ export class CustomerReportsComponent implements OnInit {
       let orderEC = ''
       d.extra_charges.forEach(value => {
         orderEC = orderEC + ' ' + value.extracharge.nombre
-      })
+      });
+
+      let delType = 'Envío normal';
+      if(d.delivery.isConsolidada == true){
+        delType = 'Envío Consolidado';
+      }else if(d.delivery.isRuteo == true){
+        delType = 'Envio por Ruteo';
+      }
 
       let array = [
         d.idDetalle,
@@ -335,7 +343,8 @@ export class CustomerReportsComponent implements OnInit {
         d.estado.descEstado + ' Fecha: ' + d.fechaEntrega,
         orderEC,
         d.observaciones,
-        d.conductor?.nomUsuario
+        d.conductor?.nomUsuario,
+        delType
       ]
       detailsRow.push(array)
 
@@ -506,7 +515,8 @@ export class CustomerReportsComponent implements OnInit {
       "Estado",
       "Detalle Cargo Extra",
       "Observaciones",
-      "Conductor"
+      "Conductor",
+      'Modalidad de Envío'
     ]
 
     pdf.add(
@@ -520,7 +530,14 @@ export class CustomerReportsComponent implements OnInit {
       let orderEC = ''
       d.extra_charges.forEach(value => {
         orderEC = orderEC + ' ' + value.extracharge.nombre
-      })
+      });
+
+      let delType = 'Envío normal';
+      if(d.delivery.isConsolidada == true){
+        delType = 'Envío Consolidado';
+      }else if(d.delivery.isRuteo == true){
+        delType = 'Envio por Ruteo';
+      }
 
       let array = [
         d.idDetalle,
@@ -537,7 +554,8 @@ export class CustomerReportsComponent implements OnInit {
         d.estado.descEstado + ' Fecha: ' + d.fechaEntrega,
         orderEC || 'N/A',
         d.observaciones || 'N/A',
-        d.conductor?.nomUsuario
+        d.conductor?.nomUsuario,
+        delType
       ]
       detailsRow.push(array)
 
