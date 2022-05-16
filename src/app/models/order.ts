@@ -37,4 +37,6 @@ export interface Order {
   order?: number
   idRecargo?: number
   idx?: any
+  direccionFinal?: string
+  distanciaFinal?: string 
 }

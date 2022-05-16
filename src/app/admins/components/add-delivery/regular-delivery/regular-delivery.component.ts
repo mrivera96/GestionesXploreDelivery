@@ -589,6 +589,7 @@ export class RegularDeliveryComponent implements OnInit {
           salida: this.deliveryForm.get('dirRecogida').value,
           entrega: entrega,
           tarifa: this.pago.baseRate,
+          categoria: this.deliveryForm.get('idCategoria').value
         })
         .subscribe(
           (response) => {
@@ -797,6 +798,7 @@ export class RegularDeliveryComponent implements OnInit {
           salida: salida,
           entrega: entrega,
           tarifa: tarifa,
+          categoria: this.deliveryForm.get('idCategoria').value
         })
         .subscribe(
           (response) => {
@@ -1172,6 +1174,7 @@ export class RegularDeliveryComponent implements OnInit {
       salida: salida,
       entrega: entrega,
       tarifa: tarifa,
+      categoria: this.deliveryForm.get('idCategoria').value
     });
   }
 

@@ -280,6 +280,59 @@
 
               </div>
 
+              <h3
+                class="card-title"
+                *ngIf="
+                  selectedCategory?.categoryExtraCharges?.length > 0 &&
+                  files.length == 0
+                "
+              >
+                Servicios Adicionales
+              </h3>
+              <hr
+                *ngIf="
+                  selectedCategory?.categoryExtraCharges?.length > 0 &&
+                  files.length == 0
+                "
+              />
+
+              <div class="row" *ngIf="files.length == 0" formGroupName="order">
+                <div
+                  class="col-lg-4 col-sm-6"
+                  *ngFor="
+                    let extracharge of selectedCategory.categoryExtraCharges
+                  "
+                >
+                  <p class="card-title">
+                    {{ extracharge.extra_charge.nombre }}
+                  </p>
+
+                  <mat-radio-group formControlName="extracharge">
+                    <mat-radio-button
+                      class="col"
+                      *ngFor="let option of extracharge.extra_charge.options"
+                      [value]="option.idCargoExtra"
+                      (change)="
+                        addExtraCharge(
+                          extracharge.extra_charge.idCargoExtra,
+                          option
+                        )
+                      "
+                    >
+                      <span style="white-space: normal"
+                        >{{ option.descripcion }} (L.
+                        {{ option.costo | number: ".2" }} )</span
+                      >
+                    </mat-radio-button>
+                    <mat-radio-button
+                      class="col"
+                      (change)="removeExtraCharges(extracharge.idCargoExtra)"
+                    >
+                      <span style="white-space: normal">Ninguno</span>
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </div>
             </div>
 
             <div class="col-md">
@@ -346,7 +399,11 @@
           <div *ngIf="prohibitedDistance" class="alert alert-danger" role="alert">
             {{prohibitedDistanceMsg}}
           </div>
+
+
+
           <!--ORDER ADD FORM END-->
+
         </form>
         <!-- FORM END -->
       </div>

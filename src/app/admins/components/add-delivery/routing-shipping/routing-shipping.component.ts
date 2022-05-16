@@ -599,6 +599,7 @@ export class RoutingShippingComponent implements OnInit {
             salida: salida0,
             entrega: this.deliveryForm.get('dirRecogida').value,
             tarifa: this.pago.baseRate,
+            categoria: this.deliveryForm.get('idCategoria').value
           })
           .subscribe(
             (response) => {
@@ -624,6 +625,7 @@ export class RoutingShippingComponent implements OnInit {
                   salida: salida,
                   entrega: entrega,
                   tarifa: tarifa,
+                  categoria: this.deliveryForm.get('idCategoria').value
                 })
                 .subscribe(
                   (response) => {
@@ -837,6 +839,7 @@ export class RoutingShippingComponent implements OnInit {
           salida: salida,
           entrega: entrega,
           tarifa: tarifa,
+          categoria: this.deliveryForm.get('idCategoria').value
         })
         .subscribe(
           (response) => {
@@ -1022,6 +1025,7 @@ export class RoutingShippingComponent implements OnInit {
           salida: this.orders[this.orders.length - 1].direccion,
           entrega: this.deliveryForm.get('dirRecogida').value,
           tarifa: this.pago.baseRate,
+          categoria: this.deliveryForm.get('idCategoria').value
         })
         .subscribe((response) => {
           returnDistance = Number(response.distancia.split(' ')[0]);
@@ -1031,6 +1035,7 @@ export class RoutingShippingComponent implements OnInit {
               salida: this.deliveryForm.get('dirRecogida').value,
               entrega: this.orders[this.orders.length - 1].direccion,
               tarifa: this.pago.baseRate,
+              categoria: this.deliveryForm.get('idCategoria').value
             })
             .subscribe((res) => {
               let initFinishD = 0;
@@ -1455,6 +1460,7 @@ export class RoutingShippingComponent implements OnInit {
       salida: salida,
       entrega: entrega,
       tarifa: tarifa,
+      categoria: this.deliveryForm.get('idCategoria').value
     });
   }
 

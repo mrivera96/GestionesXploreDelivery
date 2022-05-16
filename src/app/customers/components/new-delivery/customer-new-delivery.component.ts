@@ -34,6 +34,7 @@ import { LabelsService } from 'src/app/services/labels.service';
 import { Label } from 'src/app/models/label';
 import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 import { OperationsService } from 'src/app/services/operations.service';
+import { DateTimeValidate } from 'src/app/helpers/datetime.validator';
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -182,7 +183,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
           BlankSpacesValidator('dirRecogida'),
           NoUrlValidator('dirRecogida'),
           DateValidate('fecha'),
-        ],
+        ]
       }
     );
 
@@ -321,7 +322,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       'en'
     );
     this.checkCustomer();
-    this.setCurrentDate();
+    this.setCurrentDate();  
   }
 
   //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
@@ -461,11 +462,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
 
   //MÉTODO QUE EJECUTA LA ADICIÓN DE UN NUEVO ENVÍO
   onOrderAdd() {
-    if (this.reserv) {
-      this.validateHour();
-    } else {
-      this.validateNowHour();
-    }
+    
+    this.validateHour();
 
     if (this.deliveryForm.valid) {
       this.openLoader();
@@ -575,6 +573,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
           salida: this.deliveryForm.get('dirRecogida').value,
           entrega: entrega,
           tarifa: this.pago.baseRate,
+          categoria: this.deliveryForm.get('idCategoria').value
         })
         .subscribe(
           (response) => {
@@ -786,6 +785,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
           salida: salida,
           entrega: entrega,
           tarifa: tarifa,
+          categoria: this.deliveryForm.get('idCategoria').value
         })
         .subscribe(
           (response) => {
@@ -1184,6 +1184,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       salida: salida,
       entrega: entrega,
       tarifa: tarifa,
+      categoria: this.deliveryForm.get('idCategoria').value
     });
   }
 
@@ -1284,11 +1285,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   //VALIDA LA HORA SEGUN EL TIPO DE SERVICIO RESERVA O SOLICITAR AHORA
-  validateHour() {
+  async validateHour() {
     const control = this.deliveryForm.get('hora');
     let h = this.newForm.get('hora').value;
     const date = this.newForm.get('fecha').value;
-    const currentDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+    /*const currentDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
     const currentDateTime = new Date().setHours(
       new Date().getHours(),
       new Date().getMinutes()
@@ -1338,11 +1339,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     );
     const datetime = new Date(date + ' ' + h);
 
-    if (control.errors && !control.errors.mustAfterHour) {
-      // return if another validator has already found an error on the matchingControl
-      return;
-    }
-
+    
     if (this.reserv == true) {
       // @ts-ignore
       if (datetime < oneHourMore) {
@@ -1359,7 +1356,17 @@ export class CustomerNewDeliveryComponent implements OnInit {
       if (h < tSSHour || h > tSFHour) {
         control.setErrors({ mustAfterHour: true });
       }
+    }*/
+    if (control.errors && !control.errors.mustAfterHour) {
+      // return if another validator has already found an error on the matchingControl
+      return;
     }
+
+    const schValsubsc = await this.deliveriesService.validateDateTime(date, h, this.reserv)
+    .subscribe(response =>{
+      if(response.result == 0) control.setErrors({ mustAfterHour: true });
+      schValsubsc.unsubscribe()
+    });
   }
 
   validateNowHour() {

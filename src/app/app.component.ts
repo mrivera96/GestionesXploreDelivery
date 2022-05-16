@@ -1,5 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { User } from './models/user';
 import { SchedulesService } from './services/schedules.service';
@@ -18,9 +17,7 @@ export class AppComponent {
   currentRoute: any;
 
   constructor(
-    private router: Router,
     private authenticationService: AuthService,
-    private route: ActivatedRoute,
     private schedulesService: SchedulesService
   ) {
     //router.events.subscribe((url:any) => {this.currentRoute = url; console.log(this.currentRoute);});

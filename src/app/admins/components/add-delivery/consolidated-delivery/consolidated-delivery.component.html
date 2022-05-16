@@ -507,45 +507,59 @@
                 </div>
               </div>
 
-              <!--<div class="row" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
-                <div class="col">
-                  <p class="card-title"><strong>Opciones extra de envíos:</strong></p>
-                  <hr>
+              <h3
+                class="card-title"
+                *ngIf="
+                  selectedCategory?.categoryExtraCharges?.length > 0 &&
+                  files.length == 0
+                "
+              >
+                Servicios Adicionales
+              </h3>
+              <hr
+                *ngIf="
+                  selectedCategory?.categoryExtraCharges?.length > 0 &&
+                  files.length == 0
+                "
+              />
+
+              <div class="row" *ngIf="files.length == 0" formGroupName="order">
+                <div
+                  class="col-lg-4 col-sm-6"
+                  *ngFor="
+                    let extracharge of selectedCategory.categoryExtraCharges
+                  "
+                >
+                  <p class="card-title">
+                    {{ extracharge.extra_charge.nombre }}
+                  </p>
+
+                  <mat-radio-group formControlName="extracharge">
+                    <mat-radio-button
+                      class="col"
+                      *ngFor="let option of extracharge.extra_charge.options"
+                      [value]="option.idCargoExtra"
+                      (change)="
+                        addExtraCharge(
+                          extracharge.extra_charge.idCargoExtra,
+                          option
+                        )
+                      "
+                    >
+                      <span style="white-space: normal"
+                        >{{ option.descripcion }} (L.
+                        {{ option.costo | number: ".2" }} )</span
+                      >
+                    </mat-radio-button>
+                    <mat-radio-button
+                      class="col"
+                      (change)="removeExtraCharges(extracharge.idCargoExtra)"
+                    >
+                      <span style="white-space: normal">Ninguno</span>
+                    </mat-radio-button>
+                  </mat-radio-group>
                 </div>
               </div>
-
-              <div class="form-row" formGroupName="order" *ngIf="selectedCategory?.categoryExtraCharges?.length > 0">
-                <mat-form-field appearance="outline" floatLabel="always" class="col">
-                  <mat-label>Cargo Extra</mat-label>
-                  <mat-select formControlName="idCargoExtra" placeholder="- Seleccione un cargo extra -">
-                    <mat-option *ngFor="let extracharge of selectedCategory.categoryExtraCharges"
-                                (click)="setSelectedExtraCharge(extracharge.extra_charge)"
-                                [value]="extracharge.idCargoExtra">
-                    <span *ngIf="extracharge.extra_charge.tipoCargo === 'F'">
-                      {{extracharge.extra_charge.nombre}}
-                      <span class="badge badge-primary">L.{{ extracharge.extra_charge.costo | number: '.2'}}</span>
-                    </span>
-                      <span *ngIf="extracharge.extra_charge.tipoCargo === 'V'">
-                      {{extracharge.extra_charge.nombre}}
-                    </span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-
-
-                <mat-form-field appearance="outline" floatLabel="always" class="col"
-                                *ngIf="selectedExtraCharge?.options?.length > 0">
-                  <mat-label>Opción de {{selectedExtraCharge.nombre}}</mat-label>
-                  <mat-select formControlName="idOpcionExtra"
-                              placeholder="- Seleccione una opción -" class="col">
-                    <mat-option *ngFor="let option of selectedExtraCharge.options"
-                                value="{{option.costo}}" (click)="setSelectedExtraChargeOption(option)">
-                      {{option.descripcion  }}<span
-                      class="badge badge-primary">L.{{ '  ' + option.costo | number: '.2'}}</span>
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>-->
             </div>
 
             <div class="col-md">
@@ -743,7 +757,6 @@
         <p class="card-title"><strong>Forma de pago:</strong></p>
         <hr>
       </div>-->
-     
     </div>
     <!--CARD BLOCK PAYMENT OPTION end-->
   </mat-card-content>

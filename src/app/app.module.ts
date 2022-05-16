@@ -37,7 +37,9 @@ import { LockedUserDialogComponent } from './shared/components/locked-user-dialo
 import { ConfirmCancelDialogComponent } from './customers/components/delivery-detail/confirm-cancel-dialog/confirm-cancel-dialog.component';
 import { ConfirmDeleteComponent } from './customers/components/labels/confirm-delete/confirm-delete.component';
 import { ServiceChooseComponent } from './shared/components/service-choose/service-choose.component';
-import { NgxFlagPickerModule } from 'ngx-flag-picker'
+import { NgxFlagPickerModule } from 'ngx-flag-picker';
+import { AdminMenuComponent } from './side-menu/admin-menu/admin-menu.component';
+import { CustomerMenuComponent } from './side-menu/customer-menu/customer-menu.component'
 
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
@@ -54,6 +56,8 @@ PdfMakeWrapper.setFonts(pdfFonts);
         ConfirmCancelDialogComponent,
         ConfirmDeleteComponent,
         ServiceChooseComponent,
+        AdminMenuComponent,
+        CustomerMenuComponent,
     ],
 
     imports: [

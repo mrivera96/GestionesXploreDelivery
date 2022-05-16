@@ -109,6 +109,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
   fileContentArray: String[] = [];
   geocoder: google.maps.Geocoder;
   defaultBranch;
+  extras: any[] = [];
 
   constructor(
     private categoriesService: CategoriesService,
@@ -190,6 +191,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
           instrucciones: ['', Validators.maxLength(150)],
           idCargoExtra: [null],
           idOpcionExtra: [null],
+          extracharge: null
         },
         {
           validators: [
@@ -301,6 +303,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
         cargosExtra: 0,
         idCargoExtra: null,
         idDetalleOpcion: null,
+        extras: this.extras,
       };
 
       let ordersCount = this.orders.length + 1;
@@ -387,6 +390,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
             salida: this.selectedRate.consolidated_detail.dirRecogida,
             entrega: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
             tarifa: this.pago.baseRate,
+            categoria: this.deliveryForm.get('deliveryHeader.idCategoria').value,
           })
           .subscribe(
             (response) => {
@@ -435,6 +439,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
           salida: this.selectedRate.consolidated_detail.dirRecogida,
           entrega: this.newForm.get('order.direccion').value,
           tarifa: this.pago.baseRate,
+          categoria: this.deliveryForm.get('deliveryHeader.idCategoria').value,
         })
         .subscribe(
           (response) => {
@@ -585,20 +590,12 @@ export class ConsolidatedDeliveryComponent implements OnInit {
       });
     }
 
-    if (this.selectedExtraCharge != null) {
-      if (this.selectedExtraCharge.options) {
-        orderPayment.cargosExtra = this.selectedExtraChargeOption.costo;
-        orderPayment.total =
-          +orderPayment.baseRate +
-          +orderPayment.surcharges +
-          +this.selectedExtraChargeOption.costo;
-      } else {
-        orderPayment.cargosExtra = this.selectedExtraCharge.costo;
-        orderPayment.total =
-          +orderPayment.baseRate +
-          +orderPayment.surcharges +
-          +this.selectedExtraCharge.costo;
-      }
+    if (this.extras.length > 0) {
+      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges;
+      this.extras.forEach((extra) => {
+        orderPayment.cargosExtra = +orderPayment.cargosExtra + +extra.costo;
+        orderPayment.total = +orderPayment.total + +extra.costo;
+      });
     } else {
       orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges;
     }
@@ -629,6 +626,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
         salida: salida,
         entrega: entrega,
         tarifa: tarifa,
+        categoria: this.deliveryForm.get('idCategoria').value,
       })
       .subscribe(
         (response) => {
@@ -662,11 +660,11 @@ export class ConsolidatedDeliveryComponent implements OnInit {
           this.selectedExtraChargeOption = {};
           this.selectedExtraCharge = null;
 
-          if(this.fileContentArray.length > 0){
+          if (this.fileContentArray.length > 0) {
             if (this.orders.length == this.fileContentArray.length) {
               this.dtTrigger.next();
             }
-          }else{
+          } else {
             if (this.orders.length > 1) {
               this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
                 dtInstance.destroy();
@@ -960,10 +958,10 @@ export class ConsolidatedDeliveryComponent implements OnInit {
   onFileOrdersAdd() {
     this.loaders.loadingAdd = true;
 
-    this.fileContentArray.forEach( order => {
+    this.fileContentArray.forEach((order) => {
       let myOrder = order.split('|');
 
-      let myDetail:any = {
+      let myDetail: any = {
         nFactura: myOrder[0],
         nomDestinatario: myOrder[1],
         numCel: myOrder[2].trim(),
@@ -1052,5 +1050,30 @@ export class ConsolidatedDeliveryComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       this.router.navigate(['/admins/reservas-pendientes']);
     });
+  }
+
+  //AÑADE UN CARGO EXTRA
+  addExtraCharge(extracharge, option) {
+    const extraCharge = {
+      idCargoExtra: extracharge,
+      idDetalleOpcion: option.idDetalleOpcion,
+      costo: option.costo,
+    };
+    this.extras.push(extraCharge);
+  }
+
+  removeExtraCharges(extracharge) {
+    this.deliveryForm.get('order.extracharge').setValue(null);
+    const ec = this.extras.find((x) => x.idCargoExtra == extracharge);
+    const id = this.extras.indexOf(ec);
+    this.extras.splice(id, 1);
+  }
+
+  //AÑADE MONTO DE COBERTURA
+  addCare() {
+    if (this.deliveryForm.get('order.montoCobertura').value !== '') {
+      this.extras.find((x) => x.idCargoExtra == 13).montoCobertura =
+        +this.deliveryForm.get('order.montoCobertura').value;
+    }
   }
 }
