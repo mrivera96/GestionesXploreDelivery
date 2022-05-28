@@ -24,7 +24,6 @@ import { ShuttleDetailsComponent } from '../../components/shuttle-details/shuttl
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 import { SuccessModalComponent } from '../success-modal/success-modal.component';
-
 @Component({
   selector: 'app-xplore-shuttle',
   templateUrl: './xplore-shuttle.component.html',
@@ -190,7 +189,7 @@ export class XploreShuttleComponent implements OnInit {
 
     this.paymentData = this.formBuilder.group({
       cardName: ['', Validators.required],
-      cardNumber: ['', Validators.required],
+      cardNumber: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(16)]],
       expMonth: [null, Validators.required],
       expYear: [null, Validators.required],
       cvv: [
@@ -412,6 +411,7 @@ export class XploreShuttleComponent implements OnInit {
                         error.subscribe((err) => {
                           this.dialog.closeAll();
                           this.openErrorDialog(err.statusText);
+                          this.dialog.closeAll();
                         });
                       }
                     );
@@ -419,6 +419,7 @@ export class XploreShuttleComponent implements OnInit {
                 (error) => {
                   error.subscribe((err) => {
                     this.openErrorDialog(err.statusText);
+                    this.dialog.closeAll();
                   });
                 }
               );
@@ -426,6 +427,7 @@ export class XploreShuttleComponent implements OnInit {
             (error) => {
               error.subscribe((err) => {
                 this.openErrorDialog(err.statusText);
+                this.dialog.closeAll();
               });
             }
           );
@@ -435,12 +437,14 @@ export class XploreShuttleComponent implements OnInit {
             .saveFailTransaction(transactionDetails)
             .subscribe((response) => {
               this.openErrorDialog(transactionDetails.reasonCodeDescription);
+              this.dialog.closeAll();
             });
         }
       },
       (error) => {
         error.subscribe((err) => {
           this.openErrorDialog(err.statusText);
+          this.dialog.closeAll();
         });
       }
     );
@@ -501,6 +505,27 @@ export class XploreShuttleComponent implements OnInit {
 
     ref.afterClosed().subscribe(() => {
       this.exit();
+    });
+  }
+
+  testDetailDialog(){
+    const id = 394;
+    const paymentData = {
+      cardNumber:
+        "************4931",
+      authCode: "123456",
+      orderNumber: "VQUWJNJY",
+      referenceNumber: "213619438603",
+      nomFacturacion:
+        "Melvin Rivera",
+      rtn: "07031997016325",
+    };
+
+    const ref = this.dialog.open(ShuttleDetailsComponent, {
+      data: {
+        shuttleId: id,
+        paymentData: paymentData,
+      },
     });
   }
 

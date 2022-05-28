@@ -1,16 +1,14 @@
-import {Directive, HostListener, Input} from '@angular/core';
-import {NgControl} from '@angular/forms';
-import {AsYouType} from 'libphonenumber-js';
+import { Directive, HostListener, Input } from '@angular/core';
+import { NgControl } from '@angular/forms';
+import { AsYouType } from 'libphonenumber-js/max';
 
 @Directive({
   selector: '[appInternationalPhoneMask]',
 })
 export class InternationalPhoneMaskDirective {
-
   @Input('countryCode') countryCode: string;
 
-  constructor(public ngControl: NgControl) {
-  }
+  constructor(public ngControl: NgControl) {}
 
   @HostListener('ngModelChange', ['$event'])
   onModelChange(event) {
@@ -35,6 +33,9 @@ export class InternationalPhoneMaskDirective {
       newVal = asYouType.input(newVal);
 
       this.ngControl.valueAccessor.writeValue(newVal);
+      if(!asYouType.isValid()){
+        this.ngControl.control.setErrors({invalid: true})
+      }
     }
   }
 
@@ -96,7 +97,6 @@ export class InternationalPhoneMaskDirective {
       case 'fr':
         asYouType = new AsYouType('FR');
         break;
-
     }
 
     return asYouType;

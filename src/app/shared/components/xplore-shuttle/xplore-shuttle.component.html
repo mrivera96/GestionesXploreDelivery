@@ -61,7 +61,7 @@
               <div class="accordion w-100" id="accordion">
                 <div
                   class="card"
-                  style="background-color: #0071a2; color: white"
+                  style="background-color: #808080; color: white"
                 >
                   <div class="card-header" id="headingOne">
                     <h2 class="mb-0 info">
@@ -75,6 +75,7 @@
                       >
                         Más información respecto al Covid-19 y al Shuttle
                       </button>
+                      <!--<button (click)="testDetailDialog()">Test</button>-->
                     </h2>
                   </div>
 
@@ -378,7 +379,7 @@
                 </div>
                 <input
                   matInput
-                  type="text"
+                  type="tel"
                   id="numCel"
                   formControlName="numCel"
                   required
@@ -392,7 +393,8 @@
                 <mat-error
                   *ngIf="
                     passengerData.get('numCel').errors?.minlength ||
-                    passengerData.get('numCel').errors?.maxlength
+                    passengerData.get('numCel').errors?.maxlength ||
+                    passengerData.get('numCel').errors?.invalid
                   "
                 >
                   *Por favor ingresa un número válido
@@ -524,16 +526,19 @@
                 class="col-sm"
               >
                 <mat-label>Número de tarjeta:</mat-label>
-                <input
+                <ngx-cc name="cardNumber" styleClass="card" placeholder="0000 0000 0000 0000" formControlName="cardNumber" required></ngx-cc>
+                <!--<input
                   matInput
                   type="number"
                   formControlName="cardNumber"
                   required
                   placeholder="1234 5678 9012 3456"
-                  onKeyPress="if(this.value.length==16) return false;"
-                />
+                  onKeyPress="if(this.value.length==15) return false;"
+                />-->
+                <mat-placeholder>0000 0000 0000 0000</mat-placeholder>
                 <mat-icon matSuffix>credit_card</mat-icon>
-                <mat-error>*Este campo es obligatorio</mat-error>
+                <mat-error *ngIf="paymentData.controls.cardNumber.errors?.required">*Este campo es obligatorio</mat-error>
+                <mat-error *ngIf="paymentData.controls.cardNumber.invalid">Número de tarjeto no válido</mat-error>
               </mat-form-field>
 
               <mat-form-field

@@ -39,4 +39,6 @@ export interface Order {
   idx?: any
   direccionFinal?: string
   distanciaFinal?: string 
+  nomFacturacion?: string
+  rtn?: string
 }

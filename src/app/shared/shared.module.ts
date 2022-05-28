@@ -41,6 +41,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { InternationalPhoneMaskDirective } from '../directives/international-phone-mask.directive';
 import { NgxFlagPickerModule } from 'ngx-flag-picker';
 import { ShuttleDetailsComponent } from './components/shuttle-details/shuttle-details.component';
+import { NgxCcModule } from 'ngx-cc';
 @NgModule({
   declarations: [
     OrdersDataTableComponent,
@@ -87,6 +88,7 @@ import { ShuttleDetailsComponent } from './components/shuttle-details/shuttle-de
     ReportViewerModule,
     MatStepperModule,
     NgxFlagPickerModule,
+    NgxCcModule
   ],
   exports: [
     OrdersDataTableComponent,

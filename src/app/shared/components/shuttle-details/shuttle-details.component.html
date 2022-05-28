@@ -19,19 +19,19 @@
     <br />
     <br />
     <div class="row">
-      <div class="col-md-4 col-sm-12">
+      <div class="col-md-4 col-sm-12 text-center">
         <p>
-          Nombre: <strong>{{ currentOrder.nomDestinatario }}</strong>
+          Nombre de pasajero: <strong>{{ currentOrder.nomDestinatario }}</strong>
         </p>
       </div>
 
-      <div class="col-md-4 col-sm-12">
+      <div class="col-md-4 col-sm-12 text-center">
         <p>
           Número de celular: <strong> {{ currentOrder.numCel }}</strong>
         </p>
       </div>
 
-      <div class="col-md-4 col-sm-12">
+      <div class="col-md-4 col-sm-12 text-center">
         <p>
           Correo Electrónico: <strong> {{ currentShuttle.email }}</strong>
         </p>
@@ -39,24 +39,48 @@
     </div>
 
     <div class="row">
-      <div class="col-md-4 col-sm-12">
+      <div class="col-md-4 col-sm-12 text-center">
         <p>
           Fecha y hora de recogida:
           <strong> {{ currentShuttle.fechaReserva }}</strong>
         </p>
       </div>
       
-      <div class="col-md-4 col-sm-12">
+      <div class="col-md-4 col-sm-12 text-center">
         <p>
           Categoría a reservar:
           <strong>{{ currentShuttle.category.descCategoria }}</strong>
         </p>
       </div>
 
-      <div class="col-md-4 col-sm-12">
+      <div class="col-md-4 col-sm-12 text-center">
+        <p>
+          Descripción de categoría:
+          <strong>{{currentShuttle.category.descripcion}}</strong>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4 col-sm-12 text-center">
+        <p>
+          Dirección de salida: <strong> {{ currentShuttle.dirRecogida }}</strong>
+        </p>
+      </div>
+      <div class="col-md-4 col-sm-12 text-center">
         <p>
           Dirección de destino: <strong> {{ currentOrder.direccion }}</strong>
         </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <h3>Datos de Facturación</h3>
+        <section class="details">
+          <p>Nombre: <strong>{{currentOrder.nomFacturacion}}</strong> </p>
+          <p>RTN: <strong>{{currentOrder.rtn}}</strong></p>
+        </section>
       </div>
     </div>
 
@@ -82,6 +106,12 @@
             <strong>L. {{ currentShuttle.total | number: "0.2" }}</strong>
           </p>
         </section>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <p></p>
       </div>
     </div>
   </div>
