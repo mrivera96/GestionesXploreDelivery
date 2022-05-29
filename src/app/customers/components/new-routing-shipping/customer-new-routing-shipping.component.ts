@@ -130,6 +130,7 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
   instHolder = '¿Necesitamos instrucciones para la entrega de éste envío?';
   orderForm: FormGroup;
   transportationForm: FormGroup;
+  
 
   constructor(
     private categoriesService: CategoriesService,
