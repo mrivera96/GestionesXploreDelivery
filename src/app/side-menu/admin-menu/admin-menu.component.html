@@ -1,0 +1,181 @@
+<mat-nav-list>
+      <a href="javascript:void(0);" mat-list-item (click)="showLogoutEv.emit()">
+        <mat-icon>account_circle</mat-icon>
+        {{currentUser.nomUsuario}}
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+      </a>
+
+      <mat-nav-list id="xploreUsrSubMenu" class="d-none">
+        <a href="javascript:void(0)" id="logout" class="ml-3" mat-list-item (click)="logoutEv.emit()">
+          <mat-icon>exit_to_app</mat-icon>
+          Cerrar Sesión
+        </a>
+      </mat-nav-list>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/nuevo-delivery']" mat-list-item>
+        <mat-icon>add</mat-icon>
+        Nuevo Delivery
+      </a>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-pendientes']" mat-list-item>
+        <mat-icon>update</mat-icon>
+        Reservas Pendientes (Tiempo Real)
+      </a>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-hoy']" mat-list-item>
+        <mat-icon>today</mat-icon>
+        Reservas del día
+      </a>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/tomorrow-deliveries']" mat-list-item>
+        <mat-icon>event</mat-icon>
+        Reservas para Mañana
+      </a>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-todas']" mat-list-item>
+        <mat-icon>list</mat-icon>
+        Todas las Reservas
+      </a>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/envios-hoy']" mat-list-item>
+        <mat-icon>today</mat-icon>
+        Envíos del Día
+      </a>
+
+      <a (click)="sidenav.close()" [routerLink]="['admins/envios-todos']" mat-list-item>
+        <mat-icon>list</mat-icon>
+        Todos los Envíos
+      </a>
+
+      <a [routerLink]="['admins/clientes']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>people</mat-icon>
+        Clientes
+      </a>
+
+      <a [routerLink]="['admins/usuarios-de-consulta']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>people</mat-icon>
+        Usuarios de Consulta
+      </a>
+
+      <a [routerLink]="['admins/pagos']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>payment</mat-icon>
+        Pagos
+      </a>
+
+      <a [routerLink]="['admins/conductores']" (click)="sidenav.close()" mat-list-item>
+        <mat-icon>sports_motorsports</mat-icon>
+        Conductores
+      </a>
+
+      <a (click)="showReportsSubMenuEv.emit()" mat-list-item>
+        <mat-icon>analytics</mat-icon>
+        Reportes
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+      </a>
+
+      <mat-nav-list class="d-none reportsSubMenu">
+        <a [routerLink]="['admins/reportes/envios-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>people</mat-icon>
+          Envíos por Cliente
+        </a>
+
+        <a [routerLink]="['admins/reportes/envios-conductores']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>sports_motorsports</mat-icon>
+          Envíos por Conductor
+        </a>
+
+        <a [routerLink]="['admins/reportes/consolidados-conductores']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>sports_motorsports</mat-icon>
+          Envíos Consolidados por Conductor
+        </a>
+        <!--
+        <a [routerLink]="['admins/reportes/clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>people</mat-icon>
+          Reporte de Clientes
+        </a>-->
+
+        <a [routerLink]="['admins/reportes/envios']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>local_shippings</mat-icon>
+          Reporte de Envíos
+        </a>
+
+        <a [routerLink]="['admins/reportes/pagos']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>attach_money</mat-icon>
+          Reporte de Pagos
+        </a>
+
+        <a [routerLink]="['admins/reportes/balance-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>account_balance_wallet</mat-icon>
+          Reporte de Balances
+        </a>
+
+        <a [routerLink]="['admins/reportes/seguimiento-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>timeline</mat-icon>
+          Reporte de Seguimiento a Clientes
+        </a>
+
+        <a [routerLink]="['admins/reportes/facturas']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>receipt</mat-icon>
+          Reporte de Facturas
+        </a>
+      </mat-nav-list>
+
+      <a (click)="showConfSubMenuEv.emit()" mat-list-item>
+        <mat-icon>settings</mat-icon>
+        Configuraciones
+        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+      </a>
+
+      <mat-nav-list class="d-none confSubMenu">
+
+        <a [routerLink]="['admins/parametrizar-tarifas']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>attach_money</mat-icon>
+          Tarifas
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-tasa-cambio']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>currency_exchange</mat-icon>
+          Tasa de Cambio
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-recargos']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>attach_money</mat-icon>
+          Recargos
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-cargos-extras']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>attach_money</mat-icon>
+          Cargos Extras
+        </a>
+
+        <a class="ml-3" (click)="sidenav.close()" [routerLink]="['admins/parametrizar-categorias']" mat-list-item>
+          <mat-icon>list</mat-icon>
+          Categorías
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-horarios']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>schedule</mat-icon>
+          Horarios
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-restricciones']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>block</mat-icon>
+          Restricciones
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-terminos']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>gavel</mat-icon>
+          Términos y Condiciones
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-rubros']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>business_center</mat-icon>
+          Rubros
+        </a>
+
+        <a [routerLink]="['admins/parametrizar-envio-reportes']" (click)="sidenav.close()" mat-list-item class="ml-3">
+          <mat-icon>send</mat-icon>
+          Envío de Reportes
+        </a>
+      </mat-nav-list>
+    </mat-nav-list>

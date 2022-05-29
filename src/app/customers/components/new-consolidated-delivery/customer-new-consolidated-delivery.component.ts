@@ -115,6 +115,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
   defaultBranch;
   geocoder: google.maps.Geocoder;
   acceptTerms = false;
+  extras: any[] = [];
 
   constructor(
     private categoriesService: CategoriesService,
@@ -204,8 +205,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           ],
           direccion: ['', Validators.required],
           instrucciones: ['', Validators.maxLength(150)],
-          idCargoExtra: [null],
-          idOpcionExtra: [null],
+          extracharge: [null],
+          montoCobertura: [''],
         },
         {
           validators: [
@@ -388,6 +389,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
         cargosExtra: 0,
         idCargoExtra: null,
         idDetalleOpcion: null,
+        extras: this.extras,
       };
       //
       this.calculateRate();
@@ -671,20 +673,12 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       }
     }
 
-    if (this.selectedExtraCharge != null) {
-      if (this.selectedExtraCharge.options) {
-        orderPayment.cargosExtra = this.selectedExtraChargeOption.costo;
-        orderPayment.total =
-          +orderPayment.baseRate +
-          +orderPayment.surcharges +
-          +this.selectedExtraChargeOption.costo;
-      } else {
-        orderPayment.cargosExtra = this.selectedExtraCharge.costo;
-        orderPayment.total =
-          +orderPayment.baseRate +
-          +orderPayment.surcharges +
-          +this.selectedExtraCharge.costo;
-      }
+    if (this.extras.length > 0) {
+      orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges;
+      this.extras.forEach((extra) => {
+        orderPayment.cargosExtra = +orderPayment.cargosExtra + +extra.costo;
+        orderPayment.total = +orderPayment.total + +extra.costo;
+      });
     } else {
       orderPayment.total = +orderPayment.baseRate + +orderPayment.surcharges;
     }
@@ -734,6 +728,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
             this.newForm.get('deliveryHeader.dirRecogida').disable();
             this.newForm.get('deliveryHeader.fecha').disable();
             this.newForm.get('deliveryHeader.hora').disable();
+            this.extras = [];
 
             if (this.orders.length > 1) {
               this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
@@ -1113,6 +1108,31 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
       this.pago.total = this.pagos.reduce(function (a, b) {
         return a.total + b.total;
       });
+    }
+  }
+
+  //AÑADE UN CARGO EXTRA
+  addExtraCharge(extracharge, option) {
+    const extraCharge = {
+      idCargoExtra: extracharge,
+      idDetalleOpcion: option.idDetalleOpcion,
+      costo: option.costo,
+    };
+    this.extras.push(extraCharge);
+  }
+
+  removeExtraCharges(extracharge) {
+    this.deliveryForm.get('order.extracharge').setValue(null);
+    const ec = this.extras.find((x) => x.idCargoExtra == extracharge);
+    const id = this.extras.indexOf(ec);
+    this.extras.splice(id, 1);
+  }
+
+  //AÑADE MONTO DE COBERTURA
+  addCare() {
+    if (this.deliveryForm.get('order.montoCobertura').value !== '') {
+      this.extras.find((x) => x.idCargoExtra == 13).montoCobertura =
+        +this.deliveryForm.get('order.montoCobertura').value;
     }
   }
 }

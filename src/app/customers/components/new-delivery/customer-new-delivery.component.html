@@ -69,6 +69,7 @@
               <div class="row">
                 <div class="col-12">
                   <p class="text-danger">
+                    Si deseas programar la recogida, la hora de recogida debe ser al menos 1 hora después de la hora actual.
                     Si requieres servicio fuera de nuestros horarios hábiles,
                     favor comunícate al
                     <a href="tel:94397234">+504 9439-7234</a>
@@ -94,7 +95,7 @@
                     >
                     <mat-option
                       [value]="2"
-                      (click)="reserv = !reserv; nowHourError = false"
+                      (click)="reserv = !reserv; nowHourError = false; validateHour()"
                       >Programar
                     </mat-option>
                   </mat-select>
@@ -120,6 +121,7 @@
                     id="fecha"
                     required
                     matInput
+                    (change)="validateHour()"
                   />
                   <mat-icon matPrefix>today</mat-icon>
                   <mat-error *ngIf="newForm.get('fecha')?.errors?.required">
@@ -152,7 +154,7 @@
                     *Este campo es obligatorio
                   </mat-error>
                   <mat-error *ngIf="newForm.get('hora')?.errors?.mustAfterHour">
-                    *La hora de recogida debe ser 1 hora mayor a la hora actual
+                    *La hora ingresada no es válida
                   </mat-error>
                 </mat-form-field>
               </div>
@@ -816,7 +818,7 @@
                 "
               />
 
-              <div class="row" *ngIf="files.length == 0">
+              <div class="row" *ngIf="files.length == 0"  >
                 <div
                   class="col-lg-4 col-sm-6"
                   *ngFor="

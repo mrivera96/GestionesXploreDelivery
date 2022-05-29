@@ -75,6 +75,7 @@ export class EditDriverDialogComponent implements OnInit {
         [Validators.required, Validators.minLength(9), Validators.maxLength(9)],
       ],
       idAgencia: [this.currDriver.idAgencia, [Validators.required]],
+      isActivo: [+this.currDriver.isActivo, [Validators.required]],
     });
   }
 

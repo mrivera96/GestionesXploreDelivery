@@ -58,6 +58,20 @@
         >
       </mat-select>
     </mat-form-field>
+
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Restricción de Kilometraje:</mat-label>
+      <input
+        matInput
+        id="restKm"
+        type="number"
+        formControlName="restKm"
+        placeholder="40 Kms"
+        required
+      />
+      <mat-icon matSuffix>block</mat-icon>
+      <mat-error>*Este campo es obligatorio</mat-error>
+    </mat-form-field>
   </form>
 </mat-dialog-content>
 

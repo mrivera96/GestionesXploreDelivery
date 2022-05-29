@@ -328,6 +328,13 @@ export class CustomerReportsComponent implements OnInit {
         delType = 'Envio por Ruteo';
       }
 
+      let delType = 'Envío normal';
+      if(d.delivery.isConsolidada == true){
+        delType = 'Envío Consolidado';
+      }else if(d.delivery.isRuteo == true){
+        delType = 'Envio por Ruteo';
+      }
+
       let array = [
         d.idDetalle,
         Number(d.idDelivery),
@@ -531,6 +538,13 @@ export class CustomerReportsComponent implements OnInit {
       d.extra_charges.forEach(value => {
         orderEC = orderEC + ' ' + value.extracharge.nombre
       });
+
+      let delType = 'Envío normal';
+      if(d.delivery.isConsolidada == true){
+        delType = 'Envío Consolidado';
+      }else if(d.delivery.isRuteo == true){
+        delType = 'Envio por Ruteo';
+      }
 
       let delType = 'Envío normal';
       if(d.delivery.isConsolidada == true){

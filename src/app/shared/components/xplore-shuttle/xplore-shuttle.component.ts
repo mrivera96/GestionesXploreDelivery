@@ -24,7 +24,6 @@ import { ShuttleDetailsComponent } from '../../components/shuttle-details/shuttl
 import { ErrorModalComponent } from '../error-modal/error-modal.component';
 import { LoadingDialogComponent } from '../loading-dialog/loading-dialog.component';
 import { SuccessModalComponent } from '../success-modal/success-modal.component';
-
 @Component({
   selector: 'app-xplore-shuttle',
   templateUrl: './xplore-shuttle.component.html',
@@ -85,12 +84,13 @@ export class XploreShuttleComponent implements OnInit {
     'fr',
     'jp',
   ];
-  
+
   @ViewChild('vType') vType;
   @ViewChild('route') route;
   acceptTerms = false;
   categories: Category[];
-  imgBasePath = 'https://delivery.xplorerentacar.com/uploads/img/categories-img/';
+  imgBasePath =
+    'https://delivery.xplorerentacar.com/uploads/img/categories-img/';
   currentCategoryText = '';
 
   constructor(
@@ -189,13 +189,15 @@ export class XploreShuttleComponent implements OnInit {
 
     this.paymentData = this.formBuilder.group({
       cardName: ['', Validators.required],
-      cardNumber: ['', Validators.required],
+      cardNumber: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(16)]],
       expMonth: [null, Validators.required],
       expYear: [null, Validators.required],
       cvv: [
         '',
         [Validators.required, Validators.minLength(3), Validators.maxLength(4)],
       ],
+      nomFacturacion: [''],
+      rtn: [''],
     });
   }
 
@@ -379,6 +381,9 @@ export class XploreShuttleComponent implements OnInit {
                     authCode: transactionDetails.authCode,
                     orderNumber: transactionDetails.orderNumber,
                     referenceNumber: transactionDetails.referenceNumber,
+                    nomFacturacion:
+                      this.paymentData.controls.nomFacturacion.value,
+                    rtn: this.paymentData.controls.rtn.value,
                   };
 
                   const phone = this.passengerData.controls.numCel.value;
@@ -404,7 +409,9 @@ export class XploreShuttleComponent implements OnInit {
                       },
                       (error) => {
                         error.subscribe((err) => {
+                          this.dialog.closeAll();
                           this.openErrorDialog(err.statusText);
+                          this.dialog.closeAll();
                         });
                       }
                     );
@@ -412,6 +419,7 @@ export class XploreShuttleComponent implements OnInit {
                 (error) => {
                   error.subscribe((err) => {
                     this.openErrorDialog(err.statusText);
+                    this.dialog.closeAll();
                   });
                 }
               );
@@ -419,6 +427,7 @@ export class XploreShuttleComponent implements OnInit {
             (error) => {
               error.subscribe((err) => {
                 this.openErrorDialog(err.statusText);
+                this.dialog.closeAll();
               });
             }
           );
@@ -428,12 +437,14 @@ export class XploreShuttleComponent implements OnInit {
             .saveFailTransaction(transactionDetails)
             .subscribe((response) => {
               this.openErrorDialog(transactionDetails.reasonCodeDescription);
+              this.dialog.closeAll();
             });
         }
       },
       (error) => {
         error.subscribe((err) => {
           this.openErrorDialog(err.statusText);
+          this.dialog.closeAll();
         });
       }
     );
@@ -494,6 +505,27 @@ export class XploreShuttleComponent implements OnInit {
 
     ref.afterClosed().subscribe(() => {
       this.exit();
+    });
+  }
+
+  testDetailDialog(){
+    const id = 394;
+    const paymentData = {
+      cardNumber:
+        "************4931",
+      authCode: "123456",
+      orderNumber: "VQUWJNJY",
+      referenceNumber: "213619438603",
+      nomFacturacion:
+        "Melvin Rivera",
+      rtn: "07031997016325",
+    };
+
+    const ref = this.dialog.open(ShuttleDetailsComponent, {
+      data: {
+        shuttleId: id,
+        paymentData: paymentData,
+      },
     });
   }
 

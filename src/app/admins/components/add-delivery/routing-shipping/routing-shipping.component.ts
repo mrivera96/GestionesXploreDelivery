@@ -599,6 +599,7 @@ export class RoutingShippingComponent implements OnInit {
             salida: salida0,
             entrega: this.deliveryForm.get('dirRecogida').value,
             tarifa: this.pago.baseRate,
+            categoria: this.deliveryForm.get('idCategoria').value
           })
           .subscribe(
             (response) => {
@@ -624,6 +625,7 @@ export class RoutingShippingComponent implements OnInit {
                   salida: salida,
                   entrega: entrega,
                   tarifa: tarifa,
+                  categoria: this.deliveryForm.get('idCategoria').value
                 })
                 .subscribe(
                   (response) => {
@@ -837,6 +839,7 @@ export class RoutingShippingComponent implements OnInit {
           salida: salida,
           entrega: entrega,
           tarifa: tarifa,
+          categoria: this.deliveryForm.get('idCategoria').value
         })
         .subscribe(
           (response) => {
@@ -1022,40 +1025,59 @@ export class RoutingShippingComponent implements OnInit {
           salida: this.orders[this.orders.length - 1].direccion,
           entrega: this.deliveryForm.get('dirRecogida').value,
           tarifa: this.pago.baseRate,
+          categoria: this.deliveryForm.get('idCategoria').value
         })
         .subscribe((response) => {
           returnDistance = Number(response.distancia.split(' ')[0]);
+          this.http
+            .post<any>(`${environment.apiUrl}`, {
+              function: 'calculateDistance',
+              salida: this.deliveryForm.get('dirRecogida').value,
+              entrega: this.orders[this.orders.length - 1].direccion,
+              tarifa: this.pago.baseRate,
+              categoria: this.deliveryForm.get('idCategoria').value
+            })
+            .subscribe((res) => {
+              let initFinishD = 0;
+              let initFinishT = 0;
+              initFinishD = Number(res.distancia.split(' ')[0]);
 
-          
-        });*/
-      const distSubs = this.http
-        .post<any>(`${environment.apiUrl}`, {
-          function: 'calculateDistance',
-          salida: this.deliveryForm.get('dirRecogida').value,
-          entrega: this.orders[this.orders.length - 1].direccion,
-          tarifa: this.pago.baseRate,
-        })
-        .subscribe((res) => {
-          let initFinishD = 0;
-          let initFinishT = 0;
-          initFinishD = Number(res.distancia.split(' ')[0]);
-          if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
-            initFinishT =
-              +res.tiempo.split(' ')[0] * 60 + Number(res.tiempo.split(' ')[2]);
-          } else {
-            initFinishT = Number(res.tiempo.split(' ')[0]);
-          }
+              if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
+                initFinishT =
+                  +res.tiempo.split(' ')[0] * 60 +
+                  Number(res.tiempo.split(' ')[2]);
+              } else {
+                initFinishT = Number(res.tiempo.split(' ')[0]);
+              }
 
-          this.totalDistance = Number(this.deliveryForm.get('distancia').value);
+              let avgDistance = 0;
 
-          /*if (initFinishD >= 12.01) {
-                this.totalDistance += initFinishD;
-              }*/
+              if (returnDistance > 12) {
+                this.totalDistance =
+                  Number(this.deliveryForm.get('distancia').value) +
+                  returnDistance;
+                avgDistance = this.totalDistance / (this.orders.length + 1);
+              } else {
+                this.totalDistance = Number(
+                  this.deliveryForm.get('distancia').value
+                );
+                avgDistance = this.totalDistance / this.orders.length;
+              }
 
-          this.totalTime = initFinishT;
-          let avgTime = Number(initFinishT / this.orders.length);
-          let avgDistance = this.totalDistance / this.orders.length;
-          this.avgDistance = +avgDistance.toPrecision(2);
+              this.totalTime = initFinishT;
+              let avgTime = Number(initFinishT / this.orders.length);
+
+              this.avgDistance = +avgDistance.toPrecision(2);
+
+              let appSurcharge;
+              this.surcharges.forEach((value) => {
+                if (
+                  avgDistance >= Number(value.kilomMinimo) &&
+                  avgDistance <= Number(value.kilomMaximo)
+                ) {
+                  appSurcharge = value;
+                }
+              });
 
           let appSurcharge = null;
           this.surcharges.forEach((value) => {
@@ -1094,12 +1116,10 @@ export class RoutingShippingComponent implements OnInit {
             this.pago.recargos = 0;
           }
 
-          this.pago.total = this.pago.total + this.pago.recargos;
-
-          this.dialog.closeAll();
-          this.loaders.loadingAdd = false;
-
-          distSubs.unsubscribe();
+              this.dialog.closeAll();
+              this.loaders.loadingAdd = false;
+              distSubs.unsubscribe();
+            });
         });
     } else {
       this.pago.cargosExtra = this.pagos.reduce(function (a, b) {
@@ -1445,6 +1465,7 @@ export class RoutingShippingComponent implements OnInit {
       salida: salida,
       entrega: entrega,
       tarifa: tarifa,
+      categoria: this.deliveryForm.get('idCategoria').value
     });
   }
 

@@ -41,4 +41,6 @@ export interface DeliveryDetail {
   efectivoRecibido?: number
   order?: number
   idRecargo?: number
+  nomFacturacion?: string
+  rtn?: string
 }

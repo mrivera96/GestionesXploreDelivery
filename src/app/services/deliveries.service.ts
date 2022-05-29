@@ -316,4 +316,14 @@ export class DeliveriesService {
       id: id,
     });
   }
+
+  validateDateTime(date, time, delType) {
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'validateDateTime',
+      date,
+      time,
+      delType,
+      tkn: this.authService.currentUserValue.access_token,
+    });
+  }
 }

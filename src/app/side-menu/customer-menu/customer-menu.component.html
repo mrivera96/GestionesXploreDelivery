@@ -1,0 +1,213 @@
+<mat-nav-list>
+  <a
+    href="javascript:void(0);"
+    mat-list-item
+    (click)="showLogoutCustomerEv.emit()"
+  >
+    <mat-icon>account_circle</mat-icon>
+    {{ currentUser.nomUsuario }}
+    <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+  </a>
+
+  <mat-nav-list class="d-none ml-2 userSubMenu">
+    <a
+      [routerLink]="['customers/perfil']"
+      id="profile"
+      class="ml-3"
+      (click)="sidenav.close()"
+      mat-list-item
+    >
+      <mat-icon>person</mat-icon>
+      Perfil
+    </a>
+    <a
+      href="javascript:void(0)"
+      class="ml-3"
+      mat-list-item
+      (click)="logoutEv.emit()"
+    >
+      <mat-icon>exit_to_app</mat-icon>
+      Cerrar sesión
+    </a>
+  </mat-nav-list>
+
+  <a
+    (click)="sidenav.close()"
+    [routerLink]="['customers/dashboard']"
+    mat-list-item
+  >
+    <mat-icon>dashboard</mat-icon>
+    Dashboard
+  </a>
+
+  <a
+    href="javascript:void(0);"
+    mat-list-item
+    (click)="showCustomerAddDeliverySubMenuEv.emit()"
+  >
+    <mat-icon>add</mat-icon>
+    Agregar Delivery
+    <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+  </a>
+
+  <mat-list class="d-none ml-2 createDelMenu">
+    <a
+      (click)="sidenav.close()"
+      [routerLink]="['customers/envio-normal']"
+      mat-list-item
+      *ngIf="
+        currentUser.idCliente != 358 &&
+        currentUser.idCliente != 359 &&
+        currentUser.idCliente != 381
+      "
+    >
+      <mat-icon>add</mat-icon>
+      Delivery Express
+    </a>
+
+    <!-- <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
+        [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
+        <mat-icon>add</mat-icon>
+        Agregar delivery Foráneo (Carga Consolidada)
+      </a> -->
+
+    <a
+      (click)="sidenav.close()"
+      [routerLink]="['customers/envio-ruteo']"
+      mat-list-item
+      *ngIf="
+        currentUser.idCliente != 358 &&
+        currentUser.idCliente != 359 &&
+        currentUser.idCliente != 381
+      "
+    >
+      <mat-icon>add</mat-icon>
+      Delivery en Ruta
+    </a>
+
+    <a
+      *ngIf="currentUser.permiteConsolidada"
+      (click)="sidenav.close()"
+      [routerLink]="['customers/envio-consolidado']"
+      mat-list-item
+    >
+      <mat-icon>add</mat-icon>
+      Delivery Consolidado
+      <mat-icon color="accent">star</mat-icon>
+    </a>
+  </mat-list>
+
+  <a
+    href="javascript:void(0);"
+    mat-list-item
+    (click)="showCustomerDeliveriesSubMenuEv.emit()"
+  >
+    <mat-icon>list</mat-icon>
+    Mis Envíos y Reservas
+    <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+  </a>
+
+  <mat-nav-list class="d-none ml-2 delOrdersMenu">
+    <a
+      (click)="sidenav.close()"
+      [routerLink]="['customers/envios-hoy']"
+      mat-list-item
+    >
+      <mat-icon>today</mat-icon>
+      Mis envíos del día
+    </a>
+
+    <a
+      (click)="sidenav.close()"
+      [routerLink]="['customers/envios-todos']"
+      mat-list-item
+    >
+      <mat-icon>list</mat-icon>
+      Todos mis envíos
+    </a>
+
+    <a
+      (click)="sidenav.close()"
+      [routerLink]="['customers/reservas-hoy']"
+      mat-list-item
+    >
+      <mat-icon>event</mat-icon>
+      Mis reservas del día
+    </a>
+
+    <a
+      (click)="sidenav.close()"
+      [routerLink]="['customers/reservas-todos']"
+      mat-list-item
+    >
+      <mat-icon>list</mat-icon>
+      Todas mis reservas
+    </a>
+  </mat-nav-list>
+
+  <a
+    (click)="sidenav.close()"
+    [routerLink]="['customers/balance']"
+    mat-list-item
+  >
+    <mat-icon>attach_money</mat-icon>
+    Mi Balance
+  </a>
+
+  <a
+    href="javascript:void(0);"
+    mat-list-item
+    (click)="showCustomerConfigSubMenuEv.emit()"
+  >
+    <mat-icon>settings</mat-icon>
+    Configuraciones
+    <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
+  </a>
+
+  <mat-nav-list class="d-none ml-2 custConfigMenu">
+    <a
+      [routerLink]="['customers/direcciones']"
+      (click)="sidenav.close()"
+      mat-list-item
+    >
+      <mat-icon>location_on</mat-icon>
+      Mis Direcciones
+    </a>
+
+    <a
+      [routerLink]="['customers/etiquetas']"
+      (click)="sidenav.close()"
+      mat-list-item
+    >
+      <mat-icon>label</mat-icon>
+      Mis Etiquetas
+    </a>
+
+    <a
+      [routerLink]="['customers/metodos-pago']"
+      (click)="sidenav.close()"
+      mat-list-item
+    >
+      <mat-icon>credit_card</mat-icon>
+      Mis Formas de Pago
+    </a>
+  </mat-nav-list>
+
+  <a
+    [routerLink]="['customers/reporte-envios']"
+    (click)="sidenav.close()"
+    mat-list-item
+  >
+    <mat-icon>analytics</mat-icon>
+    Reporte de Envíos
+  </a>
+
+  <a
+    [routerLink]="['customers/terminos-y-condiciones']"
+    (click)="sidenav.close()"
+    mat-list-item
+  >
+    <mat-icon>gavel</mat-icon>
+    Términos y Condiciones
+  </a>
+</mat-nav-list>

@@ -118,6 +118,12 @@
     <div class="col-md">
       <strong>{{currentOrder.direccion}}</strong>
     </div>
+    <div class="col-md" *ngIf="currentOrder.idEstado == 44">
+      Dirección final de Entrega(desde GPS conductor):
+    </div>
+    <div class="col-md" *ngIf="currentOrder.idEstado == 44">
+      <strong>{{currentOrder.direccionFinal}}</strong>
+    </div>
   </div>
   <hr>
   <div class="row">

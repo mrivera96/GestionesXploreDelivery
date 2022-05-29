@@ -1033,32 +1033,39 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
         })
         .subscribe((response) => {
           returnDistance = Number(response.distancia.split(' ')[0]);
+          this.http
+            .post<any>(`${environment.apiUrl}`, {
+              function: 'calculateDistance',
+              salida: this.deliveryForm.get('dirRecogida').value,
+              entrega: this.orders[this.orders.length - 1].direccion,
+              tarifa: this.pago.baseRate,
+            })
+            .subscribe((res) => {
+              let initFinishD = 0;
+              let initFinishT = 0;
+              initFinishD = Number(res.distancia.split(' ')[0]);
 
-          
-        });*/
-      const distSubs = this.http
-        .post<any>(`${environment.apiUrl}`, {
-          function: 'calculateDistance',
-          salida: this.deliveryForm.get('dirRecogida').value,
-          entrega: this.orders[this.orders.length - 1].direccion,
-          tarifa: this.pago.baseRate,
-        })
-        .subscribe((res) => {
-          let initFinishD = 0;
-          let initFinishT = 0;
-          initFinishD = Number(res.distancia.split(' ')[0]);
-          if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
-            initFinishT =
-              +res.tiempo.split(' ')[0] * 60 + Number(res.tiempo.split(' ')[2]);
-          } else {
-            initFinishT = Number(res.tiempo.split(' ')[0]);
-          }
+              if (res.tiempo.includes('hour') || res.tiempo.includes('h')) {
+                initFinishT =
+                  +res.tiempo.split(' ')[0] * 60 +
+                  Number(res.tiempo.split(' ')[2]);
+              } else {
+                initFinishT = Number(res.tiempo.split(' ')[0]);
+              }
 
           this.totalDistance = Number(this.deliveryForm.get('distancia').value);
 
-          /*if (initFinishD >= 12.01) {
-                this.totalDistance += initFinishD;
-              }*/
+              if (returnDistance > 12) {
+                this.totalDistance =
+                  Number(this.deliveryForm.get('distancia').value) +
+                  returnDistance;
+                avgDistance = this.totalDistance / (this.orders.length + 1);
+              } else {
+                this.totalDistance = Number(
+                  this.deliveryForm.get('distancia').value
+                );
+                avgDistance = this.totalDistance / this.orders.length;
+              }
 
           this.totalTime = initFinishT;
           let avgTime = Number(initFinishT / this.orders.length);

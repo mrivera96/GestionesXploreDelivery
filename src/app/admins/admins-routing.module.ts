@@ -34,6 +34,7 @@ import { DeliveryDetailComponent } from '../shared/components/delivery-detail/de
 import { TermsConditionsComponent } from './components/terms-conditions/terms-conditions.component';
 import { DeliveryInvoiceComponent } from '../shared/components/delivery-invoice/delivery-invoice.component';
 import { QueryUsersComponent } from './components/query-users/query-users.component';
+import { ReadExchangeRatesComponent } from './components/exchage-rates/read-exchange-rates/read-exchange-rates.component';
 
 const routes: Routes = [
   //RUTAS PARA USUARIOS DE XPLORE
@@ -212,6 +213,10 @@ const routes: Routes = [
   {
     path: 'usuarios-de-consulta',
     component: QueryUsersComponent,
+    canActivate: [XploreGuard],
+  },{
+    path: 'parametrizar-tasa-cambio',
+    component: ReadExchangeRatesComponent,
     canActivate: [XploreGuard],
   },
 ];

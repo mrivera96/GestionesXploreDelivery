@@ -44,6 +44,7 @@ export class NewCategoryDialogComponent implements OnInit {
         Validators.maxLength(250),
       ]),
       idTipoServicio: new FormControl(null),
+      restKm: new FormControl(40.00, Validators.required),
     });
   }
 

@@ -38,5 +38,7 @@ export interface Order {
   idRecargo?: number
   idx?: any
   direccionFinal?: string
-  distanciaFinal?: string
+  distanciaFinal?: string 
+  nomFacturacion?: string
+  rtn?: string
 }

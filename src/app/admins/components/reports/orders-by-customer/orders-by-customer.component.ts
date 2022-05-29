@@ -381,7 +381,7 @@ export class OrdersByCustomerComponent implements OnInit {
       'Detalle Cargo Extra',
       'Observaciones',
       'Conductor',
-      'Modalidad de envío',
+      'Modalidad de Envío'
     ];
     let ordersheaderRow = worksheet.addRow(ordersHeader);
 

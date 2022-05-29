@@ -1,412 +1,223 @@
 <!-- NAVBAR START -->
-<mat-toolbar *ngIf="!currentUser && currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle'" class="app-toolbar-alternative p-1" color="primary">
+<mat-toolbar
+  *ngIf="
+    !currentUser &&
+    currentRoute != '/shuttle' &&
+    currentRoute != '/GestionesDelivery/shuttle'
+  "
+  class="app-toolbar-alternative p-1"
+  color="primary"
+>
   <mat-toolbar-row>
     <a [routerLink]="['/']" class="mx-auto">
-      <img alt="image" height="70px" src="assets/img/logo-delivery.png">
+      <img alt="image" height="70px" src="assets/img/logo-delivery.png" />
     </a>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<mat-toolbar *ngIf="currentUser && currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle'" class="app-toolbar" color="primary">
+<mat-toolbar
+  *ngIf="
+    currentUser &&
+    currentRoute != '/shuttle' &&
+    currentRoute != '/GestionesDelivery/shuttle'
+  "
+  class="app-toolbar"
+  color="primary"
+>
   <mat-toolbar-row>
     <a mat-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
     </a>
     <a [routerLink]="['/']">
-      <img alt="image" height="50px" class="d-inline-block" src="assets/img/logo-delivery.png">
+      <img
+        alt="image"
+        height="50px"
+        class="d-inline-block"
+        src="assets/img/logo-delivery.png"
+      />
     </a>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<mat-toolbar *ngIf="(!currentUser && currentRoute == '/shuttle') || (!currentUser && currentRoute == '/GestionesDelivery/shuttle')" class="app-toolbar-alternative p-1" color="primary">
+<mat-toolbar
+  *ngIf="
+    (!currentUser && currentRoute == '/shuttle') ||
+    (!currentUser && currentRoute == '/GestionesDelivery/shuttle')
+  "
+  class="app-toolbar-alternative p-1"
+  color="primary"
+>
   <mat-toolbar-row>
     <a [routerLink]="['/']" class="mx-auto">
-      <img alt="image" height="40px" src="assets/img/logo-shuttle.png">
+      <img alt="image" height="40px" src="assets/img/logo-shuttle.png" />
     </a>
   </mat-toolbar-row>
 </mat-toolbar>
 
-<mat-toolbar *ngIf="(currentUser && currentRoute == '/shuttle') || (currentUser && currentRoute == '/GestionesDelivery/shuttle')" class="app-toolbar" color="primary">
+<mat-toolbar
+  *ngIf="
+    (currentUser && currentRoute == '/shuttle') ||
+    (currentUser && currentRoute == '/GestionesDelivery/shuttle')
+  "
+  class="app-toolbar"
+  color="primary"
+>
   <mat-toolbar-row>
     <a mat-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
     </a>
     <a [routerLink]="['/']">
-      <img alt="image" height="40px" class="d-inline-block" src="assets/img/logo-shuttle.png">
+      <img
+        alt="image"
+        height="40px"
+        class="d-inline-block"
+        src="assets/img/logo-shuttle.png"
+      />
     </a>
   </mat-toolbar-row>
 </mat-toolbar>
 
 <!-- NAVBAR END -->
 <!-- -->
-<mat-sidenav-container style="min-height: 100vh;">
+<mat-sidenav-container style="min-height: 100vh">
   <mat-sidenav #sidenav mode="over">
-    <!-- ONLY XPLORE USER -->
-    <mat-nav-list
-      *ngIf="(currentUser && currentUser.idPerfil === '1') || (currentUser && currentUser.idPerfil === '9')">
-      <a href="javascript:void(0);" mat-list-item (click)="showLogout()">
-        <mat-icon>account_circle</mat-icon>
-        {{currentUser.nomUsuario}}
-        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
-      </a>
-
-      <mat-nav-list id="xploreUsrSubMenu" class="d-none">
-        <a href="javascript:void(0)" id="logout" class="ml-3" mat-list-item (click)="logout()">
-          <mat-icon>exit_to_app</mat-icon>
-          Cerrar Sesión
-        </a>
-      </mat-nav-list>
-
-      <a (click)="sidenav.close()" [routerLink]="['admins/nuevo-delivery']" mat-list-item>
-        <mat-icon>add</mat-icon>
-        Nuevo Delivery
-      </a>
-
-      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-pendientes']" mat-list-item>
-        <mat-icon>update</mat-icon>
-        Reservas Pendientes (Tiempo Real)
-      </a>
-
-      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-hoy']" mat-list-item>
-        <mat-icon>today</mat-icon>
-        Reservas del día
-      </a>
-
-      <a (click)="sidenav.close()" [routerLink]="['admins/tomorrow-deliveries']" mat-list-item>
-        <mat-icon>event</mat-icon>
-        Reservas para Mañana
-      </a>
-
-      <a (click)="sidenav.close()" [routerLink]="['admins/reservas-todas']" mat-list-item>
-        <mat-icon>list</mat-icon>
-        Todas las Reservas
-      </a>
-
-      <a (click)="sidenav.close()" [routerLink]="['admins/envios-hoy']" mat-list-item>
-        <mat-icon>today</mat-icon>
-        Envíos del Día
-      </a>
-
-      <a (click)="sidenav.close()" [routerLink]="['admins/envios-todos']" mat-list-item>
-        <mat-icon>list</mat-icon>
-        Todos los Envíos
-      </a>
-
-      <a [routerLink]="['admins/clientes']" (click)="sidenav.close()" mat-list-item>
-        <mat-icon>people</mat-icon>
-        Clientes
-      </a>
-
-      <a [routerLink]="['admins/usuarios-de-consulta']" (click)="sidenav.close()" mat-list-item>
-        <mat-icon>people</mat-icon>
-        Usuarios de Consulta
-      </a>
-
-      <a [routerLink]="['admins/pagos']" (click)="sidenav.close()" mat-list-item>
-        <mat-icon>payment</mat-icon>
-        Pagos
-      </a>
-
-      <a [routerLink]="['admins/conductores']" (click)="sidenav.close()" mat-list-item>
-        <mat-icon>sports_motorsports</mat-icon>
-        Conductores
-      </a>
-
-      <a (click)="showReportsSubMenu()" mat-list-item>
-        <mat-icon>analytics</mat-icon>
-        Reportes
-        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
-      </a>
-
-      <mat-nav-list class="d-none reportsSubMenu">
-        <a [routerLink]="['admins/reportes/envios-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>people</mat-icon>
-          Envíos por Cliente
-        </a>
-
-        <a [routerLink]="['admins/reportes/envios-conductores']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>sports_motorsports</mat-icon>
-          Envíos por Conductor
-        </a>
-
-        <a [routerLink]="['admins/reportes/consolidados-conductores']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>sports_motorsports</mat-icon>
-          Envíos Consolidados por Conductor
-        </a>
-        <!--
-        <a [routerLink]="['admins/reportes/clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>people</mat-icon>
-          Reporte de Clientes
-        </a>-->
-
-        <a [routerLink]="['admins/reportes/envios']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>local_shippings</mat-icon>
-          Reporte de Envíos
-        </a>
-
-        <a [routerLink]="['admins/reportes/pagos']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>attach_money</mat-icon>
-          Reporte de Pagos
-        </a>
-
-        <a [routerLink]="['admins/reportes/balance-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>account_balance_wallet</mat-icon>
-          Reporte de Balances
-        </a>
-
-        <a [routerLink]="['admins/reportes/seguimiento-clientes']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>timeline</mat-icon>
-          Reporte de Seguimiento a Clientes
-        </a>
-
-        <a [routerLink]="['admins/reportes/facturas']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>receipt</mat-icon>
-          Reporte de Facturas
-        </a>
-      </mat-nav-list>
-
-      <a (click)="showConfSubMenu()" mat-list-item>
-        <mat-icon>settings</mat-icon>
-        Configuraciones
-        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
-      </a>
-
-      <mat-nav-list class="d-none confSubMenu">
-
-        <a [routerLink]="['admins/parametrizar-tarifas']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>attach_money</mat-icon>
-          Tarifas
-        </a>
-
-        <a [routerLink]="['admins/parametrizar-recargos']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>attach_money</mat-icon>
-          Recargos
-        </a>
-
-        <a [routerLink]="['admins/parametrizar-cargos-extras']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>attach_money</mat-icon>
-          Cargos Extras
-        </a>
-
-        <a class="ml-3" (click)="sidenav.close()" [routerLink]="['admins/parametrizar-categorias']" mat-list-item>
-          <mat-icon>list</mat-icon>
-          Categorías
-        </a>
-
-        <a [routerLink]="['admins/parametrizar-horarios']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>schedule</mat-icon>
-          Horarios
-        </a>
-
-        <a [routerLink]="['admins/parametrizar-restricciones']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>block</mat-icon>
-          Restricciones
-        </a>
-
-        <a [routerLink]="['admins/parametrizar-terminos']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>gavel</mat-icon>
-          Términos y Condiciones
-        </a>
-
-        <a [routerLink]="['admins/parametrizar-rubros']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>business_center</mat-icon>
-          Rubros
-        </a>
-
-        <a [routerLink]="['admins/parametrizar-envio-reportes']" (click)="sidenav.close()" mat-list-item class="ml-3">
-          <mat-icon>send</mat-icon>
-          Envío de Reportes
-        </a>
-      </mat-nav-list>
-    </mat-nav-list>
-    <!-- ONLY XPLORE USER -->
+    <!-- ADMIN MENU -->
+    <app-admin-menu
+      *ngIf="
+        (currentUser && currentUser.idPerfil === '1') ||
+        (currentUser && currentUser.idPerfil === '9')
+      "
+      [currentUser]="currentUser"
+      (showLogout)="showLogout()"
+      (logout)="logout()"
+      (showConfSubMenu)="showConfSubMenu()"
+      (showReportSubMenu)="showReportsSubMenu()"
+      [sidenav]="sidenav"
+    >
+    </app-admin-menu>
+    <!-- ADMIN MENU -->
 
     <!-- ONLY CUSTOMERS -->
-    <mat-nav-list *ngIf="currentUser && currentUser.idPerfil === '8'">
-
-      <a href="javascript:void(0);" mat-list-item (click)="showLogoutCustomer()">
-        <mat-icon>account_circle</mat-icon>
-        {{currentUser.nomUsuario}}
-        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
-      </a>
-
-      <mat-nav-list class="d-none ml-2 userSubMenu">
-        <a [routerLink]="['customers/perfil']" id="profile" class="ml-3" (click)="sidenav.close()" mat-list-item>
-          <mat-icon>person</mat-icon>
-          Perfil
-        </a>
-        <a href="javascript:void(0)" class="ml-3" mat-list-item (click)="logout()">
-          <mat-icon>exit_to_app</mat-icon>
-          Cerrar sesión
-        </a>
-      </mat-nav-list>
-
-      <a (click)="sidenav.close()" [routerLink]="['customers/dashboard']" mat-list-item>
-        <mat-icon>dashboard</mat-icon>
-        Dashboard
-      </a>
-
-      <a href="javascript:void(0);" mat-list-item (click)="showCustomerAddDeliverySubMenu()">
-        <mat-icon>add</mat-icon>
-        Agregar Delivery
-        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
-      </a>
-
-      <mat-list class="d-none ml-2 createDelMenu">
-        <a (click)="sidenav.close()" [routerLink]="['customers/envio-normal']" mat-list-item *ngIf="currentUser.idCliente != 358 &&
-        currentUser.idCliente != 359 && currentUser.idCliente !=381">
-          <mat-icon>add</mat-icon>
-          Delivery Express
-        </a>
-  
-        <!-- <a *ngIf="currentUser.permiteConsolidadaForanea" (click)="sidenav.close()"
-          [routerLink]="['customers/envio-consolidado-foraneo']" mat-list-item>
-          <mat-icon>add</mat-icon>
-          Agregar delivery Foráneo (Carga Consolidada)
-        </a> -->
-  
-        <a (click)="sidenav.close()" [routerLink]="['customers/envio-ruteo']" mat-list-item *ngIf="currentUser.idCliente != 358 &&
-        currentUser.idCliente != 359 && currentUser.idCliente !=381">
-          <mat-icon>add</mat-icon>
-          Delivery en Ruta
-        </a>
-  
-        <a *ngIf="currentUser.permiteConsolidada" (click)="sidenav.close()" [routerLink]="['customers/envio-consolidado']"
-          mat-list-item>
-          <mat-icon>add</mat-icon>
-          Delivery Consolidado
-          <mat-icon color="accent">star</mat-icon>
-        </a>
-      </mat-list>
-
-      <a href="javascript:void(0);" mat-list-item (click)="showCustomerDeliveriesSubMenu()">
-        <mat-icon>list</mat-icon>
-        Mis Envíos y Reservas
-        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
-      </a>
-
-      <mat-nav-list class="d-none ml-2 delOrdersMenu">
-        <a (click)="sidenav.close()" [routerLink]="['customers/envios-hoy']" mat-list-item>
-          <mat-icon>today</mat-icon>
-          Mis envíos del día
-        </a>
-  
-        <a (click)="sidenav.close()" [routerLink]="['customers/envios-todos']" mat-list-item>
-          <mat-icon>list</mat-icon>
-          Todos mis envíos
-        </a>
-  
-        <a (click)="sidenav.close()" [routerLink]="['customers/reservas-hoy']" mat-list-item>
-          <mat-icon>event</mat-icon>
-          Mis reservas del día
-        </a>
-  
-        <a (click)="sidenav.close()" [routerLink]="['customers/reservas-todos']" mat-list-item>
-          <mat-icon>list</mat-icon>
-          Todas mis reservas
-        </a>
-      </mat-nav-list>
-
-      <a (click)="sidenav.close()" [routerLink]="['customers/balance']" mat-list-item>
-        <mat-icon>attach_money</mat-icon>
-        Mi Balance
-      </a>
-
-      <a href="javascript:void(0);" mat-list-item (click)="showCustomerConfigSubMenu()">
-        <mat-icon>settings</mat-icon>
-        Configuraciones
-        <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
-      </a>
-
-      <mat-nav-list class="d-none ml-2 custConfigMenu">
-        <a [routerLink]="['customers/direcciones']" (click)="sidenav.close()" mat-list-item>
-          <mat-icon>location_on</mat-icon>
-          Mis Direcciones
-        </a>
-  
-        <a [routerLink]="['customers/etiquetas']" (click)="sidenav.close()" mat-list-item>
-          <mat-icon>label</mat-icon>
-          Mis Etiquetas
-        </a>
-  
-        <a [routerLink]="['customers/metodos-pago']" (click)="sidenav.close()" mat-list-item>
-          <mat-icon>credit_card</mat-icon>
-          Mis Formas de Pago
-        </a>
-  
-      </mat-nav-list>
-
-      <a [routerLink]="['customers/reporte-envios']" (click)="sidenav.close()" mat-list-item>
-        <mat-icon>analytics</mat-icon>
-        Reporte de Envíos
-      </a>
-
-      <a [routerLink]="['customers/terminos-y-condiciones']" (click)="sidenav.close()" mat-list-item>
-        <mat-icon>gavel</mat-icon>
-        Términos y Condiciones
-      </a>
-
-    </mat-nav-list>
+    <app-customer-menu
+      *ngIf="currentUser && currentUser.idPerfil === '8'"
+      [currentUser]="currentUser"
+      (showLogoutCustomer)="showLogoutCustomer()"
+      (logout)="logout()"
+      (showCustomerAddDeliverySubMenu)="showCustomerAddDeliverySubMenu()"
+      (showCustomerConfigSubMenu)="showCustomerConfigSubMenu()"
+      (showCustomerDeliveriesSubMenu)="showCustomerDeliveriesSubMenu()"
+      [sidenav]="sidenav"
+    >
+    </app-customer-menu>
     <!-- ONLY CUSTOMERS -->
 
     <!-- ONLY CUSTOMERS -->
     <mat-nav-list *ngIf="currentUser && currentUser.idPerfil === '12'">
-
-      <a href="javascript:void(0);" mat-list-item (click)="showLogoutCustomer()">
+      <a
+        href="javascript:void(0);"
+        mat-list-item
+        (click)="showLogoutCustomer()"
+      >
         <mat-icon>account_circle</mat-icon>
-        {{currentUser.nomUsuario}}
+        {{ currentUser.nomUsuario }}
         <mat-icon matSuffix>keyboard_arrow_down</mat-icon>
       </a>
 
       <mat-nav-list class="d-none userSubMenu">
-        <a href="javascript:void(0)" class="ml-3" mat-list-item (click)="logout()">
+        <a
+          href="javascript:void(0)"
+          class="ml-3"
+          mat-list-item
+          (click)="logout()"
+        >
           <mat-icon>exit_to_app</mat-icon>
           Cerrar sesión
         </a>
       </mat-nav-list>
 
-      <a (click)="sidenav.close()" [routerLink]="['customers/dashboard']" mat-list-item>
+      <a
+        (click)="sidenav.close()"
+        [routerLink]="['customers/dashboard']"
+        mat-list-item
+      >
         <mat-icon>dashboard</mat-icon>
         Dashboard
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['customers/envios-hoy']" mat-list-item>
+      <a
+        (click)="sidenav.close()"
+        [routerLink]="['customers/envios-hoy']"
+        mat-list-item
+      >
         <mat-icon>today</mat-icon>
         Mis envíos del día
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['customers/envios-todos']" mat-list-item>
+      <a
+        (click)="sidenav.close()"
+        [routerLink]="['customers/envios-todos']"
+        mat-list-item
+      >
         <mat-icon>list</mat-icon>
         Todos mis envíos
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['customers/reservas-hoy']" mat-list-item>
+      <a
+        (click)="sidenav.close()"
+        [routerLink]="['customers/reservas-hoy']"
+        mat-list-item
+      >
         <mat-icon>event</mat-icon>
         Mis reservas del día
       </a>
 
-      <a (click)="sidenav.close()" [routerLink]="['customers/reservas-todos']" mat-list-item>
+      <a
+        (click)="sidenav.close()"
+        [routerLink]="['customers/reservas-todos']"
+        mat-list-item
+      >
         <mat-icon>list</mat-icon>
         Todas mis reservas
       </a>
     </mat-nav-list>
     <!-- ONLY CUSTOMERS -->
   </mat-sidenav>
-  <mat-sidenav-content [ngClass]="{'mt-3': currentUser && currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle' , 'mt-0': !currentUser}">
+  <mat-sidenav-content
+    [ngClass]="{
+      'mt-3':
+        currentUser &&
+        currentRoute != '/shuttle' &&
+        currentRoute != '/GestionesDelivery/shuttle',
+      'mt-0': !currentUser
+    }"
+  >
     <!-- <div class="row text-center" *ngIf="isMobile && !currentUser">
       <img width="100%" src="assets/img/Web-1_resized.jpg" alt="cargando imagen...">
     </div>
     <br *ngIf="!currentUser"> -->
-    <br *ngIf="!currentUser && currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle'">
-    <div [ngClass]="{'mx-3': currentRoute != '/shuttle' && currentRoute != '/GestionesDelivery/shuttle' }" #mainContainer>
+    <br
+      *ngIf="
+        !currentUser &&
+        currentRoute != '/shuttle' &&
+        currentRoute != '/GestionesDelivery/shuttle'
+      "
+    />
+    <div
+      [ngClass]="{
+        'mx-3':
+          currentRoute != '/shuttle' &&
+          currentRoute != '/GestionesDelivery/shuttle'
+      }"
+      #mainContainer
+    >
       <router-outlet></router-outlet>
     </div>
     <footer class="mt-5 mb-3">
-      <p class="text-center">© Copyright 2020 <strong>ALCARSA - Xplore Rent a Car</strong> | Todos los derechos
-        reservados</p>
+      <p class="text-center">
+        © Copyright 2020 <strong>ALCARSA - Xplore Rent a Car</strong> | Todos
+        los derechos reservados
+      </p>
     </footer>
-
   </mat-sidenav-content>
-
 </mat-sidenav-container>
 <!-- -->
