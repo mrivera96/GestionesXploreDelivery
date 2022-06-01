@@ -319,14 +319,7 @@ export class CustomerReportsComponent implements OnInit {
       let orderEC = ''
       d.extra_charges.forEach(value => {
         orderEC = orderEC + ' ' + value.extracharge.nombre
-      });
-
-      let delType = 'Envío normal';
-      if(d.delivery.isConsolidada == true){
-        delType = 'Envío Consolidado';
-      }else if(d.delivery.isRuteo == true){
-        delType = 'Envio por Ruteo';
-      }
+      })
 
       let delType = 'Envío normal';
       if(d.delivery.isConsolidada == true){
@@ -537,14 +530,7 @@ export class CustomerReportsComponent implements OnInit {
       let orderEC = ''
       d.extra_charges.forEach(value => {
         orderEC = orderEC + ' ' + value.extracharge.nombre
-      });
-
-      let delType = 'Envío normal';
-      if(d.delivery.isConsolidada == true){
-        delType = 'Envío Consolidado';
-      }else if(d.delivery.isRuteo == true){
-        delType = 'Envio por Ruteo';
-      }
+      })
 
       let delType = 'Envío normal';
       if(d.delivery.isConsolidada == true){

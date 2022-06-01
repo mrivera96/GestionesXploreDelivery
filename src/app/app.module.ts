@@ -39,8 +39,8 @@ import { ConfirmDeleteComponent } from './customers/components/labels/confirm-de
 import { ServiceChooseComponent } from './shared/components/service-choose/service-choose.component';
 import { NgxFlagPickerModule } from 'ngx-flag-picker';
 import { AdminMenuComponent } from './side-menu/admin-menu/admin-menu.component';
-import { CustomerMenuComponent } from './side-menu/customer-menu/customer-menu.component'
-
+import { CustomerMenuComponent } from './side-menu/customer-menu/customer-menu.component';
+import { NgxCcModule } from 'ngx-cc';
 // Set the fonts to use
 PdfMakeWrapper.setFonts(pdfFonts);
 @NgModule({

@@ -43,22 +43,9 @@
                   class="btn-block"
                   mat-raised-button
                   color="primary"
-                  *ngIf="currentUser.idCliente != 358 &&
-        currentUser.idCliente != 359 && currentUser.idCliente !=381"
                 >
                   Agregar envío
                 </button>
-
-                <button
-                [routerLink]="['/customers/envio-consolidado']"
-                class="btn-block"
-                mat-raised-button
-                color="primary"
-                *ngIf="currentUser.idCliente == 358 ||
-      currentUser.idCliente == 359 || currentUser.idCliente ==381"
-              >
-                Agregar envío
-              </button>
               </div>
             </div>
           </mat-card-content>

@@ -152,7 +152,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           dirRecogida: [{ value: '', disabled: false }, [Validators.required]],
           idCategoria: [
             {
-              value: null,
+              value: 1,
               disabled: false,
             },
             Validators.required,
@@ -261,6 +261,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           });
           categoriesSubscription.unsubscribe();
           this.dialog.closeAll();
+          this.setSelectedCategory(this.categories[0]);
           this.setCurrentLocationOrigin();
         },
         (error) => {
