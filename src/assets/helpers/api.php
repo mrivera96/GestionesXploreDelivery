@@ -2690,7 +2690,7 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/XploreRestApiDesa/bac/tokenizar?idcliente=" . $idCust . "&tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv;
+        $url = "http://190.4.56.14/XploreRestApi/bac/tokenizar?idcliente=" . $idCust . "&tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv;
         //$url = "http://190.4.56.14/XploreRestApi/bac/tokenizar?idcliente=" . $idCust . "&tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv;
         $authorization = 'Authorization: Basic ' . base64_encode("Webapi:Xplore19$");
 
@@ -2712,7 +2712,7 @@ if (isset($_GET['function'])) {
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/XploreRestApiDesa/bac/autorizar?tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv . "&monto=" . $amount;
+        $url = "http://190.4.56.14/XploreRestApi/bac/autorizar?tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv . "&monto=" . $amount;
         //$url = "http://190.4.56.14/XploreRestApi/bac/autorizar?tarjeta=" . $card . "&vencimiento=" . $expire . "&cvv=" . $cvv . "&monto=" . $amount;
         $authorization = 'Authorization: Basic ' . base64_encode("Webapi:Xplore19$");
 
