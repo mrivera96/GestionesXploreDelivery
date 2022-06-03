@@ -42,6 +42,7 @@ import { InternationalPhoneMaskDirective } from '../directives/international-pho
 import { NgxFlagPickerModule } from 'ngx-flag-picker';
 import { ShuttleDetailsComponent } from './components/shuttle-details/shuttle-details.component';
 import { NgxCcModule } from 'ngx-cc';
+import { ChangeDateDialogComponent } from './components/order-detail-dialog/change-date-dialog/change-date-dialog.component';
 @NgModule({
   declarations: [
     OrdersDataTableComponent,
@@ -64,7 +65,8 @@ import { NgxCcModule } from 'ngx-cc';
     VerificationDialogComponent,
     XploreShuttleComponent,
     InternationalPhoneMaskDirective,
-    ShuttleDetailsComponent
+    ShuttleDetailsComponent,
+    ChangeDateDialogComponent
   ],
   imports: [
     CommonModule,
