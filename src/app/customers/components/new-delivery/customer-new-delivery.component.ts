@@ -463,7 +463,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
   //MÉTODO QUE EJECUTA LA ADICIÓN DE UN NUEVO ENVÍO
   onOrderAdd() {
     
-    this.validateHour();
+    if (this.reserv) {
+      this.validateHour();
+    } else {
+      this.validateNowHour();
+    }
 
     if (this.deliveryForm.valid) {
       this.openLoader();
@@ -1285,11 +1289,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
   }
 
   //VALIDA LA HORA SEGUN EL TIPO DE SERVICIO RESERVA O SOLICITAR AHORA
-  async validateHour() {
+  validateHour() {
     const control = this.deliveryForm.get('hora');
     let h = this.newForm.get('hora').value;
     const date = this.newForm.get('fecha').value;
-    /*const currentDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
+    const currentDate = formatDate(new Date(), 'yyyy-MM-dd', 'en');
     const currentDateTime = new Date().setHours(
       new Date().getHours(),
       new Date().getMinutes()
@@ -1339,7 +1343,11 @@ export class CustomerNewDeliveryComponent implements OnInit {
     );
     const datetime = new Date(date + ' ' + h);
 
-    
+    if (control.errors && !control.errors.mustAfterHour) {
+      // return if another validator has already found an error on the matchingControl
+      return;
+    }
+
     if (this.reserv == true) {
       // @ts-ignore
       if (datetime < oneHourMore) {
@@ -1356,17 +1364,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
       if (h < tSSHour || h > tSFHour) {
         control.setErrors({ mustAfterHour: true });
       }
-    }*/
-    if (control.errors && !control.errors.mustAfterHour) {
-      // return if another validator has already found an error on the matchingControl
-      return;
     }
-
-    const schValsubsc = await this.deliveriesService.validateDateTime(date, h, this.reserv)
-    .subscribe(response =>{
-      if(response.result == 0) control.setErrors({ mustAfterHour: true });
-      schValsubsc.unsubscribe()
-    });
   }
 
   validateNowHour() {

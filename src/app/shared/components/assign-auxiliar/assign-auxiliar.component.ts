@@ -42,7 +42,7 @@ export class AssignAuxiliarComponent implements OnInit {
     });
 
     const usersSubscription = this.usersService
-      .getDrivers()
+      .getActiveDrivers()
       .subscribe((response) => {
         this.conductores = response.data;
         usersSubscription.unsubscribe();

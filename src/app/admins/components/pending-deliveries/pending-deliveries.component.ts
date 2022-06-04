@@ -126,7 +126,7 @@ export class PendingDeliveriesComponent implements OnInit {
         this.dtTrigger.next();
         this.dtTrigger1.next();
 
-        const usrSubs = this.usersService.getDrivers().subscribe((response) => {
+        const usrSubs = this.usersService.getActiveDrivers().subscribe((response) => {
           this.drivers = response.data;
           this.dialog.closeAll();
           this.dtTrigger2.next();

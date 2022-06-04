@@ -20,6 +20,13 @@ export class UsersService {
     })
   }
 
+  getActiveDrivers(){
+    return this.http.post<any>(`${environment.apiUrl}`,{
+    function: 'getActiveDrivers',
+    tkn: this.authService.currentUserValue.access_token
+  })
+  }
+
   getCustomers(){
     return this.http.post<any>(`${environment.apiUrl}`,{
       function:'getCustomers',

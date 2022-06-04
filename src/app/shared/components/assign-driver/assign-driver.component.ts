@@ -37,7 +37,7 @@ export class AssignDriverComponent implements OnInit {
       idConductor: new FormControl(null, [Validators.required]),
     })
 
-    const usersSubscription = this.usersService.getDrivers().subscribe(response => {
+    const usersSubscription = this.usersService.getActiveDrivers().subscribe(response => {
       this.conductores = response.data
       usersSubscription.unsubscribe()
     })
