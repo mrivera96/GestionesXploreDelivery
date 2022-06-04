@@ -326,4 +326,13 @@ export class DeliveriesService {
       tkn: this.authService.currentUserValue.access_token,
     });
   }
+
+  //Servicio para modificar la fecha de entrega
+  changeDDate(form){
+    return this.http.post<any>(`${environment.apiUrl}`, {
+      function: 'changeDDate',
+      form,
+      tkn: this.authService.currentUserValue.access_token,
+    });
+  }
 }

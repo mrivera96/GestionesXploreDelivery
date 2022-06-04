@@ -513,6 +513,7 @@ export class CustomerNewDeliveryComponent implements OnInit {
     this.newForm.get('dirRecogida').enable();
 
     if (this.deliveryForm.valid && this.orders.length > 0) {
+      console.log('clicked');
       this.deliveryForm.get('idTarifa').setValue(this.selectedRate);
       //this.deliveryForm.get('prioridad').setValue(this.priority);
 
@@ -653,7 +654,6 @@ export class CustomerNewDeliveryComponent implements OnInit {
         },
         function (response, status) {
           if (status == 'OK') {
-            console.log(response);
             directionsRenderer.setDirections(response);
           } else {
             window.alert('Directions request failed due to ' + status);

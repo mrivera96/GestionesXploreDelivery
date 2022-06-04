@@ -93,6 +93,7 @@ export class EditCustomerDialogComponent implements OnInit {
         this.currCustomer.instFotografias,
         Validators.maxLength(80),
       ],
+      isExonerado:[false]
     });
   }
 

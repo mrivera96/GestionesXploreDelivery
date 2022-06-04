@@ -12,6 +12,7 @@ import { User } from '../../../models/user';
 import { AssignAuxiliarComponent } from '../assign-auxiliar/assign-auxiliar.component';
 import { Delivery } from '../../../models/delivery';
 import { ChangeAddressDialogComponent } from './change-address-dialog/change-address-dialog.component';
+import { ChangeDateDialogComponent } from './change-date-dialog/change-date-dialog.component';
 
 @Component({
   selector: 'app-order-detail-dialog',
@@ -87,6 +88,21 @@ export class OrderDetailDialogComponent implements OnInit {
 
   showChangeAddressDialog(currOrder) {
     const dialogRef = this.dialog.open(ChangeAddressDialogComponent, {
+      data: {
+        currOrder: currOrder,
+        currDelivery: this.currentDelivery,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        location.reload();
+      }
+    });
+  }
+
+  showChangeDDateDialog(currOrder){
+    const dialogRef = this.dialog.open(ChangeDateDialogComponent, {
       data: {
         currOrder: currOrder,
         currDelivery: this.currentDelivery,
