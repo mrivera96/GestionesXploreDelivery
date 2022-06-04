@@ -626,7 +626,7 @@ export class ConsolidatedDeliveryComponent implements OnInit {
         salida: salida,
         entrega: entrega,
         tarifa: tarifa,
-        categoria: this.deliveryForm.get('idCategoria').value,
+        categoria: this.deliveryForm.get('deliveryHeader.idCategoria').value,
       })
       .subscribe(
         (response) => {

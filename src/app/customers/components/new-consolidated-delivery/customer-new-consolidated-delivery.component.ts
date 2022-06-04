@@ -477,6 +477,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
             salida: this.selectedRate.consolidated_detail.dirRecogida,
             entrega: this.deliveryForm.get('deliveryHeader.dirRecogida').value,
             tarifa: this.pago.baseRate,
+            categoria: this.deliveryForm.get('deliveryHeader.idCategoria').value,
           })
           .subscribe(
             (response) => {
@@ -525,6 +526,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           salida: this.selectedRate.consolidated_detail.dirRecogida,
           entrega: this.newForm.get('order.direccion').value,
           tarifa: this.pago.baseRate,
+          categoria: this.deliveryForm.get('deliveryHeader.idCategoria').value,
         })
         .subscribe(
           (response) => {
@@ -708,6 +710,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           salida: salida,
           entrega: entrega,
           tarifa: tarifa,
+          categoria: this.deliveryForm.get('deliveryHeader.idCategoria').value,
         })
         .subscribe(
           (response) => {
