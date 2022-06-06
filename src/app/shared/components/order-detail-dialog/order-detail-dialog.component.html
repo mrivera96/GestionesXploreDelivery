@@ -35,9 +35,9 @@
       <span>Cambiar Dirección</span>
     </button>
 
-    <button *ngIf="currentOrder?.idEstado == 44" mat-menu-item (click)="showChangeDDateDialog(currentOrder)">
-      <mat-icon>calendar_today</mat-icon>
-      <span>Cambiar Fecha de Entrega</span>
+    <button mat-menu-item (click)="showEditDialog(currentOrder)">
+      <mat-icon>create</mat-icon>
+      <span>Modificar Envío</span>
     </button>
 
   </mat-menu>
