@@ -3108,13 +3108,13 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    } else if ($_POST['function'] == 'changeDDate') {
+    }else if ($_POST['function'] == 'getActiveDrivers') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/changeDDate";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/drivers/getActive";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 
@@ -3128,13 +3128,53 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
-    }else if ($_POST['function'] == 'getActiveDrivers') {
+    } else if ($_POST['function'] == 'updateOrder') {
         $post = file_get_contents('php://input');
         $array = json_decode($post);
 
         $handle = curl_init();
 
-        $url = "http://190.4.56.14/" . $environment . "/api/admins/drivers/getActive";
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/orders/update";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'deletePayment') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/payments/delete";
+
+        $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
+
+        // Set the url
+        curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_POST, TRUE);
+        curl_setopt($handle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'Accept:application/json', $authorization));
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
+    } else if ($_POST['function'] == 'updatePayment') {
+        $post = file_get_contents('php://input');
+        $array = json_decode($post);
+
+        $handle = curl_init();
+
+        $url = "http://190.4.56.14/" . $environment . "/api/admins/payments/update";
 
         $authorization = 'Authorization: Bearer ' . $_POST['tkn'];
 

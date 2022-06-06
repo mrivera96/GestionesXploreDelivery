@@ -327,10 +327,10 @@ export class DeliveriesService {
     });
   }
 
-  //Servicio para modificar la fecha de entrega
-  changeDDate(form){
+  //Servicio para modificar un envío
+  updateOrder(form){
     return this.http.post<any>(`${environment.apiUrl}`, {
-      function: 'changeDDate',
+      function: 'updateOrder',
       form,
       tkn: this.authService.currentUserValue.access_token,
     });

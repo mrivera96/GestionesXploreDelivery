@@ -12,7 +12,7 @@ import { User } from '../../../models/user';
 import { AssignAuxiliarComponent } from '../assign-auxiliar/assign-auxiliar.component';
 import { Delivery } from '../../../models/delivery';
 import { ChangeAddressDialogComponent } from './change-address-dialog/change-address-dialog.component';
-import { ChangeDateDialogComponent } from './change-date-dialog/change-date-dialog.component';
+import { EditOrderDialogComponent } from './edit-order-dialog/edit-order-dialog.component';
 
 @Component({
   selector: 'app-order-detail-dialog',
@@ -101,8 +101,8 @@ export class OrderDetailDialogComponent implements OnInit {
     });
   }
 
-  showChangeDDateDialog(currOrder){
-    const dialogRef = this.dialog.open(ChangeDateDialogComponent, {
+  showEditDialog(currOrder){
+    const dialogRef = this.dialog.open(EditOrderDialogComponent, {
       data: {
         currOrder: currOrder,
         currDelivery: this.currentDelivery,

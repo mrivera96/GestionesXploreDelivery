@@ -1,0 +1,175 @@
+<!-- DIALOG START -->
+<h2 mat-dialog-title class="text-primary">
+  Modificar Envío No. {{ currOrder.idDetalle }}
+</h2>
+<mat-dialog-content>
+  <div class="row" *ngIf="loaders.loadingSubmit">
+    <div class="col text-center">
+      <img src="../../../../assets/img/loading.svg" width="35%" alt="loading" />
+      <p>Procesando Información...</p>
+    </div>
+  </div>
+
+  <form [formGroup]="orderForm" role="form" *ngIf="!loaders.loadingSubmit">
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Detalle de envío:</mat-label>
+        <input
+          formControlName="nFactura"
+          type="text"
+          id="detalle"
+          required
+          matInput
+          maxlength="250"
+          placeholder="¿Qué deseas enviar?"
+        />
+        <mat-icon matPrefix>receipt</mat-icon>
+        <mat-error *ngIf="orderForm.get('nFactura')?.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Nombre de destinatario:</mat-label>
+        <input
+          formControlName="nomDestinatario"
+          type="text"
+          id="dest"
+          required
+          matInput
+          maxlength="150"
+          placeholder="¿Quién recibirá el pedido?"
+        />
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-error *ngIf="orderForm.get('nomDestinatario')?.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Fecha de entrega:</mat-label>
+        <input
+          formControlName="fecha"
+          type="date"
+          id="fecha"
+          required
+          matInput
+        />
+        <mat-icon matPrefix>today</mat-icon>
+        <mat-error *ngIf="orderForm.get('fecha')?.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="orderForm.get('fecha')?.errors?.mustAfterDate">
+          *Ups! Parece que esa fecha no es válida
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Hora de entrega:</mat-label>
+        <input formControlName="hora" type="time" id="hora" required matInput />
+
+        <mat-icon matPrefix>schedule</mat-icon>
+        <mat-error *ngIf="orderForm.get('hora')?.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="orderForm.get('hora')?.errors?.mustAfterHour">
+          *La hora de recogida debe ser 1 hora mayor a la hora actual
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Número celular destinatario:</mat-label>
+        <input
+          formControlName="numCel"
+          type="tel"
+          id="numCel"
+          required
+          matInput
+          appPhoneMask
+          placeholder="Ej. 9999-9999(Guión Automático)"
+          minlength="9"
+          autocomplete="off"
+          maxlength="9"
+        />
+        <mat-icon matPrefix>phone</mat-icon>
+        <mat-error
+          *ngIf="
+            orderForm.get('numCel').errors?.minlength ||
+            orderForm.get('numCel').errors?.maxlength
+          "
+        >
+          *Por favor ingresa un número válido
+        </mat-error>
+        <mat-error *ngIf="orderForm.get('numCel').errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Efectivo Recibido:</mat-label>
+        <input
+          formControlName="efectivoRecibido"
+          type="number"
+          id="efectivo"
+          required
+          matInput
+          min="0"
+        />
+        <mat-icon matPrefix>attach_money</mat-icon>
+        <mat-error *ngIf="orderForm.get('efectivoRecibido')?.errors?.required">
+          *Este campo es obligatorio
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Observaciones:</mat-label>
+        <textarea
+          formControlName="observaciones"
+          id="detalle"
+          matInput
+          maxlength="150"
+          placeholder="Observaciones de envío"
+        >
+        </textarea>
+        <mat-icon matPrefix>assignment</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-md">
+        <mat-label>Instrucciones de Entrega:</mat-label>
+        <textarea
+          matInput
+          id="instEspecificas"
+          formControlName="instrucciones"
+          maxlength="150"
+          class="form-control"
+          placeholder="¿Necesitamos instrucciones para realizar este transporte?"
+        ></textarea>
+        <mat-icon matPrefix>assignment</mat-icon>
+        <mat-error>*Excede la longitud máxima permitida</mat-error>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <br />
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button
+    type="button"
+    mat-raised-button
+    [disabled]="orderForm.invalid || loaders.loadingSubmit"
+    (click)="onFormSubmit()"
+    color="primary"
+  >
+    Confirmar
+  </button>
+  <button type="button" mat-raised-button [mat-dialog-close]="false">
+    Cancelar
+  </button>
+</mat-dialog-actions>

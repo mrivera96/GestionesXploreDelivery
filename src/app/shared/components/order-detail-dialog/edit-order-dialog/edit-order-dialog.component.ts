@@ -12,11 +12,11 @@ import { ErrorModalComponent } from '../../error-modal/error-modal.component';
 import { SuccessModalComponent } from '../../success-modal/success-modal.component';
 
 @Component({
-  selector: 'app-change-date-dialog',
-  templateUrl: './change-date-dialog.component.html',
-  styleUrls: ['./change-date-dialog.component.css'],
+  selector: 'app-edit-order-dialog',
+  templateUrl: './edit-order-dialog.component.html',
+  styleUrls: ['./edit-order-dialog.component.css'],
 })
-export class ChangeDateDialogComponent implements OnInit {
+export class EditOrderDialogComponent implements OnInit {
   loaders = {
     loadingData: false,
     loadingAdd: false,
@@ -24,41 +24,35 @@ export class ChangeDateDialogComponent implements OnInit {
     loadingSubmit: false,
     loadingDistBef: false,
   };
-  dateForm: FormGroup;
-
   currOrder: Order;
+  orderForm: FormGroup;
+
   constructor(
-    public dialogRef: MatDialogRef<ChangeDateDialogComponent>,
+    public dialogRef: MatDialogRef<EditOrderDialogComponent>,
     private deliveriesService: DeliveriesService,
     public dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private formBuilder: FormBuilder
   ) {
-    this.currOrder = data.currOrder;
-    this.dialogRef.disableClose = true;
-    this.dateForm = this.formBuilder.group({
-      idDetalle: this.currOrder.idDetalle,
+    this.currOrder = this.data.currOrder;
+    this.orderForm = this.formBuilder.group({
+      idDetalle: [this.currOrder.idDetalle],
+      nFactura: [this.currOrder.nFactura, [Validators.required]],
       fecha: [
         formatDate(this.currOrder.fechaEntrega, 'yyyy-MM-dd', 'en'),
         [Validators.required],
       ],
-      hora: [
-        formatDate(
-          this.currOrder.fechaEntrega,
-          'HH:mm',
-          'en'
-        ),
-        Validators.required,
-      ],
+      hora:[formatDate(this.currOrder.fechaEntrega, 'HH:mm', 'en'),
+      [Validators.required]],
+      nomDestinatario: [this.currOrder.nomDestinatario, [Validators.required]],
+      numCel: [this.currOrder.numCel, [Validators.required]],
+      efectivoRecibido: [this.currOrder.efectivoRecibido, [Validators.min(0)]],
+      observaciones: [this.currOrder.observaciones],
+      instrucciones: [this.currOrder.instrucciones,[Validators.maxLength(150)]]
     });
   }
 
   ngOnInit(): void {}
-
-  //GETTER PARA EL FORMULARIO
-  get dForm() {
-    return this.dateForm.controls;
-  }
 
   openErrorDialog(error: string): void {
     const dialog = this.dialog.open(ErrorModalComponent, {
@@ -86,9 +80,10 @@ export class ChangeDateDialogComponent implements OnInit {
   }
 
   onFormSubmit() {
-    if (this.dateForm.valid) {
+    if (this.orderForm.valid) {
+      this.loaders.loadingSubmit = true;
       const deliveriesSubscription = this.deliveriesService
-        .changeDDate(this.dateForm.value)
+        .updateOrder(this.orderForm.value)
         .subscribe(
           (response) => {
             this.loaders.loadingSubmit = false;
@@ -115,7 +110,7 @@ export class ChangeDateDialogComponent implements OnInit {
             }
           }
         );
-    } else if (this.dateForm.invalid) {
+    } else if (this.orderForm.invalid) {
       let invalidFields = [].slice.call(
         document.getElementsByClassName('ng-invalid')
       );
