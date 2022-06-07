@@ -79,7 +79,7 @@
             <th>Referencia</th>
             <th>Banco</th>
             <th>Número de Autorización</th>
-            <!-- <th data-priority="1">Acción</th> -->
+            <th data-priority="1">Acción</th> 
           </tr>
         </thead>
         <tbody>
@@ -93,11 +93,32 @@
             <td>{{ payment.referencia || "N/A" }}</td>
             <td>{{ payment.banco || "N/A" }}</td>
             <td>{{ payment.numAutorizacion || "N/A" }}</td>
-            <!-- <td>
-            <a (click)="showEditForm(payment.idPago)" style="color: #0071A2">
+            <td>
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <button
+                  (click)="showEditForm(payment)"
+                  mat-menu-item
+                >
+                  <mat-icon>create</mat-icon>
+                  <span>Editar</span>
+                </button>
+
+                <button
+                  (click)="showConfirm(payment.idPago)"
+                  mat-menu-item
+                >
+                  <mat-icon>delete</mat-icon>
+                  <span>Eliminar</span>
+                </button>
+
+              </mat-menu>
+            <!--<a (click)="showEditForm(payment.idPago)" style="color: #0071A2">
               <i class="fa fa-edit"></i> Editar
-            </a>
-          </td>-->
+            </a>-->
+          </td>
           </tr>
         </tbody>
       </table>

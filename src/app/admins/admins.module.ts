@@ -98,6 +98,7 @@ import { ShuttleRateDetailsComponent } from './components/rates/shuttle-rate-det
 import { ReadExchangeRatesComponent } from './components/exchage-rates/read-exchange-rates/read-exchange-rates.component';
 import { CreateExchangeRateComponent } from './components/exchage-rates/create-exchange-rate/create-exchange-rate.component';
 import { UpdateExchangeRateComponent } from './components/exchage-rates/update-exchange-rate/update-exchange-rate.component';
+import { EditPaymentComponent } from './components/payments/edit-payment/edit-payment.component';
 
 @NgModule({
   declarations: [
@@ -189,6 +190,7 @@ import { UpdateExchangeRateComponent } from './components/exchage-rates/update-e
     ReadExchangeRatesComponent,
     CreateExchangeRateComponent,
     UpdateExchangeRateComponent,
+    EditPaymentComponent,
   ],
   entryComponents: [
     ConfirmModalComponent,
