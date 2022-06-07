@@ -10,6 +10,10 @@ import { LoadingDialogComponent } from '../../../shared/components/loading-dialo
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { formatDate } from '@angular/common';
+import { ConfirmationDialogComponent } from 'src/app/shared/components/confirmation-dialog/confirmation-dialog.component';
+import { SuccessModalComponent } from 'src/app/shared/components/success-modal/success-modal.component';
+import { ErrorModalComponent } from 'src/app/shared/components/error-modal/error-modal.component';
+import { EditPaymentComponent } from './edit-payment/edit-payment.component';
 
 @Component({
   selector: 'app-payments',
@@ -111,18 +115,16 @@ export class PaymentsComponent implements OnInit {
           this.payments = response.data;
           this.dialog.closeAll();
           this.dtTrigger.next();
-          this.dtElement.dtInstance.then(
-            (dtInstance: DataTables.Api) => {
-              dtInstance.columns().every(function () {
-                const that = this;
-                $('select', this.footer()).on('change', function () {
-                  if (that.search() !== this['value']) {
-                    that.search(this['value']).draw();
-                  }
-                });
+          this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+            dtInstance.columns().every(function () {
+              const that = this;
+              $('select', this.footer()).on('change', function () {
+                if (that.search() !== this['value']) {
+                  that.search(this['value']).draw();
+                }
               });
-            }
-          );
+            });
+          });
           paymentsSubscription.unsubscribe();
         });
     }
@@ -151,9 +153,74 @@ export class PaymentsComponent implements OnInit {
     }
   }
 
-  showEditForm(id) {}
+  showEditForm(payment) {
+    const dialRef = this.dialog.open(EditPaymentComponent, {
+      data: {
+        currentPay: payment
+      },
+    });
+
+    dialRef.afterClosed().subscribe((res) => {
+      if (res) {
+        location.reload();
+      }
+    });
+  }
+
+  showConfirm(id) {
+    const dialRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        icon: 'danger',
+        question: '¿Está seguro que desea eliminar este pago?',
+      },
+    });
+
+    dialRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.deletePayment(id);
+      }
+    });
+  }
 
   openLoader() {
     this.dialog.open(LoadingDialogComponent);
+  }
+
+  openSuccessDialog(succsTitle, succssMsg) {
+    const dialogRef = this.dialog.open(SuccessModalComponent, {
+      data: {
+        succsTitle: succsTitle,
+        succsMsg: succssMsg,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      location.reload();
+    });
+  }
+
+  openErrorDialog(error: string): void {
+    this.dialog.open(ErrorModalComponent, {
+      data: {
+        msgError: error,
+      },
+    });
+  }
+
+  deletePayment(idPago) {
+    this.openLoader();
+    const paySubs = this.paymentsService
+      .deletePayment(idPago)
+      .subscribe((response) => {
+        this.dialog.closeAll();
+        this.openSuccessDialog('Operación Realizada Correctamente',response.message)
+        paySubs.unsubscribe();
+      },(error)=>{
+        error.subscribe((error) => {
+          this.dialog.closeAll();
+          this.openErrorDialog(error.statusText);
+          paySubs.unsubscribe();
+        });
+      });
   }
 }

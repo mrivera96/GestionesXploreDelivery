@@ -6,7 +6,13 @@ import {environment} from "../../environments/environment";
 @Injectable({
   providedIn: 'root'
 })
+
+/** *
+ * Servicio para la comunicación con la API para el manejo de los pagos
+*/
 export class PaymentsService {
+
+
 
   constructor(
     private http: HttpClient,
@@ -14,6 +20,11 @@ export class PaymentsService {
   ) {
   }
 
+  /**
+   * Crea un pago
+   * @param form formulario con los datos de pago
+   * @returns retorna un observable al cual se puede suscribir para obtener el response
+   */
   addPayment(form) {
     return this.http.post<any>(`${environment.apiUrl}`,
       {
@@ -67,6 +78,26 @@ export class PaymentsService {
       {
         function: 'addShuttlePayment',
         form,
+      }
+    )
+  }
+
+  deletePayment(idPago) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'deletePayment',
+        idPago,
+        tkn: this.authService.currentUserValue?.access_token
+      }
+    )
+  }
+
+  updatePayment(form) {
+    return this.http.post<any>(`${environment.apiUrl}`,
+      {
+        function: 'updatePayment',
+        form,
+        tkn: this.authService.currentUserValue?.access_token
       }
     )
   }

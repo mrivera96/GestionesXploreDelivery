@@ -1,59 +1,65 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Customer } from '../../../../models/customer';
-import { PaymentType } from '../../../../models/payment-type';
 import { formatDate } from '@angular/common';
-import { UsersService } from '../../../../services/users.service';
-import { PaymentsService } from '../../../../services/payments.service';
-import { SuccessModalComponent } from '../../../../shared/components/success-modal/success-modal.component';
-import { ErrorModalComponent } from '../../../../shared/components/error-modal/error-modal.component';
-import { Bank } from '../../../../models/bank';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import { PaymentDateValidator } from 'src/app/helpers/paymentDate.validator';
+import { Bank } from 'src/app/models/bank';
+import { Payment } from 'src/app/models/payment';
+import { PaymentType } from 'src/app/models/payment-type';
+import { PaymentsService } from 'src/app/services/payments.service';
+import { ErrorModalComponent } from 'src/app/shared/components/error-modal/error-modal.component';
+import { SuccessModalComponent } from 'src/app/shared/components/success-modal/success-modal.component';
 
 @Component({
-  selector: 'app-add-payment-dialog',
-  templateUrl: './add-payment-dialog.component.html',
-  styleUrls: ['./add-payment-dialog.component.css'],
+  selector: 'app-edit-payment',
+  templateUrl: './edit-payment.component.html',
+  styleUrls: ['./edit-payment.component.css'],
 })
-export class AddPaymentDialogComponent implements OnInit {
-  nPayForm: FormGroup;
-  customers: Customer[];
+export class EditPaymentComponent implements OnInit {
+  payForm: FormGroup;
   paymentTipes: PaymentType[];
   loaders = {
     loadingSubmit: false,
   };
-
-  filteredCustomers: Customer[];
-
   banks: Bank[];
+  currPay: Payment;
+
   constructor(
-    public dialogRef: MatDialogRef<AddPaymentDialogComponent>,
+    public dialogRef: MatDialogRef<EditPaymentComponent>,
     private formBuilder: FormBuilder,
-    private usersService: UsersService,
     private paymentsService: PaymentsService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) private data: any
   ) {
     this.dialogRef.disableClose = true;
+    this.currPay = this.data.currentPay;
     this.banks = [
       { descBanco: 'BAC', numCuenta: '730226831' },
       { descBanco: 'FICOHSA', numCuenta: '0-0-200007101178' },
     ];
-    this.nPayForm = this.formBuilder.group(
+
+    this.payForm = this.formBuilder.group(
       {
+        idPago:[this.currPay.idPago],
         fechaPago: [
-          formatDate(new Date(), 'yyyy-MM-dd', 'en'),
+          formatDate(this.currPay.fechaPago, 'yyyy-MM-dd', 'en'),
           Validators.required,
         ],
-        monto: [1.0, [Validators.required, Validators.maxLength(20)]],
-        tipoPago: [null, [Validators.required]],
-        idCliente: [null, [Validators.required]],
+        monto: [
+          this.currPay.monto,
+          [Validators.required, Validators.maxLength(20)],
+        ],
+        tipoPago: [this.currPay.tipoPago, [Validators.required]],
         numAutorizacion: [
-          '',
+          this.currPay.numAutorizacion,
           [Validators.minLength(6), Validators.maxLength(6)],
         ],
-        referencia: ['', [Validators.maxLength(12)]],
-        banco: [''],
+        referencia: [this.currPay.referencia, [Validators.maxLength(12)]],
+        banco: [this.currPay.banco],
       },
       {
         validators: [PaymentDateValidator('fechaPago')],
@@ -62,24 +68,14 @@ export class AddPaymentDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
     this.loadData();
   }
 
-
   get f() {
-    return this.nPayForm.controls;
+    return this.payForm.controls;
   }
-  
-  loadData() {
-    const usersSubscription = this.usersService
-      .getCustomers()
-      .subscribe((response) => {
-        this.customers = response.data;
-        this.filteredCustomers = response.data;
-        usersSubscription.unsubscribe();
-      });
 
+  loadData() {
     const paymentTypeSubscription = this.paymentsService
       .getPaymentTypes()
       .subscribe((response) => {
@@ -110,11 +106,11 @@ export class AddPaymentDialogComponent implements OnInit {
     }
   }
 
-  onNewFormSubmit() {
-    if (this.nPayForm.valid) {
+  onFormSubmit() {
+    if (this.payForm.valid) {
       this.loaders.loadingSubmit = true;
       const paymentsSubscription = this.paymentsService
-        .addPayment(this.nPayForm.value)
+        .updatePayment(this.payForm.value)
         .subscribe(
           (response) => {
             this.loaders.loadingSubmit = false;
@@ -154,24 +150,5 @@ export class AddPaymentDialogComponent implements OnInit {
         msgError: error,
       },
     });
-  }
-
-  onKey(value) {
-    this.filteredCustomers = this.search(value);
-  }
-
-  search(value: string) {
-    let filter = value.toLowerCase();
-    filter = filter.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (filter != '') {
-      return this.customers.filter((option) =>
-        option.nomEmpresa
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .includes(filter)
-      );
-    }
-    return this.customers;
   }
 }
