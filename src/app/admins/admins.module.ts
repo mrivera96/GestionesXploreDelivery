@@ -99,6 +99,7 @@ import { ReadExchangeRatesComponent } from './components/exchage-rates/read-exch
 import { CreateExchangeRateComponent } from './components/exchage-rates/create-exchange-rate/create-exchange-rate.component';
 import { UpdateExchangeRateComponent } from './components/exchage-rates/update-exchange-rate/update-exchange-rate.component';
 import { EditPaymentComponent } from './components/payments/edit-payment/edit-payment.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 @NgModule({
   declarations: [
@@ -191,6 +192,7 @@ import { EditPaymentComponent } from './components/payments/edit-payment/edit-pa
     CreateExchangeRateComponent,
     UpdateExchangeRateComponent,
     EditPaymentComponent,
+
   ],
   entryComponents: [
     ConfirmModalComponent,
@@ -214,6 +216,7 @@ import { EditPaymentComponent } from './components/payments/edit-payment/edit-pa
     MatRadioModule,
     MatTooltipModule,
     NgxDropzoneModule,
+    AngularEditorModule
   ],
 
 })

@@ -34,6 +34,7 @@ import { LoadingDialogComponent } from '../../../shared/components/loading-dialo
 import { OperationsService } from 'src/app/services/operations.service';
 import { DateValidate } from 'src/app/helpers/date.validator';
 import { ConsolidatedHourValidate } from 'src/app/helpers/consolidatedHour.validator';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-customer-new-consolidated-delivery',
@@ -128,7 +129,8 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
     private branchService: BranchService,
     private userService: UsersService,
     private labelsService: LabelsService,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private sanitizer: DomSanitizer
   ) {
     this.currCustomer = this.authService.currentUserValue;
   }
@@ -255,6 +257,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           this.categories = response.consolidatedCategories;
           this.demandMSG = response.demand;
           this.categories.forEach((category) => {
+            this.sanitizer.bypassSecurityTrustHtml(category.notas);
             category.categoryExtraCharges.sort((a, b) =>
               a.extra_charge.nombre > b.extra_charge.nombre ? 1 : -1
             );

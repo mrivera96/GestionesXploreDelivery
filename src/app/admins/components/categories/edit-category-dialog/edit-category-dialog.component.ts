@@ -11,6 +11,7 @@ import { ErrorModalComponent } from '../../../../shared/components/error-modal/e
 import { Category } from '../../../../models/category';
 import { ServiceTypeService } from '../../../../services/service-type.service';
 import { ServiceType } from '../../../../models/service-type';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 @Component({
   selector: 'app-edit-category-dialog',
@@ -24,6 +25,29 @@ export class EditCategoryDialogComponent implements OnInit {
     loadingSubmit: false,
   };
   serviceTypes: ServiceType[];
+  htmlContent = '';
+
+  config: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: '10rem',
+    minHeight: '5rem',
+    placeholder:
+      'Ingrese el texto que desea agregar como notas de la categoría....',
+    defaultParagraphSeparator: 'p',
+    defaultFontName: 'Arial',
+    customClasses: [
+      {
+        name: 'Quote',
+        class: 'quoteClass',
+      },
+      {
+        name: 'Title Heading',
+        class: 'titleHead',
+        tag: 'h1',
+      },
+    ],
+  };
 
   constructor(
     private categoriesService: CategoriesService,
@@ -34,6 +58,9 @@ export class EditCategoryDialogComponent implements OnInit {
   ) {
     this.currCategory = this.data.category;
     this.dialogRef.disableClose = true;
+    if(this.currCategory?.notas){
+      this.htmlContent = this.currCategory.notas
+    }
   }
 
   ngOnInit(): void {
@@ -57,6 +84,7 @@ export class EditCategoryDialogComponent implements OnInit {
       ),
       file: new FormControl(null),
       restKm: new FormControl(this.currCategory?.restKm, Validators.required),
+      notas: new FormControl(this.currCategory?.notas),
     });
   }
 
@@ -76,6 +104,9 @@ export class EditCategoryDialogComponent implements OnInit {
   onFormEditSubmit() {
     if (this.edCatForm.valid) {
       this.loaders.loadingSubmit = true;
+      if (this.htmlContent != '') {
+        this.edCatForm.controls.notas.setValue(this.htmlContent);
+      }
       const categoriesSubscription = this.categoriesService
         .editCategory(this.edCatForm.value)
         .subscribe(
@@ -129,7 +160,7 @@ export class EditCategoryDialogComponent implements OnInit {
 
   onSelect(event) {
     let reader = new FileReader();
-    if(event.target.files && event.target.files.length > 0) {
+    if (event.target.files && event.target.files.length > 0) {
       let file = event.target.files[0];
       reader.readAsDataURL(file);
       reader.onload = () => {
@@ -139,10 +170,9 @@ export class EditCategoryDialogComponent implements OnInit {
           fileExtension: file.extension,
           filepath: file.path,
           //@ts-ignore
-          value: reader.result.split(',')[1]
-        })
+          value: reader.result.split(',')[1],
+        });
       };
     }
   }
-
 }

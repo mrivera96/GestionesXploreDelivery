@@ -962,7 +962,7 @@
   <!--CARD BODY END -->
 
   <mat-card-actions *ngIf="!loaders.loadingSubmit && !loaders.loadingData">
-    <app-notas-generales
+    <app-notas-generales [notas]="selectedCategory?.notas"
       *ngIf="paymentMethod == 1 && orders.length >= 2"
     ></app-notas-generales>
     <div class="col" *ngIf="paymentMethod == 1 && orders.length > 0">
