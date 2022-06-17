@@ -15,4 +15,5 @@ export interface Category {
   rutaImagen?: string
   restKm?: number
   notas?: string
+  icono?: string
 }

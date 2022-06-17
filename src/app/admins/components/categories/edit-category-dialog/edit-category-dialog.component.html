@@ -76,7 +76,7 @@
       </mat-form-field>
     </div>
     <div class="form-row">
-      <div class="col">
+      <div class="col-sm">
         <mat-slide-toggle
           #matSlideToggle
           [checked]="currCategory.isActivo == true"
@@ -84,6 +84,20 @@
           >Activa</mat-slide-toggle
         >
       </div>
+
+      <mat-form-field appearance="outline" floatLabel="always" class="col-sm">
+        <mat-label>Ícono de Categoría:</mat-label>
+        <input
+          matInput
+          id="icono"
+          type="text"
+          formControlName="icono"
+          required
+          maxlength="80"
+        />
+        <mat-icon matSuffix>image</mat-icon>
+        <mat-error>*Este campo es obligatorio</mat-error>
+      </mat-form-field>
     </div>
 
     <br />

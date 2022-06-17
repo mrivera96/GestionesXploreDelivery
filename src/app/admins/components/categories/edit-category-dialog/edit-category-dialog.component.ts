@@ -85,6 +85,7 @@ export class EditCategoryDialogComponent implements OnInit {
       file: new FormControl(null),
       restKm: new FormControl(this.currCategory?.restKm, Validators.required),
       notas: new FormControl(this.currCategory?.notas),
+      icono: new FormControl(this.currCategory?.icono)
     });
   }
 
