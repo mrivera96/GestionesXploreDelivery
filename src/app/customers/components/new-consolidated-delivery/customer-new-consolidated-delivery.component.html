@@ -484,7 +484,7 @@
 
   <mat-card-actions>
 
-    <app-notas-generales *ngIf="paymentMethod == 1 && orders.length > 0" >
+    <app-notas-generales [notas]="selectedCategory?.notas" *ngIf="paymentMethod == 1 && orders.length > 0" >
     </app-notas-generales>
 
     <div class="col" *ngIf="paymentMethod == 1 && orders.length > 0">

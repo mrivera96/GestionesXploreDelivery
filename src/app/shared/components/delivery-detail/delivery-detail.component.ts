@@ -105,6 +105,7 @@ export class DeliveryDetailComponent implements OnInit {
     this.dtTrigger = new Subject<any>();
   }
 
+
   //COMUNICACIÓN CON LA API PARA OBTENER LOS DATOS NECESARIOS
   loadData() {
     this.openLoader();

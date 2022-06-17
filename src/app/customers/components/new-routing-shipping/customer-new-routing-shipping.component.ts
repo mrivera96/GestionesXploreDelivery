@@ -33,6 +33,7 @@ import { SuccessModalComponent } from '../../../shared/components/success-modal/
 import { ConfirmDialogComponent } from '../new-delivery/confirm-dialog/confirm-dialog.component';
 import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 import { OperationsService } from 'src/app/services/operations.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-customer-new-routing-shipping',
@@ -142,7 +143,8 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
     public dialog: MatDialog,
     private authService: AuthService,
     private userService: UsersService,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private sanitizer: DomSanitizer
   ) {
     this.currCustomer = this.authService.currentUserValue.cliente;
   }
@@ -345,12 +347,14 @@ export class CustomerNewRoutingShippingComponent implements OnInit {
           });
           this.demandMSG = response.demand;
           this.deliveryCategories.forEach((category) => {
+            this.sanitizer.bypassSecurityTrustHtml(category.notas);
             category.categoryExtraCharges.sort((a, b) =>
               a.extra_charge.nombre > b.extra_charge.nombre ? 1 : -1
             );
           });
 
           this.transportationCategories.forEach((category) => {
+            this.sanitizer.bypassSecurityTrustHtml(category.notas);
             category.categoryExtraCharges.sort((a, b) =>
               a.extra_charge.nombre > b.extra_charge.nombre ? 1 : -1
             );

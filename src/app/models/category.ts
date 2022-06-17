@@ -14,4 +14,5 @@ export interface Category {
   datesToShow?: any[]
   rutaImagen?: string
   restKm?: number
+  notas?: string
 }

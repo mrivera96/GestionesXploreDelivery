@@ -35,6 +35,7 @@ import { Label } from 'src/app/models/label';
 import { LoadingDialogComponent } from '../../../shared/components/loading-dialog/loading-dialog.component';
 import { OperationsService } from 'src/app/services/operations.service';
 import { DateTimeValidate } from 'src/app/helpers/datetime.validator';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-customer-new-delivery',
@@ -139,7 +140,8 @@ export class CustomerNewDeliveryComponent implements OnInit {
     private authService: AuthService,
     private userService: UsersService,
     private labelsService: LabelsService,
-    private operationsService: OperationsService
+    private operationsService: OperationsService,
+    private sanitizer: DomSanitizer
   ) {
     this.currCustomer = this.authService.currentUserValue;
     this.hourOption = 1;
@@ -340,12 +342,14 @@ export class CustomerNewDeliveryComponent implements OnInit {
           });
 
           this.deliveryCategories.forEach((category) => {
+            this.sanitizer.bypassSecurityTrustHtml(category.notas);
             category.categoryExtraCharges.sort((a, b) =>
               a.extra_charge.nombre > b.extra_charge.nombre ? 1 : -1
             );
           });
 
           this.transportationCategories.forEach((category) => {
+            this.sanitizer.bypassSecurityTrustHtml(category.notas);
             category.categoryExtraCharges.sort((a, b) =>
               a.extra_charge.nombre > b.extra_charge.nombre ? 1 : -1
             );

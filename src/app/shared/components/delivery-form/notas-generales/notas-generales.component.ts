@@ -9,6 +9,7 @@ import { EventEmitter } from 'events';
 })
 export class NotasGeneralesComponent implements OnInit {
   @Output() acceptTerms = new EventEmitter()
+  @Input('notas') notas: string;
 
   constructor() { }
 
