@@ -156,6 +156,7 @@ export class ChangeAddressDialogComponent implements OnInit {
           salida: this.currDelivery.dirRecogida,
           entrega: this.addForm.direccion.value,
           tarifa: this.currDelivery.tarifaBase,
+          categoria: this.currDelivery.idCategoria
         })
         .subscribe(
           (response) => {
@@ -279,6 +280,7 @@ export class ChangeAddressDialogComponent implements OnInit {
           salida: salida,
           entrega: entrega,
           tarifa: tarifa,
+          categoria: this.currDelivery.idCategoria
         })
         .subscribe(
           (response) => {
