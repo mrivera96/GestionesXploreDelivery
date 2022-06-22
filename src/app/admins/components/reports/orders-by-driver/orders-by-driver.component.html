@@ -179,6 +179,13 @@
                 Camión 11 pies
               </th>
 
+              <th
+                style="text-align: center; background-color: #e0e0e0"
+                colspan="2"
+              >
+                Home Delivery
+              </th>
+
               <th style="text-align: center" colspan="7">Totales</th>
             </tr>
 
@@ -242,6 +249,9 @@
                 Tiempo
               </th>
 
+              <th style="text-align: center; width: 5%">Entregas</th>
+              <th style="text-align: center; width: 5%">Tiempo</th>
+
               <th style="text-align: center; width: 5%">Tiempo Auxiliar</th>
               <th style="text-align: center; width: 5%">Entregas</th>
               <th style="text-align: center; width: 5%">Subtotal Tiempo</th>
@@ -281,6 +291,9 @@
 
               <td style="text-align: center">{{ result.camion11 }}</td>
               <td style="text-align: center">{{ result.camion11Time }}</td>
+
+              <td style="text-align: center">{{ result.homeDelivery }}</td>
+              <td style="text-align: center">{{ result.homeDeliveryTime }}</td>
 
               <td style="text-align: center">{{ result.totalAuxTime }}</td>
               <td style="text-align: center">{{ result.totalOrders }}</td>
@@ -344,6 +357,12 @@
               </th>
               <th style="text-align: center">
                 {{ totals.camion11Time }}
+              </th>
+              <th style="text-align: center">
+                {{ totals.homeDeliveryOrders }}
+              </th>
+              <th style="text-align: center">
+                {{ totals.homeDeliveryTime }}
               </th>
               <th style="text-align: center">
                 {{ totals.totalAuxTime }}
