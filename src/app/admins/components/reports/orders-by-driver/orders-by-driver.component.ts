@@ -76,6 +76,9 @@ export class OrdersByDriverComponent implements OnInit {
     camion11Orders: 0,
     camion11Time: 0,
     camion11Over20kms: 0,
+    homeDeliveryOrders: 0,
+    homeDeliveryTime: 0,
+    homeDeliveryOver20kms: 0,
     totalOrders: 0,
     totalTime: 0,
     totalMoney: 0,
@@ -179,6 +182,9 @@ export class OrdersByDriverComponent implements OnInit {
         camion11Orders: 0,
         camion11Time: 0,
         camion11Over20kms: 0,
+        homeDeliveryOrders: 0,
+        homeDeliveryTime: 0,
+        homeDeliveryOver20kms: 0,
         totalOrders: 0,
         totalTime: 0,
         totalMoney: 0,
@@ -238,6 +244,13 @@ export class OrdersByDriverComponent implements OnInit {
                 this.totals.camion11Orders + +result.camion11;
               this.totals.camion11Time =
                 this.totals.camion11Time + +result.camion11Time;
+                this.totals.homeDeliveryOrders =
+                this.totals.homeDeliveryOrders + +result.homeDelivery;
+              this.totals.homeDeliveryTime =
+                this.totals.homeDeliveryTime + +result.homeDeliveryTime;
+              this.totals.homeDeliveryOver20kms =
+                this.totals.homeDeliveryOver20kms +
+                +result.homeDeliveryOver20kms;
               this.totals.totalOrders =
                 this.totals.totalOrders + +result.totalOrders;
               this.totals.totalTime = this.totals.totalTime + +result.totalTime;
@@ -368,7 +381,10 @@ export class OrdersByDriverComponent implements OnInit {
       '',
       'Camión 11 pies',
       '',
+      'Home Delivery',
+      '',
       'Totales',
+      '',
       '',
       '',
       '',
@@ -388,7 +404,8 @@ export class OrdersByDriverComponent implements OnInit {
     worksheet.mergeCells('M8:N8');
     worksheet.mergeCells('O8:P8');
     worksheet.mergeCells('Q8:R8');
-    worksheet.mergeCells('S8:Y8');
+    worksheet.mergeCells('S8:T8');
+    worksheet.mergeCells('U8:Z8');
 
     categoriesheaderRow.eachCell((cell, number) => {
       cell.fill = {
@@ -411,6 +428,8 @@ export class OrdersByDriverComponent implements OnInit {
     const ordersByDateHeader = [
       'Conductor',
       'Fecha',
+      'Entregas',
+      'Tiempo',
       'Entregas',
       'Tiempo',
       'Entregas',
@@ -476,6 +495,8 @@ export class OrdersByDriverComponent implements OnInit {
         d.panelAuxiliarTime,
         d.camion11,
         d.camion11Time,
+        d.homeDelivery,
+        d.homeDeliveryTime,
         d.totalAuxTime,
         d.totalOrders,
         d.totalTime,
@@ -510,6 +531,8 @@ export class OrdersByDriverComponent implements OnInit {
       this.totals.panelAuxiliarTime,
       this.totals.camion11Orders,
       this.totals.camion11Time,
+      this.totals.homeDeliveryOrders,
+      this.totals.homeDeliveryTime,
       this.totals.totalAuxTime,
       this.totals.totalOrders,
       this.totals.totalTime,
@@ -575,6 +598,7 @@ export class OrdersByDriverComponent implements OnInit {
     newWin.document.write(divToPrint.outerHTML);
     newWin.print();
     newWin.document.close();
+
   }
 
   generatePDF() {
@@ -646,6 +670,11 @@ export class OrdersByDriverComponent implements OnInit {
       [],
       [
         new Txt('').bold().end,
+        new Cell(new Txt('Home Delivery').bold().end).colSpan(2).end,
+      ],
+      [],
+      [
+        new Txt('').bold().end,
         new Cell(new Txt('Totales').bold().end).colSpan(6).end,
       ],
       [],
@@ -661,6 +690,8 @@ export class OrdersByDriverComponent implements OnInit {
     const ordersByDateHeader = [
       'Conductor',
       'Fecha',
+      'Entregas',
+      'Tiempo',
       'Entregas',
       'Tiempo',
       'Entregas',
@@ -709,6 +740,8 @@ export class OrdersByDriverComponent implements OnInit {
         d.panelAuxiliarTime,
         d.camion11,
         d.camion11Time,
+        d.homeDelivery,
+        d.homeDeliveryTime,
         d.totalAuxTime,
         d.totalOrders,
         d.totalTime,
@@ -743,6 +776,8 @@ export class OrdersByDriverComponent implements OnInit {
       this.totals.panelAuxiliarTime,
       this.totals.camion11Orders,
       this.totals.camion11Time,
+      this.totals.homeDeliveryOrders,
+      this.totals.homeDeliveryTime,
       this.totals.totalAuxTime,
       this.totals.totalOrders,
       this.totals.totalTime,
