@@ -154,7 +154,7 @@ export class CustomerNewConsolidatedDeliveryComponent implements OnInit {
           dirRecogida: [{ value: '', disabled: false }, [Validators.required]],
           idCategoria: [
             {
-              value: 1,
+              value: null,
               disabled: false,
             },
             Validators.required,
