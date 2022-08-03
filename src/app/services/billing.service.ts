@@ -27,4 +27,8 @@ export class BillingService {
       tkn: this.authService.currentUserValue.access_token
     })
   }
+
+  getInvoice(refNumber){
+    return this.http.get<any>(`${environment.apiUrl}`,{params:{function:'viewInvoice', refNumber: refNumber}})
+  }
 }

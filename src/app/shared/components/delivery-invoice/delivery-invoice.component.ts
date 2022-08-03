@@ -1,5 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { BillingService } from 'src/app/services/billing.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-delivery-invoice',
@@ -8,32 +10,42 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class DeliveryInvoiceComponent implements OnInit {
 
-  reportServer: string = 'http://190.4.56.14/reportserver?username=reportes&password=Xplore2018';
-  reportUrl: string = 'Delivery/FacturaDelivery';
-  showParameters: string = "false"; 
-  language: string = "en-us";
-  mywidth: number = 100;
-  myheight: number = 100;
-  toolbar: string = "false";
-  accessKey = {
-    "username":"reportes",
-    "password":"Xplore2018",
-  }
-  parameters: any ;
+  refNumber: string ;
+  imagePath: SafeResourceUrl;
+  base64: string;
 
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private billingService: BillingService,
+    private _sanitizer: DomSanitizer
   ) { 
     
   }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
-      this.parameters =  {   
-        "refNumber": params.get("refNumber"),
-        
-      };
-    })
+      this.refNumber =  params.get("refNumber");
+    });
+
+    this.billingService.getInvoice(this.refNumber).subscribe(response => {
+      this.base64 = response;
+      this.imagePath = this._sanitizer.bypassSecurityTrustResourceUrl('data:application/pdf;base64,' 
+               + this.base64);
+    });
+
+  }
+
+  downloadPdf(base64String, fileName) {
+    const source = `data:application/pdf;base64,${base64String}`;
+    const link = document.createElement("a");
+    link.href = source;
+    link.download = `${fileName}.pdf`
+    link.click();
+  }
+
+  onClickDownloadPdf(){
+    let base64String = this.base64;
+    this.downloadPdf(base64String,"Factura "+this.refNumber);
   }
 
 }

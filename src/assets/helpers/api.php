@@ -89,6 +89,24 @@ if (isset($_GET['function'])) {
 
         $output = curl_exec($handle);
         curl_close($handle);
+    } else if ($func == 'viewInvoice') {
+
+        $handle = curl_init();
+        $refNumber = $_GET["refNumber"];
+
+        $url = "http://190.4.56.14/XploreRestApiDesa/delivery/factura?refNumber=".$refNumber;
+        $authorization = 'Authorization: Basic ' . base64_encode("Webapi:Xplore19$");
+
+        // Set the url
+		//curl_setopt($handle, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($handle, CURLOPT_URL, $url);
+
+        curl_setopt($handle, CURLOPT_HTTPHEADER, array('api_key:Xplore19$', $authorization));
+               
+        /* set return type json */
+
+        $output = curl_exec($handle);
+        curl_close($handle);
     }
 } else if (file_get_contents('php://input')) {
     $rest_json = file_get_contents("php://input");
