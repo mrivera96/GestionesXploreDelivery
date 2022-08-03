@@ -1,18 +1,17 @@
-<h2 mat-dialog-title>Su Factura</h2>
 
-<div class="container">
-  <ssrs-reportviewer
-  [reportserver]="reportServer"
-  [reporturl]="reportUrl"
-  [showparameters]="showParameters"
-  [parameters]="parameters"
-  [language]="language"
-  [width]="mywidth"
-  [height]="myheight"
-  [toolbar]="toolbar"
->
-</ssrs-reportviewer>
-</div>
-    
-
-
+<div class="row">
+  <div class="col">
+    <h2 mat-dialog-title>Su Factura</h2>
+  </div>
+  <div class="col">
+    <button mat-raised-button color="primary" (click)="onClickDownloadPdf()">Descargar Factura</button>
+  </div>
+  </div>
+  
+  <div class="container-fluid">
+    <iframe width="1080" height="1920" [src]="imagePath" alt="factura"></iframe>
+  </div>
+      
+  
+  
+  
